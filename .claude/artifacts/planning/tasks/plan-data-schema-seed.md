@@ -268,11 +268,11 @@ Feature: Data schema and seed data
   - [x] T-012 Verify `npm run typecheck` exits 0
   - [x] T-013 Commit: `feat: define MSXData TypeScript types and schema documentation`
 
-- [ ] Chunk 2: Column definitions + initial ID registry
-  - [ ] T-020 Create `src/columns.ts`: export `GROUPS` (GroupDef[]) and `COLUMNS` (ColumnDef[]) constants with all 8 groups and 29 columns using IDs from the schema table above
-  - [ ] T-021 Create `data/id-registry.json`: initial registry with `version: 1`, `columns` map (key → id for all 29 columns), `next_column_id: 30`, `models: {}`, `retired_models: []`, `next_model_id: 11` (seed models 1–10 are pre-registered)
-  - [ ] T-022 Verify `npm run typecheck` exits 0
-  - [ ] T-023 Commit: `feat: add column definitions with stable IDs and seed id-registry`
+- [x] Chunk 2: Column definitions + initial ID registry
+  - [x] T-020 Create `src/columns.ts`: export `GROUPS` (GroupDef[]) and `COLUMNS` (ColumnDef[]) constants with all 8 groups and 29 columns using IDs from the schema table above
+  - [x] T-021 Create `data/id-registry.json`: initial registry with `version: 1`, `columns` map (key → id for all 29 columns), `next_column_id: 30`, `models: {}`, `retired_models: []`, `next_model_id: 11` (seed models 1–10 are pre-registered)
+  - [x] T-022 Verify `npm run typecheck` exits 0
+  - [x] T-023 Commit: `feat: add column definitions with stable IDs and seed id-registry`
 
 - [ ] Chunk 3: Seed data.js + index.html wiring
   - [ ] T-030 Create `public/data.js`: assign `window.MSX_DATA` with `version: 1`, `generated: "2026-03-27"`, `groups` array (8 entries), `columns` array (29 entries), `models` array (10 entries with values[] aligned to columns)
