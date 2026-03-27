@@ -94,6 +94,7 @@ function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
   for (let i = 0; i < columns.length; i++) {
     const td = document.createElement('td');
     td.dataset.colGroup = String(columns[i].groupId);
+    td.dataset.colIndex = String(i);
     const order = groupOrder.get(columns[i].groupId) ?? 0;
     td.dataset.colOrder = String(order);
     groupOrder.set(columns[i].groupId, order + 1);
@@ -134,6 +135,7 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
     const text = cellText(rawValue);
     td.textContent = text;
     td.dataset.colGroup = String(columns[i].groupId);
+    td.dataset.colIndex = String(i);
     const order = groupOrder.get(columns[i].groupId) ?? 0;
     td.dataset.colOrder = String(order);
     groupOrder.set(columns[i].groupId, order + 1);
@@ -151,7 +153,12 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
   return tr;
 }
 
-export function buildGrid(data: MSXData): { element: HTMLElement; toggleFilters: () => void } {
+export function buildGrid(data: MSXData): {
+  element: HTMLElement;
+  toggleFilters: () => void;
+  setColumnVisible: (colIdx: number, visible: boolean) => void;
+  getHiddenCols: () => ReadonlySet<number>;
+} {
   const wrap = document.createElement('div');
   wrap.className = 'grid-wrap';
 
@@ -168,6 +175,9 @@ export function buildGrid(data: MSXData): { element: HTMLElement; toggleFilters:
 
   // Filter state — keyed by 0-based column index
   const filters = new Map<number, string>();
+
+  // Hidden columns — keyed by 0-based column index
+  const hiddenCols = new Set<number>();
 
   // ── thead ────────────────────────────────────────────────────────────────
   const thead = document.createElement('thead');
@@ -187,6 +197,46 @@ export function buildGrid(data: MSXData): { element: HTMLElement; toggleFilters:
       gutterCorner.classList.remove('gutter--filtered');
       gutterCorner.title = '';
     }
+  }
+
+  function recalcGroupHeader(groupId: number): void {
+    const th = thead.querySelector<HTMLTableCellElement>(`th.group-header[data-group-id="${groupId}"]`);
+    if (!th) return;
+    const groupCols = data.columns.map((c, i) => ({ col: c, idx: i })).filter(({ col }) => col.groupId === groupId);
+    const hiddenInGroup = groupCols.filter(({ idx }) => hiddenCols.has(idx)).length;
+    const totalCols = groupCols.length;
+    const visibleCount = totalCols - hiddenInGroup;
+
+    if (collapsedGroups.has(groupId)) {
+      // Collapsed: colSpan is always 1 while collapsed; indicator still applies
+      th.classList.toggle('group-header--partial', hiddenInGroup > 0);
+    } else if (visibleCount === 0) {
+      th.style.display = 'none';
+      th.classList.remove('group-header--partial');
+    } else {
+      th.style.display = '';
+      th.colSpan = visibleCount;
+      th.classList.toggle('group-header--partial', hiddenInGroup > 0);
+    }
+  }
+
+  function setColumnVisible(colIdx: number, visible: boolean): void {
+    if (visible) {
+      hiddenCols.delete(colIdx);
+    } else {
+      hiddenCols.add(colIdx);
+    }
+    // Apply to all already-rendered cells for this column (thead + current tbody rows)
+    table.querySelectorAll<HTMLElement>(`[data-col-index="${colIdx}"]`).forEach(cell => {
+      cell.style.display = visible ? '' : 'none';
+    });
+    const groupId = data.columns[colIdx]?.groupId;
+    if (groupId !== undefined) recalcGroupHeader(groupId);
+    renderRows();
+  }
+
+  function getHiddenCols(): ReadonlySet<number> {
+    return hiddenCols;
   }
 
   // ── tbody ────────────────────────────────────────────────────────────────
@@ -216,6 +266,12 @@ export function buildGrid(data: MSXData): { element: HTMLElement; toggleFilters:
         }
       });
     });
+    // Re-apply individually hidden columns to newly rendered rows
+    hiddenCols.forEach(colIdx => {
+      tbody.querySelectorAll<HTMLElement>(`[data-col-index="${colIdx}"]`).forEach(cell => {
+        cell.style.display = 'none';
+      });
+    });
   }
 
   renderRows();
@@ -225,19 +281,20 @@ export function buildGrid(data: MSXData): { element: HTMLElement; toggleFilters:
   groupHeaders.forEach(th => {
     th.addEventListener('click', () => {
       const groupId = Number(th.dataset.groupId);
-      const colCount = Number(th.dataset.colCount);
       const chevron = th.querySelector<HTMLElement>('.chevron')!;
 
       if (collapsedGroups.has(groupId)) {
-        // Expand
+        // Expand — restore all cells except those individually hidden
         collapsedGroups.delete(groupId);
-        th.colSpan = colCount;
         th.classList.remove('collapsed');
         chevron.textContent = '\u25bc'; // ▼
         table.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
+          const cellColIdx = cell.dataset.colIndex !== undefined ? Number(cell.dataset.colIndex) : -1;
+          if (hiddenCols.has(cellColIdx)) return; // leave individually-hidden cells hidden
           cell.style.display = '';
           cell.classList.remove('col-group-stub');
         });
+        recalcGroupHeader(groupId);
       } else {
         // Collapse — keep first cell per row as a zero-width stub anchor;
         // hide all others so the group header colSpan=1 aligns correctly.
@@ -252,6 +309,7 @@ export function buildGrid(data: MSXData): { element: HTMLElement; toggleFilters:
             cell.style.display = 'none';
           }
         });
+        recalcGroupHeader(groupId);
       }
     });
   });
@@ -338,5 +396,5 @@ export function buildGrid(data: MSXData): { element: HTMLElement; toggleFilters:
   }
 
   wrap.appendChild(table);
-  return { element: wrap, toggleFilters };
+  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols };
 }

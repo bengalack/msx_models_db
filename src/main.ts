@@ -7,6 +7,7 @@ import './types.js';
 import { initTheme, toggleTheme } from './theme.js';
 import { buildToolbar } from './toolbar.js';
 import { buildGrid } from './grid.js';
+import { buildColPicker } from './col-picker.js';
 
 initTheme();
 
@@ -30,7 +31,7 @@ document.body.appendChild(header);
 if (!window.MSX_DATA) {
   // eslint-disable-next-line no-console
   console.error('[MSX Models DB] MSX_DATA not found. Is data.js loaded before bundle.js?');
-  document.body.appendChild(buildToolbar(() => { /* no-op until data is loaded */ }));
+  document.body.appendChild(buildToolbar(() => { /* no-op */ }, () => { /* no-op */ }));
   const err = document.createElement('p');
   err.style.color = 'var(--color-danger)';
   err.style.padding = '16px';
@@ -41,7 +42,43 @@ if (!window.MSX_DATA) {
 
   document.title = `MSX Models DB — ${models.length} models`;
   title.textContent = `MSX Models DB\u2002·\u2002${generated}`;
-  const { element: gridEl, toggleFilters } = buildGrid(window.MSX_DATA);
-  document.body.appendChild(buildToolbar(toggleFilters));
+  const { element: gridEl, toggleFilters, setColumnVisible, getHiddenCols } = buildGrid(window.MSX_DATA);
+
+  const { element: pickerEl, open: openPicker, close: closePicker } = buildColPicker(
+    window.MSX_DATA.groups,
+    window.MSX_DATA.columns,
+    getHiddenCols,
+    setColumnVisible,
+  );
+
+  let pickerOpen = false;
+  function togglePicker(): void {
+    if (pickerOpen) {
+      closePicker();
+    } else {
+      openPicker();
+    }
+    pickerOpen = !pickerOpen;
+  }
+
+  const toolbarEl = buildToolbar(toggleFilters, togglePicker);
+  toolbarEl.appendChild(pickerEl);
+  document.body.appendChild(toolbarEl);
   document.body.appendChild(gridEl);
+
+  // Close picker on outside click
+  document.addEventListener('mousedown', (e: MouseEvent) => {
+    if (pickerOpen && !toolbarEl.contains(e.target as Node)) {
+      closePicker();
+      pickerOpen = false;
+    }
+  });
+
+  // Close picker on Escape (document-level fallback)
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && pickerOpen) {
+      closePicker();
+      pickerOpen = false;
+    }
+  });
 }

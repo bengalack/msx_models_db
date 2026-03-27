@@ -9,6 +9,7 @@
   gap: 8px;
   background: var(--color-header-bg);
   border-bottom: 1px solid var(--color-border);
+  /* sticky keeps toolbar visible while scrolling; also creates a containing block for the picker */
   position: sticky;
   top: 36px;
   z-index: 10;
@@ -23,10 +24,61 @@
   background: none;
   border: 1px solid var(--color-border-strong);
   border-radius: 3px;
-  color: var(--color-text-muted);
+  color: var(--color-text);
   font-size: 11px;
   font-family: inherit;
-  cursor: not-allowed;
+  cursor: pointer;
   letter-spacing: 0.02em;
-  opacity: 0.6;
+}
+
+.toolbar__btn:hover {
+  background: var(--color-surface-alt);
+}
+
+/* ── Column picker panel ─────────────────────────────────────────────────── */
+
+.col-picker {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  z-index: 200;
+  min-width: 220px;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  padding: 8px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.col-picker__group {
+  padding: 4px 0;
+}
+
+.col-picker__group + .col-picker__group {
+  border-top: 1px solid var(--color-border);
+}
+
+.col-picker__group-label {
+  padding: 4px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.col-picker__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--color-text);
+}
+
+.col-picker__item:hover {
+  background: var(--color-surface-alt);
 }
