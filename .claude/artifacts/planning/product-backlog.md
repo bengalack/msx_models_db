@@ -19,14 +19,14 @@
     - Right-click row number → context menu: Hide Row
     - Hidden rows removed from grid
     - Amber ▼▲ indicator in gutter at each gap; click to unhide
-
-- Now / Next
   - Cell selection
     - Click: select single cell, clear previous selection
     - CTRL/CMD+click: toggle cell in/out of selection
     - SHIFT+click: extend selection rectangle from anchor to clicked cell
     - Click+drag: select cells covered by drag (snap to cell on mouseenter)
     - Selected cells: accent-dim fill + solid accent border; dark mode adds glow
+
+- Now / Next
   - Clipboard copy
     - CTRL+C / CMD+C copies selected cells as TSV (columns tab-separated, rows newline-separated)
     - Fallback to execCommand('copy') if clipboard API unavailable

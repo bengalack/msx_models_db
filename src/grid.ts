@@ -121,6 +121,7 @@ function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
 
 function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number): HTMLTableRowElement {
   const tr = document.createElement('tr');
+  tr.dataset.modelId = String(model.id);
 
   // Gutter — 1-based row number
   const gutter = document.createElement('td');
@@ -180,6 +181,7 @@ export function buildGrid(data: MSXData): {
   getHiddenCols: () => ReadonlySet<number>;
   getHiddenRows: () => ReadonlySet<number>;
   hideRow: (modelId: number) => void;
+  getSelectedCells: () => ReadonlySet<string>;
 } {
   const wrap = document.createElement('div');
   wrap.className = 'grid-wrap';
@@ -203,6 +205,67 @@ export function buildGrid(data: MSXData): {
 
   // Hidden rows — keyed by stable model ID
   const hiddenRows = new Set<number>();
+
+  // ── Selection state ──────────────────────────────────────────────────────
+  // Key format: "${modelId}:${colIdx}"
+  const selectedCells = new Set<string>();
+  let selAnchor: { modelId: number; colIdx: number } | null = null;
+  let isDragging = false;
+  let dragStart: { modelId: number; colIdx: number } | null = null;
+
+  function selKey(modelId: number, colIdx: number): string {
+    return `${modelId}:${colIdx}`;
+  }
+
+  function applySelectionToDOM(): void {
+    tbody.querySelectorAll<HTMLTableCellElement>('td[data-col-index]').forEach(td => {
+      const tr = td.closest<HTMLTableRowElement>('tr[data-model-id]');
+      if (!tr?.dataset.modelId) return;
+      td.classList.toggle(
+        'cell--selected',
+        selectedCells.has(selKey(Number(tr.dataset.modelId), Number(td.dataset.colIndex)))
+      );
+    });
+  }
+
+  function clearSelection(): void {
+    selectedCells.clear();
+    selAnchor = null;
+    applySelectionToDOM();
+  }
+
+  function selectRectangle(
+    a: { modelId: number; colIdx: number },
+    b: { modelId: number; colIdx: number }
+  ): void {
+    const visibleModelIds = Array.from(tbody.querySelectorAll<HTMLTableRowElement>('tr[data-model-id]'))
+      .map(tr => Number(tr.dataset.modelId));
+    const visibleColIdxs = data.columns.map((_, i) => i).filter(i => !hiddenCols.has(i));
+
+    const ar = visibleModelIds.indexOf(a.modelId);
+    const br = visibleModelIds.indexOf(b.modelId);
+    const ac = visibleColIdxs.indexOf(a.colIdx);
+    const bc = visibleColIdxs.indexOf(b.colIdx);
+
+    selectedCells.clear();
+    if (ar === -1 || br === -1 || ac === -1 || bc === -1) {
+      // Anchor or target not in visible set — fall back to single cell
+      selectedCells.add(selKey(b.modelId, b.colIdx));
+      selAnchor = b;
+      return;
+    }
+    const minR = Math.min(ar, br); const maxR = Math.max(ar, br);
+    const minC = Math.min(ac, bc); const maxC = Math.max(ac, bc);
+    for (let r = minR; r <= maxR; r++) {
+      for (let c = minC; c <= maxC; c++) {
+        selectedCells.add(selKey(visibleModelIds[r], visibleColIdxs[c]));
+      }
+    }
+  }
+
+  function getSelectedCells(): ReadonlySet<string> {
+    return selectedCells;
+  }
 
   // ── thead ────────────────────────────────────────────────────────────────
   const thead = document.createElement('thead');
@@ -327,6 +390,8 @@ export function buildGrid(data: MSXData): {
         cell.style.display = 'none';
       });
     });
+    // Re-apply selection highlights
+    applySelectionToDOM();
   }
 
   renderRows();
@@ -378,9 +443,79 @@ export function buildGrid(data: MSXData): {
   });
 
   document.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && activeMenu) {
-      closeContextMenu();
+    if (e.key === 'Escape') {
+      if (activeMenu) {
+        closeContextMenu();
+      } else {
+        clearSelection();
+      }
     }
+  });
+
+  // ── Cell selection (event delegation on tbody) ───────────────────────────
+  tbody.addEventListener('mousedown', (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const td = target.closest<HTMLTableCellElement>('td[data-col-index]');
+    if (!td) return;
+    const tr = td.closest<HTMLTableRowElement>('tr[data-model-id]');
+    if (!tr?.dataset.modelId) return; // gutter or gap indicator rows won't match
+
+    e.preventDefault(); // prevent browser text-selection on drag
+
+    const modelId = Number(tr.dataset.modelId);
+    const colIdx = Number(td.dataset.colIndex);
+    const cell = { modelId, colIdx };
+
+    if (e.ctrlKey || e.metaKey) {
+      // Toggle cell in/out of selection
+      const key = selKey(modelId, colIdx);
+      if (selectedCells.has(key)) {
+        selectedCells.delete(key);
+      } else {
+        selectedCells.add(key);
+      }
+      selAnchor = cell;
+      applySelectionToDOM();
+    } else if (e.shiftKey) {
+      // Extend rectangle from anchor to clicked cell
+      if (selAnchor) {
+        selectRectangle(selAnchor, cell);
+      } else {
+        // No anchor yet — treat like plain click
+        selectedCells.clear();
+        selectedCells.add(selKey(modelId, colIdx));
+        selAnchor = cell;
+      }
+      applySelectionToDOM();
+    } else {
+      // Plain click — select single cell, start potential drag
+      selectedCells.clear();
+      selectedCells.add(selKey(modelId, colIdx));
+      selAnchor = cell;
+      isDragging = true;
+      dragStart = cell;
+      applySelectionToDOM();
+    }
+  });
+
+  // ── Drag selection (mouseenter + mouseup) ───────────────────────────────
+  tbody.addEventListener('mouseenter', (e: MouseEvent) => {
+    if (!isDragging || e.buttons !== 1 || !dragStart) return;
+    const target = e.target as HTMLElement;
+    const td = target.closest<HTMLTableCellElement>('td[data-col-index]');
+    if (!td) return;
+    const tr = td.closest<HTMLTableRowElement>('tr[data-model-id]');
+    if (!tr?.dataset.modelId) return;
+
+    const modelId = Number(tr.dataset.modelId);
+    const colIdx = Number(td.dataset.colIndex);
+    selectRectangle(dragStart, { modelId, colIdx });
+    applySelectionToDOM();
+  }, true); // capture to catch all child mouseenter events
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+    dragStart = null;
   });
 
   // ── Group collapse / expand ──────────────────────────────────────────────
@@ -503,5 +638,5 @@ export function buildGrid(data: MSXData): {
   }
 
   wrap.appendChild(table);
-  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols, getHiddenRows, hideRow };
+  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols, getHiddenRows, hideRow, getSelectedCells };
 }
