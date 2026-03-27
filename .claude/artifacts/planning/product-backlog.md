@@ -1,8 +1,4 @@
 - Now / Next
-  - Theme system
-    - CSS custom properties for dark and light themes on [data-theme]
-    - Dark mode default; theme toggle button (◐) in toolbar
-    - Persist theme preference to localStorage; restore on load
   - Grid rendering (display only)
     - Page header bar (title, toolbar strip)
     - Sticky column group headers row
@@ -99,3 +95,4 @@
 - In product (shipped)
   - Project scaffold (Vite + TypeScript, Python scraper stub, docs/ on main)
   - Data schema + seed data (TypeScript types, schema.md, 10-model seed, id-registry.json)
+  - Theme system (CSS custom properties, dark/light toggle, localStorage persistence)
