@@ -126,6 +126,7 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
   const gutter = document.createElement('td');
   gutter.className = 'gutter';
   gutter.textContent = String(rowIndex);
+  gutter.dataset.modelId = String(model.id);
   tr.appendChild(gutter);
 
   const groupOrder = new Map<number, number>();
@@ -153,11 +154,32 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
   return tr;
 }
 
+function buildGapIndicator(
+  hiddenIds: number[],
+  colCount: number,
+  onUnhide: (ids: number[]) => void,
+): HTMLTableRowElement {
+  const tr = document.createElement('tr');
+  tr.className = 'row-gap-indicator';
+  const td = document.createElement('td');
+  td.colSpan = colCount + 1; // gutter + all columns
+  const btn = document.createElement('button');
+  btn.className = 'row-gap-indicator__btn';
+  btn.setAttribute('aria-label', `Show ${hiddenIds.length} hidden row${hiddenIds.length > 1 ? 's' : ''}`);
+  btn.textContent = '\u25bc\u25b2'; // ▼▲
+  btn.addEventListener('click', () => onUnhide(hiddenIds));
+  td.appendChild(btn);
+  tr.appendChild(td);
+  return tr;
+}
+
 export function buildGrid(data: MSXData): {
   element: HTMLElement;
   toggleFilters: () => void;
   setColumnVisible: (colIdx: number, visible: boolean) => void;
   getHiddenCols: () => ReadonlySet<number>;
+  getHiddenRows: () => ReadonlySet<number>;
+  hideRow: (modelId: number) => void;
 } {
   const wrap = document.createElement('div');
   wrap.className = 'grid-wrap';
@@ -178,6 +200,9 @@ export function buildGrid(data: MSXData): {
 
   // Hidden columns — keyed by 0-based column index
   const hiddenCols = new Set<number>();
+
+  // Hidden rows — keyed by stable model ID
+  const hiddenRows = new Set<number>();
 
   // ── thead ────────────────────────────────────────────────────────────────
   const thead = document.createElement('thead');
@@ -239,6 +264,20 @@ export function buildGrid(data: MSXData): {
     return hiddenCols;
   }
 
+  function hideRow(modelId: number): void {
+    hiddenRows.add(modelId);
+    renderRows();
+  }
+
+  function unhideRowsInGap(modelIds: number[]): void {
+    modelIds.forEach(id => hiddenRows.delete(id));
+    renderRows();
+  }
+
+  function getHiddenRows(): ReadonlySet<number> {
+    return hiddenRows;
+  }
+
   // ── tbody ────────────────────────────────────────────────────────────────
   const tbody = document.createElement('tbody');
   table.appendChild(tbody);
@@ -253,9 +292,25 @@ export function buildGrid(data: MSXData): {
         return cellText(raw).toLowerCase().includes(term.toLowerCase());
       })
     );
-    tbody.replaceChildren(
-      ...filtered.map((model, i) => buildDataRow(model, data.columns, i + 1))
-    );
+    // Gap-walk: emit data rows and gap indicator rows
+    const rows: HTMLTableRowElement[] = [];
+    let buffer: number[] = [];
+    let rowNum = 1;
+    for (const model of filtered) {
+      if (hiddenRows.has(model.id)) {
+        buffer.push(model.id);
+      } else {
+        if (buffer.length > 0) {
+          rows.push(buildGapIndicator(buffer, data.columns.length, unhideRowsInGap));
+          buffer = [];
+        }
+        rows.push(buildDataRow(model, data.columns, rowNum++));
+      }
+    }
+    if (buffer.length > 0) {
+      rows.push(buildGapIndicator(buffer, data.columns.length, unhideRowsInGap));
+    }
+    tbody.replaceChildren(...rows);
     // Re-apply collapsed group visibility to newly rendered rows
     collapsedGroups.forEach(groupId => {
       tbody.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
@@ -275,6 +330,58 @@ export function buildGrid(data: MSXData): {
   }
 
   renderRows();
+
+  // ── Gutter context menu (event delegation on tbody) ──────────────────────
+  let activeMenu: HTMLElement | null = null;
+
+  function closeContextMenu(): void {
+    if (activeMenu) {
+      activeMenu.remove();
+      activeMenu = null;
+    }
+  }
+
+  tbody.addEventListener('contextmenu', (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const gutterCell = target.closest<HTMLElement>('td.gutter');
+    if (!gutterCell) return;
+    const modelId = Number(gutterCell.dataset.modelId);
+    if (!modelId) return;
+    e.preventDefault();
+    closeContextMenu();
+
+    const menu = document.createElement('div');
+    menu.className = 'ctx-menu';
+    menu.setAttribute('role', 'menu');
+    const btn = document.createElement('button');
+    btn.className = 'ctx-menu__item';
+    btn.setAttribute('role', 'menuitem');
+    btn.textContent = 'Hide row';
+    btn.addEventListener('click', () => {
+      closeContextMenu();
+      hideRow(modelId);
+    });
+    menu.appendChild(btn);
+
+    // Position at cursor
+    menu.style.left = `${e.clientX}px`;
+    menu.style.top = `${e.clientY}px`;
+    document.body.appendChild(menu);
+    activeMenu = menu;
+    btn.focus();
+  });
+
+  document.addEventListener('mousedown', (e: MouseEvent) => {
+    if (activeMenu && !activeMenu.contains(e.target as Node)) {
+      closeContextMenu();
+    }
+  });
+
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && activeMenu) {
+      closeContextMenu();
+    }
+  });
 
   // ── Group collapse / expand ──────────────────────────────────────────────
   const groupHeaders = thead.querySelectorAll<HTMLTableCellElement>('th.group-header');
@@ -396,5 +503,5 @@ export function buildGrid(data: MSXData): {
   }
 
   wrap.appendChild(table);
-  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols };
+  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols, getHiddenRows, hideRow };
 }
