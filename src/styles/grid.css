@@ -1,0 +1,130 @@
+/* Grid — scrollable table, sticky headers, left gutter, data cells.
+   All colors via var(--...) tokens — no hardcoded hex values. */
+
+.grid-wrap {
+  overflow: auto;
+  /* 36px page header + 32px toolbar = 68px fixed chrome above grid */
+  height: calc(100vh - 68px);
+}
+
+.grid {
+  border-collapse: collapse;
+  width: max-content;
+  min-width: 100%;
+}
+
+/* ── Left gutter ─────────────────────────────────────────────────────────── */
+
+.gutter {
+  width: 32px;
+  min-width: 32px;
+  max-width: 32px;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: var(--color-gutter-bg);
+  color: var(--color-gutter-text);
+  font-size: 10px;
+  text-align: right;
+  padding: 0 4px;
+  border-right: 1px solid var(--color-border-strong);
+  white-space: nowrap;
+}
+
+/* ── Group header row (sticky row 1) ─────────────────────────────────────── */
+
+.group-header {
+  height: 28px;
+  position: sticky;
+  top: 0; /* relative to .grid-wrap scroll container */
+  z-index: 2;
+  background: var(--color-header-bg);
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-right: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.group-header .chevron {
+  float: right;
+  color: var(--color-text-muted);
+  font-style: normal;
+}
+
+/* ── Column header row (sticky row 2) ────────────────────────────────────── */
+
+.col-header {
+  height: 28px;
+  position: sticky;
+  top: 28px; /* below group header row */
+  z-index: 2;
+  background: var(--color-header-bg);
+  color: var(--color-text-heading);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0 6px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-right: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+/* Gutter corner cells in header rows */
+thead .gutter {
+  z-index: 4; /* above both group and col header z-levels */
+}
+
+/* ── Filter row (sticky row 3, hidden by default) ────────────────────────── */
+
+.filter-row {
+  display: none;
+  height: 28px;
+  position: sticky;
+  top: 56px; /* below group + col header rows */
+  z-index: 2;
+  background: var(--color-filter-bg);
+}
+
+.filter-row td {
+  border-bottom: 1px solid var(--color-border-strong);
+  border-right: 1px solid var(--color-border);
+}
+
+/* ── Data rows ───────────────────────────────────────────────────────────── */
+
+.grid tbody tr:nth-child(even) td {
+  background: var(--color-surface-alt);
+}
+
+.grid tbody td {
+  height: 24px;
+  font-size: 12px;
+  color: var(--color-text);
+  background: var(--color-surface);
+  padding: 0 6px;
+  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  /* Overflow with ellipsis */
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Alternating rows must also override the sticky gutter background */
+.grid tbody tr:nth-child(even) td.gutter {
+  background: var(--color-gutter-bg);
+}
+
+/* Null / empty cell value */
+.cell-null {
+  color: var(--color-text-muted);
+}

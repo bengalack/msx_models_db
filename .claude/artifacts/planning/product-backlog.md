@@ -1,13 +1,4 @@
 - Now / Next
-  - Grid rendering (display only)
-    - Page header bar (title, toolbar strip)
-    - Sticky column group headers row
-    - Sticky column headers row
-    - Sticky filter row (hidden by default)
-    - Data rows with alternating background
-    - Left gutter (row numbers)
-    - Null/empty values rendered as — (em dash)
-    - Cell overflow clipped with ellipsis; full value in title tooltip
   - Column group collapse / expand
     - Click group header to collapse all child columns
     - Click again to expand; chevron indicator (▶ / ▼)
@@ -96,3 +87,4 @@
   - Project scaffold (Vite + TypeScript, Python scraper stub, docs/ on main)
   - Data schema + seed data (TypeScript types, schema.md, 10-model seed, id-registry.json)
   - Theme system (CSS custom properties, dark/light toggle, localStorage persistence)
+  - Grid rendering (display only — header rows, toolbar, data rows, gutter, null/em-dash, overflow tooltip)
