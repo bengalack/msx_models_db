@@ -133,10 +133,10 @@ Feature: Column group collapse / expand
 
 ## Definition of Done
 - [x] Gherkin specification is complete and current in the plan artifact
-- [ ] All smoke path steps pass
-- [ ] No hardcoded hex values added to CSS
-- [ ] Cleanup gate satisfied
-- [ ] Backlog updated (shipped item moved to "In product (shipped)")
+- [x] All smoke path steps pass
+- [x] No hardcoded hex values added to CSS
+- [x] Cleanup gate satisfied
+- [x] Backlog updated (shipped item moved to "In product (shipped)")
 
 ## Chunks
 
@@ -189,15 +189,15 @@ Feature: Column group collapse / expand
 - [x] `git add docs/bundle.js && git commit -m "chore: update docs/ build output with group collapse/expand"`
 
 ### T-950 — Smoke test
-- [ ] Open `docs/index.html`; click each group header; verify collapse/expand behaviour
+- [x] Open `docs/index.html`; click each group header; verify collapse/expand behaviour
 
 ### T-951 — Squash, merge, clean up
-- [ ] Squash branch commits into one logical commit
-- [ ] Fast-forward merge to main
-- [ ] Delete feature branch
+- [x] Squash branch commits into one logical commit
+- [x] Fast-forward merge to main
+- [x] Delete feature branch
 
 ### T-952 — Update backlog
-- [ ] Move "Column group collapse / expand" to "In product (shipped)" in `product-backlog.md`
+- [x] Move "Column group collapse / expand" to "In product (shipped)" in `product-backlog.md`
 
 ## Relevant Files (Expected)
 - `src/grid.ts` — all DOM construction functions need data attribute additions; buildGrid needs click handler

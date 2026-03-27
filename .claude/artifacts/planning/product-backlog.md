@@ -1,8 +1,10 @@
-- Now / Next
+- In product (shipped)
   - Column group collapse / expand
     - Click group header to collapse all child columns
     - Click again to expand; chevron indicator (▶ / ▼)
     - Hidden column indicator in group header strip when any column in group is individually hidden
+
+- Now / Next
   - Column sorting
     - Click column header: sort ascending; again: descending; again: clear
     - ↑ / ↓ indicator appended to active sort column header
