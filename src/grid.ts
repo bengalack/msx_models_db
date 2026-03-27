@@ -28,6 +28,8 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
     th.className = 'group-header';
     th.colSpan = groupCols.length;
     th.scope = 'colgroup';
+    th.dataset.groupId = String(group.id);
+    th.dataset.colCount = String(groupCols.length);
 
     const label = document.createTextNode(group.label);
     const chevron = document.createElement('i');
@@ -50,6 +52,7 @@ function buildColHeaderRow(columns: ColumnDef[]): HTMLTableRowElement {
     th.className = 'col-header';
     th.scope = 'col';
     th.textContent = col.label;
+    th.dataset.colGroup = String(col.groupId);
     tr.appendChild(th);
   }
   return tr;
@@ -60,6 +63,7 @@ function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
   tr.className = 'filter-row';
   for (let i = 0; i < columns.length; i++) {
     const td = document.createElement('td');
+    td.dataset.colGroup = String(columns[i].groupId);
     tr.appendChild(td);
   }
   return tr;
@@ -79,6 +83,7 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
     const td = document.createElement('td');
     const text = cellText(rawValue);
     td.textContent = text;
+    td.dataset.colGroup = String(columns[i].groupId);
 
     if (isNullish(rawValue)) {
       td.classList.add('cell-null');
@@ -100,6 +105,9 @@ export function buildGrid(data: MSXData): HTMLElement {
   const table = document.createElement('table');
   table.className = 'grid';
 
+  // Tracks which group IDs are currently collapsed
+  const collapsedGroups = new Set<number>();
+
   // ── thead ────────────────────────────────────────────────────────────────
   const thead = document.createElement('thead');
   thead.appendChild(buildGroupHeaderRow(data.groups, data.columns));
@@ -113,6 +121,36 @@ export function buildGrid(data: MSXData): HTMLElement {
     tbody.appendChild(buildDataRow(model, data.columns, i + 1));
   });
   table.appendChild(tbody);
+
+  // ── Group collapse / expand ──────────────────────────────────────────────
+  const groupHeaders = thead.querySelectorAll<HTMLTableCellElement>('th.group-header');
+  groupHeaders.forEach(th => {
+    th.addEventListener('click', () => {
+      const groupId = Number(th.dataset.groupId);
+      const colCount = Number(th.dataset.colCount);
+      const chevron = th.querySelector<HTMLElement>('.chevron')!;
+
+      if (collapsedGroups.has(groupId)) {
+        // Expand
+        collapsedGroups.delete(groupId);
+        th.colSpan = colCount;
+        th.classList.remove('collapsed');
+        chevron.textContent = '\u25bc'; // ▼
+        table.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
+          cell.style.display = '';
+        });
+      } else {
+        // Collapse
+        collapsedGroups.add(groupId);
+        th.colSpan = 1;
+        th.classList.add('collapsed');
+        chevron.textContent = '\u25b6'; // ▶
+        table.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
+          cell.style.display = 'none';
+        });
+      }
+    });
+  });
 
   wrap.appendChild(table);
   return wrap;

@@ -51,6 +51,19 @@
   white-space: nowrap;
 }
 
+.group-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.group-header:hover {
+  background: var(--color-hover);
+}
+
+.group-header.collapsed {
+  color: var(--color-text-muted);
+}
+
 .group-header .chevron {
   float: right;
   color: var(--color-text-muted);
