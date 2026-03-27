@@ -26,11 +26,11 @@ toggle.addEventListener('click', toggleTheme);
 header.appendChild(title);
 header.appendChild(toggle);
 document.body.appendChild(header);
-document.body.appendChild(buildToolbar());
 
 if (!window.MSX_DATA) {
   // eslint-disable-next-line no-console
   console.error('[MSX Models DB] MSX_DATA not found. Is data.js loaded before bundle.js?');
+  document.body.appendChild(buildToolbar(() => { /* no-op until data is loaded */ }));
   const err = document.createElement('p');
   err.style.color = 'var(--color-danger)';
   err.style.padding = '16px';
@@ -41,5 +41,7 @@ if (!window.MSX_DATA) {
 
   document.title = `MSX Models DB — ${models.length} models`;
   title.textContent = `MSX Models DB\u2002·\u2002${generated}`;
-  document.body.appendChild(buildGrid(window.MSX_DATA));
+  const { element: gridEl, toggleFilters } = buildGrid(window.MSX_DATA);
+  document.body.appendChild(buildToolbar(toggleFilters));
+  document.body.appendChild(gridEl);
 }

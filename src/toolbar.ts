@@ -1,4 +1,4 @@
-export function buildToolbar(): HTMLElement {
+export function buildToolbar(onFiltersToggle: () => void): HTMLElement {
   const toolbar = document.createElement('div');
   toolbar.className = 'toolbar';
 
@@ -10,9 +10,8 @@ export function buildToolbar(): HTMLElement {
 
   const filtersBtn = document.createElement('button');
   filtersBtn.className = 'toolbar__btn';
-  filtersBtn.disabled = true;
-  filtersBtn.title = 'Coming soon';
   filtersBtn.textContent = '⌃ Filters';
+  filtersBtn.addEventListener('click', onFiltersToggle);
 
   toolbar.appendChild(colsBtn);
   toolbar.appendChild(filtersBtn);

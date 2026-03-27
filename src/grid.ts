@@ -97,6 +97,22 @@ function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
     const order = groupOrder.get(columns[i].groupId) ?? 0;
     td.dataset.colOrder = String(order);
     groupOrder.set(columns[i].groupId, order + 1);
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'filter-input';
+    input.placeholder = '…';
+    input.dataset.colIndex = String(i);
+    input.setAttribute('aria-label', `Filter ${columns[i].label}`);
+
+    const clearBtn = document.createElement('button');
+    clearBtn.className = 'filter-clear filter-clear--hidden';
+    clearBtn.setAttribute('aria-label', 'Clear filter');
+    clearBtn.tabIndex = -1;
+    clearBtn.textContent = '×';
+
+    td.appendChild(input);
+    td.appendChild(clearBtn);
     tr.appendChild(td);
   }
   return tr;
@@ -135,7 +151,7 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
   return tr;
 }
 
-export function buildGrid(data: MSXData): HTMLElement {
+export function buildGrid(data: MSXData): { element: HTMLElement; toggleFilters: () => void } {
   const wrap = document.createElement('div');
   wrap.className = 'grid-wrap';
 
@@ -150,6 +166,9 @@ export function buildGrid(data: MSXData): HTMLElement {
   let sortColIndex: number | null = null;
   let sortDirection: 'asc' | 'desc' = 'asc';
 
+  // Filter state — keyed by 0-based column index
+  const filters = new Map<number, string>();
+
   // ── thead ────────────────────────────────────────────────────────────────
   const thead = document.createElement('thead');
   thead.appendChild(buildGroupHeaderRow(data.groups, data.columns));
@@ -157,16 +176,35 @@ export function buildGrid(data: MSXData): HTMLElement {
   thead.appendChild(buildFilterRow(data.columns));
   table.appendChild(thead);
 
+  // Gutter corner (rowSpan=3) used for the filtered indicator
+  const gutterCorner = thead.rows[0].cells[0] as HTMLTableCellElement;
+
+  function updateGutterIndicator(): void {
+    if (filters.size > 0) {
+      gutterCorner.classList.add('gutter--filtered');
+      gutterCorner.title = 'Some rows are filtered out';
+    } else {
+      gutterCorner.classList.remove('gutter--filtered');
+      gutterCorner.title = '';
+    }
+  }
+
   // ── tbody ────────────────────────────────────────────────────────────────
   const tbody = document.createElement('tbody');
   table.appendChild(tbody);
 
   function renderRows(): void {
-    const models = sortColIndex !== null
+    const sorted = sortColIndex !== null
       ? sortModels(originalModels, sortColIndex, sortDirection)
       : originalModels;
+    const filtered = filters.size === 0 ? sorted : sorted.filter(model =>
+      [...filters.entries()].every(([colIdx, term]) => {
+        const raw = colIdx < model.values.length ? model.values[colIdx] : null;
+        return cellText(raw).toLowerCase().includes(term.toLowerCase());
+      })
+    );
     tbody.replaceChildren(
-      ...models.map((model, i) => buildDataRow(model, data.columns, i + 1))
+      ...filtered.map((model, i) => buildDataRow(model, data.columns, i + 1))
     );
     // Re-apply collapsed group visibility to newly rendered rows
     collapsedGroups.forEach(groupId => {
@@ -243,6 +281,62 @@ export function buildGrid(data: MSXData): HTMLElement {
     });
   });
 
+  // ── Column filter inputs ──────────────────────────────────────────────
+  thead.querySelectorAll<HTMLInputElement>('input.filter-input').forEach(input => {
+    input.addEventListener('input', () => {
+      const colIdx = Number(input.dataset.colIndex);
+      const val = input.value.trim();
+      if (val) {
+        filters.set(colIdx, val);
+        input.classList.add('filter-input--active');
+        const clearBtn = input.nextElementSibling as HTMLElement | null;
+        clearBtn?.classList.remove('filter-clear--hidden');
+      } else {
+        filters.delete(colIdx);
+        input.classList.remove('filter-input--active');
+        const clearBtn = input.nextElementSibling as HTMLElement | null;
+        clearBtn?.classList.add('filter-clear--hidden');
+      }
+      updateGutterIndicator();
+      renderRows();
+    });
+  });
+
+  thead.querySelectorAll<HTMLButtonElement>('button.filter-clear').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = btn.previousElementSibling as HTMLInputElement | null;
+      if (!input) return;
+      input.value = '';
+      const colIdx = Number(input.dataset.colIndex);
+      filters.delete(colIdx);
+      input.classList.remove('filter-input--active');
+      btn.classList.add('filter-clear--hidden');
+      updateGutterIndicator();
+      renderRows();
+    });
+  });
+
+  // ── Toggle filter row ───────────────────────────────────────────────
+  const filterRow = thead.querySelector<HTMLTableRowElement>('.filter-row')!;
+
+  function toggleFilters(): void {
+    const isVisible = filterRow.style.display === 'table-row';
+    if (isVisible) {
+      // Hide and clear all filters
+      filterRow.style.display = 'none';
+      filters.clear();
+      thead.querySelectorAll<HTMLInputElement>('input.filter-input').forEach(inp => {
+        inp.value = '';
+        inp.classList.remove('filter-input--active');
+        (inp.nextElementSibling as HTMLElement | null)?.classList.add('filter-clear--hidden');
+      });
+      updateGutterIndicator();
+      renderRows();
+    } else {
+      filterRow.style.display = 'table-row';
+    }
+  }
+
   wrap.appendChild(table);
-  return wrap;
+  return { element: wrap, toggleFilters };
 }

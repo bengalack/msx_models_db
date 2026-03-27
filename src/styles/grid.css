@@ -134,8 +134,49 @@ thead .gutter {
 }
 
 .filter-row td {
+  position: relative;
+  padding: 0;
   border-bottom: 1px solid var(--color-border-strong);
   border-right: 1px solid var(--color-border);
+}
+
+.filter-input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 28px;
+  background: var(--color-filter-bg);
+  color: var(--color-text);
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: 11px;
+  padding: 0 20px 0 4px;
+  outline: none;
+}
+
+.filter-input--active {
+  border-color: var(--color-accent);
+}
+
+.filter-clear {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.filter-clear--hidden {
+  display: none;
+}
+
+.gutter--filtered {
+  color: var(--color-gutter-indicator) !important;
 }
 
 /* ── Data rows ───────────────────────────────────────────────────────────── */
