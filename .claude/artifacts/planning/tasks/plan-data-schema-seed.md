@@ -282,15 +282,15 @@ Feature: Data schema and seed data
   - [x] T-034 Verify `npm run build` exits 0; confirm `docs/data.js` exists with 10 models
   - [x] T-035 Commit: `feat: add seed data with 10 MSX models`
 
-- [ ] Chunk 4: Commit docs/ with seed data
-  - [ ] T-040 Run `npm run build` to ensure latest `docs/` reflects the seed data
-  - [ ] T-041 Commit: `chore: update docs/ build output with seed data`
+- [x] Chunk 4: Commit docs/ with seed data
+  - [x] T-040 Run `npm run build` to ensure latest `docs/` reflects the seed data
+  - [x] T-041 Commit: `chore: update docs/ build output with seed data`
 
-- [ ] Quality gate
-  - [ ] T-900 Run `npm run lint` — confirm 0 errors
-  - [ ] T-901 Run `npm run typecheck` — confirm 0 errors
-  - [ ] T-902 Run `npm test -- --run` — confirm exits 0
-  - [ ] T-903 Run `npm run build` — confirm `docs/data.js` exists and has 10 models
+- [x] Quality gate
+  - [x] T-900 Run `npm run lint` — confirm 0 errors
+  - [x] T-901 Run `npm run typecheck` — confirm 0 errors
+  - [x] T-902 Run `npm test -- --run` — confirm exits 0
+  - [x] T-903 Run `npm run build` — confirm `docs/data.js` exists and has 10 models
 
 - [ ] Merge to trunk
   - [ ] T-950 Squash intermediate commits into logical commits
