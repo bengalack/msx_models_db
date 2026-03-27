@@ -48,18 +48,43 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
 function buildColHeaderRow(columns: ColumnDef[]): HTMLTableRowElement {
   const tr = document.createElement('tr');
   const groupOrder = new Map<number, number>();
-  for (const col of columns) {
+  columns.forEach((col, colIndex) => {
     const th = document.createElement('th');
     th.className = 'col-header';
     th.scope = 'col';
     th.textContent = col.label;
     th.dataset.colGroup = String(col.groupId);
+    th.dataset.colIndex = String(colIndex);
     const order = groupOrder.get(col.groupId) ?? 0;
     th.dataset.colOrder = String(order);
     groupOrder.set(col.groupId, order + 1);
     tr.appendChild(th);
-  }
+  });
   return tr;
+}
+
+function sortModels(
+  models: ModelRecord[],
+  colIndex: number,
+  direction: 'asc' | 'desc'
+): ModelRecord[] {
+  return [...models].sort((a, b) => {
+    const av = colIndex < a.values.length ? a.values[colIndex] : null;
+    const bv = colIndex < b.values.length ? b.values[colIndex] : null;
+    // null always last, regardless of direction
+    if (av === null && bv === null) return 0;
+    if (av === null) return 1;
+    if (bv === null) return -1;
+    let cmp: number;
+    if (typeof av === 'number' && typeof bv === 'number') {
+      cmp = av - bv;
+    } else if (typeof av === 'boolean' && typeof bv === 'boolean') {
+      cmp = av === bv ? 0 : av ? 1 : -1;
+    } else {
+      cmp = String(av).localeCompare(String(bv), undefined, { sensitivity: 'base' });
+    }
+    return direction === 'asc' ? cmp : -cmp;
+  });
 }
 
 function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
@@ -120,6 +145,11 @@ export function buildGrid(data: MSXData): HTMLElement {
   // Tracks which group IDs are currently collapsed
   const collapsedGroups = new Set<number>();
 
+  // Sort state
+  const originalModels = [...data.models];
+  let sortColIndex: number | null = null;
+  let sortDirection: 'asc' | 'desc' = 'asc';
+
   // ── thead ────────────────────────────────────────────────────────────────
   const thead = document.createElement('thead');
   thead.appendChild(buildGroupHeaderRow(data.groups, data.columns));
@@ -129,10 +159,28 @@ export function buildGrid(data: MSXData): HTMLElement {
 
   // ── tbody ────────────────────────────────────────────────────────────────
   const tbody = document.createElement('tbody');
-  data.models.forEach((model, i) => {
-    tbody.appendChild(buildDataRow(model, data.columns, i + 1));
-  });
   table.appendChild(tbody);
+
+  function renderRows(): void {
+    const models = sortColIndex !== null
+      ? sortModels(originalModels, sortColIndex, sortDirection)
+      : originalModels;
+    tbody.replaceChildren(
+      ...models.map((model, i) => buildDataRow(model, data.columns, i + 1))
+    );
+    // Re-apply collapsed group visibility to newly rendered rows
+    collapsedGroups.forEach(groupId => {
+      tbody.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
+        if (cell.dataset.colOrder === '0') {
+          cell.classList.add('col-group-stub');
+        } else {
+          cell.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  renderRows();
 
   // ── Group collapse / expand ──────────────────────────────────────────────
   const groupHeaders = thead.querySelectorAll<HTMLTableCellElement>('th.group-header');
@@ -167,6 +215,31 @@ export function buildGrid(data: MSXData): HTMLElement {
           }
         });
       }
+    });
+  });
+
+  // ── Column sort ──────────────────────────────────────────────────────────
+  const colHeaders = thead.querySelectorAll<HTMLTableCellElement>('th.col-header');
+  colHeaders.forEach(th => {
+    th.addEventListener('click', () => {
+      const clickedIndex = Number(th.dataset.colIndex);
+      // Determine next sort state
+      if (sortColIndex !== clickedIndex) {
+        sortColIndex = clickedIndex;
+        sortDirection = 'asc';
+      } else if (sortDirection === 'asc') {
+        sortDirection = 'desc';
+      } else {
+        sortColIndex = null;
+      }
+      // Update indicator classes on all col-headers
+      colHeaders.forEach(h => {
+        h.classList.remove('col-header--sort-asc', 'col-header--sort-desc');
+      });
+      if (sortColIndex !== null) {
+        th.classList.add(sortDirection === 'asc' ? 'col-header--sort-asc' : 'col-header--sort-desc');
+      }
+      renderRows();
     });
   });
 
