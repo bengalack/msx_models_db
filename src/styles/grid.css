@@ -70,6 +70,17 @@
   font-style: normal;
 }
 
+/* Zero-width anchor cell keeping table column alignment intact for a collapsed group */
+.col-group-stub {
+  padding: 0 !important;
+  max-width: 0 !important;
+  min-width: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  border-right: none !important;
+  white-space: nowrap;
+}
+
 /* ── Column header row (sticky row 2) ────────────────────────────────────── */
 
 .col-header {

@@ -47,12 +47,16 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
 
 function buildColHeaderRow(columns: ColumnDef[]): HTMLTableRowElement {
   const tr = document.createElement('tr');
+  const groupOrder = new Map<number, number>();
   for (const col of columns) {
     const th = document.createElement('th');
     th.className = 'col-header';
     th.scope = 'col';
     th.textContent = col.label;
     th.dataset.colGroup = String(col.groupId);
+    const order = groupOrder.get(col.groupId) ?? 0;
+    th.dataset.colOrder = String(order);
+    groupOrder.set(col.groupId, order + 1);
     tr.appendChild(th);
   }
   return tr;
@@ -61,9 +65,13 @@ function buildColHeaderRow(columns: ColumnDef[]): HTMLTableRowElement {
 function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
   const tr = document.createElement('tr');
   tr.className = 'filter-row';
+  const groupOrder = new Map<number, number>();
   for (let i = 0; i < columns.length; i++) {
     const td = document.createElement('td');
     td.dataset.colGroup = String(columns[i].groupId);
+    const order = groupOrder.get(columns[i].groupId) ?? 0;
+    td.dataset.colOrder = String(order);
+    groupOrder.set(columns[i].groupId, order + 1);
     tr.appendChild(td);
   }
   return tr;
@@ -78,12 +86,16 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
   gutter.textContent = String(rowIndex);
   tr.appendChild(gutter);
 
+  const groupOrder = new Map<number, number>();
   for (let i = 0; i < columns.length; i++) {
     const rawValue = i < model.values.length ? model.values[i] : null;
     const td = document.createElement('td');
     const text = cellText(rawValue);
     td.textContent = text;
     td.dataset.colGroup = String(columns[i].groupId);
+    const order = groupOrder.get(columns[i].groupId) ?? 0;
+    td.dataset.colOrder = String(order);
+    groupOrder.set(columns[i].groupId, order + 1);
 
     if (isNullish(rawValue)) {
       td.classList.add('cell-null');
@@ -138,15 +150,21 @@ export function buildGrid(data: MSXData): HTMLElement {
         chevron.textContent = '\u25bc'; // ▼
         table.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
           cell.style.display = '';
+          cell.classList.remove('col-group-stub');
         });
       } else {
-        // Collapse
+        // Collapse — keep first cell per row as a zero-width stub anchor;
+        // hide all others so the group header colSpan=1 aligns correctly.
         collapsedGroups.add(groupId);
         th.colSpan = 1;
         th.classList.add('collapsed');
         chevron.textContent = '\u25b6'; // ▶
         table.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
-          cell.style.display = 'none';
+          if (cell.dataset.colOrder === '0') {
+            cell.classList.add('col-group-stub');
+          } else {
+            cell.style.display = 'none';
+          }
         });
       }
     });
