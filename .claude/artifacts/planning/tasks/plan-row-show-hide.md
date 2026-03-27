@@ -248,8 +248,8 @@ The indicator `<td>` colspan must equal 1 (gutter) + total columns. Hidden colum
 - [ ] Commit build: `chore: update docs/ build output with row show/hide`
 
 ### T-300 — Squash, merge, backlog
-- [ ] Squash branch commits → single `feat: add interactive row show/hide with gap indicator and context menu`
-- [ ] `git checkout main && git merge --ff-only feature/row-show-hide`
-- [ ] `git branch -d feature/row-show-hide`
-- [ ] Update backlog: move "Row show / hide" to "In product (shipped)"
+- [x] Squash branch commits → single commit
+- [x] `git checkout main && git merge --ff-only feature/row-show-hide`
+- [x] `git branch -d feature/row-show-hide`
+- [x] Update backlog: move "Row show / hide" to "In product (shipped)"
 - [ ] Commit: `chore: mark row show/hide shipped; update backlog`

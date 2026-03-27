@@ -15,13 +15,12 @@
     - Toolbar "⊞ Columns" button opens column picker panel
     - Checkbox per column grouped by group; toggle visibility individually
     - Panel closes on outside click
-
-- Now / Next
   - Row show / hide
     - Right-click row number → context menu: Hide Row
     - Hidden rows removed from grid
-    - Gutter indicator (amber ▼▲) in left gutter between visible rows where hidden rows exist
-    - Click gutter indicator to unhide the hidden row(s)
+    - Amber ▼▲ indicator in gutter at each gap; click to unhide
+
+- Now / Next
   - Cell selection
     - Click: select single cell, clear previous selection
     - CTRL/CMD+click: toggle cell in/out of selection
