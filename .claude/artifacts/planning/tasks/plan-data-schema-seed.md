@@ -292,10 +292,10 @@ Feature: Data schema and seed data
   - [x] T-902 Run `npm test -- --run` — confirm exits 0
   - [x] T-903 Run `npm run build` — confirm `docs/data.js` exists and has 10 models
 
-- [ ] Merge to trunk
-  - [ ] T-950 Squash intermediate commits into logical commits
-  - [ ] T-951 Confirm all commits follow Conventional Commits
-  - [ ] T-952 Rebase onto trunk and merge fast-forward only
+- [x] Merge to trunk
+  - [x] T-950 Squash intermediate commits into logical commits
+  - [x] T-951 Confirm all commits follow Conventional Commits
+  - [x] T-952 Rebase onto trunk and merge fast-forward only
 
 ## Open Questions
 - None

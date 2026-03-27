@@ -1,0 +1,101 @@
+- Now / Next
+  - Theme system
+    - CSS custom properties for dark and light themes on [data-theme]
+    - Dark mode default; theme toggle button (◐) in toolbar
+    - Persist theme preference to localStorage; restore on load
+  - Grid rendering (display only)
+    - Page header bar (title, toolbar strip)
+    - Sticky column group headers row
+    - Sticky column headers row
+    - Sticky filter row (hidden by default)
+    - Data rows with alternating background
+    - Left gutter (row numbers)
+    - Null/empty values rendered as — (em dash)
+    - Cell overflow clipped with ellipsis; full value in title tooltip
+  - Column group collapse / expand
+    - Click group header to collapse all child columns
+    - Click again to expand; chevron indicator (▶ / ▼)
+    - Hidden column indicator in group header strip when any column in group is individually hidden
+  - Column sorting
+    - Click column header: sort ascending; again: descending; again: clear
+    - ↑ / ↓ indicator appended to active sort column header
+  - Column filtering
+    - Toolbar toggle shows/hides filter row
+    - Text input per visible column; filters rows immediately on input
+    - Active filter: accent border on input, clear (×) button
+    - Gutter indicator in column header strip when any rows are filtered out
+  - Column show / hide
+    - Toolbar "⊞ Columns" button opens column picker panel
+    - Checkbox per column grouped by group; toggle visibility individually
+    - Panel closes on outside click
+  - Row show / hide
+    - Right-click row number → context menu: Hide Row
+    - Hidden rows removed from grid
+    - Gutter indicator (amber ▼▲) in left gutter between visible rows where hidden rows exist
+    - Click gutter indicator to unhide the hidden row(s)
+  - Cell selection
+    - Click: select single cell, clear previous selection
+    - CTRL/CMD+click: toggle cell in/out of selection
+    - SHIFT+click: extend selection rectangle from anchor to clicked cell
+    - Click+drag: select cells covered by drag (snap to cell on mouseenter)
+    - Selected cells: accent-dim fill + solid accent border; dark mode adds glow
+  - Clipboard copy
+    - CTRL+C / CMD+C copies selected cells as TSV (columns tab-separated, rows newline-separated)
+    - Fallback to execCommand('copy') if clipboard API unavailable
+    - Status bar (bottom, 24px) shows "Copied N cell(s)"
+  - URL state codec + sync
+    - Implement ViewState binary codec (versioned format v1)
+    - Encode: sort, filters, hidden cols, hidden rows, collapsed groups, selected cells → Uint8Array → base64
+    - Decode: base64 → Uint8Array → ViewState; silently ignore unknown IDs
+    - Sync: history.replaceState on every state-changing interaction
+    - Restore: decode hash on page load; fall back to show-all if hash empty or unreadable
+  - Unit tests (web)
+    - Vitest: URL codec round-trip tests (encode → decode → same state)
+    - Vitest: unknown ID tolerance (retired model/column IDs silently dropped)
+    - Vitest: ViewState reducer logic (sort, filter, selection)
+
+- Later
+  - ID registry (Python)
+    - registry.py: load / save / match-by-natural-key / assign-new / retire
+    - Pre-populate id-registry.json with column IDs (columns are fixed; assign once)
+    - Unit tests: pytest covering match-before-create, no-reuse, retire behaviour
+  - Scraper — openMSX XML source
+    - Fetch machine XML file listing via GitHub API (/repos/openMSX/openMSX/contents/share/machines)
+    - Fetch and parse each XML file with lxml recover=True (lenient — files are non-strict)
+    - Extract fields: CPU, clock, RAM, VRAM, VDP, PSG, mapper, openMSX machine ID
+    - Log unrecoverable elements; continue on parse failure
+  - Scraper — msx.org HTML source
+    - Enumerate MSX2, MSX2+, turboR model pages from msx.org category pages
+    - Scrape each model page with beautifulsoup4 + lxml
+    - Extract fields matching column schema
+    - Log parse failures per field; do not abort on partial failure
+    - Abort if >20% of models fail to parse
+    - Use custom User-Agent: msxmodelsdb-scraper/1.0; 500ms delay between requests
+  - Scraper — merge + conflict resolution
+    - Match models from both sources by natural key (manufacturer + model name)
+    - For conflicting field values: print summary, prompt maintainer to choose per conflict
+    - For fields present in only one source: use that value without prompting
+  - Scraper — write output
+    - Write docs/data.js (window.MSX_DATA = {...} with full MSXData payload)
+    - Write data/id-registry.json (updated registry)
+    - Print run summary: N models written, M conflicts resolved, K parse failures
+  - CI (GitHub Actions)
+    - On push to main: npm run lint, npm run typecheck, npm test --run, npm run build
+    - On push to main: pip install -r requirements.txt && pytest tests/scraper/
+  - Default view configuration
+    - Define defaultView structure in MSXData (optional field)
+    - Page loads defaultView when URL hash is empty, instead of show-all fallback
+
+- Inbox (untriaged)
+  - MSX1 model support (explicitly out of scope for iteration 1)
+  - Column reordering by drag-and-drop
+  - Multi-column sort
+  - Per-model detail panel / expanded view
+  - Column width resizing
+  - Freeze / pin columns (e.g. keep Identity group always visible while scrolling)
+  - Export visible data as CSV file download
+  - "Share this view" copy-URL button with visual feedback
+
+- In product (shipped)
+  - Project scaffold (Vite + TypeScript, Python scraper stub, docs/ on main)
+  - Data schema + seed data (TypeScript types, schema.md, 10-model seed, id-registry.json)
