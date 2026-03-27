@@ -247,13 +247,13 @@ Feature: Column show / hide
 
 ### T-203 — Quality gate + commit Chunk 2
 - [x] `npm run typecheck && npm run lint && npm run build` — green
-- [ ] Smoke path steps 1–11 pass
-- [ ] Commit: `feat: add column picker panel with show/hide toggle`
-- [ ] Commit build: `chore: update docs/ build output with column show/hide`
+- [x] Smoke path steps 1–11 pass
+- [x] Commit: `feat: add column picker panel with show/hide toggle`
+- [x] Commit build: `chore: update docs/ build output with column show/hide`
 
 ### T-300 — Squash, merge, backlog
-- [ ] Squash branch commits → single `feat: add interactive column show/hide with picker panel` commit
-- [ ] `git checkout main && git merge --ff-only feature/column-show-hide`
-- [ ] `git branch -d feature/column-show-hide`
-- [ ] Update backlog: move "Column show / hide" to "In product (shipped)"
+- [x] Squash branch commits → single `feat: add interactive column show/hide with picker panel and group indicator` commit
+- [x] `git checkout main && git merge --ff-only feature/column-show-hide`
+- [x] `git branch -d feature/column-show-hide`
+- [x] Update backlog: move "Column show / hide" to "In product (shipped)"
 - [ ] Commit: `chore: mark column show/hide shipped; update backlog`

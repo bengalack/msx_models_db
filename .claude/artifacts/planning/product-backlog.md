@@ -11,12 +11,12 @@
     - Text input per visible column; filters rows immediately on input
     - Active filter: accent border on input, clear (×) button
     - Gutter indicator in column header strip when any rows are filtered out
-
-- Now / Next
   - Column show / hide
     - Toolbar "⊞ Columns" button opens column picker panel
     - Checkbox per column grouped by group; toggle visibility individually
     - Panel closes on outside click
+
+- Now / Next
   - Row show / hide
     - Right-click row number → context menu: Hide Row
     - Hidden rows removed from grid
