@@ -204,17 +204,17 @@ Feature: Project scaffold
   - [x] T-024 Verify: `pip install -r requirements.txt` exits 0; `python -m scraper` exits 0 and prints the placeholder message
   - [x] T-025 Commit: `chore: add Python scraper package scaffold`
 
-- [ ] Chunk 3: Build output + README
-  - [ ] T-030 Run `npm run build` to populate `docs/` with scaffold output
-  - [ ] T-031 Create `README.md`: project description (1 paragraph), prerequisites (Node 20+, Python 3.11+), setup steps (`npm install`, `pip install -r requirements.txt`), command reference (all npm scripts + `python -m scraper`), GitHub Pages setup note (set source to `docs/` on main branch in repo settings)
-  - [ ] T-032 Commit built `docs/` and README: `chore: add initial build output and README`
+- [x] Chunk 3: Build output + README
+  - [x] T-030 Run `npm run build` to populate `docs/` with scaffold output
+  - [x] T-031 Create `README.md`: project description (1 paragraph), prerequisites (Node 20+, Python 3.11+), setup steps (`npm install`, `pip install -r requirements.txt`), command reference (all npm scripts + `python -m scraper`), GitHub Pages setup note (set source to `docs/` on main branch in repo settings)
+  - [x] T-032 Commit built `docs/` and README: `chore: add initial build output and README`
 
-- [ ] Quality gate
-  - [ ] T-900 Run `npm run lint` — confirm 0 errors
-  - [ ] T-901 Run `npm run typecheck` — confirm 0 errors
-  - [ ] T-902 Run `npm test -- --run` — confirm exits 0
-  - [ ] T-903 Run `npm run build` — confirm docs/ is populated cleanly
-  - [ ] T-904 Run `python -m scraper` — confirm exits 0
+- [x] Quality gate
+  - [x] T-900 Run `npm run lint` — confirm 0 errors
+  - [x] T-901 Run `npm run typecheck` — confirm 0 errors
+  - [x] T-902 Run `npm test -- --run` — confirm exits 0
+  - [x] T-903 Run `npm run build` — confirm docs/ is populated cleanly
+  - [x] T-904 Run `python -m scraper` — confirm exits 0
 
 - [ ] Merge to trunk
   - [ ] T-950 Squash intermediate commits into logical commits (chore: scaffold TS/Vite; chore: scaffold Python scraper; chore: add build output and README)
