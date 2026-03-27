@@ -274,13 +274,13 @@ Feature: Data schema and seed data
   - [x] T-022 Verify `npm run typecheck` exits 0
   - [x] T-023 Commit: `feat: add column definitions with stable IDs and seed id-registry`
 
-- [ ] Chunk 3: Seed data.js + index.html wiring
-  - [ ] T-030 Create `public/data.js`: assign `window.MSX_DATA` with `version: 1`, `generated: "2026-03-27"`, `groups` array (8 entries), `columns` array (29 entries), `models` array (10 entries with values[] aligned to columns)
-  - [ ] T-031 Update `index.html`: add `<script src="/data.js"></script>` immediately before `<script type="module" src="/src/main.ts">`
-  - [ ] T-032 Update `src/main.ts`: guard `window.MSX_DATA` at startup — if undefined, log error and return; if defined, log `[MSX Models DB] Loaded N models` to console
-  - [ ] T-033 Verify `npm run typecheck` and `npm run lint` exit 0
-  - [ ] T-034 Verify `npm run build` exits 0; confirm `docs/data.js` exists with 10 models
-  - [ ] T-035 Commit: `feat: add seed data with 10 MSX models`
+- [x] Chunk 3: Seed data.js + index.html wiring
+  - [x] T-030 Create `public/data.js`: assign `window.MSX_DATA` with `version: 1`, `generated: "2026-03-27"`, `groups` array (8 entries), `columns` array (29 entries), `models` array (10 entries with values[] aligned to columns)
+  - [x] T-031 Update `index.html`: add `<script src="/data.js"></script>` immediately before `<script type="module" src="/src/main.ts">`
+  - [x] T-032 Update `src/main.ts`: guard `window.MSX_DATA` at startup — if undefined, log error and return; if defined, log `[MSX Models DB] Loaded N models` to console
+  - [x] T-033 Verify `npm run typecheck` and `npm run lint` exit 0
+  - [x] T-034 Verify `npm run build` exits 0; confirm `docs/data.js` exists with 10 models
+  - [x] T-035 Commit: `feat: add seed data with 10 MSX models`
 
 - [ ] Chunk 4: Commit docs/ with seed data
   - [ ] T-040 Run `npm run build` to ensure latest `docs/` reflects the seed data
