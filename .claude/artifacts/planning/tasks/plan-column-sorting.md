@@ -154,11 +154,11 @@ Feature: Column sorting
 - Rebase onto trunk and merge with fast-forward only
 
 ## Definition of Done
-- [ ] Gherkin specification is complete and current in the plan artifact
-- [ ] All smoke path steps pass
-- [ ] No hardcoded hex values added to CSS
-- [ ] Cleanup gate satisfied
-- [ ] Backlog updated (shipped item moved to "In product (shipped)")
+- [x] Gherkin specification is complete and current in the plan artifact
+- [x] All smoke path steps pass
+- [x] No hardcoded hex values added to CSS
+- [x] Cleanup gate satisfied
+- [x] Backlog updated (shipped item moved to "In product (shipped)")
 
 ## Chunks
 
@@ -243,15 +243,15 @@ Feature: Column sorting
 - [x] `git add docs/bundle.js && git commit -m "chore: update docs/ build output with column sorting"`
 
 ### T-950 — Smoke test
-- [ ] Run all 8 smoke path steps from Rollout and Verify
+- [x] Run all 8 smoke path steps from Rollout and Verify
 
 ### T-951 — Squash, merge, clean up
-- [ ] Squash branch commits into one logical commit
-- [ ] Fast-forward merge to main
-- [ ] Delete feature branch
+- [x] Squash branch commits into one logical commit
+- [x] Fast-forward merge to main
+- [x] Delete feature branch
 
 ### T-952 — Update backlog
-- [ ] Move "Column sorting" to "In product (shipped)" in `product-backlog.md`
+- [x] Move "Column sorting" to "In product (shipped)" in `product-backlog.md`
 
 ## Relevant Files (Expected)
 - `src/grid.ts` — sort helper, sort state, click handlers, renderRows, tbody re-render

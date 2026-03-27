@@ -3,11 +3,11 @@
     - Click group header to collapse all child columns
     - Click again to expand; chevron indicator (▶ / ▼)
     - Hidden column indicator in group header strip when any column in group is individually hidden
-
-- Now / Next
   - Column sorting
     - Click column header: sort ascending; again: descending; again: clear
     - ↑ / ↓ indicator appended to active sort column header
+
+- Now / Next
   - Column filtering
     - Toolbar toggle shows/hides filter row
     - Text input per visible column; filters rows immediately on input
