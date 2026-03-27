@@ -196,13 +196,13 @@ Feature: Project scaffold
   - [ ] T-018 Verify `docs/index.html` opens via file:// in browser without errors
   - [x] T-019 Commit: `chore: initialise Vite + TypeScript project scaffold`
 
-- [ ] Chunk 2: Python scraper scaffold
-  - [ ] T-020 Create `scraper/__init__.py` (empty)
-  - [ ] T-021 Create `scraper/__main__.py`: stub that prints `"MSX Models DB scraper — no subcommand specified"` and exits 0
-  - [ ] T-022 Create `requirements.txt` with pinned versions: `beautifulsoup4>=4.12`, `lxml>=5.0`, `requests>=2.31`, `colorama>=0.4`
-  - [ ] T-023 Create `data/.gitkeep` (empty file to track the data/ directory)
-  - [ ] T-024 Verify: `pip install -r requirements.txt` exits 0; `python -m scraper` exits 0 and prints the placeholder message
-  - [ ] T-025 Commit: `chore: add Python scraper package scaffold`
+- [x] Chunk 2: Python scraper scaffold
+  - [x] T-020 Create `scraper/__init__.py` (empty)
+  - [x] T-021 Create `scraper/__main__.py`: stub that prints `"MSX Models DB scraper — no subcommand specified"` and exits 0
+  - [x] T-022 Create `requirements.txt` with pinned versions: `beautifulsoup4>=4.12`, `lxml>=5.0`, `requests>=2.31`, `colorama>=0.4`
+  - [x] T-023 Create `data/.gitkeep` (empty file to track the data/ directory)
+  - [x] T-024 Verify: `pip install -r requirements.txt` exits 0; `python -m scraper` exits 0 and prints the placeholder message
+  - [x] T-025 Commit: `chore: add Python scraper package scaffold`
 
 - [ ] Chunk 3: Build output + README
   - [ ] T-030 Run `npm run build` to populate `docs/` with scaffold output
