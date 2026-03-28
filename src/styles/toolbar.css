@@ -46,6 +46,11 @@
   border-color: var(--color-text-muted);
 }
 
+/* Wrapper for buttons that own a floating panel — creates a positioning context */
+.toolbar__btn-wrap {
+  position: relative;
+}
+
 /* ── Column picker panel ─────────────────────────────────────────────────── */
 
 .col-picker {

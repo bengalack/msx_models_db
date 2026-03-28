@@ -88,9 +88,9 @@ if (!window.MSX_DATA) {
     filtersBtnEl.classList.toggle('toolbar__btn--active', filtersOn);
   }
 
-  const { element: toolbarEl, filtersBtn: filtersBtnEl, helpBtn: helpBtnEl } = buildToolbar(handleFiltersToggle, togglePicker, toggleHelp);
+  const { element: toolbarEl, filtersBtn: filtersBtnEl, helpBtn: helpBtnEl, helpWrap } = buildToolbar(handleFiltersToggle, togglePicker, toggleHelp);
   toolbarEl.appendChild(pickerEl);
-  toolbarEl.appendChild(helpPanel);
+  helpWrap.appendChild(helpPanel);
   document.body.appendChild(toolbarEl);
   document.body.appendChild(gridEl);
 
