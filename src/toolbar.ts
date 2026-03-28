@@ -9,7 +9,7 @@ export function buildToolbar(onFiltersToggle: () => void, onColsToggle: () => vo
 
   const filtersBtn = document.createElement('button');
   filtersBtn.className = 'toolbar__btn';
-  filtersBtn.textContent = '⌃ Filters';
+  filtersBtn.textContent = '\u2261 Filters';
   filtersBtn.addEventListener('click', onFiltersToggle);
 
   toolbar.appendChild(colsBtn);
