@@ -9,6 +9,7 @@ import { initTheme, toggleTheme } from './theme.js';
 import { buildToolbar } from './toolbar.js';
 import { buildGrid } from './grid.js';
 import { buildColPicker } from './col-picker.js';
+import { encodeToHash, decodeFromHash } from './url/codec.js';
 
 initTheme();
 
@@ -39,11 +40,39 @@ if (!window.MSX_DATA) {
   err.textContent = 'Failed to load data. Is data.js present and loaded before bundle.js?';
   document.body.appendChild(err);
 } else {
-  const { models, generated } = window.MSX_DATA;
+  const { models, generated, columns, groups } = window.MSX_DATA;
 
   document.title = `MSX Models DB — ${models.length} models`;
   title.textContent = `MSX Models DB\u2002·\u2002${generated}`;
-  const { element: gridEl, toggleFilters, setColumnVisible, getHiddenCols, copySelection } = buildGrid(window.MSX_DATA);
+
+  // ── URL state: decode hash on load ────────────────────────────────────────
+  const knownColumnIds = new Set(columns.map(c => c.id));
+  const knownGroupIds = new Set(groups.map(g => g.id));
+  const knownModelIds = new Set(models.map(m => m.id));
+  const initialState = decodeFromHash(window.location.hash, knownColumnIds, knownGroupIds, knownModelIds);
+
+  // ── URL state: debounced write-back ───────────────────────────────────────
+  let urlDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  function scheduleUrlUpdate(): void {
+    if (urlDebounceTimer !== null) clearTimeout(urlDebounceTimer);
+    urlDebounceTimer = setTimeout(() => {
+      urlDebounceTimer = null;
+      const hash = encodeToHash(grid.getViewState());
+      if (!hash) return;
+      try {
+        history.replaceState(null, '', hash);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn('[url-codec] replaceState failed', { error: String(err) });
+      }
+    }, 300);
+  }
+
+  const grid = buildGrid(window.MSX_DATA, {
+    initialState,
+    onStateChange: scheduleUrlUpdate,
+  });
+  const { element: gridEl, toggleFilters, setColumnVisible, getHiddenCols, copySelection } = grid;
 
   const { element: pickerEl, open: openPicker, close: closePicker } = buildColPicker(
     window.MSX_DATA.groups,
@@ -82,7 +111,10 @@ if (!window.MSX_DATA) {
     helpBtnEl.classList.toggle('toolbar__btn--active', helpOpen);
   }
 
-  let filtersOn = false;
+  // Show filter bar if initial state has active filters
+  let filtersOn = initialState.filters.size > 0;
+  if (filtersOn) toggleFilters();
+
   function handleFiltersToggle(): void {
     toggleFilters();
     filtersOn = !filtersOn;
@@ -90,6 +122,7 @@ if (!window.MSX_DATA) {
   }
 
   const { element: toolbarEl, colsBtn: colsBtnEl, filtersBtn: filtersBtnEl, helpBtn: helpBtnEl, helpWrap } = buildToolbar(handleFiltersToggle, togglePicker, toggleHelp);
+  if (filtersOn) filtersBtnEl.classList.add('toolbar__btn--active');
   toolbarEl.appendChild(pickerEl);
   helpWrap.appendChild(helpPanel);
   document.body.appendChild(toolbarEl);

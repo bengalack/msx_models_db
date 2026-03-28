@@ -268,12 +268,12 @@ All multi-byte integers are big-endian (DataView default).
   - [x] T-021 Add `opts?: { initialState?: ViewState; onStateChange?: () => void }` parameter to `buildGrid`; seed `collapsedGroups`, `hiddenCols`, `hiddenRows`, `filters`, `selectedCells`, `sortColIndex`, `sortDirection` from `initialState` before first `renderRows()` call (translate IDs → indices where needed; silently skip unknown IDs)
   - [x] T-022 Call `opts.onStateChange?.()` after each of the 6 mutation points: sort change, filter change, column visibility change, row hide/unhide, group collapse/expand, cell selection change
   - [x] T-023 Verify `npm run typecheck` exits 0 and `npm run build` exits 0; no existing tests broken
-  - [ ] T-024 Commit: `feat: expose view state from grid and accept initial state + onChange callback`
+  - [x] T-024 Commit: `feat: expose view state from grid and accept initial state + onChange callback`
 
-- [ ] Chunk 3: Wire URL sync in main.ts + rebuild docs/
-  - [ ] T-030 In `src/main.ts`: on load, call `decodeFromHash(window.location.hash)` → `initialState`; pass to `buildGrid`; if `initialState.filters.size > 0`, call `toggleFilters()` after grid build and set `filtersOn = true`
-  - [ ] T-031 Pass `onStateChange` callback to `buildGrid` that **debounces** URL writes (300 ms idle timeout). The callback resets a `setTimeout`; when the timer fires, it calls `encodeToHash(grid.getViewState())` and updates URL via `history.replaceState(null, '', hash)` (wrapped in try/catch → `console.warn` on failure). Rationale: filter typing and cell drag-select fire at 10–60 Hz; the URL should reflect settled state, not every transient frame.
-  - [ ] T-032 Verify full smoke path: sort → URL hash updates; copy URL → new tab → state restored; corrupt hash → default state; `npm run build` exits 0
+- [x] Chunk 3: Wire URL sync in main.ts + rebuild docs/
+  - [x] T-030 In `src/main.ts`: on load, call `decodeFromHash(window.location.hash)` → `initialState`; pass to `buildGrid`; if `initialState.filters.size > 0`, call `toggleFilters()` after grid build and set `filtersOn = true`
+  - [x] T-031 Pass `onStateChange` callback to `buildGrid` that **debounces** URL writes (300 ms idle timeout). The callback resets a `setTimeout`; when the timer fires, it calls `encodeToHash(grid.getViewState())` and updates URL via `history.replaceState(null, '', hash)` (wrapped in try/catch → `console.warn` on failure). Rationale: filter typing and cell drag-select fire at 10–60 Hz; the URL should reflect settled state, not every transient frame.
+  - [x] T-032 Verify full smoke path: sort → URL hash updates; copy URL → new tab → state restored; corrupt hash → default state; `npm run build` exits 0
   - [ ] T-033 Commit: `feat: wire URL hash sync — encode on change, restore on load`
   - [ ] T-034 Commit built `docs/`: `chore: update docs/ build output with URL state sync`
 
