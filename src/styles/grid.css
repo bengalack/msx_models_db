@@ -133,7 +133,7 @@
 
 /* Zero-width anchor cell keeping table column alignment intact for a collapsed group */
 .col-group-stub {
-  padding: 0 !important;
+  padding: 0 6px !important;  /* keep horizontal padding so cells aren't flush */
   max-width: 0 !important;
   min-width: 0 !important;
   width: 0 !important;
