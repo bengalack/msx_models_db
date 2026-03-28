@@ -149,13 +149,15 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 ### Grid — column group headers
 - Span across all child columns
 - Left-aligned group name in uppercase monospace, small size
-- Collapse/expand chevron (▶ / ▼) at right edge of group header cell
-- Collapsed state: group header cell shrinks to ~24px wide showing only the chevron and abbreviated group name
+- Collapse/expand chevron (▶ / ▼) at right edge of group header cell (absolutely positioned, does not affect text flow)
+- Collapsed state: group header cell shrinks to colSpan=1; text truncated with ellipsis if too narrow
+- Overflow: group and column header text is clipped with `text-overflow: ellipsis`, matching data cell behavior
 - Active/expanded: `var(--color-border-strong)` bottom border
 
 ### Grid — column headers
 - Sort indicator: ↑ (asc) / ↓ (desc) appended to column name; no arrow when unsorted
 - Active sort column: header text in `var(--color-text-heading)` color
+- Overflow: header text is clipped with `text-overflow: ellipsis` when the column is narrow (e.g. inside a collapsed group)
 - Hidden column indicator: in the group header row, a small `▶` marker appears between visible columns where one or more columns are hidden between them
 - Right-click on column header → context menu: Sort Asc / Sort Desc / Hide Column / Show Hidden Columns in Group
 
