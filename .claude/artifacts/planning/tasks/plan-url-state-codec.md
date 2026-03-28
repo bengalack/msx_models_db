@@ -263,11 +263,11 @@ All multi-byte integers are big-endian (DataView default).
   - [x] T-014 Verify `npm test --run` exits 0; `npm run typecheck` exits 0; `npm run lint` exits 0
   - [ ] T-015 Commit: `feat: add ViewState type and binary URL codec with unit tests`
 
-- [ ] Chunk 2: Grid state extraction + initial state + onStateChange
-  - [ ] T-020 Add `getViewState(): ViewState` to `buildGrid` return value (translates internal index-based state to ID-based ViewState using `data.columns`)
-  - [ ] T-021 Add `opts?: { initialState?: ViewState; onStateChange?: () => void }` parameter to `buildGrid`; seed `collapsedGroups`, `hiddenCols`, `hiddenRows`, `filters`, `selectedCells`, `sortColIndex`, `sortDirection` from `initialState` before first `renderRows()` call (translate IDs → indices where needed; silently skip unknown IDs)
-  - [ ] T-022 Call `opts.onStateChange?.()` after each of the 6 mutation points: sort change, filter change, column visibility change, row hide/unhide, group collapse/expand, cell selection change
-  - [ ] T-023 Verify `npm run typecheck` exits 0 and `npm run build` exits 0; no existing tests broken
+- [x] Chunk 2: Grid state extraction + initial state + onStateChange
+  - [x] T-020 Add `getViewState(): ViewState` to `buildGrid` return value (translates internal index-based state to ID-based ViewState using `data.columns`)
+  - [x] T-021 Add `opts?: { initialState?: ViewState; onStateChange?: () => void }` parameter to `buildGrid`; seed `collapsedGroups`, `hiddenCols`, `hiddenRows`, `filters`, `selectedCells`, `sortColIndex`, `sortDirection` from `initialState` before first `renderRows()` call (translate IDs → indices where needed; silently skip unknown IDs)
+  - [x] T-022 Call `opts.onStateChange?.()` after each of the 6 mutation points: sort change, filter change, column visibility change, row hide/unhide, group collapse/expand, cell selection change
+  - [x] T-023 Verify `npm run typecheck` exits 0 and `npm run build` exits 0; no existing tests broken
   - [ ] T-024 Commit: `feat: expose view state from grid and accept initial state + onChange callback`
 
 - [ ] Chunk 3: Wire URL sync in main.ts + rebuild docs/
