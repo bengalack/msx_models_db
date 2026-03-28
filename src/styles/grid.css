@@ -14,6 +14,14 @@
   user-select: none;
 }
 
+/* thead itself acts as an opaque backdrop so no tbody content bleeds through header rows */
+.grid thead {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: var(--color-header-bg);
+}
+
 /* ── Left gutter ─────────────────────────────────────────────────────────── */
 
 .gutter {
@@ -103,7 +111,7 @@
 }
 
 .group-header:hover {
-  background: var(--color-hover);
+  background: var(--color-header-hover);
 }
 
 .group-header.collapsed {
@@ -156,7 +164,7 @@
 }
 
 .col-header:hover {
-  background: var(--color-hover);
+  background: var(--color-header-hover);
 }
 
 .col-header--sort-asc::after {

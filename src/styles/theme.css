@@ -21,6 +21,7 @@
   --color-gutter-indicator: #ff8800;
 
   --color-header-bg:     #0d1a0d;
+  --color-header-hover:  #152b15;
   --color-filter-bg:     #0f1f0f;
   --color-filter-border: #2a5a2a;
 
@@ -53,6 +54,7 @@
   --color-gutter-indicator: #cc5500;
 
   --color-header-bg:     #e0ede0;
+  --color-header-hover:  #d0e4d0;
   --color-filter-bg:     #eaf2ea;
   --color-filter-border: #8aaa8a;
 
