@@ -348,6 +348,8 @@ thead .gutter {
 /* ── Cell selection ────────────────────────────────────────────────────── */
 
 .cell--selected {
+  position: relative;
+  z-index: 5;           /* above gap indicator (3/4), below headers (10/11) */
   background: var(--color-accent-dim);
   outline: 1px solid var(--color-selection-border);
   outline-offset: -1px;
