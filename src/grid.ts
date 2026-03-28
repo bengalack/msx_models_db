@@ -581,12 +581,16 @@ export function buildGrid(data: MSXData): {
       }
       applySelectionToDOM();
     } else {
-      // Plain click — select single cell, start potential drag
+      // Plain click — toggle off if already the only selection, else select single cell
+      const key = selKey(modelId, colIdx);
+      const wasOnlySelection = selectedCells.has(key) && selectedCells.size === 1;
       selectedCells.clear();
-      selectedCells.add(selKey(modelId, colIdx));
+      if (!wasOnlySelection) {
+        selectedCells.add(key);
+        isDragging = true;
+        dragStart = cell;
+      }
       selAnchor = cell;
-      isDragging = true;
-      dragStart = cell;
       applySelectionToDOM();
     }
   });
