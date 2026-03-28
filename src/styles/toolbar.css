@@ -59,8 +59,7 @@
   left: 0;
   z-index: 200;
   min-width: 220px;
-  max-height: calc(100vh - 70px);  /* viewport minus header(36)+toolbar(32)+gap(2) */
-  max-width: calc(100vw - 16px);   /* small margin so it never covers scrollbar */
+  max-height: min(60vh, calc(100vh - 70px));
   overflow-y: auto;
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
@@ -105,12 +104,12 @@
 .help-panel {
   position: absolute;
   top: calc(100% + 2px);
-  left: 0;
+  right: 0;               /* anchor to button's right edge — grows leftward */
   z-index: 200;
   width: 300px;
-  max-width: calc(100vw - 16px);   /* never wider than viewport minus margin */
+  max-width: calc(100vw - 16px);
   height: 200px;
-  max-height: calc(100vh - 70px);  /* viewport minus header+toolbar+gap */
+  max-height: min(60vh, calc(100vh - 70px));
   overflow-y: auto;
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
