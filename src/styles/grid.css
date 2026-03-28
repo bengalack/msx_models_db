@@ -310,7 +310,7 @@ thead .gutter {
   right: 0;
   top: 0;
   transform: translateY(-50%);
-  height: 2px;
+  height: 1px;
   background: repeating-linear-gradient(
     to right,
     var(--color-gutter-indicator) 0,
