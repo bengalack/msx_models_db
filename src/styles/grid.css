@@ -194,6 +194,7 @@ thead .gutter {
 
 .filter-input {
   width: 100%;
+  min-width: 0;     /* allow input to shrink to column width, not expand it */
   box-sizing: border-box;
   height: 28px;
   background: var(--color-filter-bg);
