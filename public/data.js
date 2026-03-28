@@ -30,7 +30,7 @@ window.MSX_DATA = {
   ],
   columns: [
     { id:  1, key: "manufacturer",     label: "Manufacturer",       groupId: 0, type: "string" },
-    { id:  2, key: "model",            label: "Model",              groupId: 0, type: "string" },
+    { id:  2, key: "model",            label: "Model",              groupId: 0, type: "string", linkable: true },
     { id:  3, key: "year",             label: "Year",               groupId: 0, type: "number" },
     { id:  4, key: "region",           label: "Region",             groupId: 0, type: "string" },
     { id:  5, key: "standard",         label: "MSX Standard",       groupId: 0, type: "string" },
@@ -69,7 +69,7 @@ window.MSX_DATA = {
     //           cpu, cpu_speed_mhz, sub_cpu,
     //           keyboard_layout, built_in_software, connectivity,
     //           openmsx_id, fpga_support
-    { id: 1, values: [
+    { id: 1, links: { model: "https://www.msx.org/wiki/Sony_HB-75P" }, values: [
       "Sony", "HB-75P", 1985, "Europe", "MSX2", "Desktop",
       64, 128, 48, "ASCII 16K",
       "V9938", "512×424", 512, 32,
@@ -80,7 +80,7 @@ window.MSX_DATA = {
       "Sony_HB-75P", null
     ]},
     // id=2  Philips VG-8235/00 (MSX2, Netherlands, 1985)
-    { id: 2, values: [
+    { id: 2, links: { model: "https://www.msx.org/wiki/Philips_VG-8235" }, values: [
       "Philips", "VG-8235/00", 1985, "Netherlands", "MSX2", "Desktop",
       128, 128, 48, "ASCII 16K",
       "V9938", "512×424", 512, 32,
@@ -91,7 +91,7 @@ window.MSX_DATA = {
       "Philips_VG-8235", null
     ]},
     // id=3  Panasonic FS-A1 (MSX2, Japan, 1986)
-    { id: 3, values: [
+    { id: 3, links: { model: "https://www.msx.org/wiki/Panasonic_FS-A1" }, values: [
       "Panasonic", "FS-A1", 1986, "Japan", "MSX2", "Desktop",
       64, 128, 48, "ASCII 16K",
       "V9938", "512×424", 512, 32,
@@ -102,7 +102,7 @@ window.MSX_DATA = {
       "Panasonic_FS-A1", null
     ]},
     // id=4  Panasonic FS-A1F (MSX2, Japan, 1987)
-    { id: 4, values: [
+    { id: 4, links: { model: "https://www.msx.org/wiki/Panasonic_FS-A1F" }, values: [
       "Panasonic", "FS-A1F", 1987, "Japan", "MSX2", "Desktop",
       64, 128, 48, "ASCII 16K",
       "V9938", "512×424", 512, 32,
@@ -113,7 +113,7 @@ window.MSX_DATA = {
       "Panasonic_FS-A1F", null
     ]},
     // id=5  Toshiba HX-33 (MSX2, Japan, 1986)
-    { id: 5, values: [
+    { id: 5, links: { model: "https://www.msx.org/wiki/Toshiba_HX-33" }, values: [
       "Toshiba", "HX-33", 1986, "Japan", "MSX2", "Desktop",
       128, 128, 48, "ASCII 16K",
       "V9938", "512×424", 512, 32,
@@ -124,7 +124,7 @@ window.MSX_DATA = {
       "Toshiba_HX-33", null
     ]},
     // id=6  Sony HB-F1XDJ (MSX2+, Japan, 1988)
-    { id: 6, values: [
+    { id: 6, links: { model: "https://www.msx.org/wiki/Sony_HB-F1XDJ" }, values: [
       "Sony", "HB-F1XDJ", 1988, "Japan", "MSX2+", "Desktop",
       64, 128, 48, "ASCII 16K",
       "V9958", "512×424", 19268, 32,
@@ -135,7 +135,7 @@ window.MSX_DATA = {
       "Sony_HB-F1XDJ", null
     ]},
     // id=7  Panasonic FS-A1WX (MSX2+, Japan, 1988)
-    { id: 7, values: [
+    { id: 7, links: { model: "https://www.msx.org/wiki/Panasonic_FS-A1WX" }, values: [
       "Panasonic", "FS-A1WX", 1988, "Japan", "MSX2+", "Desktop",
       64, 128, 48, "ASCII 16K",
       "V9958", "512×424", 19268, 32,
@@ -146,7 +146,7 @@ window.MSX_DATA = {
       "Panasonic_FS-A1WX", null
     ]},
     // id=8  Panasonic FS-A1WSX (MSX2+, Japan, 1989)
-    { id: 8, values: [
+    { id: 8, links: { model: "https://www.msx.org/wiki/Panasonic_FS-A1WSX" }, values: [
       "Panasonic", "FS-A1WSX", 1989, "Japan", "MSX2+", "Desktop",
       64, 128, 48, "ASCII 16K",
       "V9958", "512×424", 19268, 32,
@@ -157,7 +157,7 @@ window.MSX_DATA = {
       "Panasonic_FS-A1WSX", null
     ]},
     // id=9  Panasonic FS-A1ST (turboR, Japan, 1990)
-    { id: 9, values: [
+    { id: 9, links: { model: "https://www.msx.org/wiki/Panasonic_FS-A1ST" }, values: [
       "Panasonic", "FS-A1ST", 1990, "Japan", "turboR", "Desktop",
       256, 128, 48, "ASCII 16K",
       "V9958", "512×424", 19268, 32,
@@ -168,7 +168,7 @@ window.MSX_DATA = {
       "Panasonic_FS-A1ST", null
     ]},
     // id=10  Panasonic FS-A1GT (turboR, Japan, 1991)
-    { id: 10, values: [
+    { id: 10, links: { model: "https://www.msx.org/wiki/Panasonic_FS-A1GT" }, values: [
       "Panasonic", "FS-A1GT", 1991, "Japan", "turboR", "Desktop",
       512, 128, 48, "ASCII 16K",
       "V9958", "512×424", 19268, 32,
