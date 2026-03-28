@@ -240,6 +240,12 @@ thead .gutter {
   background: var(--color-gutter-bg);
 }
 
+/* Row selection must beat the even-row stripe above (same specificity, later wins) */
+.grid tbody tr:nth-child(even) td.gutter--row-selected {
+  background: var(--color-gutter-text);
+  color: var(--color-gutter-bg);
+}
+
 /* Null / empty cell value */
 .cell-null {
   color: var(--color-text-muted);
