@@ -169,8 +169,9 @@
   color: var(--color-sort-active);
 }
 
-/* Gutter corner cells in header rows */
+/* Gutter corner cells in header rows — sticky in BOTH axes (top + left) */
 thead .gutter {
+  top: 0;   /* stick vertically so the corner doesn't scroll away */
   z-index: 5; /* above group/col headers (z-index:4) and tbody gutter (z-index:3) */
 }
 
@@ -179,14 +180,15 @@ thead .gutter {
 .filter-row {
   display: none;
   height: 28px;
-  position: sticky;
-  top: 56px; /* below group + col header rows */
-  z-index: 4;
+  /* Note: position:sticky on <tr> is not supported in Chrome — sticky is on <td> below */
   background: var(--color-filter-bg);
 }
 
 .filter-row td {
-  position: relative;
+  position: sticky;           /* sticky on td, not tr — required for Chrome */
+  top: 56px;                  /* below group (28px) + col header (28px) rows */
+  z-index: 4;
+  background: var(--color-filter-bg);
   padding: 0;
   border-bottom: 1px solid var(--color-border-strong);
   border-right: 1px solid var(--color-border);
