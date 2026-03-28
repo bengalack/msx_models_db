@@ -140,12 +140,13 @@ if (!window.MSX_DATA) {
 
   // Close picker/help on outside click
   document.addEventListener('mousedown', (e: MouseEvent) => {
-    if (pickerOpen && !toolbarEl.contains(e.target as Node)) {
+    const target = e.target as Node;
+    if (pickerOpen && !pickerEl.contains(target) && !colsBtnEl.contains(target)) {
       closePicker();
       pickerOpen = false;
       colsBtnEl.classList.remove('toolbar__btn--active');
     }
-    if (helpOpen && !toolbarEl.contains(e.target as Node)) {
+    if (helpOpen && !helpPanel.contains(target) && !helpBtnEl.contains(target)) {
       helpPanel.hidden = true;
       helpOpen = false;
       helpBtnEl.classList.remove('toolbar__btn--active');
