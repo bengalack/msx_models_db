@@ -277,11 +277,11 @@ All multi-byte integers are big-endian (DataView default).
   - [ ] T-033 Commit: `feat: wire URL hash sync — encode on change, restore on load`
   - [ ] T-034 Commit built `docs/`: `chore: update docs/ build output with URL state sync`
 
-- [ ] Quality gate
-  - [ ] T-900 Run `npm run lint` — confirm 0 errors
-  - [ ] T-901 Run `npm run typecheck` — confirm 0 errors
-  - [ ] T-902 Run `npm test --run` — confirm exits 0
-  - [ ] T-903 Run `npm run build` — confirm exits 0
+- [x] Quality gate
+  - [x] T-900 Run `npm run lint` — confirm 0 errors
+  - [x] T-901 Run `npm run typecheck` — confirm 0 errors
+  - [x] T-902 Run `npm test --run` — confirm exits 0
+  - [x] T-903 Run `npm run build` — confirm exits 0
 
 - [ ] Merge to trunk
   - [ ] T-950 Squash intermediate commits into logical commits

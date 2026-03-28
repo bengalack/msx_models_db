@@ -31,16 +31,6 @@
     - Status bar (bottom, 24px) shows "Copied N cell(s)"
 
 - Now / Next
-  - URL state codec + sync
-    - Implement ViewState binary codec (versioned format v1)
-    - Encode: sort, filters, hidden cols, hidden rows, collapsed groups, selected cells → Uint8Array → base64
-    - Decode: base64 → Uint8Array → ViewState; silently ignore unknown IDs
-    - Sync: history.replaceState on every state-changing interaction
-    - Restore: decode hash on page load; fall back to show-all if hash empty or unreadable
-  - Unit tests (web)
-    - Vitest: URL codec round-trip tests (encode → decode → same state)
-    - Vitest: unknown ID tolerance (retired model/column IDs silently dropped)
-    - Vitest: ViewState reducer logic (sort, filter, selection)
 
 - Later
   - ID registry (Python)
@@ -85,6 +75,12 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - URL state codec + sync
+    - ViewState binary codec (versioned format v1, URL-safe base64)
+    - Encode/decode: sort, filters, hidden cols/rows, collapsed groups, selected cells
+    - Debounced URL sync (300 ms idle) via history.replaceState
+    - Restore on page load; fall back to show-all if hash empty or unreadable
+    - 29 Vitest codec unit tests (round-trip, boundary, version/compat, resilience, URL-layer)
   - Project scaffold (Vite + TypeScript, Python scraper stub, docs/ on main)
   - Data schema + seed data (TypeScript types, schema.md, 10-model seed, id-registry.json)
   - Theme system (CSS custom properties, dark/light toggle, localStorage persistence)
