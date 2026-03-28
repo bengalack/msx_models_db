@@ -12,7 +12,7 @@
   /* sticky keeps toolbar visible while scrolling; also creates a containing block for the picker */
   position: sticky;
   top: 36px;
-  z-index: 10;
+  z-index: 20;
 }
 
 .toolbar__btn {
