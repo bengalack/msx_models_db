@@ -418,7 +418,17 @@ export function buildGrid(data: MSXData): {
     const filtered = filters.size === 0 ? sorted : sorted.filter(model =>
       [...filters.entries()].every(([colIdx, term]) => {
         const raw = colIdx < model.values.length ? model.values[colIdx] : null;
-        return cellText(raw).toLowerCase().includes(term.toLowerCase());
+        const value = cellText(raw).toLowerCase();
+        // Split on '|' for OR semantics; leading '!' negates a term
+        const parts = term.split('|').map(p => p.trim()).filter(p => p.length > 0);
+        if (parts.length === 0) return true;
+        const positive = parts.filter(p => !p.startsWith('!'));
+        const negative = parts.filter(p => p.startsWith('!')).map(p => p.slice(1).toLowerCase()).filter(p => p.length > 0);
+        // Positive terms: row matches if value includes ANY of them (OR)
+        const passPositive = positive.length === 0 || positive.some(p => value.includes(p.toLowerCase()));
+        // Negative terms: row matches only if value includes NONE of them (AND)
+        const passNegative = negative.every(n => !value.includes(n));
+        return passPositive && passNegative;
       })
     );
     // Gap-walk: emit data rows and gap indicator rows

@@ -165,6 +165,11 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - One `<input type="text">` per visible column
 - Active filter: input border in `var(--color-accent)`, clear (×) button appears inside input
 - Toggled via toolbar button; hidden by default
+- Filter syntax:
+  - Plain text: substring match (case-insensitive). E.g. `japan` matches "Japan", "Japanese"
+  - `|` (pipe): OR — matches if the cell contains ANY of the pipe-separated terms. E.g. `Japan|Spain` matches rows containing "Japan" or "Spain"
+  - `!` (bang prefix): negation — excludes rows containing that term. E.g. `!Japan` matches rows that do NOT contain "Japan"
+  - Combined: positive terms are OR’d, negative terms are AND’d. E.g. `Japan|Spain|!Tokyo` matches rows containing "Japan" or "Spain", but excludes any that also contain "Tokyo"
 
 ### Grid — data cells
 - Default: `var(--color-surface)` background, `var(--color-text)` text
@@ -235,6 +240,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 
 ### Filter
 - Typing in filter input triggers immediate filtering (no enter required)
+- Supports `|` for OR (e.g. `Japan|Spain`) and `!` prefix for negation (e.g. `!Japan`)
 - Rows not matching any active filter disappear; gutter indicator appears as described above
 - Active filter inputs highlighted with accent border
 
