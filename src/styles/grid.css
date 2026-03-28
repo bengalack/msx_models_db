@@ -151,6 +151,7 @@
 
 .col-header {
   height: 38px;           /* room for 2 lines of 11px text */
+  max-width: 5em;         /* constrain width so short-label headers wrap to 2 lines */
   position: sticky;
   top: 28px; /* below group header row */
   z-index: 10;
