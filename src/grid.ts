@@ -160,6 +160,20 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
 
     if (isNullish(rawValue)) {
       td.classList.add('cell-null');
+    } else {
+      const col = columns[i];
+      const url = col.linkable ? (model.links?.[col.key] ?? null) : null;
+      if (url !== null) {
+        td.textContent = '';
+        const a = document.createElement('a');
+        a.className = 'cell-link';
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.title = url;
+        a.textContent = text;
+        td.appendChild(a);
+      }
     }
 
     tr.appendChild(td);
@@ -475,9 +489,11 @@ export function buildGrid(data: MSXData): {
   renderRows();
 
   // ── Cell tooltip — only when text is actually truncated ──────────────────
+  // Link cells manage their own title via the <a> element; skip them here.
   tbody.addEventListener('mouseenter', (e: MouseEvent) => {
     const td = (e.target as HTMLElement).closest<HTMLTableCellElement>('td[data-col-index]');
     if (!td) return;
+    if (td.querySelector('a.cell-link')) return;
     if (td.scrollWidth > td.offsetWidth) {
       td.title = td.textContent ?? '';
     } else {
@@ -563,6 +579,8 @@ export function buildGrid(data: MSXData): {
   // ── Cell selection (event delegation on tbody) ───────────────────────────
   tbody.addEventListener('mousedown', (e: MouseEvent) => {
     const target = e.target as HTMLElement;
+    // If the click is on link text, let the browser follow the href naturally
+    if (target.closest('a.cell-link')) return;
     const td = target.closest<HTMLTableCellElement>('td[data-col-index]');
     if (!td) return;
     const tr = td.closest<HTMLTableRowElement>('tr[data-model-id]');

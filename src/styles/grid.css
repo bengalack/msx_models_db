@@ -297,6 +297,16 @@ thead .gutter {
   color: var(--color-text-muted);
 }
 
+/* Hyperlink cells — inherit theme color, underline only on hover */
+.cell-link {
+  color: inherit;
+  text-decoration: none;
+}
+.cell-link:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
 /* ── Row gap indicator (full-width, zero height) ───────────────────────── */
 
 /* Higher specificity than .grid tbody td to zero out height and allow overflow */

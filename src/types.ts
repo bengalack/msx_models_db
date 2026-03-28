@@ -14,6 +14,8 @@ export interface ColumnDef {
   groupId: number;
   /** Data type of values in this column. */
   type: 'string' | 'number' | 'boolean';
+  /** When true, cells in this column may render as hyperlinks (see ModelRecord.links). */
+  linkable?: boolean;
 }
 
 /** A collapsible group of columns. */
@@ -37,6 +39,11 @@ export interface ModelRecord {
    * null means the value is unknown or not applicable.
    */
   values: (string | number | boolean | null)[];
+  /**
+   * Optional hyperlink URLs for linkable columns, keyed by column key.
+   * Only present for models that have a known URL for that column.
+   */
+  links?: Record<string, string>;
 }
 
 /** The full dataset consumed by the web page at load time. */
