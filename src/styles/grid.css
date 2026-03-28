@@ -55,7 +55,8 @@
   color: var(--color-danger);
 }
 
-.gutter--row-selected {
+/* (0,2,2) beats .grid tbody td (0,1,2) for odd rows */
+.grid tbody td.gutter--row-selected {
   background: var(--color-gutter-text);
   color: var(--color-gutter-bg);
 }
