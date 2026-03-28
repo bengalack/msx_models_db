@@ -151,7 +151,6 @@
 
 .col-header {
   height: 38px;           /* room for 2 lines of 11px text */
-  max-width: 5em;         /* constrain so short-label headers wrap to 2 lines */
   position: sticky;
   top: 28px; /* below group header row */
   z-index: 10;
@@ -171,12 +170,9 @@
   user-select: none;
 }
 
+/* No truncation — headers wrap naturally up to 2 lines.
+   Truncation only applies when a group is collapsed (.col-group-stub). */
 .col-header__text {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: normal;
 }
 

@@ -158,10 +158,10 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - Height: 38px (room for 2 lines of text)
 - Each column has three name fields: `label` (canonical full name), optional `shortLabel` (compact display name for the header), optional `tooltip` (hover text)
 - The header cell displays `shortLabel` if defined, otherwise `label`; the `title` attribute shows `tooltip` if defined, otherwise `label`
-- Text wraps naturally to up to 2 lines; excess is clipped with ellipsis (`-webkit-line-clamp: 2`)
-- Sort indicator: ↑ (asc) / ↓ (desc) appended to column name; no arrow when unsorted
+- Text wraps naturally when the column is narrow; no artificial truncation in the normal (expanded) state
+- Truncation (`text-overflow: ellipsis`) is applied **only** when a group is collapsed and the header is rendered as a stub (`.col-group-stub`)
+- Sort indicator: ↑ (asc) / ↓ (desc) appended inline to the header text on the same line; no arrow when unsorted
 - Active sort column: header text in `var(--color-text-heading)` color
-- Overflow: header text is clipped with `text-overflow: ellipsis` when the column is narrow (e.g. inside a collapsed group)
 - Hidden column indicator: in the group header row, a small `▶` marker appears between visible columns where one or more columns are hidden between them
 - Right-click on column header → context menu: Sort Asc / Sort Desc / Hide Column / Show Hidden Columns in Group
 

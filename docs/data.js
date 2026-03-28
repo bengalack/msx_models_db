@@ -32,7 +32,7 @@ window.MSX_DATA = {
     { id:  1, key: "manufacturer",     label: "Manufacturer",       groupId: 0, type: "string" },
     { id:  2, key: "model",            label: "Model",              groupId: 0, type: "string" },
     { id:  3, key: "year",             label: "Year",               groupId: 0, type: "number" },
-    { id:  4, key: "region",           label: "Region/Market",      groupId: 0, type: "string" },
+    { id:  4, key: "region",           label: "Region",             groupId: 0, type: "string" },
     { id:  5, key: "standard",         label: "MSX Standard",       groupId: 0, type: "string" },
     { id:  6, key: "form_factor",      label: "Form Factor",        groupId: 0, type: "string" },
     { id:  7, key: "main_ram_kb",      label: "Main RAM (KB)",      shortLabel: "Main RAM",      tooltip: "Main RAM (KB)",      groupId: 1, type: "number" },
