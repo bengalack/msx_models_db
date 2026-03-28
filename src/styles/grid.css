@@ -61,6 +61,17 @@
   color: var(--color-gutter-bg);
 }
 
+/* × button must be visible against the inverted gutter background */
+.gutter--row-selected .gutter__hide-btn {
+  color: var(--color-gutter-bg);
+  opacity: 0.65;
+}
+
+.gutter--row-selected .gutter__hide-btn:hover {
+  opacity: 1;
+  color: var(--color-danger);
+}
+
 /* ── Group header row (sticky row 1) ─────────────────────────────────────── */
 
 .group-header {
@@ -252,14 +263,13 @@ thead .gutter {
   color: var(--color-text-muted);
 }
 
-/* ── Row gap indicator (full-width dashed line, zero height) ────────────── */
+/* ── Row gap indicator (full-width, zero height) ───────────────────────── */
 
 /* Higher specificity than .grid tbody td to zero out height and allow overflow */
 .grid tbody td.gutter--gap {
   height: 0;
   padding: 0;
-  border-bottom: none;
-  border-right: none;
+  border: none;         /* remove ALL borders — avoids border-collapse double-line */
   background: transparent;
   overflow: visible;
   max-width: none;
@@ -268,29 +278,52 @@ thead .gutter {
 }
 
 .gutter--gap {
-  border-top: 2px dashed var(--color-gutter-indicator);
   position: relative;
   overflow: visible;
 }
 
+/* Dashed line as gradient – immune to border-collapse conflicts */
+.gutter--gap::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  transform: translateY(-50%);
+  height: 2px;
+  background: repeating-linear-gradient(
+    to right,
+    var(--color-gutter-indicator) 0,
+    var(--color-gutter-indicator) 6px,
+    transparent 6px,
+    transparent 10px
+  );
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Unhide button: floats 50% over row above, 50% over row below */
 .gutter__unhide-btn {
   position: absolute;
-  left: 26px;       /* horizontal center of the 52px gutter */
+  left: 26px;       /* horizontal centre of the 52px gutter */
   top: 0;
   transform: translate(-50%, -50%);
   background: var(--color-gutter-bg);
-  border: none;
+  border: 1px solid var(--color-gutter-indicator);
+  border-radius: 3px;
   color: var(--color-gutter-indicator);
-  font-size: 9px;
+  font-size: 13px;
   font-family: inherit;
   cursor: pointer;
-  padding: 0 2px;
-  line-height: 1;
-  z-index: 5;
+  padding: 1px 4px;
+  line-height: 1.2;
+  z-index: 6;
 }
 
 .gutter__unhide-btn:hover {
-  opacity: 0.7;
+  background: var(--color-gutter-indicator);
+  color: var(--color-gutter-bg);
 }
 
 /* ── Cell selection ────────────────────────────────────────────────────── */
