@@ -160,9 +160,6 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
 
     if (isNullish(rawValue)) {
       td.classList.add('cell-null');
-    } else {
-      // Only set title when value is present — avoids "—" tooltip
-      td.title = text;
     }
 
     tr.appendChild(td);
@@ -476,6 +473,17 @@ export function buildGrid(data: MSXData): {
   }
 
   renderRows();
+
+  // ── Cell tooltip — only when text is actually truncated ──────────────────
+  tbody.addEventListener('mouseenter', (e: MouseEvent) => {
+    const td = (e.target as HTMLElement).closest<HTMLTableCellElement>('td[data-col-index]');
+    if (!td) return;
+    if (td.scrollWidth > td.offsetWidth) {
+      td.title = td.textContent ?? '';
+    } else {
+      td.removeAttribute('title');
+    }
+  }, true);
 
   // ── Gutter mousedown — row hide (× button) and row selection (number) ─────────
   tbody.addEventListener('mousedown', (e: MouseEvent) => {
