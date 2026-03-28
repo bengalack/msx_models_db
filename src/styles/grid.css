@@ -144,7 +144,6 @@
   width: 0 !important;
   overflow: hidden !important;
   text-overflow: ellipsis;
-  border-right: none !important;
   white-space: nowrap;
 }
 
