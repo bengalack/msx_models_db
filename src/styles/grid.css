@@ -126,7 +126,10 @@
 }
 
 .group-header .chevron {
-  float: right;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--color-text-muted);
   font-style: normal;
 }

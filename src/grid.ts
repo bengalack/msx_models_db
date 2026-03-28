@@ -35,7 +35,7 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
     const chevron = document.createElement('i');
     chevron.className = 'chevron';
     chevron.setAttribute('aria-hidden', 'true');
-    chevron.textContent = '\u00A0\u25bc'; // &nbsp;▼
+    chevron.textContent = '\u25bc'; // ▼
 
     th.appendChild(label);
     th.appendChild(chevron);
@@ -628,7 +628,7 @@ export function buildGrid(data: MSXData): {
         // Expand — restore all cells except those individually hidden
         collapsedGroups.delete(groupId);
         th.classList.remove('collapsed');
-        chevron.textContent = '\u00A0\u25bc'; // &nbsp;▼
+        chevron.textContent = '\u25bc'; // ▼
         table.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
           const cellColIdx = cell.dataset.colIndex !== undefined ? Number(cell.dataset.colIndex) : -1;
           if (hiddenCols.has(cellColIdx)) return; // leave individually-hidden cells hidden
@@ -642,7 +642,7 @@ export function buildGrid(data: MSXData): {
         collapsedGroups.add(groupId);
         th.colSpan = 1;
         th.classList.add('collapsed');
-        chevron.textContent = '\u00A0\u25b6'; // &nbsp;▶
+        chevron.textContent = '\u25b6'; // ▶
         table.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
           if (cell.dataset.colOrder === '0') {
             cell.classList.add('col-group-stub');
