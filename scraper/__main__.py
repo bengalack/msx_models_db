@@ -7,12 +7,24 @@ import json
 import logging
 import sys
 
-from . import openmsx
+from . import msxorg, openmsx
 
 
 def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
     """Fetch and parse all openMSX machine configs, emit JSON."""
     models = openmsx.fetch_all(limit=args.limit, delay=args.delay)
+    output = json.dumps(models, indent=2, ensure_ascii=False)
+    if args.output:
+        with open(args.output, "w", encoding="utf-8") as f:
+            f.write(output + "\n")
+        print(f"Wrote {len(models)} models to {args.output}")
+    else:
+        print(output)
+
+
+def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
+    """Fetch and parse all msx.org wiki model pages, emit JSON."""
+    models = msxorg.fetch_all(limit=args.limit, delay=args.delay)
     output = json.dumps(models, indent=2, ensure_ascii=False)
     if args.output:
         with open(args.output, "w", encoding="utf-8") as f:
@@ -50,6 +62,24 @@ def main() -> None:
         help="Delay between requests in seconds (default: 0.3)",
     )
     p_openmsx.set_defaults(func=cmd_fetch_openmsx)
+
+    # ── fetch-msxorg ─────────────────────────────────────────────────
+    p_msxorg = sub.add_parser(
+        "fetch-msxorg",
+        help="Fetch model data from msx.org wiki pages",
+    )
+    p_msxorg.add_argument(
+        "-o", "--output", help="Output JSON file path (default: stdout)"
+    )
+    p_msxorg.add_argument(
+        "--limit", type=int, default=None,
+        help="Max number of model pages to fetch (for testing)",
+    )
+    p_msxorg.add_argument(
+        "--delay", type=float, default=0.5,
+        help="Delay between requests in seconds (default: 0.5)",
+    )
+    p_msxorg.set_defaults(func=cmd_fetch_msxorg)
 
     args = parser.parse_args()
 
