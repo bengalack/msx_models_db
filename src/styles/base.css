@@ -20,4 +20,5 @@ body {
   line-height: 1.4;
   background: var(--color-bg);
   color: var(--color-text);
+  overflow: hidden;  /* all scrolling is inside .grid-wrap; prevents panels from escaping viewport */
 }
