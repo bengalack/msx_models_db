@@ -32,7 +32,7 @@ document.body.appendChild(header);
 if (!window.MSX_DATA) {
   // eslint-disable-next-line no-console
   console.error('[MSX Models DB] MSX_DATA not found. Is data.js loaded before bundle.js?');
-  document.body.appendChild(buildToolbar(() => { /* no-op */ }, () => { /* no-op */ }).element);
+  document.body.appendChild(buildToolbar(() => { /* no-op */ }, () => { /* no-op */ }, () => { /* no-op */ }).element);
   const err = document.createElement('p');
   err.style.color = 'var(--color-danger)';
   err.style.padding = '16px';
@@ -57,9 +57,28 @@ if (!window.MSX_DATA) {
     if (pickerOpen) {
       closePicker();
     } else {
+      if (helpOpen) { helpPanel.hidden = true; helpOpen = false; helpBtnEl.classList.remove('toolbar__btn--active'); }
       openPicker();
     }
     pickerOpen = !pickerOpen;
+  }
+
+  // ── Help panel ──────────────────────────────────────────────────────────
+  const helpPanel = document.createElement('div');
+  helpPanel.className = 'help-panel';
+  helpPanel.hidden = true;
+  helpPanel.textContent = 'Help content coming soon.';
+
+  let helpOpen = false;
+  function toggleHelp(): void {
+    if (helpOpen) {
+      helpPanel.hidden = true;
+    } else {
+      if (pickerOpen) { closePicker(); pickerOpen = false; }
+      helpPanel.hidden = false;
+    }
+    helpOpen = !helpOpen;
+    helpBtnEl.classList.toggle('toolbar__btn--active', helpOpen);
   }
 
   let filtersOn = false;
@@ -69,8 +88,9 @@ if (!window.MSX_DATA) {
     filtersBtnEl.classList.toggle('toolbar__btn--active', filtersOn);
   }
 
-  const { element: toolbarEl, filtersBtn: filtersBtnEl } = buildToolbar(handleFiltersToggle, togglePicker);
+  const { element: toolbarEl, filtersBtn: filtersBtnEl, helpBtn: helpBtnEl } = buildToolbar(handleFiltersToggle, togglePicker, toggleHelp);
   toolbarEl.appendChild(pickerEl);
+  toolbarEl.appendChild(helpPanel);
   document.body.appendChild(toolbarEl);
   document.body.appendChild(gridEl);
 
@@ -117,19 +137,31 @@ if (!window.MSX_DATA) {
     }
   });
 
-  // Close picker on outside click
+  // Close picker/help on outside click
   document.addEventListener('mousedown', (e: MouseEvent) => {
     if (pickerOpen && !toolbarEl.contains(e.target as Node)) {
       closePicker();
       pickerOpen = false;
     }
+    if (helpOpen && !toolbarEl.contains(e.target as Node)) {
+      helpPanel.hidden = true;
+      helpOpen = false;
+      helpBtnEl.classList.remove('toolbar__btn--active');
+    }
   });
 
-  // Close picker on Escape (document-level fallback)
+  // Close picker/help on Escape
   document.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && pickerOpen) {
-      closePicker();
-      pickerOpen = false;
+    if (e.key === 'Escape') {
+      if (pickerOpen) {
+        closePicker();
+        pickerOpen = false;
+      }
+      if (helpOpen) {
+        helpPanel.hidden = true;
+        helpOpen = false;
+        helpBtnEl.classList.remove('toolbar__btn--active');
+      }
     }
   });
 }

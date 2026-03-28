@@ -1,7 +1,8 @@
 export function buildToolbar(
   onFiltersToggle: () => void,
   onColsToggle: () => void,
-): { element: HTMLElement; filtersBtn: HTMLButtonElement } {
+  onHelpToggle: () => void,
+): { element: HTMLElement; filtersBtn: HTMLButtonElement; helpBtn: HTMLButtonElement } {
   const toolbar = document.createElement('div');
   toolbar.className = 'toolbar';
 
@@ -15,8 +16,14 @@ export function buildToolbar(
   filtersBtn.textContent = '\u2261 Filters';
   filtersBtn.addEventListener('click', onFiltersToggle);
 
+  const helpBtn = document.createElement('button');
+  helpBtn.className = 'toolbar__btn';
+  helpBtn.textContent = '? Help';
+  helpBtn.addEventListener('click', onHelpToggle);
+
   toolbar.appendChild(colsBtn);
   toolbar.appendChild(filtersBtn);
+  toolbar.appendChild(helpBtn);
 
-  return { element: toolbar, filtersBtn };
+  return { element: toolbar, filtersBtn, helpBtn };
 }
