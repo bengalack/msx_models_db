@@ -8,7 +8,8 @@
 }
 
 .grid {
-  border-collapse: collapse;
+  border-collapse: separate;   /* separate borders — prevents content bleeding through sticky headers */
+  border-spacing: 0;
   width: max-content;
   min-width: 100%;
   user-select: none;
