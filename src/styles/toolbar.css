@@ -59,7 +59,8 @@
   left: 0;
   z-index: 200;
   min-width: 220px;
-  max-height: 60vh;
+  max-height: calc(100vh - 70px);  /* viewport minus header(36)+toolbar(32)+gap(2) */
+  max-width: calc(100vw - 16px);   /* small margin so it never covers scrollbar */
   overflow-y: auto;
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
@@ -107,7 +108,9 @@
   left: 0;
   z-index: 200;
   width: 300px;
+  max-width: calc(100vw - 16px);   /* never wider than viewport minus margin */
   height: 200px;
+  max-height: calc(100vh - 70px);  /* viewport minus header+toolbar+gap */
   overflow-y: auto;
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
@@ -117,4 +120,5 @@
   font-size: 12px;
   color: var(--color-text);
   line-height: 1.5;
+  box-sizing: border-box;
 }

@@ -193,6 +193,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - Column picker panel: a floating panel listing all columns grouped by group, each with a checkbox; closes on outside click
 - Help panel: a floating panel (300×200px) anchored below the toolbar with help/reference text; opens on `[? Help]` click; button shows active state (inverted colors) while open; closes on outside click or Escape
 - Only one floating panel (Columns or Help) can be open at a time — opening one closes the other
+- Floating panels must never overlap the browser scrollbar or extend beyond the viewport; they are constrained by `max-height: calc(100vh - 70px)` and `max-width: calc(100vw - 16px)`, with internal scrolling when content overflows
 
 ### Dark/light mode toggle
 - Icon-only button: `◐` (half-moon)
