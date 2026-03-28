@@ -199,6 +199,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 
 ### Grid — row selection
 - Click gutter number: selects that row only (deselects all others). If the row was already the only selection, deselects it.
+- Click and drag across gutter numbers: selects all rows touched while the mouse button is held.
 - CTRL/CMD + click gutter number: toggles the row in/out of selection without clearing others.
 - SHIFT + click gutter number: selects the contiguous range between the last-clicked row (anchor) and the clicked row.
 - Escape: clears row selection.

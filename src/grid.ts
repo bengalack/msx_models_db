@@ -224,6 +224,8 @@ export function buildGrid(data: MSXData): {
   let selAnchor: { modelId: number; colIdx: number } | null = null;
   let isDragging = false;
   let dragStart: { modelId: number; colIdx: number } | null = null;
+  let isRowDragging = false;
+  let rowDragAnchor: number | null = null;
 
   function selKey(modelId: number, colIdx: number): string {
     return `${modelId}:${colIdx}`;
@@ -444,25 +446,18 @@ export function buildGrid(data: MSXData): {
 
   renderRows();
 
-  // ── Gutter click — row hide (× button) and row selection (number) ────────────
-  tbody.addEventListener('click', (e: MouseEvent) => {
+  // ── Gutter mousedown — row hide (× button) and row selection (number) ─────────
+  tbody.addEventListener('mousedown', (e: MouseEvent) => {
     const target = e.target as HTMLElement;
     const gutterTd = target.closest<HTMLTableCellElement>('td.gutter[data-model-id]');
     if (!gutterTd) return;
     const modelId = Number(gutterTd.dataset.modelId);
     if (!modelId) return;
 
-    // × hide button
-    if (target.closest('.gutter__hide-btn')) {
-      if (selectedRows.size > 0) {
-        selectedRows.forEach(id => hiddenRows.add(id));
-        selectedRows.clear();
-      } else {
-        hiddenRows.add(modelId);
-      }
-      renderRows();
-      return;
-    }
+    // × hide button — handled on click to avoid accidental drag triggers
+    if (target.closest('.gutter__hide-btn')) return;
+
+    e.preventDefault(); // prevent text-selection cursor during drag
 
     // Row number area — row selection
     if (e.ctrlKey || e.metaKey) {
@@ -479,11 +474,43 @@ export function buildGrid(data: MSXData): {
       selectedRows.clear();
       if (!wasOnlySelection) {
         selectedRows.add(modelId);
+        isRowDragging = true;
+        rowDragAnchor = modelId;
       }
       rowSelAnchor = modelId;
     }
     applyRowSelectionToDOM();
   });
+
+  // ── Gutter click — × hide button ─────────────────────────────────────────
+  tbody.addEventListener('click', (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest('.gutter__hide-btn')) return;
+    const gutterTd = target.closest<HTMLTableCellElement>('td.gutter[data-model-id]');
+    if (!gutterTd) return;
+    const modelId = Number(gutterTd.dataset.modelId);
+    if (!modelId) return;
+    if (selectedRows.size > 0) {
+      selectedRows.forEach(id => hiddenRows.add(id));
+      selectedRows.clear();
+    } else {
+      hiddenRows.add(modelId);
+    }
+    renderRows();
+  });
+
+  // ── Gutter drag — extend row selection ───────────────────────────────────
+  tbody.addEventListener('mouseenter', (e: MouseEvent) => {
+    if (!isRowDragging || e.buttons !== 1 || rowDragAnchor === null) return;
+    const target = e.target as HTMLElement;
+    const gutterTd = target.closest<HTMLTableCellElement>('td.gutter[data-model-id]');
+    if (!gutterTd) return;
+    const modelId = Number(gutterTd.dataset.modelId);
+    if (!modelId) return;
+    selectRowRange(rowDragAnchor, modelId);
+    rowSelAnchor = modelId;
+    applyRowSelectionToDOM();
+  }, true);
 
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -556,6 +583,8 @@ export function buildGrid(data: MSXData): {
   document.addEventListener('mouseup', () => {
     isDragging = false;
     dragStart = null;
+    isRowDragging = false;
+    rowDragAnchor = null;
   });
 
   // ── Group collapse / expand ──────────────────────────────────────────────
