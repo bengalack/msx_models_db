@@ -123,11 +123,23 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
   const tr = document.createElement('tr');
   tr.dataset.modelId = String(model.id);
 
-  // Gutter — 1-based row number
+  // Gutter — × hide button (left) + 1-based row number (right)
   const gutter = document.createElement('td');
   gutter.className = 'gutter';
-  gutter.textContent = String(rowIndex);
   gutter.dataset.modelId = String(model.id);
+
+  const hideBtn = document.createElement('button');
+  hideBtn.className = 'gutter__hide-btn';
+  hideBtn.setAttribute('aria-label', 'Hide row');
+  hideBtn.tabIndex = -1;
+  hideBtn.textContent = '\u00d7'; // ×
+
+  const numSpan = document.createElement('span');
+  numSpan.className = 'gutter__num';
+  numSpan.textContent = String(rowIndex);
+
+  gutter.appendChild(hideBtn);
+  gutter.appendChild(numSpan);
   tr.appendChild(gutter);
 
   const groupOrder = new Map<number, number>();
@@ -157,17 +169,16 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
 
 function buildGapIndicator(
   hiddenIds: number[],
-  colCount: number,
   onUnhide: (ids: number[]) => void,
 ): HTMLTableRowElement {
   const tr = document.createElement('tr');
   tr.className = 'row-gap-indicator';
   const td = document.createElement('td');
-  td.colSpan = colCount + 1; // gutter + all columns
+  td.className = 'gutter gutter--gap';
   const btn = document.createElement('button');
-  btn.className = 'row-gap-indicator__btn';
+  btn.className = 'gutter__unhide-btn';
   btn.setAttribute('aria-label', `Show ${hiddenIds.length} hidden row${hiddenIds.length > 1 ? 's' : ''}`);
-  btn.textContent = '\u25bc\u25b2'; // ▼▲
+  btn.textContent = '\u25b2'; // ▲
   btn.addEventListener('click', () => onUnhide(hiddenIds));
   td.appendChild(btn);
   tr.appendChild(td);
@@ -268,6 +279,41 @@ export function buildGrid(data: MSXData): {
     return selectedCells;
   }
 
+  // ── Row selection state ──────────────────────────────────────────────────
+  // Keyed by stable model ID; independent of selectedCells
+  const selectedRows = new Set<number>();
+  let rowSelAnchor: number | null = null;
+
+  function applyRowSelectionToDOM(): void {
+    tbody.querySelectorAll<HTMLTableCellElement>('td.gutter[data-model-id]').forEach(td => {
+      td.classList.toggle('gutter--row-selected', selectedRows.has(Number(td.dataset.modelId)));
+    });
+  }
+
+  function clearRowSelection(): void {
+    selectedRows.clear();
+    rowSelAnchor = null;
+    applyRowSelectionToDOM();
+  }
+
+  function selectRowRange(fromModelId: number, toModelId: number): void {
+    const visibleModelIds = Array.from(tbody.querySelectorAll<HTMLTableRowElement>('tr[data-model-id]'))
+      .map(tr => Number(tr.dataset.modelId));
+    const fromIdx = visibleModelIds.indexOf(fromModelId);
+    const toIdx = visibleModelIds.indexOf(toModelId);
+    selectedRows.clear();
+    if (fromIdx === -1 || toIdx === -1) {
+      selectedRows.add(toModelId);
+      rowSelAnchor = toModelId;
+      return;
+    }
+    const min = Math.min(fromIdx, toIdx);
+    const max = Math.max(fromIdx, toIdx);
+    for (let i = min; i <= max; i++) {
+      selectedRows.add(visibleModelIds[i]);
+    }
+  }
+
   // ── thead ────────────────────────────────────────────────────────────────
   const thead = document.createElement('thead');
   thead.appendChild(buildGroupHeaderRow(data.groups, data.columns));
@@ -365,14 +411,14 @@ export function buildGrid(data: MSXData): {
         buffer.push(model.id);
       } else {
         if (buffer.length > 0) {
-          rows.push(buildGapIndicator(buffer, data.columns.length, unhideRowsInGap));
+          rows.push(buildGapIndicator(buffer, unhideRowsInGap));
           buffer = [];
         }
         rows.push(buildDataRow(model, data.columns, rowNum++));
       }
     }
     if (buffer.length > 0) {
-      rows.push(buildGapIndicator(buffer, data.columns.length, unhideRowsInGap));
+      rows.push(buildGapIndicator(buffer, unhideRowsInGap));
     }
     tbody.replaceChildren(...rows);
     // Re-apply collapsed group visibility to newly rendered rows
@@ -393,63 +439,56 @@ export function buildGrid(data: MSXData): {
     });
     // Re-apply selection highlights
     applySelectionToDOM();
+    applyRowSelectionToDOM();
   }
 
   renderRows();
 
-  // ── Gutter context menu (event delegation on tbody) ──────────────────────
-  let activeMenu: HTMLElement | null = null;
-
-  function closeContextMenu(): void {
-    if (activeMenu) {
-      activeMenu.remove();
-      activeMenu = null;
-    }
-  }
-
-  tbody.addEventListener('contextmenu', (e: MouseEvent) => {
+  // ── Gutter click — row hide (× button) and row selection (number) ────────────
+  tbody.addEventListener('click', (e: MouseEvent) => {
     const target = e.target as HTMLElement;
-    const gutterCell = target.closest<HTMLElement>('td.gutter');
-    if (!gutterCell) return;
-    const modelId = Number(gutterCell.dataset.modelId);
+    const gutterTd = target.closest<HTMLTableCellElement>('td.gutter[data-model-id]');
+    if (!gutterTd) return;
+    const modelId = Number(gutterTd.dataset.modelId);
     if (!modelId) return;
-    e.preventDefault();
-    closeContextMenu();
 
-    const menu = document.createElement('div');
-    menu.className = 'ctx-menu';
-    menu.setAttribute('role', 'menu');
-    const btn = document.createElement('button');
-    btn.className = 'ctx-menu__item';
-    btn.setAttribute('role', 'menuitem');
-    btn.textContent = 'Hide row';
-    btn.addEventListener('click', () => {
-      closeContextMenu();
-      hideRow(modelId);
-    });
-    menu.appendChild(btn);
-
-    // Position at cursor
-    menu.style.left = `${e.clientX}px`;
-    menu.style.top = `${e.clientY}px`;
-    document.body.appendChild(menu);
-    activeMenu = menu;
-    btn.focus();
-  });
-
-  document.addEventListener('mousedown', (e: MouseEvent) => {
-    if (activeMenu && !activeMenu.contains(e.target as Node)) {
-      closeContextMenu();
+    // × hide button
+    if (target.closest('.gutter__hide-btn')) {
+      if (selectedRows.size > 0) {
+        selectedRows.forEach(id => hiddenRows.add(id));
+        selectedRows.clear();
+      } else {
+        hiddenRows.add(modelId);
+      }
+      renderRows();
+      return;
     }
+
+    // Row number area — row selection
+    if (e.ctrlKey || e.metaKey) {
+      if (selectedRows.has(modelId)) {
+        selectedRows.delete(modelId);
+      } else {
+        selectedRows.add(modelId);
+      }
+      rowSelAnchor = modelId;
+    } else if (e.shiftKey && rowSelAnchor !== null) {
+      selectRowRange(rowSelAnchor, modelId);
+    } else {
+      const wasOnlySelection = selectedRows.has(modelId) && selectedRows.size === 1;
+      selectedRows.clear();
+      if (!wasOnlySelection) {
+        selectedRows.add(modelId);
+      }
+      rowSelAnchor = modelId;
+    }
+    applyRowSelectionToDOM();
   });
 
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
-      if (activeMenu) {
-        closeContextMenu();
-      } else {
-        clearSelection();
-      }
+      clearSelection();
+      clearRowSelection();
     }
   });
 
