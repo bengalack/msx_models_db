@@ -52,7 +52,8 @@ function buildColHeaderRow(columns: ColumnDef[]): HTMLTableRowElement {
     const th = document.createElement('th');
     th.className = 'col-header';
     th.scope = 'col';
-    th.textContent = col.label;
+    th.textContent = col.shortLabel ?? col.label;
+    th.title = col.tooltip ?? col.label;
     th.dataset.colGroup = String(col.groupId);
     th.dataset.colIndex = String(colIndex);
     const order = groupOrder.get(col.groupId) ?? 0;

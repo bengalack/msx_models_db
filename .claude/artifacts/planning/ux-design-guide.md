@@ -155,6 +155,10 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - Active/expanded: `var(--color-border-strong)` bottom border
 
 ### Grid — column headers
+- Height: 38px (room for 2 lines of text)
+- Each column has three name fields: `label` (canonical full name), optional `shortLabel` (compact display name for the header), optional `tooltip` (hover text)
+- The header cell displays `shortLabel` if defined, otherwise `label`; the `title` attribute shows `tooltip` if defined, otherwise `label`
+- Text wraps naturally to up to 2 lines; excess is clipped with ellipsis (`-webkit-line-clamp: 2`)
 - Sort indicator: ↑ (asc) / ↓ (desc) appended to column name; no arrow when unsorted
 - Active sort column: header text in `var(--color-text-heading)` color
 - Overflow: header text is clipped with `text-overflow: ellipsis` when the column is narrow (e.g. inside a collapsed group)

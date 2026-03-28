@@ -6,6 +6,10 @@ export interface ColumnDef {
   key: string;
   /** Display label shown in the column header. */
   label: string;
+  /** Short display name for the column header (allows 2-line wrap). Falls back to `label`. */
+  shortLabel?: string;
+  /** Tooltip text on hover. Falls back to `label`. */
+  tooltip?: string;
   /** ID of the GroupDef this column belongs to. */
   groupId: number;
   /** Data type of values in this column. */
