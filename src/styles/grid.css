@@ -252,31 +252,45 @@ thead .gutter {
   color: var(--color-text-muted);
 }
 
-/* ── Row gap indicator (gutter-only) ─────────────────────────────────────── */
+/* ── Row gap indicator (full-width dashed line, zero height) ────────────── */
+
+/* Higher specificity than .grid tbody td to zero out height and allow overflow */
+.grid tbody td.gutter--gap {
+  height: 0;
+  padding: 0;
+  border-bottom: none;
+  border-right: none;
+  background: transparent;
+  overflow: visible;
+  max-width: none;
+  white-space: normal;
+  text-overflow: clip;
+}
 
 .gutter--gap {
   border-top: 2px dashed var(--color-gutter-indicator);
-  border-bottom: 2px dashed var(--color-gutter-indicator);
-  text-align: center;
-  padding: 1px 0;
-  height: 10px;
-  line-height: 1;
+  position: relative;
+  overflow: visible;
 }
 
 .gutter__unhide-btn {
-  background: none;
+  position: absolute;
+  left: 26px;       /* horizontal center of the 52px gutter */
+  top: 0;
+  transform: translate(-50%, -50%);
+  background: var(--color-gutter-bg);
   border: none;
   color: var(--color-gutter-indicator);
   font-size: 9px;
   font-family: inherit;
   cursor: pointer;
-  padding: 0;
+  padding: 0 2px;
   line-height: 1;
-  opacity: 0.8;
+  z-index: 5;
 }
 
 .gutter__unhide-btn:hover {
-  opacity: 1;
+  opacity: 0.7;
 }
 
 /* ── Cell selection ────────────────────────────────────────────────────── */

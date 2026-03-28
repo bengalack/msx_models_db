@@ -170,11 +170,13 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
 function buildGapIndicator(
   hiddenIds: number[],
   onUnhide: (ids: number[]) => void,
+  colCount: number,
 ): HTMLTableRowElement {
   const tr = document.createElement('tr');
   tr.className = 'row-gap-indicator';
   const td = document.createElement('td');
-  td.className = 'gutter gutter--gap';
+  td.className = 'gutter--gap';
+  td.colSpan = colCount + 1; // gutter + all data columns
   const btn = document.createElement('button');
   btn.className = 'gutter__unhide-btn';
   btn.setAttribute('aria-label', `Show ${hiddenIds.length} hidden row${hiddenIds.length > 1 ? 's' : ''}`);
@@ -413,14 +415,14 @@ export function buildGrid(data: MSXData): {
         buffer.push(model.id);
       } else {
         if (buffer.length > 0) {
-          rows.push(buildGapIndicator(buffer, unhideRowsInGap));
+          rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
           buffer = [];
         }
         rows.push(buildDataRow(model, data.columns, rowNum++));
       }
     }
     if (buffer.length > 0) {
-      rows.push(buildGapIndicator(buffer, unhideRowsInGap));
+      rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
     }
     tbody.replaceChildren(...rows);
     // Re-apply collapsed group visibility to newly rendered rows
