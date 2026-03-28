@@ -83,7 +83,7 @@
   height: 28px;
   position: sticky;
   top: 0; /* relative to .grid-wrap scroll container */
-  z-index: 2;
+  z-index: 4;
   background: var(--color-header-bg);
   color: var(--color-text-muted);
   font-size: 11px;
@@ -139,7 +139,7 @@
   height: 28px;
   position: sticky;
   top: 28px; /* below group header row */
-  z-index: 2;
+  z-index: 4;
   background: var(--color-header-bg);
   color: var(--color-text-heading);
   font-size: 11px;
@@ -171,7 +171,7 @@
 
 /* Gutter corner cells in header rows */
 thead .gutter {
-  z-index: 4; /* above both group and col header z-levels */
+  z-index: 5; /* above group/col headers (z-index:4) and tbody gutter (z-index:3) */
 }
 
 /* ── Filter row (sticky row 3, hidden by default) ────────────────────────── */
@@ -181,7 +181,7 @@ thead .gutter {
   height: 28px;
   position: sticky;
   top: 56px; /* below group + col header rows */
-  z-index: 2;
+  z-index: 4;
   background: var(--color-filter-bg);
 }
 
