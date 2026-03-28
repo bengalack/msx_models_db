@@ -193,8 +193,10 @@ thead .gutter {
 }
 
 .filter-input {
+  position: absolute;  /* removed from table layout — columns sized by headers/data only */
+  inset: 0;
   width: 100%;
-  min-width: 0;     /* allow input to shrink to column width, not expand it */
+  min-width: 0;
   box-sizing: border-box;
   height: 28px;
   background: var(--color-filter-bg);
