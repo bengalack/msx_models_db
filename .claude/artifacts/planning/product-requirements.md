@@ -87,15 +87,17 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Hidden row state is reflected in the URL.
 
 - Row selection
-  - Description: Clicking a row's gutter number selects the full row (independent of cell selection). Multiple rows can be selected. Row selection is used to batch-hide rows via the × button.
+  - Description: Clicking a row's gutter number selects the full row. Selected rows are also reflected in cell selection — all data cells of selected rows become highlighted (cell--selected). Multiple rows can be selected. Row selection is used to batch-hide rows via the × button.
   - Priority: Must
   - Acceptance Criteria:
     - Click on a row number selects that row and deselects all others. Clicking the only selected row deselects it.
     - CTRL+click (CMD+click on macOS) toggles the clicked row in/out of the selection without clearing other selections.
     - SHIFT+click selects the range of visible rows between the last-clicked row and the clicked row.
-    - Selected rows are visually indicated by inverted colors on the gutter cell only (background and text colors swap).
-    - Row selection does not affect cell selection and is not included in clipboard copy output.
-    - Pressing Escape clears row selection.
+    - Click-and-drag across gutter numbers extends the selection to every row touched.
+    - Selected rows are visually indicated by inverted colors on the gutter cell (background and text colors swap).
+    - All data cells of selected rows are highlighted using the standard cell-selected style.
+    - Directly clicking a data cell clears row selection and starts a fresh cell selection.
+    - Pressing Escape clears both row selection and cell selection.
 
 - Cell selection
   - Description: Users can select one or more data cells using mouse interactions. Selected cells are visually highlighted. Row selection (via gutter numbers) is a separate interaction.

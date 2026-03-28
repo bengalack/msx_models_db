@@ -294,10 +294,25 @@ export function buildGrid(data: MSXData): {
     });
   }
 
+  // Rebuild selectedCells to contain exactly the cells of all selected rows.
+  // Called every time row selection changes.
+  function syncCellsFromRowSelection(): void {
+    selectedCells.clear();
+    selAnchor = null;
+    if (selectedRows.size > 0) {
+      const visibleColIdxs = data.columns.map((_, i) => i).filter(i => !hiddenCols.has(i));
+      selectedRows.forEach(modelId => {
+        visibleColIdxs.forEach(colIdx => selectedCells.add(selKey(modelId, colIdx)));
+      });
+    }
+    applySelectionToDOM();
+  }
+
   function clearRowSelection(): void {
     selectedRows.clear();
     rowSelAnchor = null;
     applyRowSelectionToDOM();
+    syncCellsFromRowSelection();
   }
 
   function selectRowRange(fromModelId: number, toModelId: number): void {
@@ -482,6 +497,7 @@ export function buildGrid(data: MSXData): {
       rowSelAnchor = modelId;
     }
     applyRowSelectionToDOM();
+    syncCellsFromRowSelection();
   });
 
   // ── Gutter click — × hide button ─────────────────────────────────────────
@@ -512,6 +528,7 @@ export function buildGrid(data: MSXData): {
     selectRowRange(rowDragAnchor, modelId);
     rowSelAnchor = modelId;
     applyRowSelectionToDOM();
+    syncCellsFromRowSelection();
   }, true);
 
   document.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -530,6 +547,13 @@ export function buildGrid(data: MSXData): {
     if (!tr?.dataset.modelId) return; // gutter or gap indicator rows won't match
 
     e.preventDefault(); // prevent browser text-selection on drag
+
+    // Direct cell interaction clears any gutter row selection
+    if (selectedRows.size > 0) {
+      selectedRows.clear();
+      rowSelAnchor = null;
+      applyRowSelectionToDOM();
+    }
 
     const modelId = Number(tr.dataset.modelId);
     const colIdx = Number(td.dataset.colIndex);

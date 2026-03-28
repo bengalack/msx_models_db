@@ -202,8 +202,10 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - Click and drag across gutter numbers: selects all rows touched while the mouse button is held.
 - CTRL/CMD + click gutter number: toggles the row in/out of selection without clearing others.
 - SHIFT + click gutter number: selects the contiguous range between the last-clicked row (anchor) and the clicked row.
-- Escape: clears row selection.
-- Visual: inverted gutter cell only (background ↔ text swap). Data cells in the row are not highlighted.
+- Escape: clears both row selection and cell selection.
+- Visual (gutter): inverted colors on the gutter cell (background ↔ text swap).
+- Visual (cells): all data cells of selected rows also receive the standard `cell--selected` highlight.
+- Clicking any data cell directly clears row selection and starts a new independent cell selection.
 - Not copied: row selection has no effect on Ctrl+C / TSV output.
 
 ### Row hiding via × button
