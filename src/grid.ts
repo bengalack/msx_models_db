@@ -182,6 +182,7 @@ export function buildGrid(data: MSXData): {
   getHiddenRows: () => ReadonlySet<number>;
   hideRow: (modelId: number) => void;
   getSelectedCells: () => ReadonlySet<string>;
+  copySelection: () => string;
 } {
   const wrap = document.createElement('div');
   wrap.className = 'grid-wrap';
@@ -637,6 +638,34 @@ export function buildGrid(data: MSXData): {
     }
   }
 
+  // ── Clipboard copy ────────────────────────────────────────────────────
+  function copySelection(): string {
+    const visibleModelIds = Array.from(tbody.querySelectorAll<HTMLTableRowElement>('tr[data-model-id]'))
+      .map(tr => Number(tr.dataset.modelId));
+    const visibleColIdxs = data.columns.map((_, i) => i).filter(i => !hiddenCols.has(i));
+
+    // Group selectedCells by visible row, in visible order
+    const rowMap = new Map<number, number[]>();
+    for (const modelId of visibleModelIds) {
+      const cols = visibleColIdxs.filter(c => selectedCells.has(selKey(modelId, c)));
+      if (cols.length > 0) rowMap.set(modelId, cols);
+    }
+    if (rowMap.size === 0) return '';
+
+    const lines: string[] = [];
+    for (const [modelId, cols] of rowMap) {
+      const model = data.models.find(m => m.id === modelId);
+      const fields = cols.map(c => {
+        const raw = model && c < model.values.length ? model.values[c] : null;
+        if (raw === null || raw === undefined || raw === '') return '';
+        if (typeof raw === 'boolean') return raw ? 'Yes' : 'No';
+        return String(raw);
+      });
+      lines.push(fields.join('\t'));
+    }
+    return lines.join('\n');
+  }
+
   wrap.appendChild(table);
-  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols, getHiddenRows, hideRow, getSelectedCells };
+  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols, getHiddenRows, hideRow, getSelectedCells, copySelection };
 }

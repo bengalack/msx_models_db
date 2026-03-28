@@ -1,0 +1,25 @@
+/* ── Status bar ───────────────────────────────────────────────────────────── */
+
+.status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 11px;
+  font-family: inherit;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 100;
+}
+
+.status-bar--visible {
+  opacity: 1;
+}

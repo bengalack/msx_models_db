@@ -25,12 +25,12 @@
     - SHIFT+click: extend selection rectangle from anchor to clicked cell
     - Click+drag: select cells covered by drag (snap to cell on mouseenter)
     - Selected cells: accent-dim fill + solid accent border; dark mode adds glow
-
-- Now / Next
   - Clipboard copy
     - CTRL+C / CMD+C copies selected cells as TSV (columns tab-separated, rows newline-separated)
     - Fallback to execCommand('copy') if clipboard API unavailable
     - Status bar (bottom, 24px) shows "Copied N cell(s)"
+
+- Now / Next
   - URL state codec + sync
     - Implement ViewState binary codec (versioned format v1)
     - Encode: sort, filters, hidden cols, hidden rows, collapsed groups, selected cells → Uint8Array → base64
