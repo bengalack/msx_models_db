@@ -190,10 +190,12 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 ### Toolbar
 - Left: "MSX Models DB" title (H1)
 - Right: `[⊞ Columns]` button (opens column picker panel), `[≡ Filters]` toggle, `[? Help]` button, `[◑]` dark/light mode toggle
-- Column picker panel: a floating panel listing all columns grouped by group, each with a checkbox; closes on outside click
-- Help panel: a floating panel (300×200px) anchored below the toolbar with help/reference text; opens on `[? Help]` click; button shows active state (inverted colors) while open; closes on outside click or Escape
+- Column picker panel: a floating panel listing all columns grouped by group, each with a checkbox; positioned directly below the Columns button (left-aligned)
+- Help panel: a floating panel (300×200px) positioned directly below the Help button (left-aligned); opens on `[? Help]` click
+- Both Columns and Help buttons show active state (inverted colors) while their respective panel is open
+- Clicking outside a floating panel (anywhere on the grid, header, or page) dismisses it and restores the button to normal state; Escape also dismisses
 - Only one floating panel (Columns or Help) can be open at a time — opening one closes the other
-- Floating panels must never overlap the browser scrollbar or extend beyond the viewport; they are constrained by `max-height: calc(100vh - 70px)` and `max-width: calc(100vw - 16px)`, with internal scrolling when content overflows
+- Floating panels must never overlap the browser scrollbar or extend beyond the viewport; constrained by `max-height: calc(100vh - 88px)`, with internal scrolling when content overflows
 
 ### Dark/light mode toggle
 - Icon-only button: `◐` (half-moon)

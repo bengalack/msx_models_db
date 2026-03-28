@@ -104,7 +104,7 @@
 .help-panel {
   position: absolute;
   top: calc(100% + 2px);
-  right: 0;               /* anchor to button's right edge — grows leftward */
+  left: 0;                /* align to button's left edge, directly below */
   z-index: 200;
   width: 300px;
   height: 200px;

@@ -61,6 +61,7 @@ if (!window.MSX_DATA) {
       openPicker();
     }
     pickerOpen = !pickerOpen;
+    colsBtnEl.classList.toggle('toolbar__btn--active', pickerOpen);
   }
 
   // ── Help panel ──────────────────────────────────────────────────────────
@@ -74,7 +75,7 @@ if (!window.MSX_DATA) {
     if (helpOpen) {
       helpPanel.hidden = true;
     } else {
-      if (pickerOpen) { closePicker(); pickerOpen = false; }
+      if (pickerOpen) { closePicker(); pickerOpen = false; colsBtnEl.classList.remove('toolbar__btn--active'); }
       helpPanel.hidden = false;
     }
     helpOpen = !helpOpen;
@@ -88,7 +89,7 @@ if (!window.MSX_DATA) {
     filtersBtnEl.classList.toggle('toolbar__btn--active', filtersOn);
   }
 
-  const { element: toolbarEl, filtersBtn: filtersBtnEl, helpBtn: helpBtnEl, helpWrap } = buildToolbar(handleFiltersToggle, togglePicker, toggleHelp);
+  const { element: toolbarEl, colsBtn: colsBtnEl, filtersBtn: filtersBtnEl, helpBtn: helpBtnEl, helpWrap } = buildToolbar(handleFiltersToggle, togglePicker, toggleHelp);
   toolbarEl.appendChild(pickerEl);
   helpWrap.appendChild(helpPanel);
   document.body.appendChild(toolbarEl);
@@ -142,6 +143,7 @@ if (!window.MSX_DATA) {
     if (pickerOpen && !toolbarEl.contains(e.target as Node)) {
       closePicker();
       pickerOpen = false;
+      colsBtnEl.classList.remove('toolbar__btn--active');
     }
     if (helpOpen && !toolbarEl.contains(e.target as Node)) {
       helpPanel.hidden = true;
@@ -156,6 +158,7 @@ if (!window.MSX_DATA) {
       if (pickerOpen) {
         closePicker();
         pickerOpen = false;
+        colsBtnEl.classList.remove('toolbar__btn--active');
       }
       if (helpOpen) {
         helpPanel.hidden = true;
