@@ -151,6 +151,7 @@
 
 .col-header {
   height: 38px;           /* room for 2 lines of 11px text */
+  max-width: 5em;         /* constrain so short-label headers wrap to 2 lines */
   position: sticky;
   top: 28px; /* below group header row */
   z-index: 10;
@@ -164,6 +165,7 @@
   text-align: left;
   border-bottom: 1px solid var(--color-border-strong);
   border-right: 1px solid var(--color-border);
+  overflow: hidden;
   vertical-align: middle;
   cursor: pointer;
   user-select: none;
@@ -182,13 +184,15 @@
   background: var(--color-header-hover);
 }
 
-.col-header--sort-asc::after {
-  content: ' ↑';
+/* Sort arrow inside the text span so it stays on the same line as text.
+   \00a0 = non-breaking space — prevents the arrow breaking onto its own line. */
+.col-header--sort-asc .col-header__text::after {
+  content: '\00a0↑';
   color: var(--color-sort-active);
 }
 
-.col-header--sort-desc::after {
-  content: ' ↓';
+.col-header--sort-desc .col-header__text::after {
+  content: '\00a0↓';
   color: var(--color-sort-active);
 }
 
