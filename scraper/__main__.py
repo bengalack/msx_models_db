@@ -6,8 +6,9 @@ import argparse
 import json
 import logging
 import sys
+from pathlib import Path
 
-from . import msxorg, openmsx
+from . import merge, msxorg, openmsx
 
 
 def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
@@ -32,6 +33,40 @@ def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
         print(f"Wrote {len(models)} models to {args.output}")
     else:
         print(output)
+
+
+def cmd_merge(args: argparse.Namespace) -> None:
+    """Merge openMSX and msx.org datasets."""
+    with open(args.openmsx, encoding="utf-8") as f:
+        openmsx_data = json.load(f)
+    with open(args.msxorg, encoding="utf-8") as f:
+        msxorg_data = json.load(f)
+
+    resolutions = {}
+    if args.resolutions:
+        resolutions = merge.load_resolutions(Path(args.resolutions))
+
+    merged, conflicts = merge.merge_models(
+        openmsx_data, msxorg_data, resolutions=resolutions,
+    )
+
+    merge.print_conflict_summary(conflicts)
+
+    # Write merged output.
+    output = json.dumps(merged, indent=2, ensure_ascii=False)
+    if args.output:
+        with open(args.output, "w", encoding="utf-8") as f:
+            f.write(output + "\n")
+        print(f"Wrote {len(merged)} merged models to {args.output}")
+    else:
+        print(output)
+
+    # Write conflicts file.
+    if conflicts:
+        conflicts_path = Path(args.conflicts or "data/conflicts.json")
+        merge.save_conflicts(conflicts, conflicts_path)
+        print(f"Wrote {len(conflicts)} conflicts to {conflicts_path}")
+        print("Edit the 'use' field in that file, then re-run merge with --resolutions")
 
 
 def main() -> None:
@@ -80,6 +115,32 @@ def main() -> None:
         help="Delay between requests in seconds (default: 0.5)",
     )
     p_msxorg.set_defaults(func=cmd_fetch_msxorg)
+
+    # ── merge ───────────────────────────────────────────────────────
+    p_merge = sub.add_parser(
+        "merge",
+        help="Merge openMSX and msx.org data into a single dataset",
+    )
+    p_merge.add_argument(
+        "--openmsx", required=True,
+        help="Path to openMSX raw JSON file",
+    )
+    p_merge.add_argument(
+        "--msxorg", required=True,
+        help="Path to msx.org raw JSON file",
+    )
+    p_merge.add_argument(
+        "-o", "--output", help="Output merged JSON file path (default: stdout)"
+    )
+    p_merge.add_argument(
+        "--conflicts", default=None,
+        help="Output file for unresolved conflicts (default: data/conflicts.json)",
+    )
+    p_merge.add_argument(
+        "--resolutions", default=None,
+        help="Path to conflict resolution file (previously edited conflicts.json)",
+    )
+    p_merge.set_defaults(func=cmd_merge)
 
     args = parser.parse_args()
 
