@@ -297,13 +297,12 @@ thead .gutter {
   color: var(--color-text-muted);
 }
 
-/* Hyperlink cells — inherit theme color, underline only on hover */
+/* Hyperlink cells — accent color always, underline on hover */
 .cell-link {
-  color: inherit;
+  color: var(--color-accent);
   text-decoration: none;
 }
 .cell-link:hover {
-  color: var(--color-accent);
   text-decoration: underline;
 }
 
