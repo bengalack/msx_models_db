@@ -32,7 +32,7 @@ document.body.appendChild(header);
 if (!window.MSX_DATA) {
   // eslint-disable-next-line no-console
   console.error('[MSX Models DB] MSX_DATA not found. Is data.js loaded before bundle.js?');
-  document.body.appendChild(buildToolbar(() => { /* no-op */ }, () => { /* no-op */ }));
+  document.body.appendChild(buildToolbar(() => { /* no-op */ }, () => { /* no-op */ }).element);
   const err = document.createElement('p');
   err.style.color = 'var(--color-danger)';
   err.style.padding = '16px';
@@ -62,7 +62,14 @@ if (!window.MSX_DATA) {
     pickerOpen = !pickerOpen;
   }
 
-  const toolbarEl = buildToolbar(toggleFilters, togglePicker);
+  let filtersOn = false;
+  function handleFiltersToggle(): void {
+    toggleFilters();
+    filtersOn = !filtersOn;
+    filtersBtnEl.classList.toggle('toolbar__btn--active', filtersOn);
+  }
+
+  const { element: toolbarEl, filtersBtn: filtersBtnEl } = buildToolbar(handleFiltersToggle, togglePicker);
   toolbarEl.appendChild(pickerEl);
   document.body.appendChild(toolbarEl);
   document.body.appendChild(gridEl);

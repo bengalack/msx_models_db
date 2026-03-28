@@ -35,6 +35,17 @@
   background: var(--color-surface-alt);
 }
 
+.toolbar__btn--active {
+  background: var(--color-text);
+  color: var(--color-header-bg);
+  border-color: var(--color-text);
+}
+
+.toolbar__btn--active:hover {
+  background: var(--color-text-muted);
+  border-color: var(--color-text-muted);
+}
+
 /* ── Column picker panel ─────────────────────────────────────────────────── */
 
 .col-picker {

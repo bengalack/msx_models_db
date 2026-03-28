@@ -1,10 +1,13 @@
-export function buildToolbar(onFiltersToggle: () => void, onColsToggle: () => void): HTMLElement {
+export function buildToolbar(
+  onFiltersToggle: () => void,
+  onColsToggle: () => void,
+): { element: HTMLElement; filtersBtn: HTMLButtonElement } {
   const toolbar = document.createElement('div');
   toolbar.className = 'toolbar';
 
   const colsBtn = document.createElement('button');
   colsBtn.className = 'toolbar__btn';
-  colsBtn.textContent = '⊞ Columns';
+  colsBtn.textContent = '\u229e Columns';
   colsBtn.addEventListener('click', onColsToggle);
 
   const filtersBtn = document.createElement('button');
@@ -15,5 +18,5 @@ export function buildToolbar(onFiltersToggle: () => void, onColsToggle: () => vo
   toolbar.appendChild(colsBtn);
   toolbar.appendChild(filtersBtn);
 
-  return toolbar;
+  return { element: toolbar, filtersBtn };
 }
