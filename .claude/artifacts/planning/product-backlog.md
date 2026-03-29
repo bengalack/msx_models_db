@@ -31,12 +31,6 @@
     - Status bar (bottom, 24px) shows "Copied N cell(s)"
 
 - Now / Next
-
-- Later
-  - ID registry (Python)
-    - registry.py: load / save / match-by-natural-key / assign-new / retire
-    - Pre-populate id-registry.json with column IDs (columns are fixed; assign once)
-    - Unit tests: pytest covering match-before-create, no-reuse, retire behaviour
   - Scraper — openMSX XML source
     - Fetch machine XML file listing via GitHub API (/repos/openMSX/openMSX/contents/share/machines)
     - Fetch and parse each XML file with lxml recover=True (lenient — files are non-strict)
@@ -53,10 +47,9 @@
     - Match models from both sources by natural key (manufacturer + model name)
     - For conflicting field values: print summary, prompt maintainer to choose per conflict
     - For fields present in only one source: use that value without prompting
-  - Scraper — write output
-    - Write docs/data.js (window.MSX_DATA = {...} with full MSXData payload)
-    - Write data/id-registry.json (updated registry)
-    - Print run summary: N models written, M conflicts resolved, K parse failures
+
+- Later
+  - Scraper — write output (replaced by column-config-and-registry feature)
   - CI (GitHub Actions)
     - On push to main: npm run lint, npm run typecheck, npm test --run, npm run build
     - On push to main: pip install -r requirements.txt && pytest tests/scraper/
@@ -82,6 +75,13 @@
     - Restore on page load; fall back to show-all if hash empty or unreadable
     - 29 Vitest codec unit tests (round-trip, boundary, version/compat, resilience, URL-layer)
   - Project scaffold (Vite + TypeScript, Python scraper stub, docs/ on main)
+  - Column configuration + ID registry
+    - Single-source column config (scraper/columns.py): Group/Column dataclasses, validation, GROUPS/COLUMNS definitions
+    - IDRegistry (scraper/registry.py): stable integer IDs, load/save, assign, retire
+    - Build pipeline (scraper/build.py): merge → derive → assign IDs → write data.js
+    - `python -m scraper build [--fetch] [--resolutions]` CLI command
+    - 41 Python tests (columns, registry, build integration)
+    - Removed src/columns.ts (column config is now Python-only)
   - Data schema + seed data (TypeScript types, schema.md, 10-model seed, id-registry.json)
   - Theme system (CSS custom properties, dark/light toggle, localStorage persistence)
   - Grid rendering (display only — header rows, toolbar, data rows, gutter, null/em-dash, overflow tooltip)
