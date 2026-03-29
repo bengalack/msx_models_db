@@ -11,6 +11,8 @@ from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup, Tag
 
+from .exclude import ExcludeList
+
 log = logging.getLogger(__name__)
 
 BASE_URL = "https://www.msx.org"
@@ -329,6 +331,7 @@ def fetch_all(
     *,
     delay: float = 0.5,
     limit: int | None = None,
+    exclude_list: ExcludeList | None = None,
 ) -> list[dict[str, Any]]:
     """Fetch and parse all msx.org model pages. Returns list of model dicts."""
     if session is None:
@@ -340,6 +343,7 @@ def fetch_all(
         pages = pages[:limit]
 
     models: list[dict[str, Any]] = []
+    excluded = 0
     skipped = 0
     errors = 0
 
@@ -352,7 +356,16 @@ def fetch_all(
             resp.raise_for_status()
             result = parse_model_page(resp.content, standard, title)
             if result:
-                models.append(result)
+                if exclude_list and exclude_list.is_excluded(
+                    result.get("manufacturer"), result.get("model")
+                ):
+                    log.debug(
+                        "[exclude:skip] Excluded model | manufacturer=%s model=%s source=msxorg",
+                        result.get("manufacturer"), result.get("model"),
+                    )
+                    excluded += 1
+                else:
+                    models.append(result)
             else:
                 skipped += 1
         except Exception:
@@ -365,8 +378,8 @@ def fetch_all(
     total = len(pages)
     fail_rate = (errors / total * 100) if total else 0
     log.info(
-        "msx.org: %d models extracted, %d skipped, %d errors (%.1f%% failure rate)",
-        len(models), skipped, errors, fail_rate,
+        "msx.org: %d models extracted, %d excluded, %d skipped, %d errors (%.1f%% failure rate)",
+        len(models), excluded, skipped, errors, fail_rate,
     )
     if total and fail_rate > 20:
         log.error(

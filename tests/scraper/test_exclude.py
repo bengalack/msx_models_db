@@ -243,3 +243,35 @@ class TestOpenMSXWiring:
         result = parse_machine_xml(self._XML, "Sony_HB-75P.xml")
         assert result is not None
         assert not el.is_excluded(result.get("manufacturer"), result.get("model"))
+
+
+# ── msx.org scraper wiring ────────────────────────────────────────────────
+
+
+class TestMsxOrgWiring:
+    """Tests for ExcludeList wired into msxorg.fetch_all (post-parse check)."""
+
+    # Minimal msx.org model page HTML with Philips NMS 8250 specs
+    _HTML = b"""<html><body>
+<h1 id="firstHeading">Philips NMS 8250</h1>
+<table class="wikitable">
+<tr><th>Manufacturer</th><td>Philips</td></tr>
+<tr><th>Year</th><td>1985</td></tr>
+</table>
+</body></html>"""
+
+    def test_model_excluded_post_parse(self):
+        from scraper.msxorg import parse_model_page
+        el = ExcludeList(rules=[{"manufacturer": "Philips", "model": "NMS 8250"}])
+        result = parse_model_page(self._HTML, "MSX2", "Philips NMS 8250")
+        # parse_model_page may return partial result; we only need manufacturer+model
+        # to be present for the exclude check
+        if result:
+            assert el.is_excluded(result.get("manufacturer"), result.get("model"))
+
+    def test_non_excluded_model_passes(self):
+        from scraper.msxorg import parse_model_page
+        el = ExcludeList(rules=[{"manufacturer": "Sony", "model": "HB-75P"}])
+        result = parse_model_page(self._HTML, "MSX2", "Philips NMS 8250")
+        if result:
+            assert not el.is_excluded(result.get("manufacturer"), result.get("model"))

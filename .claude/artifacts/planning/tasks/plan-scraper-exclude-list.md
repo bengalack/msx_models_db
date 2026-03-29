@@ -309,16 +309,16 @@ Feature: Scraper exclude list
   - [x] T-022 `pytest tests/scraper/ -v` — 32 passed, no regressions
   - [x] T-023 Commit: `feat: wire exclude list into openMSX scraper (filename + model checks)`
 
-- [ ] **Chunk 3: Wire into msx.org scraper**
-  - [ ] T-030 In `scraper/msxorg.py`:
+- [x] **Chunk 3: Wire into msx.org scraper**
+  - [x] T-030 In `scraper/msxorg.py`:
     - Add `exclude_list: ExcludeList | None = None` to `fetch_all()`
     - After `parse_model_page` returns a result, check `exclude_list.is_excluded(result.get('manufacturer'), result.get('model'))`; if excluded log DEBUG and increment `excluded` counter
     - Extend summary log line to include `excluded=N`
-  - [ ] T-031 Add tests:
-    - `test_msxorg_model_excluded_post_parse` — matching model dropped
-    - `test_msxorg_non_excluded_passes` — non-matching model passes through
-  - [ ] T-032 `pytest tests/scraper/ -v` — confirm all green
-  - [ ] T-033 Commit: `feat: wire exclude list into msx.org scraper (post-parse model check)`
+  - [x] T-031 Added `TestMsxOrgWiring` to `tests/scraper/test_exclude.py` (2 tests):
+    - `test_model_excluded_post_parse` — matching model excluded
+    - `test_non_excluded_model_passes` — non-matching model passes through
+  - [x] T-032 `pytest tests/scraper/ -v` — 34 passed, no regressions
+  - [x] T-033 Commit: `feat: wire exclude list into msx.org scraper (post-parse model check)`
 
 - [ ] **Chunk 4: Wire into build pipeline + `data/exclude.json`**
   - [ ] T-040 Add `EXCLUDE_PATH = Path("data/exclude.json")` to `scraper/build.py`
