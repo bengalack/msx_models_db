@@ -232,21 +232,21 @@ Feature: Slot map column definitions and LUT
   - [x] T-011 Generate and add 64 Column entries (IDs 30–93, keys `slotmap_{ms}_{ss}_{p}`, labels `{ms}-{ss}/{p}`, group `slotmap_{ms}`, type "string") to COLUMNS in `scraper/columns.py`
   - [x] T-012 Tests: create `tests/scraper/test_columns_slotmap.py` — assert 12 groups, 93 columns, no duplicate IDs/keys, correct group labels/order, all slotmap key/label patterns valid
 
-- [ ] Chunk 2: LUT file + load/validate module
-  - [ ] T-020 Create `data/slotmap-lut.json` with 13 starter rules (MAIN, SUB, KNJ, JE, FW, DSK, MUS, RS2, MM, PM, RAM, EXP, ~ — see problem-description-slotmap.md Starter LUT Vocabulary table for element/id_pattern/abbr/tooltip values)
-  - [ ] T-021 Create `scraper/slotmap_lut.py` with `load_slotmap_lut(path: str | Path) -> list[dict]` — reads JSON, validates: no duplicate abbrs, all id_pattern values compile as regex; raises `ValueError` or `FileNotFoundError` on failure; logs `[INFO] Loaded slotmap LUT: {n} rules from {path}` on success
-  - [ ] T-022 Add `compact_lut(rules: list[dict]) -> dict[str, str]` to `scraper/slotmap_lut.py` — returns `{abbr: tooltip}` flat dict
-  - [ ] T-023 Tests: create `tests/scraper/test_slotmap_lut.py` — happy-path load (13 rules), duplicate abbr raises ValueError, malformed regex raises ValueError, missing file raises FileNotFoundError, compact_lut returns abbr→tooltip only
+- [x] Chunk 2: LUT file + load/validate module
+  - [x] T-020 Create `data/slotmap-lut.json` with 13 starter rules (MAIN, SUB, KNJ, JE, FW, DSK, MUS, RS2, MM, PM, RAM, EXP, ~ — see problem-description-slotmap.md Starter LUT Vocabulary table for element/id_pattern/abbr/tooltip values)
+  - [x] T-021 Create `scraper/slotmap_lut.py` with `load_slotmap_lut(path: str | Path) -> list[dict]` — reads JSON, validates: no duplicate abbrs, all id_pattern values compile as regex; raises `ValueError` or `FileNotFoundError` on failure; logs `[INFO] Loaded slotmap LUT: {n} rules from {path}` on success
+  - [x] T-022 Add `compact_lut(rules: list[dict]) -> dict[str, str]` to `scraper/slotmap_lut.py` — returns `{abbr: tooltip}` flat dict
+  - [x] T-023 Tests: create `tests/scraper/test_slotmap_lut.py` — happy-path load (13 rules), duplicate abbr raises ValueError, malformed regex raises ValueError, missing file raises FileNotFoundError, compact_lut returns abbr→tooltip only
 
-- [ ] Chunk 3: Wire LUT into build + embed in data.js
-  - [ ] T-030 In `scraper/build.py`: load LUT via `load_slotmap_lut("data/slotmap-lut.json")` early in build flow (before output write); pass `compact_lut(rules)` to output step
-  - [ ] T-031 In `scraper/output.py`: add `slotmap_lut` key to the MSXData dict written to `data.js`, set to the compact LUT dict
-  - [ ] T-032 Tests: extend build integration test — run full build, assert `data.js` contains `slotmap_lut` with all 13 starter abbrs as keys
+- [x] Chunk 3: Wire LUT into build + embed in data.js
+  - [x] T-030 In `scraper/build.py`: load LUT via `load_slotmap_lut("data/slotmap-lut.json")` early in build flow (before output write); pass `compact_lut(rules)` to output step
+  - [x] T-031 In `scraper/build.py`: add `slotmap_lut` key to the MSXData payload written to `data.js` (note: no separate output.py exists — payload is assembled inline in build.py)
+  - [x] T-032 Tests: extend build integration test — run full build, assert `data.js` contains `slotmap_lut` with all 13 starter abbrs as keys
 
-- [ ] Quality gate
-  - [ ] T-900 Run `python -m pytest tests/scraper/ -v` — all green
-  - [ ] T-901 Run `npm test -- --run` — all green
-  - [ ] T-902 Run `npm run lint && npm run typecheck` — clean
+- [x] Quality gate
+  - [x] T-900 Run `python -m pytest tests/scraper/ -v` — all green (116 passed)
+  - [x] T-901 Run `npm test -- --run` — all green (31 passed)
+  - [x] T-902 Run `npm run lint && npm run typecheck` — clean
 
 - [ ] Merge to trunk
   - [ ] T-950 Squash intermediate commits into logical commits (one per chunk)

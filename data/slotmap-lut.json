@@ -1,0 +1,80 @@
+[
+  {
+    "element": "ROM",
+    "id_pattern": "MSX BIOS with BASIC ROM|Main ROM",
+    "abbr": "MAIN",
+    "tooltip": "MSX BIOS with BASIC ROM"
+  },
+  {
+    "element": "ROM",
+    "id_pattern": "Sub.ROM",
+    "abbr": "SUB",
+    "tooltip": "Sub ROM"
+  },
+  {
+    "element": "ROM",
+    "id_pattern": "Kanji",
+    "abbr": "KNJ",
+    "tooltip": "Kanji driver"
+  },
+  {
+    "element": "ROM",
+    "id_pattern": "MSX-JE",
+    "abbr": "JE",
+    "tooltip": "MSX-JE"
+  },
+  {
+    "element": "ROM",
+    "id_pattern": "Firmware|Arabic ROM|SWP ROM|.*Cockpit.*|Desk Pac.*",
+    "abbr": "FW",
+    "tooltip": "Firmware"
+  },
+  {
+    "element": "WD2793|TC8566AF",
+    "id_pattern": null,
+    "abbr": "DSK",
+    "tooltip": "Disk ROM"
+  },
+  {
+    "element": "MSX-MUSIC|FMPAC",
+    "id_pattern": null,
+    "abbr": "MUS",
+    "tooltip": "MSX Music"
+  },
+  {
+    "element": "MSX-RS232",
+    "id_pattern": null,
+    "abbr": "RS2",
+    "tooltip": "RS-232C Interface"
+  },
+  {
+    "element": "MemoryMapper",
+    "id_pattern": null,
+    "abbr": "MM",
+    "tooltip": "Memory Mapper"
+  },
+  {
+    "element": "PanasonicRAM",
+    "id_pattern": null,
+    "abbr": "PM",
+    "tooltip": "Panasonic Mapper"
+  },
+  {
+    "element": "RAM",
+    "id_pattern": null,
+    "abbr": "RAM",
+    "tooltip": "RAM (no memory mapper)"
+  },
+  {
+    "element": "secondary",
+    "id_pattern": null,
+    "abbr": "EXP",
+    "tooltip": "Expansion Bus"
+  },
+  {
+    "element": "__sentinel__",
+    "id_pattern": null,
+    "abbr": "~",
+    "tooltip": "Not expanded"
+  }
+]

@@ -111,6 +111,88 @@ class TestBuildPipeline:
         assert reg.models["sony|hb-75p"] == 42  # preserved
 
 
+class TestBuildSlotmapLUT:
+    """Integration tests for slotmap LUT wired into build pipeline."""
+
+    STARTER_ABBRS = {
+        "MAIN", "SUB", "KNJ", "JE", "FW",
+        "DSK", "MUS", "RS2", "MM", "PM",
+        "RAM", "EXP", "~",
+    }
+
+    def _run_build(self, tmp_path):
+        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        openmsx_path = tmp_path / "openmsx.json"
+        msxorg_path = tmp_path / "msxorg.json"
+        output_path = tmp_path / "data.js"
+        openmsx_path.write_text(json.dumps(raw))
+        msxorg_path.write_text(json.dumps([]))
+        build(
+            openmsx_path=openmsx_path,
+            msxorg_path=msxorg_path,
+            registry_path=tmp_path / "registry.json",
+            output_path=output_path,
+        )
+        return output_path
+
+    def test_data_js_contains_slotmap_lut_key(self, tmp_path):
+        output_path = self._run_build(tmp_path)
+        content = output_path.read_text()
+        assert '"slotmap_lut"' in content
+
+    def test_slotmap_lut_has_all_starter_abbrs(self, tmp_path):
+        output_path = self._run_build(tmp_path)
+        # Extract the JSON payload from window.MSX_DATA = {...};
+        content = output_path.read_text()
+        json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
+        json_end = content.rindex(";")
+        data = json.loads(content[json_start:json_end])
+        lut = data.get("slotmap_lut", {})
+        assert isinstance(lut, dict)
+        assert set(lut.keys()) == self.STARTER_ABBRS
+
+    def test_slotmap_lut_values_are_strings(self, tmp_path):
+        output_path = self._run_build(tmp_path)
+        content = output_path.read_text()
+        json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
+        json_end = content.rindex(";")
+        data = json.loads(content[json_start:json_end])
+        for abbr, tooltip in data["slotmap_lut"].items():
+            assert isinstance(tooltip, str), f"Tooltip for {abbr!r} is not a string"
+
+    def test_data_js_has_12_groups(self, tmp_path):
+        output_path = self._run_build(tmp_path)
+        content = output_path.read_text()
+        json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
+        json_end = content.rindex(";")
+        data = json.loads(content[json_start:json_end])
+        assert len(data["groups"]) == 12
+
+    def test_data_js_has_93_columns(self, tmp_path):
+        output_path = self._run_build(tmp_path)
+        content = output_path.read_text()
+        json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
+        json_end = content.rindex(";")
+        data = json.loads(content[json_start:json_end])
+        assert len(data["columns"]) == 93
+
+    def test_missing_lut_file_aborts_build(self, tmp_path):
+        import pytest
+        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        openmsx_path = tmp_path / "openmsx.json"
+        msxorg_path = tmp_path / "msxorg.json"
+        openmsx_path.write_text(json.dumps(raw))
+        msxorg_path.write_text(json.dumps([]))
+        with pytest.raises(FileNotFoundError, match="(?i)slot.?map"):
+            build(
+                openmsx_path=openmsx_path,
+                msxorg_path=msxorg_path,
+                registry_path=tmp_path / "registry.json",
+                output_path=tmp_path / "data.js",
+                slotmap_lut_path=tmp_path / "nonexistent-lut.json",
+            )
+
+
 class TestBuildExcludeList:
     """Integration tests for exclude list wired into build pipeline."""
 

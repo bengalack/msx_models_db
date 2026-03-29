@@ -17,6 +17,7 @@ from .columns import (
 )
 from .exclude import load_excludes
 from .registry import IDRegistry
+from .slotmap_lut import compact_lut, load_slotmap_lut
 
 log = logging.getLogger(__name__)
 
@@ -25,6 +26,7 @@ RAW_OPENMSX = Path("data/openmsx-raw.json")
 RAW_MSXORG = Path("data/msxorg-raw.json")
 REGISTRY_PATH = Path("data/id-registry.json")
 EXCLUDE_PATH = Path("data/exclude.json")
+SLOTMAP_LUT_PATH = Path("data/slotmap-lut.json")
 DATA_JS_PATH = Path("docs/data.js")
 
 
@@ -53,12 +55,15 @@ def build(
     msxorg_path: Path = RAW_MSXORG,
     registry_path: Path = REGISTRY_PATH,
     exclude_path: Path = EXCLUDE_PATH,
+    slotmap_lut_path: Path = SLOTMAP_LUT_PATH,
     output_path: Path = DATA_JS_PATH,
     resolutions_path: Path | None = None,
 ) -> None:
     """Run the full build pipeline."""
-    # Step 0: Load exclude list (fail fast before any I/O if file is malformed)
+    # Step 0: Load config files (fail fast before any I/O if files are malformed)
     exclude_list = load_excludes(exclude_path)
+    slotmap_rules = load_slotmap_lut(slotmap_lut_path)
+    slotmap_lut_compact = compact_lut(slotmap_rules)
 
     # Step 1: Fetch if requested
     if do_fetch:
@@ -184,6 +189,7 @@ def build(
         "groups": js_groups,
         "columns": js_columns,
         "models": js_models,
+        "slotmap_lut": slotmap_lut_compact,
     }
 
     # Step 7: Write output
