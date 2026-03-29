@@ -8,7 +8,7 @@ import logging
 import sys
 from pathlib import Path
 
-from . import merge, msxorg, openmsx
+from . import build as build_module, merge, msxorg, openmsx
 
 
 def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
@@ -33,6 +33,15 @@ def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
         print(f"Wrote {len(models)} models to {args.output}")
     else:
         print(output)
+
+
+def cmd_build(args: argparse.Namespace) -> None:
+    """Run the full build pipeline."""
+    resolutions_path = Path(args.resolutions) if args.resolutions else None
+    build_module.build(
+        do_fetch=args.fetch,
+        resolutions_path=resolutions_path,
+    )
 
 
 def cmd_merge(args: argparse.Namespace) -> None:
@@ -79,6 +88,21 @@ def main() -> None:
     )
 
     sub = parser.add_subparsers(dest="command")
+
+    # ── build ────────────────────────────────────────────────────────
+    p_build = sub.add_parser(
+        "build",
+        help="Build data.js from cached data (or --fetch fresh data first)",
+    )
+    p_build.add_argument(
+        "--fetch", action="store_true",
+        help="Fetch fresh data from msx.org and openMSX GitHub before building",
+    )
+    p_build.add_argument(
+        "--resolutions", default=None,
+        help="Path to conflict resolution file",
+    )
+    p_build.set_defaults(func=cmd_build)
 
     # ── fetch-openmsx ────────────────────────────────────────────────
     p_openmsx = sub.add_parser(
