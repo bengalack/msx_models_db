@@ -149,10 +149,11 @@ Bytes …:    filter_count (uint16)
     column_id (uint16)
     string_byte_length (uint16)
     UTF-8 bytes
-Bytes …:    selection_count (uint16)
-  Per selected cell:
+Bytes …:    selection_row_count (uint16)
+  Per selected row:
     model_id (uint16)
-    column_id (uint16)
+    col_bitset_byte_len (uint16)
+    col_bitset bytes (variable; bit N = column ID N is selected)
 ```
 Base64 encoding: replace `+`→`-`, `/`→`_`, strip `=`; reverse on decode.
 All multi-byte integers are big-endian (DataView default).

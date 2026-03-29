@@ -33,6 +33,12 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
 
 ## Functional Requirements
 
+- Page title
+  - Description: The page displays a title in the header showing authorship and data freshness.
+  - Priority: Must
+  - Acceptance Criteria:
+    - The page title (both the header text and `document.title`) is "MSX Models DB by Bengalack · YYYY-MM-DD", where YYYY-MM-DD is the `generated` date from the data file.
+
 - Grid display
   - Description: The page renders all in-scope MSX models as rows in a spreadsheet-like grid. Each column maps to a model attribute. The grid is the primary and only view.
   - Priority: Must
@@ -83,6 +89,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Clicking the × button hides that row if no rows are currently selected. If one or more rows are selected, clicking any × button hides all selected rows.
     - Hidden rows are not rendered in the grid.
     - A compact amber ▲ indicator appears in the gutter column only (not full-width) between visible rows whenever hidden rows exist in that gap; clicking it unhides those rows.
+    - The gap indicator dashed line renders below selected cells (selected cells visually cover the line).
     - There is no right-click context menu for row hiding.
     - Hidden row state is reflected in the URL.
 
@@ -108,6 +115,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - SHIFT+click selects the rectangular range from the last-clicked cell to the current cell.
     - Click+hold and drag selects the visual range covered by the drag.
     - Selected cells are visually distinct from unselected cells (e.g. background color change).
+    - Clicking outside the grid table on non-interactive space (not buttons, toolbar, headers, or gutter) clears all cell and row selection.
     - Selection state is reflected in the URL.
 
 - Clipboard copy
@@ -160,8 +168,21 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - The web page loads and renders correctly using only the data file.
     - Adding a new model to the data file is sufficient to have it appear in the grid on next page load.
 
+- Column configuration
+  - Description: All column definitions (groups, columns, metadata, data sources, and derived-column rules) are maintained in a single source of truth. Adding, removing, hiding, or retiring a column requires editing only that one file. All downstream artifacts (data.js, ID registry) are generated from it automatically.
+  - Priority: Must
+  - Acceptance Criteria:
+    - There is exactly one configuration file that defines all groups and columns with their full metadata (ID, key, label, short label, tooltip, group, type).
+    - Adding a new column requires adding one entry to this file (plus scraper extraction logic if the column is scraped from an external source).
+    - Removing a column during development (before the first public release) requires only deleting the entry from the configuration. No other files need manual changes.
+    - Retiring a column after the first public release is done by setting a flag on the entry. The column's ID is preserved forever for URL compatibility, but the column is excluded from the generated data.js output.
+    - A column can be marked as hidden: it is scraped and available as input to derived columns, but not shipped to the browser.
+    - Derived columns are supported. A derived column specifies a Python function that receives the full merged row (including hidden columns) and returns the computed value. Example: a "NMOS/CMOS" column that deduces its value from the VDP chipset field.
+    - Derived columns are computed during the merge/build step and stored in data.js — not computed at runtime in the browser.
+    - The web page requires no column configuration of its own; it reads all column and group definitions from data.js at load time.
+
 - Scraper process
-  - Description: A runnable script (not part of the web page) fetches model data from msx.org wiki pages and openMSX GitHub XML files, merges them, and writes the output to the JSON data file.
+  - Description: A runnable script (not part of the web page) fetches model data from msx.org wiki pages and openMSX GitHub XML files, merges them, computes derived columns, and writes the output to the JSON data file.
   - Priority: Must
   - Acceptance Criteria:
     - The scraper can be invoked by the maintainer with a single command.
@@ -171,6 +192,8 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Parse failures are logged clearly so the maintainer can investigate.
     - Running the scraper again overwrites the previous data file (idempotent on data; preserves the ID registry).
     - The scraper reads and updates a persistent ID registry to ensure stable IDs across runs.
+    - The scraper supports a build mode that skips fetching from external sources and instead uses previously cached raw data files on disk. This is the default mode; fetching is opt-in (e.g. via a `--fetch` flag).
+    - External sources (msx.org, openMSX GitHub) change infrequently; the maintainer fetches fresh data only when needed.
 
 ## Non-Functional Requirements
 
@@ -222,15 +245,26 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
 - Data refresh workflow
   - Trigger: Maintainer wants to update model data
   - Steps:
-    1. Maintainer runs the scraper command
-    2. Scraper fetches data from msx.org and openMSX GitHub
-    3. Merged JSON is written to the data file
-    4. Maintainer reviews the output and commits the updated JSON
+    1. Maintainer runs the scraper build command (uses cached raw data by default)
+    2. If fresh data is needed, maintainer adds a fetch flag to also scrape msx.org and openMSX GitHub
+    3. Scraper merges sources, computes derived columns, assigns stable IDs, and writes data.js
+    4. Maintainer reviews the output and commits the updated data files
     5. Updated page is deployed (or used locally)
   - Success End State: JSON and page reflect the latest known data
   - Failure States:
     - Scraper fails due to source page structure change
     - Conflicting data between sources is not handled
+
+- Development rebuild workflow
+  - Trigger: Maintainer has changed column configuration (added, removed, hidden, or retired a column, or updated a derivation rule) and wants to see the result
+  - Steps:
+    1. Maintainer edits the column configuration file
+    2. Maintainer runs the scraper build command (no fetch — uses cached raw data)
+    3. Scraper regenerates data.js with updated columns and values
+    4. Maintainer opens/reloads the page to verify
+  - Success End State: The grid reflects the column changes immediately without re-fetching external data
+  - Failure States:
+    - Column key does not match any scraped field and is not a derived column (value will be null for all models)
 
 ## Success Criteria
 - All MSX2, MSX2+, and MSX turbo R models from msx.org and openMSX XML are present in the grid.
@@ -243,5 +277,5 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
 - msx.org wiki and openMSX GitHub XML files are publicly accessible and scrapeable.
 - The number of in-scope models is small enough (likely < 200) that all rows can be rendered in the DOM without virtualization.
 - The maintainer has Node.js or Python available locally to run the scraper.
-- Column definitions (names and groups) are fixed at build/data time and do not change per-user at runtime.
+- Column definitions (names, groups, derived rules) are fixed at build/data time and do not change per-user at runtime. They are maintained in a single Python configuration file and generated into data.js by the scraper.
 - FPGA-based unofficial models will be included if they appear in the openMSX XML or have a dedicated msx.org wiki page.

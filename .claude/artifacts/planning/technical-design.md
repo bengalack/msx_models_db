@@ -27,8 +27,8 @@ No server is involved at any point. The two sub-systems only communicate through
   - External Interfaces: Reads `window.MSX_DATA` (set by data.js); writes URL hash via `history.replaceState`
 
 - Scraper (data pipeline)
-  - Responsibilities: Fetch, parse, merge, conflict-resolve, and write model data; maintain ID registry
-  - Owns Data: `data/id-registry.json` (source of truth for stable IDs); writes `docs/data.js`
+  - Responsibilities: Fetch, parse, merge, compute derived columns, conflict-resolve, and write model data; maintain model ID registry
+  - Owns Data: `scraper/columns.py` (single source of truth for column/group definitions); `data/id-registry.json` (source of truth for model IDs); writes `docs/data.js`
   - External Interfaces: HTTP GET to msx.org (HTML scraping); HTTP GET to raw.githubusercontent.com or GitHub API (XML files); stdin/stdout for conflict prompts
 
 ## Components
@@ -45,15 +45,21 @@ No server is involved at any point. The two sub-systems only communicate through
   - Depends On: Grid state types
   - Data Stores: URL hash fragment (`window.location.hash`)
 
+- Column Configuration
+  - Type: Python module (single source of truth)
+  - Responsibilities: Define all column groups, columns (with metadata, display order, types), derived-column rules, hidden/retired flags. All downstream artifacts are generated from this file.
+  - Depends On: -
+  - Data Stores: `scraper/columns.py` (source code)
+
 - Scraper CLI
   - Type: Job (offline Python script)
-  - Responsibilities: Scrape msx.org, parse openMSX XML, merge sources, prompt on conflicts, assign/reuse stable IDs, write data.js
-  - Depends On: id-registry.json, msx.org HTTP, GitHub raw HTTP
+  - Responsibilities: Scrape msx.org, parse openMSX XML, merge sources, compute derived columns, prompt on conflicts, assign/reuse stable model IDs, write data.js
+  - Depends On: `scraper/columns.py` (column config), id-registry.json (model IDs), msx.org HTTP, GitHub raw HTTP
   - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write)
 
 - ID Registry
   - Type: File artifact (JSON)
-  - Responsibilities: Map model/column natural keys to permanent integer IDs; record retired IDs
+  - Responsibilities: Map model natural keys to permanent integer IDs; record retired model IDs. Column IDs are defined in `scraper/columns.py` and are not part of the registry.
   - Depends On: -
   - Data Stores: `data/id-registry.json`
 
@@ -91,21 +97,20 @@ No server is involved at any point. The two sub-systems only communicate through
   - Data touched: in-memory selection state
   - Failure handling: If clipboard API unavailable (some file:// environments), fall back to `document.execCommand('copy')` on a hidden textarea
 
-- Scraper run
-  - Trigger: Maintainer runs `python -m scraper`
+- Scraper build (primary workflow)
+  - Trigger: Maintainer runs `python -m scraper build` (or `build --fetch` for fresh data)
   - Steps:
-    1. Load `data/id-registry.json`
-    2. Fetch list of MSX2/MSX2+/turboR model pages from msx.org category pages
-    3. Scrape each model page; extract fields; log parse failures without aborting
-    4. Fetch openMSX machine XML files from GitHub
-    5. Parse each XML; extract fields
-    6. Match scraped models to registry by natural key (manufacturer + model name); assign new IDs only for unmatched entries
-    7. Merge msx.org and openMSX data per model; for conflicting fields, print summary and prompt maintainer to choose
-    8. Write updated `data/id-registry.json`
-    9. Write `docs/data.js` with full MSXData payload
-    10. Print summary: N models written, M conflicts resolved, K parse failures
-  - Data touched: id-registry.json (read+write), docs/data.js (write)
-  - Failure handling: HTTP errors → retry once, then log and skip model. Parse failures → log field name and raw value, continue. If >20% of models fail to parse, abort before writing output.
+    1. Load column configuration from `scraper/columns.py` (groups, columns, derive functions); validate (no duplicate IDs, no ID 0, group refs valid, etc.)
+    2. Load cached raw data from `data/openmsx-raw.json` and `data/msxorg-raw.json`
+    3. If `--fetch`: fetch fresh data from msx.org and openMSX GitHub first, overwriting cached files
+    4. Merge msx.org and openMSX data per model; for conflicting fields, print summary and prompt maintainer to choose
+    5. Compute derived columns: for each model row, run every `Column.derive` callable; store results under the column's key
+    6. Load `data/id-registry.json`; match models by natural key (manufacturer + model name); assign new IDs for unmatched entries
+    7. Build output: generate `docs/data.js` with groups (from config), active columns (excluding hidden/retired), and model values[] positionally aligned to active columns
+    8. Atomic write `docs/data.js` and `data/id-registry.json`
+    9. Print summary: N models written, M conflicts resolved, K parse failures
+  - Data touched: id-registry.json (read+write), docs/data.js (write), cached raw JSON (read, or write if --fetch)
+  - Failure handling: HTTP errors → retry once, then log and skip model. Parse failures → log field name and raw value, continue. If >20% of models fail to parse, abort before writing output. Missing cached files without --fetch → error with clear message.
 
 ## Data Model
 
@@ -134,9 +139,9 @@ No server is involved at any point. The two sub-systems only communicate through
   - Retention: Regenerated by scraper; stable ID is permanent
 
 - IDRegistry (scraper tool, not shipped to browser)
-  - Purpose: Maps natural keys to stable integer IDs; records retired IDs
-  - Key fields: `version`, `models` (object: natural key → id), `retired_models` (int[]), `next_model_id`, `columns` (object: key → id), `next_column_id`
-  - Relationships: Source of truth for all ID assignment
+  - Purpose: Maps model natural keys to stable integer IDs; records retired model IDs. Column IDs are defined in `scraper/columns.py` and not tracked here.
+  - Key fields: `version` (2), `models` (object: natural key → id), `retired_models` (int[]), `next_model_id`
+  - Relationships: Source of truth for model ID assignment only
   - Retention: Committed to repo; never reset; append-only for retirements
 
 - ViewState (in-memory only, serialized to URL)
@@ -150,7 +155,7 @@ No server is involved at any point. The two sub-systems only communicate through
 ```
 Byte 0:     version (currently 0x01)
 Byte 1:     flags (reserved, 0x00)
-Bytes 2–3:  sort_column_id (uint16, 0x0000 = no sort)
+Bytes 2–3:  sort_column_id (uint16, 0x0000 = no sort; column ID 0 is reserved and must never be assigned)
 Byte 4:     sort_direction (0x00=asc, 0x01=desc)
 Bytes 5–8:  collapsed_groups bitmask (uint32, bit N = group ID N collapsed)
 Bytes 9–10: hidden_columns bitset byte length (uint16)
@@ -162,15 +167,16 @@ Bytes …:    filter_count (uint16)
     column_id (uint16)
     string_byte_length (uint16)
     utf8 bytes
-Bytes …:    selection_count (uint16)
-  Per selected cell:
-    model_id (uint16)
-    column_id (uint16)
+Bytes …:    selection_row_count (uint16)
+  Per selected row:
+    model_id             (uint16)
+    col_bitset_byte_len  (uint16)
+    col_bitset bytes     (variable; bit N = column ID N is selected)
 ```
 
-Entire buffer → `btoa(String.fromCharCode(...bytes))` → URL-safe base64 → `#` + result.
+Entire buffer → `btoa(String.fromCharCode(...bytes))` → URL-safe base64 (replace `+`→`-`, `/`→`_`, strip `=` padding) → `#` + result.
 
-Estimated size for 50 selected cells, all filters empty, no hidden rows: ~130 bytes → ~174 base64 chars.
+Estimated size for 50 selected cells across 10 rows, all filters empty, no hidden rows: ~90 bytes → ~120 base64 chars.
 
 Future format changes increment the version byte; the decoder checks version and falls back to empty state for unknown versions.
 
