@@ -68,6 +68,13 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Scraper — exclude list
+    - data/exclude.json: maintainer-edited, committed to repo
+    - Match by manufacturer+model (both scrapers, post-parse); "" = empty field; "*" = wildcard
+    - Match by filename (openMSX only, pre-fetch); exact match
+    - Missing file = no exclusions; malformed file = fail fast at startup
+    - Dead-rule WARN after each build run; per-scraper excluded count in summary log
+    - 34 unit tests (ExcludeList, load/validate, openMSX/msx.org wiring) + 2 build integration tests
   - URL state codec + sync
     - ViewState binary codec (versioned format v1, URL-safe base64)
     - Encode/decode: sort, filters, hidden cols/rows, collapsed groups, selected cells
