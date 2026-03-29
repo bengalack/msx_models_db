@@ -194,3 +194,52 @@ class TestLoadExcludes:
             el = load_excludes(path)
         assert any("All-wildcard" in r.message for r in caplog.records)
         assert len(el.rules) == 1
+
+
+# ── openMSX scraper wiring ────────────────────────────────────────────────
+
+
+class TestOpenMSXWiring:
+    """Tests for ExcludeList wired into openmsx.list_machine_files and fetch_all."""
+
+    # Minimal valid MSX2 XML for parse_machine_xml
+    _XML = b"""<?xml version="1.0" ?>
+<msxconfig>
+  <info>
+    <manufacturer>Sony</manufacturer>
+    <code>HB-75P</code>
+    <type>MSX2</type>
+    <release_year>1985</release_year>
+    <region>eu</region>
+  </info>
+  <devices/>
+</msxconfig>"""
+
+    def test_filename_excluded_before_fetch(self):
+        from scraper.openmsx import list_machine_files
+        from unittest.mock import MagicMock
+
+        el = ExcludeList(rules=[{"filename": "Sony_HB-75P.xml"}])
+        session = MagicMock()
+        session.get.return_value.json.return_value = [
+            {"type": "file", "name": "Sony_HB-75P.xml", "download_url": "http://x/Sony_HB-75P.xml"},
+            {"type": "file", "name": "Philips_NMS8250.xml", "download_url": "http://x/Philips_NMS8250.xml"},
+        ]
+        entries = list_machine_files(session, exclude_list=el)
+        names = [e["name"] for e in entries]
+        assert "Sony_HB-75P.xml" not in names
+        assert "Philips_NMS8250.xml" in names
+
+    def test_model_excluded_post_parse(self):
+        from scraper.openmsx import parse_machine_xml
+        el = ExcludeList(rules=[{"manufacturer": "Sony", "model": "HB-75P"}])
+        result = parse_machine_xml(self._XML, "Sony_HB-75P.xml")
+        assert result is not None
+        assert el.is_excluded(result.get("manufacturer"), result.get("model"))
+
+    def test_non_excluded_model_passes(self):
+        from scraper.openmsx import parse_machine_xml
+        el = ExcludeList(rules=[{"manufacturer": "Philips", "model": "NMS8250"}])
+        result = parse_machine_xml(self._XML, "Sony_HB-75P.xml")
+        assert result is not None
+        assert not el.is_excluded(result.get("manufacturer"), result.get("model"))

@@ -294,20 +294,20 @@ Feature: Scraper exclude list
   - [x] T-012 `pytest tests/scraper/test_exclude.py -v` — 29 passed
   - [x] T-013 Commit: `feat: add ExcludeList module with match logic and validation`
 
-- [ ] **Chunk 2: Wire into openMSX scraper**
-  - [ ] T-020 In `scraper/openmsx.py`:
+- [x] **Chunk 2: Wire into openMSX scraper**
+  - [x] T-020 In `scraper/openmsx.py`:
     - Add `exclude_list: ExcludeList | None = None` to `list_machine_files()`
     - Skip entry (and log DEBUG `[exclude:skip] Excluded filename`) if `exclude_list.is_excluded_by_filename(name)`
     - Add `exclude_list: ExcludeList | None = None` to `fetch_all()`
     - Pass `exclude_list` to `list_machine_files()`
     - After `parse_machine_xml` returns a result, check `exclude_list.is_excluded(result['manufacturer'], result['model'])`; if excluded log DEBUG and increment `excluded` counter
     - Extend summary log line to include `excluded=N`
-  - [ ] T-021 Add to `tests/scraper/test_exclude.py` (or a new `test_openmsx_exclude.py`):
-    - `test_openmsx_filename_excluded` — `list_machine_files` with a filename rule skips the matching entry
-    - `test_openmsx_model_excluded_post_parse` — `fetch_all` with a manufacturer+model rule drops the matching parsed model
-    - `test_openmsx_non_excluded_passes` — non-matching model passes through unchanged
-  - [ ] T-022 `pytest tests/scraper/ -v` — confirm all green, no regressions
-  - [ ] T-023 Commit: `feat: wire exclude list into openMSX scraper (filename + model checks)`
+  - [x] T-021 Added `TestOpenMSXWiring` to `tests/scraper/test_exclude.py` (3 tests):
+    - `test_filename_excluded_before_fetch` — filename rule skips entry in list_machine_files
+    - `test_model_excluded_post_parse` — manufacturer+model rule matches parsed result
+    - `test_non_excluded_model_passes` — non-matching model not excluded
+  - [x] T-022 `pytest tests/scraper/ -v` — 32 passed, no regressions
+  - [x] T-023 Commit: `feat: wire exclude list into openMSX scraper (filename + model checks)`
 
 - [ ] **Chunk 3: Wire into msx.org scraper**
   - [ ] T-030 In `scraper/msxorg.py`:

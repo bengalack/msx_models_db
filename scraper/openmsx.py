@@ -9,6 +9,8 @@ from typing import Any
 import requests
 from lxml import etree
 
+from .exclude import ExcludeList
+
 log = logging.getLogger(__name__)
 
 GITHUB_API_URL = (
@@ -96,7 +98,10 @@ def _mem_size_kb(parent: etree._Element) -> int:
     return total // 1024 if total else 0
 
 
-def list_machine_files(session: requests.Session) -> list[dict[str, str]]:
+def list_machine_files(
+    session: requests.Session,
+    exclude_list: ExcludeList | None = None,
+) -> list[dict[str, str]]:
     """Return list of {name, download_url} for .xml machine files."""
     resp = session.get(GITHUB_API_URL, timeout=30)
     resp.raise_for_status()
@@ -106,6 +111,9 @@ def list_machine_files(session: requests.Session) -> list[dict[str, str]]:
         if item["type"] != "file" or not name.endswith(".xml"):
             continue
         if any(name.startswith(p) for p in SKIP_PREFIXES):
+            continue
+        if exclude_list and exclude_list.is_excluded_by_filename(name):
+            log.debug("[exclude:skip] Excluded filename | filename=%s", name)
             continue
         entries.append({
             "name": name,
@@ -341,6 +349,7 @@ def fetch_all(
     *,
     delay: float = 0.3,
     limit: int | None = None,
+    exclude_list: ExcludeList | None = None,
 ) -> list[dict[str, Any]]:
     """Fetch and parse all openMSX machine configs.  Returns list of model dicts."""
     if session is None:
@@ -348,13 +357,14 @@ def fetch_all(
         session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
 
     log.info("Listing openMSX machine files…")
-    files = list_machine_files(session)
+    files = list_machine_files(session, exclude_list=exclude_list)
     log.info("Found %d XML files", len(files))
 
     if limit:
         files = files[:limit]
 
     models: list[dict[str, Any]] = []
+    excluded = 0
     skipped = 0
     errors = 0
 
@@ -366,7 +376,16 @@ def fetch_all(
             resp.raise_for_status()
             result = parse_machine_xml(resp.content, name)
             if result:
-                models.append(result)
+                if exclude_list and exclude_list.is_excluded(
+                    result.get("manufacturer"), result.get("model")
+                ):
+                    log.debug(
+                        "[exclude:skip] Excluded model | manufacturer=%s model=%s source=openmsx",
+                        result.get("manufacturer"), result.get("model"),
+                    )
+                    excluded += 1
+                else:
+                    models.append(result)
             else:
                 skipped += 1
         except Exception:
@@ -377,7 +396,7 @@ def fetch_all(
             time.sleep(delay)
 
     log.info(
-        "openMSX: %d models extracted, %d skipped, %d errors",
-        len(models), skipped, errors,
+        "openMSX: %d models extracted, %d excluded, %d skipped, %d errors",
+        len(models), excluded, skipped, errors,
     )
     return models
