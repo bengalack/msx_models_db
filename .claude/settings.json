@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/palha/.claude/plugins/cache/claude-plugins-official/superpowers/4.3.1/skills/subagent-driven-development/**)",
+      "Bash(git:*)",
+      "Bash(cd:*)",
+      "Bash(echo:*)",
+      "Bash(head:*)",
+      "Bash(npm run:*)",
+      "Bash(pytest:*)",
+      "Bash(python -m:*)",
+      "Bash(for:*)",
+      "Bash(cd *)",
+      "Bash(ls*)",
+      "Bash(pwd*)",
+      "Read",
+      "Edit"
+    ]
+  }
+}

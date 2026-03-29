@@ -5,3 +5,4 @@ __pycache__/
 venv/
 *.egg-info/
 dist-types/
+data/*-raw.json

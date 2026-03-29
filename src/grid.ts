@@ -1,4 +1,4 @@
-import type { MSXData, GroupDef, ColumnDef, ModelRecord } from './types.js';
+import type { MSXData, GroupDef, ColumnDef, ModelRecord, ViewState } from './types.js';
 
 function cellText(value: string | number | boolean | null | undefined): string {
   if (value === null || value === undefined || value === '') return '\u2014'; // em dash
@@ -189,20 +189,31 @@ function buildGapIndicator(
 ): HTMLTableRowElement {
   const tr = document.createElement('tr');
   tr.className = 'row-gap-indicator';
-  const td = document.createElement('td');
-  td.className = 'gutter--gap';
-  td.colSpan = colCount + 1; // gutter + all data columns
+
+  // Sticky gutter cell — holds the unhide button, stays fixed on horizontal scroll
+  const gutterTd = document.createElement('td');
+  gutterTd.className = 'gutter gutter--gap-gutter';
   const btn = document.createElement('button');
   btn.className = 'gutter__unhide-btn';
   btn.setAttribute('aria-label', `Show ${hiddenIds.length} hidden row${hiddenIds.length > 1 ? 's' : ''}`);
   btn.textContent = '\u25b2'; // ▲
   btn.addEventListener('click', () => onUnhide(hiddenIds));
-  td.appendChild(btn);
-  tr.appendChild(td);
+  gutterTd.appendChild(btn);
+  tr.appendChild(gutterTd);
+
+  // Data cell — spans remaining columns, carries the dashed line
+  const dataTd = document.createElement('td');
+  dataTd.className = 'gutter--gap';
+  dataTd.colSpan = colCount;
+  tr.appendChild(dataTd);
+
   return tr;
 }
 
-export function buildGrid(data: MSXData): {
+export function buildGrid(data: MSXData, opts?: {
+  initialState?: ViewState;
+  onStateChange?: () => void;
+}): {
   element: HTMLElement;
   toggleFilters: () => void;
   setColumnVisible: (colIdx: number, visible: boolean) => void;
@@ -210,7 +221,9 @@ export function buildGrid(data: MSXData): {
   getHiddenRows: () => ReadonlySet<number>;
   hideRow: (modelId: number) => void;
   getSelectedCells: () => ReadonlySet<string>;
+  clearAllSelection: () => void;
   copySelection: () => string;
+  getViewState: () => ViewState;
 } {
   const wrap = document.createElement('div');
   wrap.className = 'grid-wrap';
@@ -234,6 +247,9 @@ export function buildGrid(data: MSXData): {
 
   // Hidden rows — keyed by stable model ID
   const hiddenRows = new Set<number>();
+
+  // ── Column ID ↔ index maps (for ViewState translation) ───────────────────
+  const colIdToIdx = new Map(data.columns.map((col, i) => [col.id, i]));
 
   // ── Selection state ──────────────────────────────────────────────────────
   // Key format: "${modelId}:${colIdx}"
@@ -402,6 +418,7 @@ export function buildGrid(data: MSXData): {
     const groupId = data.columns[colIdx]?.groupId;
     if (groupId !== undefined) recalcGroupHeader(groupId);
     renderRows();
+    opts?.onStateChange?.();
   }
 
   function getHiddenCols(): ReadonlySet<number> {
@@ -411,11 +428,13 @@ export function buildGrid(data: MSXData): {
   function hideRow(modelId: number): void {
     hiddenRows.add(modelId);
     renderRows();
+    opts?.onStateChange?.();
   }
 
   function unhideRowsInGap(modelIds: number[]): void {
     modelIds.forEach(id => hiddenRows.delete(id));
     renderRows();
+    opts?.onStateChange?.();
   }
 
   function getHiddenRows(): ReadonlySet<number> {
@@ -484,6 +503,141 @@ export function buildGrid(data: MSXData): {
     // Re-apply selection highlights
     applySelectionToDOM();
     applyRowSelectionToDOM();
+    // Defer gap visibility check — on initial load the element may not be in
+    // the DOM yet, so getBoundingClientRect() would return zeros.
+    requestAnimationFrame(updateGapVisibility);
+  }
+
+  // ── Gap indicator scroll-awareness ──────────────────────────────────────
+  // Hide the dashed line + unhide button when a gap indicator scrolls under
+  // the sticky header — show them again once the gap is fully below it.
+  function updateGapVisibility(): void {
+    const headerBottom = thead.getBoundingClientRect().bottom;
+    for (const row of Array.from(tbody.querySelectorAll<HTMLTableRowElement>('.row-gap-indicator'))) {
+      const btn = row.querySelector<HTMLElement>('.gutter__unhide-btn');
+      if (!btn) continue;
+      // Temporarily show so we can measure
+      row.classList.remove('row-gap-indicator--under-header');
+      const btnBottom = btn.getBoundingClientRect().bottom;
+      const hidden = btnBottom <= headerBottom;
+      row.classList.toggle('row-gap-indicator--under-header', hidden);
+    }
+  }
+
+  // ── Seed from initial state ──────────────────────────────────────────────
+  if (opts?.initialState) {
+    const init = opts.initialState;
+
+    // Sort (columnId → colIdx)
+    if (init.sortColumnId !== null) {
+      const idx = colIdToIdx.get(init.sortColumnId);
+      if (idx !== undefined) { sortColIndex = idx; sortDirection = init.sortDirection; }
+    }
+
+    // Filters (columnId → colIdx)
+    for (const [colId, text] of init.filters) {
+      const idx = colIdToIdx.get(colId);
+      if (idx !== undefined) filters.set(idx, text);
+    }
+
+    // Hidden columns (columnId → colIdx)
+    for (const colId of init.hiddenColumnIds) {
+      const idx = colIdToIdx.get(colId);
+      if (idx !== undefined) hiddenCols.add(idx);
+    }
+
+    // Hidden rows (already model IDs)
+    for (const modelId of init.hiddenRowIds) hiddenRows.add(modelId);
+
+    // Collapsed groups (already group IDs)
+    for (const groupId of init.collapsedGroupIds) collapsedGroups.add(groupId);
+
+    // Selected cells ("modelId:colId" → "modelId:colIdx")
+    for (const cell of init.selectedCells) {
+      const colon = cell.indexOf(':');
+      const colIdx = colIdToIdx.get(Number(cell.slice(colon + 1)));
+      if (colIdx !== undefined) selectedCells.add(`${cell.slice(0, colon)}:${colIdx}`);
+    }
+
+    // ── Apply visual state to thead ──────────────────────────────────────
+
+    // Sort indicator
+    if (sortColIndex !== null) {
+      const th = thead.querySelector<HTMLElement>(`th.col-header[data-col-index="${sortColIndex}"]`);
+      th?.classList.add(sortDirection === 'asc' ? 'col-header--sort-asc' : 'col-header--sort-desc');
+    }
+
+    // Filter inputs
+    for (const [colId, text] of init.filters) {
+      const idx = colIdToIdx.get(colId);
+      if (idx === undefined) continue;
+      const input = thead.querySelector<HTMLInputElement>(`input.filter-input[data-col-index="${idx}"]`);
+      if (!input) continue;
+      input.value = text;
+      input.classList.add('filter-input--active');
+      (input.nextElementSibling as HTMLElement | null)?.classList.remove('filter-clear--hidden');
+    }
+    if (init.filters.size > 0) updateGutterIndicator();
+
+    // Hidden columns in thead (tbody handled in renderRows)
+    for (const colIdx of hiddenCols) {
+      thead.querySelectorAll<HTMLElement>(`[data-col-index="${colIdx}"]`).forEach(cell => {
+        cell.style.display = 'none';
+      });
+      const groupId = data.columns[colIdx]?.groupId;
+      if (groupId !== undefined) recalcGroupHeader(groupId);
+    }
+
+    // Collapsed groups in thead (tbody handled in renderRows)
+    for (const groupId of collapsedGroups) {
+      const th = thead.querySelector<HTMLTableCellElement>(`th.group-header[data-group-id="${groupId}"]`);
+      if (!th) continue;
+      th.colSpan = 1;
+      th.classList.add('collapsed');
+      const chevron = th.querySelector<HTMLElement>('.chevron');
+      if (chevron) chevron.textContent = '\u25b6'; // ▶
+      thead.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
+        if (cell.dataset.colOrder === '0') {
+          cell.classList.add('col-group-stub');
+        } else {
+          cell.style.display = 'none';
+        }
+      });
+      recalcGroupHeader(groupId);
+    }
+  }
+
+  // ── getViewState — snapshot of current state as stable ID-based ViewState ─
+  function getViewState(): ViewState {
+    const hiddenColumnIds = new Set(
+      [...hiddenCols].map(idx => data.columns[idx]?.id).filter((id): id is number => id !== undefined)
+    );
+    const filtersById = new Map(
+      [...filters.entries()]
+        .map(([idx, text]): [number, string] | null => {
+          const id = data.columns[idx]?.id;
+          return id !== undefined ? [id, text] : null;
+        })
+        .filter((e): e is [number, string] => e !== null)
+    );
+    const selectedById = new Set(
+      [...selectedCells]
+        .map(key => {
+          const colon = key.indexOf(':');
+          const colId = data.columns[Number(key.slice(colon + 1))]?.id;
+          return colId !== undefined ? `${key.slice(0, colon)}:${colId}` : null;
+        })
+        .filter((s): s is string => s !== null)
+    );
+    return {
+      sortColumnId: sortColIndex !== null ? (data.columns[sortColIndex]?.id ?? null) : null,
+      sortDirection,
+      collapsedGroupIds: new Set(collapsedGroups),
+      hiddenColumnIds,
+      hiddenRowIds: new Set(hiddenRows),
+      filters: filtersById,
+      selectedCells: selectedById,
+    };
   }
 
   renderRows();
@@ -536,6 +690,7 @@ export function buildGrid(data: MSXData): {
     }
     applyRowSelectionToDOM();
     syncCellsFromRowSelection();
+    opts?.onStateChange?.();
   });
 
   // ── Gutter click — × hide button ─────────────────────────────────────────
@@ -553,6 +708,7 @@ export function buildGrid(data: MSXData): {
       hiddenRows.add(modelId);
     }
     renderRows();
+    opts?.onStateChange?.();
   });
 
   // ── Gutter drag — extend row selection ───────────────────────────────────
@@ -567,12 +723,14 @@ export function buildGrid(data: MSXData): {
     rowSelAnchor = modelId;
     applyRowSelectionToDOM();
     syncCellsFromRowSelection();
+    opts?.onStateChange?.();
   }, true);
 
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       clearSelection();
       clearRowSelection();
+      opts?.onStateChange?.();
     }
   });
 
@@ -609,6 +767,7 @@ export function buildGrid(data: MSXData): {
       }
       selAnchor = cell;
       applySelectionToDOM();
+      opts?.onStateChange?.();
     } else if (e.shiftKey) {
       // Extend rectangle from anchor to clicked cell
       if (selAnchor) {
@@ -620,6 +779,7 @@ export function buildGrid(data: MSXData): {
         selAnchor = cell;
       }
       applySelectionToDOM();
+      opts?.onStateChange?.();
     } else {
       // Plain click — toggle off if already the only selection, else select single cell
       const key = selKey(modelId, colIdx);
@@ -632,6 +792,7 @@ export function buildGrid(data: MSXData): {
       }
       selAnchor = cell;
       applySelectionToDOM();
+      opts?.onStateChange?.();
     }
   });
 
@@ -648,6 +809,7 @@ export function buildGrid(data: MSXData): {
     const colIdx = Number(td.dataset.colIndex);
     selectRectangle(dragStart, { modelId, colIdx });
     applySelectionToDOM();
+    opts?.onStateChange?.();
   }, true); // capture to catch all child mouseenter events
 
   document.addEventListener('mouseup', () => {
@@ -676,6 +838,7 @@ export function buildGrid(data: MSXData): {
           cell.classList.remove('col-group-stub');
         });
         recalcGroupHeader(groupId);
+        opts?.onStateChange?.();
       } else {
         // Collapse — keep first cell per row as a zero-width stub anchor;
         // hide all others so the group header colSpan=1 aligns correctly.
@@ -691,6 +854,7 @@ export function buildGrid(data: MSXData): {
           }
         });
         recalcGroupHeader(groupId);
+        opts?.onStateChange?.();
       }
     });
   });
@@ -717,6 +881,7 @@ export function buildGrid(data: MSXData): {
         th.classList.add(sortDirection === 'asc' ? 'col-header--sort-asc' : 'col-header--sort-desc');
       }
       renderRows();
+      opts?.onStateChange?.();
     });
   });
 
@@ -738,6 +903,7 @@ export function buildGrid(data: MSXData): {
       }
       updateGutterIndicator();
       renderRows();
+      opts?.onStateChange?.();
     });
   });
 
@@ -752,6 +918,7 @@ export function buildGrid(data: MSXData): {
       btn.classList.add('filter-clear--hidden');
       updateGutterIndicator();
       renderRows();
+      opts?.onStateChange?.();
     });
   });
 
@@ -804,6 +971,13 @@ export function buildGrid(data: MSXData): {
     return lines.join('\n');
   }
 
+  function clearAllSelection(): void {
+    clearSelection();
+    clearRowSelection();
+    opts?.onStateChange?.();
+  }
+
   wrap.appendChild(table);
-  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols, getHiddenRows, hideRow, getSelectedCells, copySelection };
+  wrap.addEventListener('scroll', updateGapVisibility, { passive: true });
+  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols, getHiddenRows, hideRow, getSelectedCells, clearAllSelection, copySelection, getViewState };
 }

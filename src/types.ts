@@ -75,6 +75,34 @@ export interface DefaultViewConfig {
 }
 
 /**
+ * Full view state captured from the grid at any point in time.
+ * All IDs are stable integer IDs (column IDs, model IDs, group IDs).
+ * Suitable for binary encoding into a URL hash.
+ */
+export interface ViewState {
+  /** Column ID to sort by, or null for no sort. */
+  sortColumnId: number | null;
+  /** Sort direction. Relevant only when sortColumnId is non-null. */
+  sortDirection: 'asc' | 'desc';
+  /** Group IDs that are currently collapsed. */
+  collapsedGroupIds: Set<number>;
+  /** Column IDs that are currently hidden. */
+  hiddenColumnIds: Set<number>;
+  /** Model IDs whose rows are currently hidden. */
+  hiddenRowIds: Set<number>;
+  /**
+   * Active filters keyed by column ID.
+   * Empty map = no filters.
+   */
+  filters: Map<number, string>;
+  /**
+   * Selected cells as "modelId:columnId" strings.
+   * Column ID is the stable ColumnDef.id (not a positional index).
+   */
+  selectedCells: Set<string>;
+}
+
+/**
  * ID registry — used by the scraper, not shipped to the browser.
  * Documented here for TypeScript consumers (e.g. registry tests).
  */
