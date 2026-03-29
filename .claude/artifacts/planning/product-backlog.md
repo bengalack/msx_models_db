@@ -36,6 +36,19 @@
     - Fetch and parse each XML file with lxml recover=True (lenient — files are non-strict)
     - Extract fields: CPU, clock, RAM, VRAM, VDP, PSG, mapper, openMSX machine ID
     - Log unrecoverable elements; continue on parse failure
+  - Slot map — XML extractor
+  - Slot map — XML extractor
+    - scraper/slotmap.py: load and validate LUT; first pass: walk `primary`/`secondary` hierarchy, classify devices by element type + id regex, assign pages via `mem base+size`
+    - Cartridge slots (`primary external="true"`): CS{N} in sub-slot 0 pages 0–3; sub-slots 1–3 = ~
+    - Non-expanded primary slots: classify direct child devices; sub-slots 1–3 = ~
+    - Missing secondary slot elements: all 4 pages = ~
+    - Multiple devices per sub-slot: assign each to non-overlapping pages; warn on overlap (first wins)
+    - Unknown LUT string: warn to stdout with model name + element; write raw string as cell value; never abort
+    - Mirror detection method 1 (rom_visibility): pages within `mem` but outside `rom_visibility` → abbr*; rom_visibility page = original
+    - Mirror detection method 2 (ROM file size): look up SHA1(s) in all_sha1s.txt; measure file size on disk; pages beyond ROM byte coverage → abbr*; warn if SHA1 not found or file absent; skip gracefully
+    - Mirror detection method 3 (`Mirror` element, two-pass): second pass resolves cross-slot mirror references; `ps`/`ss` identify origin slot; origin abbr + * written to pages covered by `Mirror` `mem`
+    - Embed LUT as {abbr: tooltip} map in data.js output (slotmap_lut key on MSXData)
+    - pytest tests: LUT matching order, page assignment from <mem>, all three mirror methods, unknown-string warn+continue, SHA1-missing graceful skip
   - Scraper — msx.org HTML source
     - Enumerate MSX2, MSX2+, turboR model pages from msx.org category pages
     - Scrape each model page with beautifulsoup4 + lxml
@@ -47,6 +60,10 @@
     - Match models from both sources by natural key (manufacturer + model name)
     - For conflicting field values: print summary, prompt maintainer to choose per conflict
     - For fields present in only one source: use that value without prompting
+  - Slot map — browser tooltip rendering
+    - On hover of a slot map cell, look up cell value in MSXData.slotmap_lut to get tooltip text
+    - Render tooltip for ~ sentinel ("Not expanded") and mirror cells (abbr* → origin tooltip + " (mirror)")
+    - Cells with raw unknown strings (not in LUT) show no tooltip
 
 - Later
   - Scraper — write output (replaced by column-config-and-registry feature)
@@ -92,3 +109,9 @@
   - Data schema + seed data (TypeScript types, schema.md, 10-model seed, id-registry.json)
   - Theme system (CSS custom properties, dark/light toggle, localStorage persistence)
   - Grid rendering (display only — header rows, toolbar, data rows, gutter, null/em-dash, overflow tooltip)
+  - Slot map — column definitions + LUT
+    - 4 slotmap groups (IDs 8–11) and 64 columns (IDs 30–93) in scraper/columns.py
+    - data/slotmap-lut.json: 13 starter rules, ordered array, validated on load
+    - scraper/slotmap_lut.py: load_slotmap_lut(), compact_lut(); fail fast on duplicate abbr or bad regex
+    - LUT embedded in data.js as slotmap_lut {abbr: tooltip} map
+    - 33 tests (19 column + 14 LUT unit + 6 build integration)

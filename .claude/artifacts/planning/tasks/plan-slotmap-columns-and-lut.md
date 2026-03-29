@@ -253,5 +253,6 @@ Feature: Slot map column definitions and LUT
   - [ ] T-951 Verify all commits follow Conventional Commits (`feat:`, `test:`, `chore:` as appropriate)
   - [ ] T-952 Rebase onto trunk and merge fast-forward only
 
+
 ## Open Questions
 - None blocking. Starter LUT vocabulary is fully defined in problem-description-slotmap.md.
