@@ -1,0 +1,184 @@
+[
+  {
+    "natural_key": "aucnet|nia-2001",
+    "field": "connectivity",
+    "openmsx_value": "Printer",
+    "msxorg_value": "Printer, Cassette",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "daewoo|cpc-300e",
+    "field": "year",
+    "openmsx_value": 1986,
+    "msxorg_value": 1987,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "daewoo|cpc-400s",
+    "field": "year",
+    "openmsx_value": 1986,
+    "msxorg_value": 1988,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "hitachi|mb-h70",
+    "field": "floppy_drives",
+    "openmsx_value": "2",
+    "msxorg_value": "1",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "hitachi|mb-h70",
+    "field": "year",
+    "openmsx_value": 1985,
+    "msxorg_value": 1986,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "national|fs-5000f2",
+    "field": "floppy_drives",
+    "openmsx_value": "2",
+    "msxorg_value": "1",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "national|fs-5000f2",
+    "field": "year",
+    "openmsx_value": 1985,
+    "msxorg_value": 1986,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "national|fs-5500f2",
+    "field": "floppy_drives",
+    "openmsx_value": "2",
+    "msxorg_value": "1",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "panasonic|fs-a1fm",
+    "field": "year",
+    "openmsx_value": 1987,
+    "msxorg_value": 1988,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "panasonic|fs-a1gt",
+    "field": "connectivity",
+    "openmsx_value": "Printer",
+    "msxorg_value": "Printer, Cassette",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "panasonic|fs-a1gt",
+    "field": "year",
+    "openmsx_value": 1992,
+    "msxorg_value": 1991,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "panasonic|fs-a1st",
+    "field": "connectivity",
+    "openmsx_value": "Printer",
+    "msxorg_value": "Printer, Cassette",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "philips|nms 8220",
+    "field": "year",
+    "openmsx_value": 1986,
+    "msxorg_value": 1987,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "philips|nms 8255",
+    "field": "floppy_drives",
+    "openmsx_value": "2",
+    "msxorg_value": "1",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "philips|nms 8255",
+    "field": "year",
+    "openmsx_value": 1986,
+    "msxorg_value": 1987,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "pioneer|uc-v102",
+    "field": "connectivity",
+    "openmsx_value": "Printer",
+    "msxorg_value": "Printer, Cassette",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "pioneer|uc-v102",
+    "field": "floppy_drives",
+    "openmsx_value": "2",
+    "msxorg_value": "1",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "sanyo|phc-70fd2",
+    "field": "floppy_drives",
+    "openmsx_value": "2",
+    "msxorg_value": "1",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "sanyo|phc-70fd2",
+    "field": "year",
+    "openmsx_value": 1988,
+    "msxorg_value": 1989,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "sony|hb-f900",
+    "field": "floppy_drives",
+    "openmsx_value": "2",
+    "msxorg_value": "1",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "sony|hb-f9s",
+    "field": "year",
+    "openmsx_value": 1985,
+    "msxorg_value": 1986,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "sony|hb-g900ap",
+    "field": "year",
+    "openmsx_value": 1986,
+    "msxorg_value": 1987,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "sony|hb-t600",
+    "field": "connectivity",
+    "openmsx_value": "Printer",
+    "msxorg_value": "Printer, Cassette",
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "talent|tpc-310",
+    "field": "year",
+    "openmsx_value": 1988,
+    "msxorg_value": 1987,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "yamaha|yis-503iiir",
+    "field": "year",
+    "openmsx_value": 1986,
+    "msxorg_value": 1985,
+    "use": "msxorg"
+  },
+  {
+    "natural_key": "yamaha|yis-805/128r2",
+    "field": "floppy_drives",
+    "openmsx_value": "2",
+    "msxorg_value": "1",
+    "use": "msxorg"
+  }
+]
