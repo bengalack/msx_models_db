@@ -109,3 +109,59 @@ class TestBuildPipeline:
 
         reg = IDRegistry.load(reg_path)
         assert reg.models["sony|hb-75p"] == 42  # preserved
+
+
+class TestBuildExcludeList:
+    """Integration tests for exclude list wired into build pipeline."""
+
+    def _fixture(self, tmp_path):
+        openmsx_path = tmp_path / "openmsx.json"
+        msxorg_path = tmp_path / "msxorg.json"
+        registry_path = tmp_path / "registry.json"
+        output_path = tmp_path / "data.js"
+        openmsx_path.write_text(json.dumps([
+            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"},
+            {"manufacturer": "Philips", "model": "NMS 8250", "standard": "MSX2"},
+        ]))
+        msxorg_path.write_text(json.dumps([]))
+        return openmsx_path, msxorg_path, registry_path, output_path
+
+    def test_excluded_model_absent_from_output(self, tmp_path):
+        """A model matching an exclude rule does not appear in data.js."""
+        import re
+        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        exclude_path = tmp_path / "exclude.json"
+        exclude_path.write_text(json.dumps([
+            {"manufacturer": "Sony", "model": "HB-75P"},
+        ]))
+
+        build(
+            openmsx_path=openmsx_path,
+            msxorg_path=msxorg_path,
+            registry_path=registry_path,
+            exclude_path=exclude_path,
+            output_path=output_path,
+        )
+
+        content = output_path.read_text()
+        # Philips present, Sony absent
+        assert "NMS 8250" in content or "Philips" in content
+        assert "HB-75P" not in content
+
+    def test_empty_excludelist_is_noop(self, tmp_path):
+        """An empty exclude.json leaves output identical to no-exclude baseline."""
+        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        exclude_path = tmp_path / "exclude.json"
+        exclude_path.write_text("[]")
+
+        build(
+            openmsx_path=openmsx_path,
+            msxorg_path=msxorg_path,
+            registry_path=registry_path,
+            exclude_path=exclude_path,
+            output_path=output_path,
+        )
+
+        content = output_path.read_text()
+        assert "HB-75P" in content
+        assert "NMS 8250" in content or "Philips" in content

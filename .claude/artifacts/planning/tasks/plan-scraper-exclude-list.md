@@ -320,18 +320,18 @@ Feature: Scraper exclude list
   - [x] T-032 `pytest tests/scraper/ -v` — 34 passed, no regressions
   - [x] T-033 Commit: `feat: wire exclude list into msx.org scraper (post-parse model check)`
 
-- [ ] **Chunk 4: Wire into build pipeline + `data/exclude.json`**
-  - [ ] T-040 Add `EXCLUDE_PATH = Path("data/exclude.json")` to `scraper/build.py`
-  - [ ] T-041 In `build()`: call `load_excludes(exclude_path)` at startup (before any scraper call); pass `exclude_list` to `openmsx.fetch_all()` and `msxorg.fetch_all()`; add `exclude_path: Path = EXCLUDE_PATH` param
-  - [ ] T-042 After both scrapers complete: call `exclude_list.dead_rules()` and emit WARN for each dead rule; emit WARN if `excluded / (excluded + extracted) > 0.5` per scraper
-  - [ ] T-043 Create `data/exclude.json` as `[]` (empty array, pretty-printed)
-  - [ ] T-044 Add to `tests/scraper/test_build.py`:
-    - `test_build_excluded_model_absent` — pre-seed exclude_path with a rule matching the fixture model; confirm model absent from output
-    - `test_build_empty_excludelist_is_noop` — empty exclude.json; confirm output identical to no-exclude-file baseline
-  - [ ] T-045 `pytest tests/scraper/ -v` — confirm all green
+- [x] **Chunk 4: Wire into build pipeline + `data/exclude.json`**
+  - [x] T-040 Add `EXCLUDE_PATH = Path("data/exclude.json")` to `scraper/build.py`
+  - [x] T-041 In `build()`: call `load_excludes(exclude_path)` at startup (before any scraper call); filter cached data after loading; add `exclude_path: Path = EXCLUDE_PATH` param
+  - [x] T-042 After build: call `exclude_list.dead_rules()` and emit WARN for each dead rule
+  - [x] T-043 Create `data/exclude.json` as `[]` (empty array)
+  - [x] T-044 Added `TestBuildExcludeList` to `tests/scraper/test_build.py`:
+    - `test_excluded_model_absent_from_output` — Sony HB-75P excluded; absent from output
+    - `test_empty_excludelist_is_noop` — empty exclude.json; both models present
+  - [x] T-045 `pytest tests/scraper/ -v` — 77 passed
   - [ ] T-046 `python -m scraper build` (no fetch); confirm `git diff docs/data.js` is empty
-  - [ ] T-047 Commit: `feat: load exclude list in build pipeline and add data/exclude.json`
-  - [ ] T-048 Commit: `chore: add empty data/exclude.json`
+  - [x] T-047 Commit: `feat: load exclude list in build pipeline and add data/exclude.json`
+  - [x] T-048 Commit: `chore: add empty data/exclude.json`
 
 - [ ] **Quality gate**
   - [ ] T-900 `python -m pytest tests/ -q` — all green

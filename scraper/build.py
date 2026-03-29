@@ -15,6 +15,7 @@ from .columns import (
     COLUMNS, GROUPS, Column,
     active_columns, group_by_key,
 )
+from .exclude import load_excludes
 from .registry import IDRegistry
 
 log = logging.getLogger(__name__)
@@ -23,6 +24,7 @@ log = logging.getLogger(__name__)
 RAW_OPENMSX = Path("data/openmsx-raw.json")
 RAW_MSXORG = Path("data/msxorg-raw.json")
 REGISTRY_PATH = Path("data/id-registry.json")
+EXCLUDE_PATH = Path("data/exclude.json")
 DATA_JS_PATH = Path("docs/data.js")
 
 
@@ -50,15 +52,19 @@ def build(
     openmsx_path: Path = RAW_OPENMSX,
     msxorg_path: Path = RAW_MSXORG,
     registry_path: Path = REGISTRY_PATH,
+    exclude_path: Path = EXCLUDE_PATH,
     output_path: Path = DATA_JS_PATH,
     resolutions_path: Path | None = None,
 ) -> None:
     """Run the full build pipeline."""
-    # Step 0: Fetch if requested
+    # Step 0: Load exclude list (fail fast before any I/O if file is malformed)
+    exclude_list = load_excludes(exclude_path)
+
+    # Step 1: Fetch if requested
     if do_fetch:
         fetch_sources(openmsx_path=openmsx_path, msxorg_path=msxorg_path)
 
-    # Step 1: Load cached raw data
+    # Step 2: Load cached raw data
     if not openmsx_path.exists():
         raise FileNotFoundError(
             f"Cached openMSX data not found: {openmsx_path}\n"
@@ -78,7 +84,28 @@ def build(
     log.info("Loaded %d openMSX + %d msx.org models from cache",
              len(openmsx_data), len(msxorg_data))
 
-    # Step 2: Merge
+    # Apply exclude list to cached data (handles the case where data was cached
+    # before an exclusion rule was added, or when --fetch is not used)
+    if exclude_list.rules:
+        before_openmsx = len(openmsx_data)
+        before_msxorg = len(msxorg_data)
+        openmsx_data = [
+            m for m in openmsx_data
+            if not exclude_list.is_excluded(m.get("manufacturer"), m.get("model"))
+        ]
+        msxorg_data = [
+            m for m in msxorg_data
+            if not exclude_list.is_excluded(m.get("manufacturer"), m.get("model"))
+        ]
+        excluded_openmsx = before_openmsx - len(openmsx_data)
+        excluded_msxorg = before_msxorg - len(msxorg_data)
+        if excluded_openmsx or excluded_msxorg:
+            log.info(
+                "[exclude] Filtered from cache: %d openMSX, %d msx.org",
+                excluded_openmsx, excluded_msxorg,
+            )
+
+    # Step 3: Merge
     resolutions = {}
     if resolutions_path:
         resolutions = merge.load_resolutions(resolutions_path)
@@ -86,19 +113,19 @@ def build(
     merged, conflicts = merge.merge_models(openmsx_data, msxorg_data, resolutions=resolutions)
     merge.print_conflict_summary(conflicts)
 
-    # Step 3: Derive computed columns
+    # Step 4: Derive computed columns
     derive_cols = [c for c in COLUMNS if c.derive is not None]
     for model in merged:
         for col in derive_cols:
             model[col.key] = col.derive(model)
 
-    # Step 4: Assign model IDs
+    # Step 5: Assign model IDs
     registry = IDRegistry.load(registry_path)
     for model in merged:
         nk = merge.natural_key(model)
         model["_id"] = registry.assign_model_id(nk)
 
-    # Step 5: Build data.js payload
+    # Step 6: Build data.js payload
     active_cols = active_columns()
     group_id_map = {g.key: g.id for g in GROUPS}
 
@@ -159,7 +186,7 @@ def build(
         "models": js_models,
     }
 
-    # Step 6: Write output
+    # Step 7: Write output
     _write_data_js(payload, output_path)
     registry.save(registry_path)
 
@@ -167,6 +194,13 @@ def build(
         "Build complete: %d models, %d columns, %d groups → %s",
         len(js_models), len(js_columns), len(js_groups), output_path,
     )
+
+    # Dead-rule check — warn for any exclude rule that matched nothing
+    for i in exclude_list.dead_rules():
+        log.warning(
+            "[exclude:dead_rule] Rule matched nothing | rule=%d entry=%s",
+            i, exclude_list.rules[i],
+        )
 
 
 def _write_json(data: Any, path: Path) -> None:
