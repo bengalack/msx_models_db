@@ -31,7 +31,7 @@
   max-width: 52px;
   position: sticky;
   left: 0;
-  z-index: 2;
+  z-index: 6;
   background: var(--color-gutter-bg);
   color: var(--color-gutter-text);
   font-size: 10px;
@@ -313,10 +313,11 @@ thead .gutter {
   text-decoration: underline;
 }
 
-/* ── Row gap indicator (full-width, zero height) ───────────────────────── */
+/* ── Row gap indicator (two-cell: sticky gutter + scrollable data) ────── */
 
-/* Higher specificity than .grid tbody td to zero out height and allow overflow */
-.grid tbody td.gutter--gap {
+/* Zero-height shared styles for both gap cells */
+.grid tbody td.gutter--gap,
+.grid tbody td.gutter--gap-gutter {
   height: 0;
   padding: 0;
   border: none;         /* remove ALL borders — avoids border-collapse double-line */
@@ -327,13 +328,23 @@ thead .gutter {
   text-overflow: clip;
 }
 
+/* Data cell — carries the dashed line across the data area */
 .gutter--gap {
   position: relative;
   overflow: visible;
 }
 
-/* Dashed line as gradient – immune to border-collapse conflicts */
-.gutter--gap::before {
+/* Gutter cell — sticky, carries the button + its own dashed line segment */
+.gutter--gap-gutter {
+  position: sticky;
+  left: 0;
+  z-index: 7;           /* above sticky gutter (6) of adjacent rows */
+  overflow: visible;
+}
+
+/* Dashed line — drawn on both cells so it spans the full width */
+.gutter--gap::before,
+.gutter--gap-gutter::before {
   content: '';
   display: block;
   position: absolute;
@@ -368,7 +379,7 @@ thead .gutter {
   cursor: pointer;
   padding: 1px 4px;
   line-height: 1.2;
-  z-index: 4;
+  z-index: 7;           /* above selected cells (5) and sticky gutter (6) — button straddles two rows */
 }
 
 .gutter__unhide-btn:hover {
@@ -376,11 +387,18 @@ thead .gutter {
   color: var(--color-gutter-bg);
 }
 
+/* Hide gap indicator cleanly when it scrolls under the sticky header */
+.row-gap-indicator--under-header .gutter--gap::before,
+.row-gap-indicator--under-header .gutter--gap-gutter::before,
+.row-gap-indicator--under-header .gutter__unhide-btn {
+  display: none;
+}
+
 /* ── Cell selection ────────────────────────────────────────────────────── */
 
 .cell--selected {
   position: relative;
-  z-index: 5;           /* above gap indicator (3/4), below headers (10/11) */
+  z-index: 5;           /* above gap indicator (3/4), below sticky gutter (6) and headers (10/11) */
   background: var(--color-accent-dim);
   outline: 1px solid var(--color-selection-border);
   outline-offset: -1px;

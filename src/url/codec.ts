@@ -17,10 +17,11 @@
  *       column_id          (uint16)
  *       string_byte_length (uint16)
  *       UTF-8 bytes
- *   …           selection_count (uint16)
- *     Per selected cell:
- *       model_id  (uint16)
- *       column_id (uint16)
+ *   …           selection_row_count (uint16)
+ *     Per selected row:
+ *       model_id             (uint16)
+ *       col_bitset_byte_len  (uint16)
+ *       col_bitset bytes     (variable; bit N = column ID N is selected)
  *
  * Base64 encoding: URL-safe variant — replace `+`→`-`, `/`→`_`, strip `=` padding.
  */
@@ -86,11 +87,18 @@ export function encodeViewState(state: ViewState): string {
   const filterEntries = [...state.filters.entries()];
   const filterBuffers = filterEntries.map(([, text]) => encoder.encode(text));
 
-  // Pre-encode selection
-  const selectionEntries = [...state.selectedCells].map(cell => {
-    const [modelIdStr, colIdStr] = cell.split(':');
-    return [parseInt(modelIdStr, 10), parseInt(colIdStr, 10)] as [number, number];
-  });
+  // Pre-encode selection — group cells by model ID, encode each row's columns as a bitset
+  const selectionByRow = new Map<number, Set<number>>();
+  for (const cell of state.selectedCells) {
+    const colonIdx = cell.indexOf(':');
+    const modelId = parseInt(cell.slice(0, colonIdx), 10);
+    const colId = parseInt(cell.slice(colonIdx + 1), 10);
+    let cols = selectionByRow.get(modelId);
+    if (!cols) { cols = new Set(); selectionByRow.set(modelId, cols); }
+    cols.add(colId);
+  }
+  const selectionRows = [...selectionByRow.entries()];
+  const selectionBitsets = selectionRows.map(([, cols]) => encodeBitset(cols));
 
   // Build bitsets
   const hiddenColsBitset = encodeBitset(state.hiddenColumnIds);
@@ -111,16 +119,23 @@ export function encodeViewState(state: ViewState): string {
   for (let i = 0; i < filterEntries.length; i++) {
     size += 2 + 2 + filterBuffers[i].length; // col_id + str_len + utf8
   }
-  size += 2; // selection_count
-  size += selectionEntries.length * 4; // model_id(2) + col_id(2) per entry
+  size += 2; // selection_row_count
+  for (let i = 0; i < selectionRows.length; i++) {
+    size += 2 + 2 + selectionBitsets[i].length; // model_id(2) + bitset_len(2) + bitset
+  }
 
   const buf = new ArrayBuffer(size);
   const view = new DataView(buf);
   let offset = 0;
 
+  // Sort column ID 0 is reserved as the "no sort" sentinel in the binary format.
+  // Treat it as unsortable — encode as no-sort.
+  const sortColId = (state.sortColumnId !== null && state.sortColumnId !== 0)
+    ? state.sortColumnId : 0;
+
   view.setUint8(offset++, CODEC_VERSION);            // version
   view.setUint8(offset++, 0x00);                      // flags (reserved)
-  view.setUint16(offset, state.sortColumnId ?? 0, false); offset += 2; // sort_col
+  view.setUint16(offset, sortColId, false); offset += 2; // sort_col
   view.setUint8(offset++, state.sortDirection === 'desc' ? 0x01 : 0x00); // sort_dir
   view.setUint32(offset, collapsedMask >>> 0, false); offset += 4; // collapsed_groups
 
@@ -145,11 +160,15 @@ export function encodeViewState(state: ViewState): string {
     offset += fb.length;
   }
 
-  // selection
-  view.setUint16(offset, selectionEntries.length, false); offset += 2;
-  for (const [modelId, colId] of selectionEntries) {
+  // selection — per-row bitset: row_count, then per row: model_id + col_bitset_len + col_bitset
+  view.setUint16(offset, selectionRows.length, false); offset += 2;
+  for (let i = 0; i < selectionRows.length; i++) {
+    const [modelId] = selectionRows[i];
+    const bitset = selectionBitsets[i];
     view.setUint16(offset, modelId, false); offset += 2;
-    view.setUint16(offset, colId, false); offset += 2;
+    view.setUint16(offset, bitset.length, false); offset += 2;
+    new Uint8Array(buf, offset, bitset.length).set(bitset);
+    offset += bitset.length;
   }
 
   return toUrlSafeBase64(new Uint8Array(buf));
@@ -244,16 +263,26 @@ export function decodeViewState(
       if (knownColumnIds.has(colId)) filters.set(colId, text);
     }
 
-    // selection
+    // selection — per-row bitset
     if (offset + 2 > bytes.length) return emptyViewState();
-    const selCount = view.getUint16(offset, false); offset += 2;
+    const selRowCount = view.getUint16(offset, false); offset += 2;
     const selectedCells = new Set<string>();
-    for (let i = 0; i < selCount; i++) {
+    for (let i = 0; i < selRowCount; i++) {
       if (offset + 4 > bytes.length) return emptyViewState();
       const modelId = view.getUint16(offset, false); offset += 2;
-      const colId = view.getUint16(offset, false); offset += 2;
-      if (knownModelIds.has(modelId) && knownColumnIds.has(colId)) {
-        selectedCells.add(`${modelId}:${colId}`);
+      const bitsetLen = view.getUint16(offset, false); offset += 2;
+      if (offset + bitsetLen > bytes.length) return emptyViewState();
+      const colBitset = bytes.slice(offset, offset + bitsetLen); offset += bitsetLen;
+      if (!knownModelIds.has(modelId)) continue; // skip unknown model, already advanced offset
+      for (let byteIdx = 0; byteIdx < colBitset.length; byteIdx++) {
+        const byte = colBitset[byteIdx];
+        if (byte === 0) continue;
+        for (let bit = 0; bit < 8; bit++) {
+          if (byte & (1 << bit)) {
+            const colId = byteIdx * 8 + bit;
+            if (knownColumnIds.has(colId)) selectedCells.add(`${modelId}:${colId}`);
+          }
+        }
       }
     }
 

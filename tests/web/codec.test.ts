@@ -162,7 +162,7 @@ describe('round-trip: UTF-8 multibyte filter', () => {
   });
 });
 
-describe('round-trip: selected cells', () => {
+describe('round-trip: selected cells (sparse, one per row)', () => {
   it('preserves selected cell coordinates', () => {
     const state: ViewState = {
       ...emptyViewState(),
@@ -170,6 +170,17 @@ describe('round-trip: selected cells', () => {
     };
     const result = roundTrip(state);
     expect(result.selectedCells).toEqual(new Set(['1:3', '2:5', '10:29']));
+  });
+});
+
+describe('round-trip: selected cells (dense, multiple columns per row)', () => {
+  it('preserves all cells when multiple columns in the same row are selected', () => {
+    const state: ViewState = {
+      ...emptyViewState(),
+      selectedCells: new Set(['1:3', '1:5', '1:29', '2:3', '2:5']),
+    };
+    const result = roundTrip(state);
+    expect(result.selectedCells).toEqual(new Set(['1:3', '1:5', '1:29', '2:3', '2:5']));
   });
 });
 
@@ -199,6 +210,21 @@ describe('boundary: bit 0 (ID 0) in bitset', () => {
     };
     const result = roundTrip(state);
     expect(result.collapsedGroupIds.has(0)).toBe(true);
+  });
+});
+
+describe('boundary: sort column ID 0 is treated as no-sort', () => {
+  it('encodes sortColumnId 0 as no-sort sentinel and decodes to null', () => {
+    const state: ViewState = {
+      ...emptyViewState(),
+      sortColumnId: 0,
+      sortDirection: 'desc',
+    };
+    const colIdsWithZero = new Set([0, 1, 2, 3]);
+    const result = decodeViewState(
+      encodeViewState(state), colIdsWithZero, ALL_GROUP_IDS, ALL_MODEL_IDS
+    );
+    expect(result.sortColumnId).toBeNull();
   });
 });
 

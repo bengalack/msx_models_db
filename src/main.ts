@@ -42,8 +42,9 @@ if (!window.MSX_DATA) {
 } else {
   const { models, generated, columns, groups } = window.MSX_DATA;
 
-  document.title = `MSX Models DB — ${models.length} models`;
-  title.textContent = `MSX Models DB\u2002·\u2002${generated}`;
+  const pageTitle = `MSX Models DB by Bengalack\u2002·\u2002${generated}`;
+  document.title = pageTitle;
+  title.textContent = pageTitle;
 
   // ── URL state: decode hash on load ────────────────────────────────────────
   const knownColumnIds = new Set(columns.map(c => c.id));
@@ -72,7 +73,7 @@ if (!window.MSX_DATA) {
     initialState,
     onStateChange: scheduleUrlUpdate,
   });
-  const { element: gridEl, toggleFilters, setColumnVisible, getHiddenCols, copySelection } = grid;
+  const { element: gridEl, toggleFilters, setColumnVisible, getHiddenCols, clearAllSelection, copySelection } = grid;
 
   const { element: pickerEl, open: openPicker, close: closePicker } = buildColPicker(
     window.MSX_DATA.groups,
@@ -168,6 +169,19 @@ if (!window.MSX_DATA) {
         execCommandFallback(tsv);
       }
       showStatus(`Copied ${cellCount} cell(s)`);
+    }
+  });
+
+  // Deselect cells on outside click (click on dead space, not buttons/headers/gutter)
+  document.addEventListener('mousedown', (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (
+      !gridEl.contains(target) &&
+      !toolbarEl.contains(target) &&
+      !target.closest('button') &&
+      !target.closest('a')
+    ) {
+      clearAllSelection();
     }
   });
 

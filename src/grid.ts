@@ -189,16 +189,24 @@ function buildGapIndicator(
 ): HTMLTableRowElement {
   const tr = document.createElement('tr');
   tr.className = 'row-gap-indicator';
-  const td = document.createElement('td');
-  td.className = 'gutter--gap';
-  td.colSpan = colCount + 1; // gutter + all data columns
+
+  // Sticky gutter cell — holds the unhide button, stays fixed on horizontal scroll
+  const gutterTd = document.createElement('td');
+  gutterTd.className = 'gutter gutter--gap-gutter';
   const btn = document.createElement('button');
   btn.className = 'gutter__unhide-btn';
   btn.setAttribute('aria-label', `Show ${hiddenIds.length} hidden row${hiddenIds.length > 1 ? 's' : ''}`);
   btn.textContent = '\u25b2'; // ▲
   btn.addEventListener('click', () => onUnhide(hiddenIds));
-  td.appendChild(btn);
-  tr.appendChild(td);
+  gutterTd.appendChild(btn);
+  tr.appendChild(gutterTd);
+
+  // Data cell — spans remaining columns, carries the dashed line
+  const dataTd = document.createElement('td');
+  dataTd.className = 'gutter--gap';
+  dataTd.colSpan = colCount;
+  tr.appendChild(dataTd);
+
   return tr;
 }
 
@@ -213,6 +221,7 @@ export function buildGrid(data: MSXData, opts?: {
   getHiddenRows: () => ReadonlySet<number>;
   hideRow: (modelId: number) => void;
   getSelectedCells: () => ReadonlySet<string>;
+  clearAllSelection: () => void;
   copySelection: () => string;
   getViewState: () => ViewState;
 } {
@@ -494,6 +503,25 @@ export function buildGrid(data: MSXData, opts?: {
     // Re-apply selection highlights
     applySelectionToDOM();
     applyRowSelectionToDOM();
+    // Defer gap visibility check — on initial load the element may not be in
+    // the DOM yet, so getBoundingClientRect() would return zeros.
+    requestAnimationFrame(updateGapVisibility);
+  }
+
+  // ── Gap indicator scroll-awareness ──────────────────────────────────────
+  // Hide the dashed line + unhide button when a gap indicator scrolls under
+  // the sticky header — show them again once the gap is fully below it.
+  function updateGapVisibility(): void {
+    const headerBottom = thead.getBoundingClientRect().bottom;
+    for (const row of Array.from(tbody.querySelectorAll<HTMLTableRowElement>('.row-gap-indicator'))) {
+      const btn = row.querySelector<HTMLElement>('.gutter__unhide-btn');
+      if (!btn) continue;
+      // Temporarily show so we can measure
+      row.classList.remove('row-gap-indicator--under-header');
+      const btnBottom = btn.getBoundingClientRect().bottom;
+      const hidden = btnBottom <= headerBottom;
+      row.classList.toggle('row-gap-indicator--under-header', hidden);
+    }
   }
 
   // ── Seed from initial state ──────────────────────────────────────────────
@@ -943,6 +971,13 @@ export function buildGrid(data: MSXData, opts?: {
     return lines.join('\n');
   }
 
+  function clearAllSelection(): void {
+    clearSelection();
+    clearRowSelection();
+    opts?.onStateChange?.();
+  }
+
   wrap.appendChild(table);
-  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols, getHiddenRows, hideRow, getSelectedCells, copySelection, getViewState };
+  wrap.addEventListener('scroll', updateGapVisibility, { passive: true });
+  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols, getHiddenRows, hideRow, getSelectedCells, clearAllSelection, copySelection, getViewState };
 }
