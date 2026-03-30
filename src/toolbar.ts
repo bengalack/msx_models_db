@@ -13,7 +13,10 @@ export function buildToolbar(
 
   const filtersBtn = document.createElement('button');
   filtersBtn.className = 'toolbar__btn';
-  filtersBtn.textContent = '\u2261 Filters';
+  const filtersIcon = document.createElement('i');
+  filtersIcon.className = 'fas fa-filter';
+  filtersBtn.appendChild(filtersIcon);
+  filtersBtn.appendChild(document.createTextNode(' Filters'));
   filtersBtn.addEventListener('click', onFiltersToggle);
 
   const helpWrap = document.createElement('div');
