@@ -10,6 +10,30 @@ function isNullish(value: string | number | boolean | null | undefined): boolean
   return value === null || value === undefined || value === '';
 }
 
+/**
+ * Resolve a slot map cell value to its tooltip string, or null if no tooltip.
+ *
+ * Rules:
+ *   - Exact key in lut (including "~") → lut[value]
+ *   - value ends with "*" → look up base (strip "*"); if found → "<base tooltip> (mirror)"
+ *   - Not in lut and not a mirror → null (no tooltip)
+ */
+export function resolveSlotmapTooltip(
+  value: string,
+  lut: Record<string, string>,
+): string | null {
+  if (Object.prototype.hasOwnProperty.call(lut, value)) {
+    return lut[value];
+  }
+  if (value.endsWith('*')) {
+    const base = value.slice(0, -1);
+    if (Object.prototype.hasOwnProperty.call(lut, base)) {
+      return `${lut[base]} (mirror)`;
+    }
+  }
+  return null;
+}
+
 function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTableRowElement {
   const tr = document.createElement('tr');
 

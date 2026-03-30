@@ -58,6 +58,11 @@ export interface MSXData {
   groups: GroupDef[];
   /** All model records. Each model's values[] aligns with columns[]. */
   models: ModelRecord[];
+  /**
+   * Slot map LUT: maps each abbreviation to its full tooltip string.
+   * Keyed by abbr (e.g. "MAIN", "SUB", "~"). Absent in legacy data files.
+   */
+  slotmap_lut?: Record<string, string>;
   /** Optional default view configuration. Undefined = show all, no sort, no filters. */
   defaultView?: DefaultViewConfig;
 }
