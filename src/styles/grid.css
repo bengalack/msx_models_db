@@ -396,8 +396,8 @@ thead .gutter {
 
 /* ── Slot map cell markers ───────────────────────────────────────────────── */
 
-/* ~ sentinel: muted — slot/page is not expanded */
-.cell-slotmap-tilde {
+/* ☒ sentinel: muted — slot/page is not expanded */
+.cell-slotmap-empty {
   color: var(--color-text-muted);
   opacity: 0.5;
 }
