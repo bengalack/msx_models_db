@@ -31,19 +31,6 @@
     - Status bar (bottom, 24px) shows "Copied N cell(s)"
 
 - Now / Next
-  - Slot map — XML extractor
-  - Slot map — XML extractor
-    - scraper/slotmap.py: load and validate LUT; first pass: walk `primary`/`secondary` hierarchy, classify devices by element type + id regex, assign pages via `mem base+size`
-    - Cartridge slots (`primary external="true"`): CS{N} in sub-slot 0 pages 0–3; sub-slots 1–3 = ~
-    - Non-expanded primary slots: classify direct child devices; sub-slots 1–3 = ~
-    - Missing secondary slot elements: all 4 pages = ~
-    - Multiple devices per sub-slot: assign each to non-overlapping pages; warn on overlap (first wins)
-    - Unknown LUT string: warn to stdout with model name + element; write raw string as cell value; never abort
-    - Mirror detection method 1 (rom_visibility): pages within `mem` but outside `rom_visibility` → abbr*; rom_visibility page = original
-    - Mirror detection method 2 (ROM file size): look up SHA1(s) in all_sha1s.txt; measure file size on disk; pages beyond ROM byte coverage → abbr*; warn if SHA1 not found or file absent; skip gracefully
-    - Mirror detection method 3 (`Mirror` element, two-pass): second pass resolves cross-slot mirror references; `ps`/`ss` identify origin slot; origin abbr + * written to pages covered by `Mirror` `mem`
-    - Embed LUT as {abbr: tooltip} map in data.js output (slotmap_lut key on MSXData)
-    - pytest tests: LUT matching order, page assignment from <mem>, all three mirror methods, unknown-string warn+continue, SHA1-missing graceful skip
   - Scraper — msx.org HTML source
     - Enumerate MSX2, MSX2+, turboR model pages from msx.org category pages
     - Scrape each model page with beautifulsoup4 + lxml
@@ -80,6 +67,15 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Slot map — XML extractor
+    - scraper/slotmap.py: match_lut(), pages_for_mem(), extract_slotmap(), load_sha1_index()
+    - All 64 slotmap_{ms}_{ss}_{p} keys always present per model, defaulting to ~
+    - CS{N} for external primary slots; LUT classification for device children
+    - Mirror detection: rom_visibility (method 1), ROM file size via SHA1 index (method 2), Mirror element two-pass (method 3)
+    - Missing systemroms/: mirror method 2 gracefully disabled; no exception
+    - Unknown device: [WARN] + raw tag; never aborts
+    - Wired into openmsx.py (parse_machine_xml + fetch_all) and build.py
+    - 59 slotmap unit tests + 1 build integration test
   - Scraper — openMSX XML source
     - Fetch machine XML file listing via GitHub API; fetch and parse each XML with lxml recover=True
     - Extract fields: manufacturer, model, standard, year, region, RAM, VRAM, VDP, PSG, FM chip, floppy drives, cartridge slots, CPU, keyboard layout, openMSX machine ID
