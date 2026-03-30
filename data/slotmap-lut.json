@@ -14,7 +14,7 @@
   {
     "element": "ROM",
     "id_pattern": "Kanji",
-    "abbr": "KNJ",
+    "abbr": "KAN",
     "tooltip": "Kanji driver"
   },
   {
@@ -25,7 +25,7 @@
   },
   {
     "element": "ROM",
-    "id_pattern": "Firmware|Arabic ROM|SWP ROM|.*Cockpit.*|Desk Pac.*",
+    "id_pattern": "Firmware|Arabic ROM|SWP ROM|.*Cockpit.*|Desk Pac.*|MSX JUSHO",
     "abbr": "FW",
     "tooltip": "Firmware"
   },
@@ -36,7 +36,7 @@
     "tooltip": "Disk ROM"
   },
   {
-    "element": "MSX-MUSIC|FMPAC",
+    "element": "MSX-MUSIC|FMPAC|MSX-MUSIC-WX",
     "id_pattern": null,
     "abbr": "MUS",
     "tooltip": "MSX Music"
@@ -44,6 +44,12 @@
   {
     "element": "MSX-RS232",
     "id_pattern": null,
+    "abbr": "RS2",
+    "tooltip": "RS-232C Interface"
+  },
+  {
+    "element": "ROM",
+    "id_pattern": "rs232",
     "abbr": "RS2",
     "tooltip": "RS-232C Interface"
   },
@@ -64,6 +70,24 @@
     "id_pattern": null,
     "abbr": "RAM",
     "tooltip": "RAM (no memory mapper)"
+  },
+  {
+    "element": "Bunsetsu",
+    "id_pattern": null,
+    "abbr": "BUN",
+    "tooltip": "Bunsetsu Henkan - Hiragana text 🠆 Kanji Japanese"
+  },
+  {
+    "element": "YamahaSFG",
+    "id_pattern": "Yamaha SFG-05",
+    "abbr": "SFG5",
+    "tooltip": "Yamaha SFG-05"
+  },
+  {
+    "element": "YamahaSFG",
+    "id_pattern": "Yamaha SFG-01",
+    "abbr": "SFG1",
+    "tooltip": "Yamaha SFG-01"
   },
   {
     "element": "secondary",

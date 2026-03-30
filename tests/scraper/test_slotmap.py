@@ -201,11 +201,11 @@ class TestExtractSlotmapAllKeys:
                 for p in range(4):
                     assert f"slotmap_{ms}_{ss}_{p}" in result
 
-    def test_no_devices_returns_all_tilde(self):
+    def test_no_devices_returns_all_none(self):
         root = _root("<msxconfig><info/></msxconfig>")
         result = extract_slotmap(root, LUT_RULES)
         assert len(result) == 64
-        assert all(v == "~" for v in result.values())
+        assert all(v is None for v in result.values())
 
 
 class TestExtractSlotmapHBF1XV:
@@ -214,21 +214,21 @@ class TestExtractSlotmapHBF1XV:
     def setup_method(self):
         self.result = extract_slotmap(_root(HB_F1XV_XML), LUT_RULES)
 
-    # Slot 0-0: MAIN in pages 0-1, ~ in pages 2-3
+    # Slot 0-0: MAIN in pages 0-1; pages 2-3 empty (no device in expanded slot)
     def test_slot_0_0_page_0_main(self):
         assert self.result["slotmap_0_0_0"] == "MAIN"
 
     def test_slot_0_0_page_1_main(self):
         assert self.result["slotmap_0_0_1"] == "MAIN"
 
-    def test_slot_0_0_pages_2_3_tilde(self):
-        assert self.result["slotmap_0_0_2"] == "~"
-        assert self.result["slotmap_0_0_3"] == "~"
+    def test_slot_0_0_pages_2_3_none(self):
+        assert self.result["slotmap_0_0_2"] is None
+        assert self.result["slotmap_0_0_3"] is None
 
-    # Slot 0-1: empty → all ~
-    def test_slot_0_1_all_tilde(self):
+    # Slot 0-1: empty secondary in an expanded slot → all None
+    def test_slot_0_1_all_none(self):
         for p in range(4):
-            assert self.result[f"slotmap_0_1_{p}"] == "~"
+            assert self.result[f"slotmap_0_1_{p}"] is None
 
     # Slot 0-3: JE covers all 4 pages (0x0000, 0x10000)
     def test_slot_0_3_je_all_pages(self):
@@ -261,22 +261,22 @@ class TestExtractSlotmapHBF1XV:
         assert self.result["slotmap_3_1_1"] == "KNJ"
         assert self.result["slotmap_3_1_2"] == "KNJ"
 
-    def test_slot_3_1_page_3_tilde(self):
-        assert self.result["slotmap_3_1_3"] == "~"
+    def test_slot_3_1_page_3_none(self):
+        assert self.result["slotmap_3_1_3"] is None
 
-    # Slot 3-2: DSK in page 1 only
+    # Slot 3-2: DSK in page 1; other pages empty (expanded slot, no device)
     def test_slot_3_2_dsk_page_1(self):
         assert self.result["slotmap_3_2_1"] == "DSK"
-        assert self.result["slotmap_3_2_0"] == "~"
-        assert self.result["slotmap_3_2_2"] == "~"
-        assert self.result["slotmap_3_2_3"] == "~"
+        assert self.result["slotmap_3_2_0"] is None
+        assert self.result["slotmap_3_2_2"] is None
+        assert self.result["slotmap_3_2_3"] is None
 
-    # Slot 3-3: MUS in page 1 only
+    # Slot 3-3: MUS in page 1; other pages empty (expanded slot, no device)
     def test_slot_3_3_mus_page_1(self):
         assert self.result["slotmap_3_3_1"] == "MUS"
-        assert self.result["slotmap_3_3_0"] == "~"
-        assert self.result["slotmap_3_3_2"] == "~"
-        assert self.result["slotmap_3_3_3"] == "~"
+        assert self.result["slotmap_3_3_0"] is None
+        assert self.result["slotmap_3_3_2"] is None
+        assert self.result["slotmap_3_3_3"] is None
 
 
 class TestExtractSlotmapEdgeCases:
@@ -298,7 +298,7 @@ class TestExtractSlotmapEdgeCases:
             for p in range(4):
                 assert result[f"slotmap_0_{ss}_{p}"] == "~"
 
-    def test_empty_secondary_slot_all_tilde(self):
+    def test_empty_secondary_slot_all_none(self):
         xml = """
         <msxconfig><devices>
           <primary slot="0">
@@ -310,8 +310,9 @@ class TestExtractSlotmapEdgeCases:
         </devices></msxconfig>
         """
         result = extract_slotmap(_root(xml), LUT_RULES)
+        # Empty secondary in an expanded slot: pages are None, not ~
         for p in range(4):
-            assert result[f"slotmap_0_0_{p}"] == "~"
+            assert result[f"slotmap_0_0_{p}"] is None
         for p in range(4):
             assert result[f"slotmap_0_1_{p}"] == "MM"
 
@@ -360,8 +361,12 @@ class TestExtractSlotmapEdgeCases:
         </devices></msxconfig>
         """
         result = extract_slotmap(_root(xml), LUT_RULES)
+        # Device skipped (no mem); non-expanded primary: SS0 pages = None, SS1-3 = ~
         for p in range(4):
-            assert result[f"slotmap_0_0_{p}"] == "~"
+            assert result[f"slotmap_0_0_{p}"] is None
+        for ss in range(1, 4):
+            for p in range(4):
+                assert result[f"slotmap_0_{ss}_{p}"] == "~"
 
     def test_primary_without_slot_attr_skipped(self):
         xml = """
@@ -374,7 +379,8 @@ class TestExtractSlotmapEdgeCases:
         </devices></msxconfig>
         """
         result = extract_slotmap(_root(xml), LUT_RULES)
-        assert all(v == "~" for v in result.values())
+        # Primary skipped entirely — all 64 cells remain None
+        assert all(v is None for v in result.values())
 
 
 # ---------------------------------------------------------------------------
@@ -418,7 +424,7 @@ class TestMirrorMethod1RomVisibility:
         result = extract_slotmap(_root(xml), LUT_RULES)
         assert result["slotmap_0_0_0"] == "MAIN"
         assert result["slotmap_0_0_1"] == "MAIN"
-        assert result["slotmap_0_0_2"] == "~"
+        assert result["slotmap_0_0_2"] is None  # expanded slot, no device on page 2
 
 
 # ---------------------------------------------------------------------------
@@ -485,7 +491,7 @@ class TestMirrorMethod2RomFileSize:
         )
         assert result["slotmap_0_0_0"] == "MAIN"
         assert result["slotmap_0_0_1"] == "MAIN"
-        assert result["slotmap_0_0_2"] == "~"
+        assert result["slotmap_0_0_2"] is None  # expanded slot, no device on page 2
 
     def test_sha1_not_found_warns_and_skips(self, capsys, tmp_path):
         sha1_index = {}  # empty — SHA1 won't be found
@@ -583,7 +589,7 @@ class TestMirrorMethod3Element:
         result = extract_slotmap(_root(xml), LUT_RULES)
         assert result["slotmap_0_0_0"] == "MAIN"
         assert result["slotmap_0_0_1"] == "MAIN"
-        assert result["slotmap_0_0_2"] == "~"
+        assert result["slotmap_0_0_2"] is None  # non-expanded primary, no device on page 2
         assert result["slotmap_0_0_3"] == "RAM*"
         # Source slot intact
         for p in range(4):
@@ -642,8 +648,8 @@ class TestMirrorMethod3Element:
         captured = capsys.readouterr()
         assert "[WARN]" in captured.err
         assert "Mirror origin" in captured.err
-        # Page 3 in slot 0 stays "~" (mirror skipped)
-        assert result["slotmap_0_0_3"] == "~"
+        # Page 3 in slot 0 stays None (mirror skipped, non-expanded primary, no device)
+        assert result["slotmap_0_0_3"] is None
 
 
 # ---------------------------------------------------------------------------

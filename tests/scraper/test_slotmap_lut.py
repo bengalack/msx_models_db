@@ -12,9 +12,9 @@ from scraper.slotmap_lut import compact_lut, load_slotmap_lut
 STARTER_LUT = Path("data/slotmap-lut.json")
 
 EXPECTED_ABBRS = {
-    "MAIN", "SUB", "KNJ", "JE", "FW",
+    "MAIN", "SUB", "KAN", "JE", "FW",
     "DSK", "MUS", "RS2", "MM", "PM",
-    "RAM", "EXP", "~",
+    "RAM", "BUN", "SFG5", "SFG1", "EXP", "~",
 }
 
 
@@ -29,7 +29,7 @@ def test_load_starter_lut_returns_list():
 
 def test_load_starter_lut_count():
     rules = load_slotmap_lut(STARTER_LUT)
-    assert len(rules) == 13
+    assert len(rules) == 17
 
 
 def test_load_starter_lut_rule_keys():
@@ -90,7 +90,19 @@ def test_missing_file_raises_file_not_found(tmp_path):
         load_slotmap_lut(missing)
 
 
-def test_duplicate_abbr_raises_value_error(tmp_path):
+def test_duplicate_abbr_with_same_tooltip_is_valid(tmp_path):
+    """Same abbr allowed when tooltip is identical (different element types → same abbr)."""
+    lut_file = tmp_path / "lut.json"
+    lut_file.write_text(json.dumps([
+        {"element": "MSX-RS232", "id_pattern": None,    "abbr": "RS2", "tooltip": "RS-232C Interface"},
+        {"element": "ROM",       "id_pattern": "rs232", "abbr": "RS2", "tooltip": "RS-232C Interface"},
+    ]))
+    rules = load_slotmap_lut(lut_file)
+    assert len(rules) == 2
+
+
+def test_duplicate_abbr_with_conflicting_tooltip_raises(tmp_path):
+    """Same abbr with a different tooltip is an error (conflicting definitions)."""
     lut_file = tmp_path / "lut.json"
     lut_file.write_text(json.dumps([
         {"element": "ROM", "id_pattern": "Main ROM", "abbr": "MAIN", "tooltip": "Main ROM"},

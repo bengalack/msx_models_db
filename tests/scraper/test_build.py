@@ -115,9 +115,9 @@ class TestBuildSlotmapLUT:
     """Integration tests for slotmap LUT wired into build pipeline."""
 
     STARTER_ABBRS = {
-        "MAIN", "SUB", "KNJ", "JE", "FW",
+        "MAIN", "SUB", "KAN", "JE", "FW",
         "DSK", "MUS", "RS2", "MM", "PM",
-        "RAM", "EXP", "~",
+        "RAM", "BUN", "SFG5", "SFG1", "EXP", "~",
     }
 
     def _run_build(self, tmp_path):
@@ -255,7 +255,8 @@ class TestBuildSlotmapExtractor:
     def test_slotmap_keys_present_in_model_values(self, tmp_path):
         """A model dict with slotmap keys produces correct positional values in data.js."""
         # Build a model that already has slotmap keys (as if extracted by the scraper)
-        slotmap_data = {f"slotmap_{ms}_{ss}_{p}": "~"
+        # Empty/absent pages are None; ~ only appears on SS1-3 of non-expanded primaries
+        slotmap_data = {f"slotmap_{ms}_{ss}_{p}": None
                         for ms in range(4) for ss in range(4) for p in range(4)}
         # Override a few known cells
         slotmap_data["slotmap_0_0_0"] = "MAIN"

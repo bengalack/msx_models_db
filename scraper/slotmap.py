@@ -153,11 +153,17 @@ def extract_slotmap(
     filename: str = "<unknown>",
     sha1_index: dict[str, Path] | None = None,
     systemroms_root: Path | None = None,
-) -> dict[str, str]:
+) -> dict[str, str | None]:
     """Extract all 64 slot map cell values from an openMSX machine XML root.
 
     Returns a dict with all 64 keys (slotmap_{ms}_{ss}_{p}), each valued as:
-    "~", "CS{N}", an LUT abbreviation, "abbr*" (mirror), or a raw element tag.
+    None (no device / slot absent), "~" (sub-slot not expanded), "CS{N}"
+    (cartridge slot), an LUT abbreviation, "abbr*" (mirror), or a raw element
+    tag (unmatched device).
+
+    "~" is only written to sub-slots 1-3 of non-expanded primary slots and to
+    sub-slots 1-3 of external (cartridge) primary slots.  Pages within an
+    existing sub-slot that have no mapped device are left as None.
 
     Args:
         root: Parsed lxml element (<msxconfig> or <machine> root).
@@ -166,8 +172,8 @@ def extract_slotmap(
         sha1_index: Optional mapping of SHA1 → Path for mirror method 2.
         systemroms_root: Base directory for ROM file lookups (mirror method 2).
     """
-    # Initialise all 64 cells to "~"
-    result: dict[str, str] = {k: _TILDE for k in _ALL_KEYS}
+    # Initialise all 64 cells to None (absent / no device)
+    result: dict[str, str | None] = {k: None for k in _ALL_KEYS}
 
     devices = root.find("devices")
     if devices is None:
@@ -197,7 +203,10 @@ def extract_slotmap(
             for p in range(4):
                 result[f"slotmap_{ms}_0_{p}"] = abbr
                 slot_abbrs[ms][0][p] = abbr
-            # Sub-slots 1-3 remain "~"
+            # Sub-slots 1-3: ~ (slot exists but is not expanded)
+            for ss in range(1, 4):
+                for p in range(4):
+                    result[f"slotmap_{ms}_{ss}_{p}"] = _TILDE
             continue
 
         # Check for secondary children
@@ -211,7 +220,10 @@ def extract_slotmap(
             for p, abbr in page_map.items():
                 result[f"slotmap_{ms}_0_{p}"] = abbr
                 slot_abbrs[ms][0][p] = abbr
-            # Sub-slots 1-3 remain "~"
+            # Sub-slots 1-3: ~ (primary is not expanded into secondary slots)
+            for ss in range(1, 4):
+                for p in range(4):
+                    result[f"slotmap_{ms}_{ss}_{p}"] = _TILDE
         else:
             # Expanded primary: classify each secondary slot
             for secondary in secondaries:

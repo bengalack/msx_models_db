@@ -35,7 +35,12 @@ def load_slotmap_lut(path: str | Path) -> list[dict]:
     Raises:
         FileNotFoundError: if *path* does not exist.
         ValueError: if the file is not valid JSON, contains duplicate ``abbr``
-                    values, or contains a malformed ``id_pattern`` regex.
+                    values with conflicting tooltips, or contains a malformed
+                    ``id_pattern`` regex.
+
+    Note: Multiple rules may share the same ``abbr`` provided their ``tooltip``
+    values are identical.  This is intentional when different XML element types
+    (e.g. ``MSX-RS232`` and ``ROM id=rs232``) map to the same abbreviation.
     """
     path = Path(path)
     if not path.exists():
@@ -50,14 +55,18 @@ def load_slotmap_lut(path: str | Path) -> list[dict]:
     if not isinstance(rules, list):
         raise ValueError("Slot map LUT must be a JSON array")
 
-    seen_abbrs: set[str] = set()
+    abbr_tooltips: dict[str, str] = {}
     for i, rule in enumerate(rules):
         abbr = rule.get("abbr")
-        if abbr in seen_abbrs:
-            raise ValueError(
-                f"Slot map LUT rule {i}: duplicate abbr {abbr!r}"
-            )
-        seen_abbrs.add(abbr)
+        tooltip = rule.get("tooltip", "")
+        if abbr in abbr_tooltips:
+            if abbr_tooltips[abbr] != tooltip:
+                raise ValueError(
+                    f"Slot map LUT rule {i}: duplicate abbr {abbr!r} "
+                    f"with conflicting tooltip"
+                )
+        else:
+            abbr_tooltips[abbr] = tooltip
 
         id_pattern = rule.get("id_pattern")
         if id_pattern is not None:
