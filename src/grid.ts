@@ -1,8 +1,23 @@
 import type { MSXData, GroupDef, ColumnDef, ModelRecord, ViewState } from './types.js';
 
-function cellText(value: string | number | boolean | null | undefined): string {
+// Normalize (sort) comma-separated string values (e.g., for Conn/Ports)
+function normalizeCommaList(value: string): string {
+  // Split by comma, trim, sort, and join
+  return value
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+    .join(', ');
+}
+
+function cellText(value: string | number | boolean | null | undefined, col?: ColumnDef): string {
   if (value === null || value === undefined || value === '') return '\u2014'; // em dash
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  // Normalize Conn/Ports column for display
+  if (col && col.key === 'connectivity' && typeof value === 'string') {
+    return normalizeCommaList(value);
+  }
   return String(value);
 }
 
@@ -94,7 +109,8 @@ function buildColHeaderRow(columns: ColumnDef[]): HTMLTableRowElement {
 function sortModels(
   models: ModelRecord[],
   colIndex: number,
-  direction: 'asc' | 'desc'
+  direction: 'asc' | 'desc',
+  columns?: ColumnDef[]
 ): ModelRecord[] {
   return [...models].sort((a, b) => {
     const av = colIndex < a.values.length ? a.values[colIndex] : null;
@@ -104,7 +120,13 @@ function sortModels(
     if (av === null) return 1;
     if (bv === null) return -1;
     let cmp: number;
-    if (typeof av === 'number' && typeof bv === 'number') {
+    // Special normalization for Conn/Ports column
+    const col = columns?.[colIndex];
+    if (col && col.key === 'connectivity' && typeof av === 'string' && typeof bv === 'string') {
+      const nav = normalizeCommaList(av);
+      const nbv = normalizeCommaList(bv);
+      cmp = nav.localeCompare(nbv, undefined, { sensitivity: 'base' });
+    } else if (typeof av === 'number' && typeof bv === 'number') {
       cmp = av - bv;
     } else if (typeof av === 'boolean' && typeof bv === 'boolean') {
       cmp = av === bv ? 0 : av ? 1 : -1;
@@ -178,20 +200,19 @@ function buildDataRow(
   const groupOrder = new Map<number, number>();
   for (let i = 0; i < columns.length; i++) {
     const rawValue = i < model.values.length ? model.values[i] : null;
+    const col = columns[i];
     const td = document.createElement('td');
-    const text = cellText(rawValue);
+    const text = cellText(rawValue, col);
     td.textContent = text;
-    td.dataset.colGroup = String(columns[i].groupId);
+    td.dataset.colGroup = String(col.groupId);
     td.dataset.colIndex = String(i);
-    const order = groupOrder.get(columns[i].groupId) ?? 0;
+    const order = groupOrder.get(col.groupId) ?? 0;
     td.dataset.colOrder = String(order);
-    groupOrder.set(columns[i].groupId, order + 1);
+    groupOrder.set(col.groupId, order + 1);
 
     if (isNullish(rawValue)) {
       td.classList.add('cell-null');
     } else {
-      const col = columns[i];
-
       // Slot map tooltip + visual markers
       if (col.key.startsWith('slotmap_') && typeof rawValue === 'string') {
         const tooltip = resolveSlotmapTooltip(rawValue, slotmapLut);
@@ -488,7 +509,7 @@ export function buildGrid(data: MSXData, opts?: {
 
   function renderRows(): void {
     const sorted = sortColIndex !== null
-      ? sortModels(originalModels, sortColIndex, sortDirection)
+      ? sortModels(originalModels, sortColIndex, sortDirection, data.columns)
       : originalModels;
     const filtered = filters.size === 0 ? sorted : sorted.filter(model =>
       [...filters.entries()].every(([colIdx, term]) => {

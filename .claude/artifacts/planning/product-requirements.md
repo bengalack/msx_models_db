@@ -1,9 +1,9 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.2
+- V- Version: 0.2
 - Date: 2026-03-30
-- Owner: bengalack
+er: bengalack
 
 ## Problem Statement
 MSX computer model specifications are scattered across multiple websites with no unified, structured reference. Enthusiasts and researchers who want to compare models — by RAM, video chip, CPU speed, media, or any other dimension — must open multiple tabs, manually reconcile inconsistent data, and copy information by hand. This is slow, error-prone, and discouraging.
@@ -22,12 +22,12 @@ The goal is a single static web page that presents all MSX2, MSX2+, and MSX turb
 - User accounts, authentication, or server-side processing.
 - Community/crowd-sourced data editing via the UI.
 - Mobile-first design.
-- Slot map extraction from msx.org wiki pages (deferred; XML-only for slot map data in this iteration).
-- Slot map mirror detection from msx.org (deferred alongside msx.org slot map parsing).
-- Default view configuration for slot map column groups (deferred to a later task).
 
 ## Users
-- MSX enthusiasts / collectors (Primary)
+- MSX enthusia- Slot map extraction from msx.org wiki pages (deferred; XML-only for slot map data in this iteration).
+- Slot map mirror detection from msx.org (deferred alongside msx.org slot map parsing).
+- Default view configuration for slot map column groups (deferred to a later task).
+sts / collectors (Primary)
 - MSX researchers and developers (Secondary)
 - bengalack, project maintainer (Internal)
 
@@ -85,32 +85,17 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Column visibility state is reflected in the URL.
 
 - Row show/hide
-  - Description: Individual rows can be hidden via an always-visible × button in the row's left gutter cell. A compact visual indicator appears in the gutter only (not spanning the grid) wherever one or more rows are hidden.
+  - Description: Individual rows can be hidden. A visual indicator appears in the left gutter of the grid whenever one or more rows are hidden.
   - Priority: Must
   - Acceptance Criteria:
-    - Each row's gutter cell contains a × button (left-aligned, low-contrast) and a row number (right-aligned).
-    - Clicking the × button hides that row if no rows are currently selected. If one or more rows are selected, clicking any × button hides all selected rows.
+    - There is a UI control to hide a row (e.g. right-click context menu on row header).
     - Hidden rows are not rendered in the grid.
-    - A compact amber ▲ indicator appears in the gutter column only (not full-width) between visible rows whenever hidden rows exist in that gap; clicking it unhides those rows.
-    - The gap indicator dashed line renders below selected cells (selected cells visually cover the line).
-    - There is no right-click context menu for row hiding.
+    - The left gutter shows a clear visual cue (e.g. a marker or gap indicator) between visible rows when one or more rows are hidden between them.
+    - Clicking the gutter indicator reveals/unhides the hidden row(s).
     - Hidden row state is reflected in the URL.
 
-- Row selection
-  - Description: Clicking a row's gutter number selects the full row. Selected rows are also reflected in cell selection — all data cells of selected rows become highlighted (cell--selected). Multiple rows can be selected. Row selection is used to batch-hide rows via the × button.
-  - Priority: Must
-  - Acceptance Criteria:
-    - Click on a row number selects that row and deselects all others. Clicking the only selected row deselects it.
-    - CTRL+click (CMD+click on macOS) toggles the clicked row in/out of the selection without clearing other selections.
-    - SHIFT+click selects the range of visible rows between the last-clicked row and the clicked row.
-    - Click-and-drag across gutter numbers extends the selection to every row touched.
-    - Selected rows are visually indicated by inverted colors on the gutter cell (background and text colors swap).
-    - All data cells of selected rows are highlighted using the standard cell-selected style.
-    - Directly clicking a data cell clears row selection and starts a fresh cell selection.
-    - Pressing Escape clears both row selection and cell selection.
-
 - Cell selection
-  - Description: Users can select one or more data cells using mouse interactions. Selected cells are visually highlighted. Row selection (via gutter numbers) is a separate interaction.
+  - Description: Users can select one or more cells using mouse interactions. Selected cells are visually highlighted.
   - Priority: Must
   - Acceptance Criteria:
     - Click selects a single cell and deselects any previous selection.
@@ -191,14 +176,17 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - The scraper can be invoked by the maintainer with a single command.
     - It scrapes MSX2, MSX2+, and MSX turbo R model pages from msx.org.
     - It parses machine XML files from the openMSX GitHub repository's share folder.
-    - When both sources have data for the same model and the values conflict, openMSX is used by default (it is considered the more authoritative source for hardware specifications). All conflicts are recorded in a file for maintainer review; the maintainer can override individual field choices and re-run the build with a resolutions file.
-    - Parse failures are logged clearly so the maintainer can investigate.
-    - Running the scraper again overwrites the previous data file (idempotent on data; preserves the ID registry).
+    - When both sources have data for the same model and the values conflict, the scraper summarizes all conflicts and prompts the maintainer to choose which value to keep be    - When both sources have data for the same model and the values conflict, openMSX is used by default (it is considered the more authoritative source for hardware specifications). All conflicts are recorded in a file for maintainer review; the maintainer can override individual field choices and re-run the build with a resolutions file.
+ ID registry).
     - The scraper reads and updates a persistent ID registry to ensure stable IDs across runs.
     - The scraper supports a build mode that skips fetching from external sources and instead uses previously cached raw data files on disk. This is the default mode; fetching is opt-in (e.g. via a `--fetch` flag).
     - External sources (msx.org, openMSX GitHub) change infrequently; the maintainer fetches fresh data only when needed.
 
-- Slot map columns
+## Non-Functional Requirements
+
+- No runtime dependencies on external servers
+  - Target: Page loads and renders fully with no network requests at runtime (data file is local).
+  - - Slot map columns
   - Description: Each model row exposes 64 fixed slot map columns across 4 column groups ("Slotmap, slot 0–3"), showing what occupies each page of each sub-slot. All models carry all 64 columns. Cells outside a model's physical slot configuration show `~`.
   - Priority: Must
   - Acceptance Criteria:
@@ -239,11 +227,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
       3. `<rom_visibility>` narrower than `<mem>` range: pages within `<mem>` but outside `<rom_visibility>` are mirrors; `rom_visibility` page = original, others = `<abbr>*`.
     - If a SHA1 from the XML cannot be resolved to a file on disk (for method 2), the scraper skips mirror detection for that ROM and emits a warning.
 
-## Non-Functional Requirements
-
-- No runtime dependencies on external servers
-  - Target: Page loads and renders fully with no network requests at runtime (data file is local).
-  - Priority: Must
+Priority: Must
 
 - URL length
   - Target: URL remains under 2000 characters for any realistic view state (all columns shown, up to 50 cells selected).
@@ -316,8 +300,6 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
 - Any grid state can be fully recreated from a URL alone.
 - The scraper runs to completion with a single command and produces a valid JSON file.
 - The page works identically when opened as `file://` and when served over HTTP.
-- All 64 slot map columns are populated for every in-scope model; no model has an empty slot map.
-- Slot map tooltips are visible on hover and accurately describe each abbreviation.
 
 ## Assumptions
 - msx.org wiki and openMSX GitHub XML files are publicly accessible and scrapeable.

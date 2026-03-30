@@ -233,7 +233,8 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
             break
 
     if ports:
-        result["connectivity"] = ", ".join(ports)
+        # Sort ports alphabetically for normalization
+        result["connectivity"] = ", ".join(sorted(ports, key=lambda s: s.lower()))
     return result
 
 
