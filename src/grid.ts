@@ -147,7 +147,12 @@ function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
   return tr;
 }
 
-function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number): HTMLTableRowElement {
+function buildDataRow(
+  model: ModelRecord,
+  columns: ColumnDef[],
+  rowIndex: number,
+  slotmapLut: Record<string, string>,
+): HTMLTableRowElement {
   const tr = document.createElement('tr');
   tr.dataset.modelId = String(model.id);
 
@@ -186,6 +191,18 @@ function buildDataRow(model: ModelRecord, columns: ColumnDef[], rowIndex: number
       td.classList.add('cell-null');
     } else {
       const col = columns[i];
+
+      // Slot map tooltip + visual markers
+      if (col.key.startsWith('slotmap_') && typeof rawValue === 'string') {
+        const tooltip = resolveSlotmapTooltip(rawValue, slotmapLut);
+        if (tooltip !== null) td.title = tooltip;
+        if (rawValue === '~') {
+          td.classList.add('cell-slotmap-tilde');
+        } else if (rawValue.endsWith('*')) {
+          td.classList.add('cell-slotmap-mirror');
+        }
+      }
+
       const url = col.linkable ? (model.links?.[col.key] ?? null) : null;
       if (url !== null) {
         td.textContent = '';
@@ -501,7 +518,7 @@ export function buildGrid(data: MSXData, opts?: {
           rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
           buffer = [];
         }
-        rows.push(buildDataRow(model, data.columns, rowNum++));
+        rows.push(buildDataRow(model, data.columns, rowNum++, data.slotmap_lut ?? {}));
       }
     }
     if (buffer.length > 0) {

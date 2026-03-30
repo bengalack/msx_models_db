@@ -193,10 +193,10 @@ Feature: Slot map cell tooltips
   - [x] T-012 Tests: add `tests/web/slotmap-tooltip.test.ts` covering: known abbr, `~`, mirror with known base, mirror with unknown base, unknown abbr, empty lut
 
 - [ ] Implement: Chunk B — Grid rendering + CSS
-  - [ ] T-020 In `buildDataRow`, detect slotmap columns (`col.key.startsWith('slotmap_')`), call `resolveSlotmapTooltip`, and set `td.title`
-  - [ ] T-021 Add CSS classes: `cell-slotmap-tilde` on cells with value `~`; `cell-slotmap-mirror` on cells with value ending `*`
-  - [ ] T-022 Add `.cell-slotmap-tilde` and `.cell-slotmap-mirror` styles to `src/styles/grid.css`
-  - [ ] T-023 Update plan checkboxes and verify all Vitest tests pass
+  - [x] T-020 In `buildDataRow`, detect slotmap columns (`col.key.startsWith('slotmap_')`), call `resolveSlotmapTooltip`, and set `td.title`
+  - [x] T-021 Add CSS classes: `cell-slotmap-tilde` on cells with value `~`; `cell-slotmap-mirror` on cells with value ending `*`
+  - [x] T-022 Add `.cell-slotmap-tilde` and `.cell-slotmap-mirror` styles to `src/styles/grid.css`
+  - [x] T-023 Update plan checkboxes and verify all Vitest tests pass
 
 - [ ] Quality gate
   - [ ] T-900 Run formatters (eslint --fix / prettier if configured)

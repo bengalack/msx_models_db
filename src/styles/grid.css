@@ -394,6 +394,20 @@ thead .gutter {
   display: none;
 }
 
+/* ── Slot map cell markers ───────────────────────────────────────────────── */
+
+/* ~ sentinel: muted — slot/page is not expanded */
+.cell-slotmap-tilde {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
+/* abbr* mirror: italic + muted — visually secondary to the origin page */
+.cell-slotmap-mirror {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
 /* ── Cell selection ────────────────────────────────────────────────────── */
 
 .cell--selected {
