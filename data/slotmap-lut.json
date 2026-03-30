@@ -19,13 +19,43 @@
   },
   {
     "element": "ROM",
+    "id_pattern": "Hangul",
+    "abbr": "HAN",
+    "tooltip": "Hangul driver"
+  },
+  {
+    "element": "ROM",
     "id_pattern": "MSX-JE",
     "abbr": "JE",
     "tooltip": "MSX-JE"
   },
   {
     "element": "ROM",
-    "id_pattern": "Firmware|Arabic ROM|SWP ROM|.*Cockpit.*|Desk Pac.*|MSX JUSHO",
+    "id_pattern": "Modem ROM",
+    "abbr": "MOD",
+    "tooltip": "Modem ROM"
+  },  
+  {
+    "element": "ROM",
+    "id_pattern": "MSX-DOS",
+    "abbr": "DOS2",
+    "tooltip": "MSX-DOS 2 ROM"
+  },  
+  {
+    "element": "ROM",
+    "id_pattern": "CP/M ROM",
+    "abbr": "CP/M",
+    "tooltip": "CP/M ROM"
+  },  
+  {
+    "element": "MSX-Modem",
+    "id_pattern": null,
+    "abbr": "MOD",
+    "tooltip": "Modem ROM"
+  },    
+  {
+    "element": "ROM",
+    "id_pattern": "BASIC|Cockpit|Designer|Desk Pac|Firmware|Memovision|MSX JUSHO|NIA-2001|Painter|Program|ROM|Sakhr|Set-Up|Super Impose|Utility|Word|Word Font|wordpro|Write",
     "abbr": "FW",
     "tooltip": "Firmware"
   },
@@ -44,14 +74,20 @@
   {
     "element": "MSX-RS232",
     "id_pattern": null,
-    "abbr": "RS2",
+    "abbr": "RS",
     "tooltip": "RS-232C Interface"
   },
   {
     "element": "ROM",
     "id_pattern": "rs232",
-    "abbr": "RS2",
+    "abbr": "RS",
     "tooltip": "RS-232C Interface"
+  },
+  {
+    "element": "ROM",
+    "id_pattern": "RS-232 BIOS and Japanese Word Processor",
+    "abbr": "RSFW",
+    "tooltip": "RS-232 BIOS and FW"
   },
   {
     "element": "MemoryMapper",
@@ -62,6 +98,12 @@
   {
     "element": "PanasonicRAM",
     "id_pattern": null,
+    "abbr": "PM",
+    "tooltip": "Panasonic Mapper"
+  },
+  {
+    "element": "ROM",
+    "id_pattern": "FS-A1FM|FS-A1ST|FS-A1WSX|FS-A1WX",
     "abbr": "PM",
     "tooltip": "Panasonic Mapper"
   },
@@ -98,7 +140,7 @@
   {
     "element": "__sentinel__",
     "id_pattern": null,
-    "abbr": "~",
+    "abbr": "\u2612",
     "tooltip": "Not expanded"
   }
 ]

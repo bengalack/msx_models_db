@@ -115,9 +115,9 @@ class TestBuildSlotmapLUT:
     """Integration tests for slotmap LUT wired into build pipeline."""
 
     STARTER_ABBRS = {
-        "MAIN", "SUB", "KAN", "JE", "FW",
-        "DSK", "MUS", "RS2", "MM", "PM",
-        "RAM", "BUN", "SFG5", "SFG1", "EXP", "~",
+        "MAIN", "SUB", "KAN", "HAN", "JE", "MOD", "DOS2", "CP/M",
+        "FW", "DSK", "MUS", "RS", "RSFW", "MM", "PM",
+        "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2612",
     }
 
     def _run_build(self, tmp_path):
@@ -137,13 +137,13 @@ class TestBuildSlotmapLUT:
 
     def test_data_js_contains_slotmap_lut_key(self, tmp_path):
         output_path = self._run_build(tmp_path)
-        content = output_path.read_text()
+        content = output_path.read_text(encoding="utf-8")
         assert '"slotmap_lut"' in content
 
     def test_slotmap_lut_has_all_starter_abbrs(self, tmp_path):
         output_path = self._run_build(tmp_path)
         # Extract the JSON payload from window.MSX_DATA = {...};
-        content = output_path.read_text()
+        content = output_path.read_text(encoding="utf-8")
         json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
         json_end = content.rindex(";")
         data = json.loads(content[json_start:json_end])
@@ -153,7 +153,7 @@ class TestBuildSlotmapLUT:
 
     def test_slotmap_lut_values_are_strings(self, tmp_path):
         output_path = self._run_build(tmp_path)
-        content = output_path.read_text()
+        content = output_path.read_text(encoding="utf-8")
         json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
         json_end = content.rindex(";")
         data = json.loads(content[json_start:json_end])
@@ -162,7 +162,7 @@ class TestBuildSlotmapLUT:
 
     def test_data_js_has_12_groups(self, tmp_path):
         output_path = self._run_build(tmp_path)
-        content = output_path.read_text()
+        content = output_path.read_text(encoding="utf-8")
         json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
         json_end = content.rindex(";")
         data = json.loads(content[json_start:json_end])
@@ -170,7 +170,7 @@ class TestBuildSlotmapLUT:
 
     def test_data_js_has_93_columns(self, tmp_path):
         output_path = self._run_build(tmp_path)
-        content = output_path.read_text()
+        content = output_path.read_text(encoding="utf-8")
         json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
         json_end = content.rindex(";")
         data = json.loads(content[json_start:json_end])
@@ -255,7 +255,7 @@ class TestBuildSlotmapExtractor:
     def test_slotmap_keys_present_in_model_values(self, tmp_path):
         """A model dict with slotmap keys produces correct positional values in data.js."""
         # Build a model that already has slotmap keys (as if extracted by the scraper)
-        # Empty/absent pages are None; ~ only appears on SS1-3 of non-expanded primaries
+        # Empty/absent pages are None; ☒ only appears on SS0 empty pages of non-expanded primaries
         slotmap_data = {f"slotmap_{ms}_{ss}_{p}": None
                         for ms in range(4) for ss in range(4) for p in range(4)}
         # Override a few known cells
@@ -281,7 +281,7 @@ class TestBuildSlotmapExtractor:
             output_path=output_path,
         )
 
-        content = output_path.read_text()
+        content = output_path.read_text(encoding="utf-8")
         json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
         json_end = content.rindex(";")
         data = json.loads(content[json_start:json_end])

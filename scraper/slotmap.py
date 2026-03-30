@@ -29,7 +29,10 @@ _ALL_KEYS: list[str] = [
     for p in range(4)
 ]
 
-_TILDE = "~"
+# ☒ U+2612: used for pages that exist within a physical (non-expanded) sub-slot
+# but have no device mapped there.  Visually distinct from em-dash (—) used
+# for truly absent/null values.
+_EMPTY_PAGE = "\u2612"  # ☒
 
 # Pages 0-3 correspond to address ranges 0x0000-0x3FFF, 0x4000-0x7FFF, etc.
 _PAGE_SIZE = 0x4000
@@ -144,7 +147,7 @@ def _classify_devices(
 
 def _page_map_to_cells(page_map: dict[int, str]) -> list[str]:
     """Convert a {page: abbr} map to a 4-element list (pages 0-3), defaulting to '~'."""
-    return [page_map.get(p, _TILDE) for p in range(4)]
+    return [page_map.get(p, _EMPTY_PAGE) for p in range(4)]
 
 
 def extract_slotmap(
@@ -157,13 +160,21 @@ def extract_slotmap(
     """Extract all 64 slot map cell values from an openMSX machine XML root.
 
     Returns a dict with all 64 keys (slotmap_{ms}_{ss}_{p}), each valued as:
-    None (no device / slot absent), "~" (sub-slot not expanded), "CS{N}"
-    (cartridge slot), an LUT abbreviation, "abbr*" (mirror), or a raw element
-    tag (unmatched device).
+    None  — slot/sub-slot absent, or page has no mapped device in expanded slot
+    "☒"   — page is within a physical (non-expanded) sub-slot 0 but has no
+            device mapped (U+2612)
+    "CS{N}" — cartridge slot N (all 4 pages of sub-slot 0)
+    "<abbr>" — LUT-matched abbreviation (e.g. "MAIN", "MM", "DSK")
+    "<abbr>*" — mirror page (origin abbreviation + asterisk)
+    "<tag>" — unmatched device element tag (with [WARN] logged)
 
-    "~" is only written to sub-slots 1-3 of non-expanded primary slots and to
-    sub-slots 1-3 of external (cartridge) primary slots.  Pages within an
-    existing sub-slot that have no mapped device are left as None.
+    Rules:
+    - Non-expanded primary (no <secondary> children): sub-slot 0 pages with no
+      device → "☒"; sub-slots 1-3 → None.
+    - External primary (cartridge): sub-slot 0 → "CS{N}" on all 4 pages;
+      sub-slots 1-3 → None.
+    - Expanded primary (<secondary> children): pages with no device in any
+      sub-slot → None.
 
     Args:
         root: Parsed lxml element (<msxconfig> or <machine> root).
@@ -203,10 +214,7 @@ def extract_slotmap(
             for p in range(4):
                 result[f"slotmap_{ms}_0_{p}"] = abbr
                 slot_abbrs[ms][0][p] = abbr
-            # Sub-slots 1-3: ~ (slot exists but is not expanded)
-            for ss in range(1, 4):
-                for p in range(4):
-                    result[f"slotmap_{ms}_{ss}_{p}"] = _TILDE
+            # Sub-slots 1-3: None (no secondary expansion on a cartridge slot)
             continue
 
         # Check for secondary children
@@ -220,10 +228,11 @@ def extract_slotmap(
             for p, abbr in page_map.items():
                 result[f"slotmap_{ms}_0_{p}"] = abbr
                 slot_abbrs[ms][0][p] = abbr
-            # Sub-slots 1-3: ~ (primary is not expanded into secondary slots)
-            for ss in range(1, 4):
-                for p in range(4):
-                    result[f"slotmap_{ms}_{ss}_{p}"] = _TILDE
+            # Sub-slot 0: pages with no device → ☒ (page is real but nothing there)
+            for p in range(4):
+                if result[f"slotmap_{ms}_0_{p}"] is None:
+                    result[f"slotmap_{ms}_0_{p}"] = _EMPTY_PAGE
+            # Sub-slots 1-3: None (no secondary expansion exists)
         else:
             # Expanded primary: classify each secondary slot
             for secondary in secondaries:
@@ -390,7 +399,7 @@ def _apply_mirror_elements(
 
         # Use the most common abbr in the origin slot as the mirror label
         # (typically all pages in the origin have the same abbr)
-        abbrs = [a for a in origin_pages.values() if not a.endswith("*") and a != _TILDE]
+        abbrs = [a for a in origin_pages.values() if not a.endswith("*") and a != _EMPTY_PAGE]
         if not abbrs:
             continue
         origin_abbr = max(set(abbrs), key=abbrs.count)

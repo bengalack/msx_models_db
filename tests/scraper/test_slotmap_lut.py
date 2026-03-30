@@ -12,9 +12,9 @@ from scraper.slotmap_lut import compact_lut, load_slotmap_lut
 STARTER_LUT = Path("data/slotmap-lut.json")
 
 EXPECTED_ABBRS = {
-    "MAIN", "SUB", "KAN", "JE", "FW",
-    "DSK", "MUS", "RS2", "MM", "PM",
-    "RAM", "BUN", "SFG5", "SFG1", "EXP", "~",
+    "MAIN", "SUB", "KAN", "HAN", "JE", "MOD", "DOS2", "CP/M",
+    "FW", "DSK", "MUS", "RS", "RSFW", "MM", "PM",
+    "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2612",
 }
 
 
@@ -29,7 +29,7 @@ def test_load_starter_lut_returns_list():
 
 def test_load_starter_lut_count():
     rules = load_slotmap_lut(STARTER_LUT)
-    assert len(rules) == 17
+    assert len(rules) == 24
 
 
 def test_load_starter_lut_rule_keys():
@@ -76,7 +76,7 @@ def test_compact_lut_known_entries():
     rules = load_slotmap_lut(STARTER_LUT)
     lut = compact_lut(rules)
     assert lut["MAIN"] == "MSX BIOS with BASIC ROM"
-    assert lut["~"] == "Not expanded"
+    assert lut["\u2612"] == "Not expanded"
     assert lut["DSK"] == "Disk ROM"
 
 

@@ -14,7 +14,7 @@ function isNullish(value: string | number | boolean | null | undefined): boolean
  * Resolve a slot map cell value to its tooltip string, or null if no tooltip.
  *
  * Rules:
- *   - Exact key in lut (including "~") → lut[value]
+ *   - Exact key in lut (including "☒") → lut[value]
  *   - value ends with "*" → look up base (strip "*"); if found → "<base tooltip> (mirror)"
  *   - Not in lut and not a mirror → null (no tooltip)
  */
@@ -196,8 +196,8 @@ function buildDataRow(
       if (col.key.startsWith('slotmap_') && typeof rawValue === 'string') {
         const tooltip = resolveSlotmapTooltip(rawValue, slotmapLut);
         if (tooltip !== null) td.title = tooltip;
-        if (rawValue === '~') {
-          td.classList.add('cell-slotmap-tilde');
+        if (rawValue === '\u2612') {
+          td.classList.add('cell-slotmap-empty');
         } else if (rawValue.endsWith('*')) {
           td.classList.add('cell-slotmap-mirror');
         }

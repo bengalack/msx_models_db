@@ -18,7 +18,7 @@ const STARTER_LUT: Record<string, string> = {
   PM: 'Panasonic Mapper',
   RAM: 'RAM (no memory mapper)',
   EXP: 'Expansion Bus',
-  '~': 'Not expanded',
+  '\u2612': 'Not expanded',
 };
 
 describe('resolveSlotmapTooltip', () => {
@@ -42,9 +42,9 @@ describe('resolveSlotmapTooltip', () => {
     });
   });
 
-  describe('tilde sentinel', () => {
-    it('returns "Not expanded" for ~', () => {
-      expect(resolveSlotmapTooltip('~', STARTER_LUT)).toBe('Not expanded');
+  describe('☒ sentinel (U+2612)', () => {
+    it('returns "Not expanded" for ☒', () => {
+      expect(resolveSlotmapTooltip('\u2612', STARTER_LUT)).toBe('Not expanded');
     });
   });
 
