@@ -1,8 +1,8 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.1
-- Date: 2026-03-27
+- Version: 0.2
+- Date: 2026-03-30
 - Owner: bengalack
 
 ## Problem Statement
@@ -22,6 +22,9 @@ The goal is a single static web page that presents all MSX2, MSX2+, and MSX turb
 - User accounts, authentication, or server-side processing.
 - Community/crowd-sourced data editing via the UI.
 - Mobile-first design.
+- Slot map extraction from msx.org wiki pages (deferred; XML-only for slot map data in this iteration).
+- Slot map mirror detection from msx.org (deferred alongside msx.org slot map parsing).
+- Default view configuration for slot map column groups (deferred to a later task).
 
 ## Users
 - MSX enthusiasts / collectors (Primary)
@@ -188,12 +191,53 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - The scraper can be invoked by the maintainer with a single command.
     - It scrapes MSX2, MSX2+, and MSX turbo R model pages from msx.org.
     - It parses machine XML files from the openMSX GitHub repository's share folder.
-    - When both sources have data for the same model and the values conflict, the scraper summarizes all conflicts and prompts the maintainer to choose which value to keep before writing the output.
+    - When both sources have data for the same model and the values conflict, openMSX is used by default (it is considered the more authoritative source for hardware specifications). All conflicts are recorded in a file for maintainer review; the maintainer can override individual field choices and re-run the build with a resolutions file.
     - Parse failures are logged clearly so the maintainer can investigate.
     - Running the scraper again overwrites the previous data file (idempotent on data; preserves the ID registry).
     - The scraper reads and updates a persistent ID registry to ensure stable IDs across runs.
     - The scraper supports a build mode that skips fetching from external sources and instead uses previously cached raw data files on disk. This is the default mode; fetching is opt-in (e.g. via a `--fetch` flag).
     - External sources (msx.org, openMSX GitHub) change infrequently; the maintainer fetches fresh data only when needed.
+
+- Slot map columns
+  - Description: Each model row exposes 64 fixed slot map columns across 4 column groups ("Slotmap, slot 0–3"), showing what occupies each page of each sub-slot. All models carry all 64 columns. Cells outside a model's physical slot configuration show `~`.
+  - Priority: Must
+  - Acceptance Criteria:
+    - Four column groups are present: "Slotmap, slot 0", "Slotmap, slot 1", "Slotmap, slot 2", "Slotmap, slot 3".
+    - Each group has exactly 16 columns named by the convention `MS-SS/P` (e.g. `0-0/0`, `0-1/3`), covering 4 sub-slots × 4 pages.
+    - Page numbers 0–3 correspond to Z80 address ranges 0x0000–0x3FFF, 0x4000–0x7FFF, 0x8000–0xBFFF, 0xC000–0xFFFF respectively.
+    - All 64 columns are present for every model (uniform schema — no per-model column variation).
+    - Cells outside a model's physically supported slot configuration display `~`.
+    - Cells that contain valid content display a short abbreviation (e.g. `MAIN`, `CS1`, `DSK`).
+    - Hovering a cell with an abbreviation shows a tooltip with the full human-readable description (e.g. "MSX BIOS with BASIC ROM").
+    - Mirror cells display the origin abbreviation with `*` appended (e.g. `SUB*`, `DSK*`).
+    - The `~` sentinel and mirror `*` notation are visually distinct from normal cell content.
+
+- Slot map LUT
+  - Description: A maintainer-controlled lookup table JSON file maps XML device types and `id` patterns to short abbreviations and tooltip strings. It is the single source of truth for slot map vocabulary. At build time it is used with regex matching; at runtime in the browser it is used for fast key-based tooltip lookup.
+  - Priority: Must
+  - Acceptance Criteria:
+    - The LUT is a separate JSON file in the repository (not embedded in code).
+    - Each LUT entry contains: XML element type (or `*` for id-only match), a case-insensitive regex pattern matched against the `id` attribute, a short abbreviation, and a tooltip string.
+    - The browser receives the LUT as a key→tooltip map (keyed by abbreviation) embedded in `data.js`, so tooltip strings are stored once and not repeated per cell.
+    - At scrape/build time, each device is classified by testing LUT rules in order; the first match wins.
+    - If no LUT rule matches a device, the scraper emits a warning to stdout, writes the raw device string as the cell value (unabbreviated), and continues — it does not abort.
+    - The maintainer can extend the LUT to handle newly encountered device strings without changing scraper code.
+    - The starter LUT covers at minimum: `MAIN`, `SUB`, `KNJ`, `JE`, `FW`, `DSK`, `MUS`, `RS2`, `MM`, `PM`, `RAM`, `CS{N}` (parameterised), `EXP`, `~`.
+
+- Slot map XML extraction
+  - Description: The scraper extracts slot map data from openMSX machine XML files by walking the `<primary>` and `<secondary>` element hierarchy and classifying each device against the LUT.
+  - Priority: Must
+  - Acceptance Criteria:
+    - Non-expanded primary slots (devices as direct children of `<primary>`, no `<secondary>` elements) are classified and written to sub-slot 0 columns; sub-slots 1–3 receive `~`.
+    - Expanded primary slots (containing `<secondary slot="N">` children) are walked per sub-slot; missing sub-slot elements receive `~` for all 4 pages.
+    - Cartridge/expansion slots (`<primary external="true" slot="N"/>`) produce `CS{N}` in all 4 pages of sub-slot 0; sub-slots 1–3 receive `~` (unless `<secondary external="true">` elements are present, which produce `EXP`).
+    - Multiple devices in the same sub-slot with non-overlapping `<mem>` ranges are each assigned to their respective page(s); the cell value is the abbreviation of the device covering that page's address range.
+    - If multiple devices overlap the same page, the scraper emits a warning and uses the first device encountered.
+    - Mirror detection applies three methods (in order of precedence):
+      1. Explicit `<Mirror>` element: `<mem>` defines affected pages; `<ps>`/`<ss>` identify the origin slot/device; those pages receive the origin abbreviation + `*`.
+      2. ROM file smaller than `<mem>` range: ROM file size is looked up via SHA1 in `all_sha1s.txt` then measured on disk; pages within `<mem>` range beyond the ROM's byte coverage are mirrors; first page = original, rest = `<abbr>*`.
+      3. `<rom_visibility>` narrower than `<mem>` range: pages within `<mem>` but outside `<rom_visibility>` are mirrors; `rom_visibility` page = original, others = `<abbr>*`.
+    - If a SHA1 from the XML cannot be resolved to a file on disk (for method 2), the scraper skips mirror detection for that ROM and emits a warning.
 
 ## Non-Functional Requirements
 
@@ -272,6 +316,8 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
 - Any grid state can be fully recreated from a URL alone.
 - The scraper runs to completion with a single command and produces a valid JSON file.
 - The page works identically when opened as `file://` and when served over HTTP.
+- All 64 slot map columns are populated for every in-scope model; no model has an empty slot map.
+- Slot map tooltips are visible on hover and accurately describe each abbreviation.
 
 ## Assumptions
 - msx.org wiki and openMSX GitHub XML files are publicly accessible and scrapeable.
@@ -279,3 +325,5 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
 - The maintainer has Node.js or Python available locally to run the scraper.
 - Column definitions (names, groups, derived rules) are fixed at build/data time and do not change per-user at runtime. They are maintained in a single Python configuration file and generated into data.js by the scraper.
 - FPGA-based unofficial models will be included if they appear in the openMSX XML or have a dedicated msx.org wiki page.
+- The `systemroms/machines/` directory and `all_sha1s.txt` index are available locally when the scraper runs (required for ROM-size-based mirror detection).
+- The starter LUT vocabulary covers all device types present in in-scope openMSX XML files; unknown strings will be rare and handled by maintainer LUT extension.

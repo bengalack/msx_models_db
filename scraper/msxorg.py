@@ -43,10 +43,6 @@ _RE_FLOPPY = re.compile(
     r"(?:floppy|disk|FDD)",
     re.IGNORECASE,
 )
-_RE_FLOPPY_COUNT = re.compile(
-    r"(\d+)\s*(?:×|x)?\s*(?:\d+\s*kB\s+)?(?:3[.,]5|5[.,]25)",
-    re.IGNORECASE,
-)
 _RE_FLOPPY_SINGLE = re.compile(
     r"(?:one|single|1)?\s*(?:\d+\s*kB\s+)?(?:3[.,]5|5[.,]25)[\"\u201D\u2033]?"
     r"\s*(?:floppy|disk)",
@@ -189,8 +185,11 @@ def _parse_media(raw: str) -> dict[str, Any]:
     raw_lower = raw.lower()
     # Floppy drives: try "N × 720kB 3.5" pattern first.
     if "floppy" in raw_lower or "disk drive" in raw_lower or "3,5" in raw_lower or "3.5" in raw_lower:
-        # Count drives.
-        if "two" in raw_lower or "2 x" in raw_lower or "2x" in raw_lower:
+        # Try regex to extract numeric count (requires explicit × or x separator).
+        m = _RE_FLOPPY.search(raw)
+        if m:
+            result["floppy_drives"] = m.group(1)
+        elif "two" in raw_lower:
             result["floppy_drives"] = "2"
         elif "three" in raw_lower:
             result["floppy_drives"] = "3"
@@ -302,8 +301,10 @@ def parse_model_page(
     if audio_raw:
         result.update(_parse_audio(audio_raw))
 
-    # Media (floppy, cartridge slots)
-    media_raw = specs.get("Media", "")
+    # Media (floppy, cartridge slots) — also check Extras, which often has
+    # the explicit drive count (e.g. "Two 720kB 3,5" floppy disk drives")
+    # when Media only describes the format (e.g. "2DD floppy disks").
+    media_raw = " ".join(filter(None, [specs.get("Media", ""), specs.get("Extras", "")]))
     if media_raw:
         result.update(_parse_media(media_raw))
 

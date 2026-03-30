@@ -214,14 +214,14 @@ def _merge_single(
             continue
 
         # Genuine unresolved conflict.
-        # Default to msx.org (more human-curated), but record the conflict.
-        result[field] = mv
+        # Default to openMSX (more authoritative for hardware specs), but record the conflict.
+        result[field] = ov
         conflicts.append({
             "natural_key": key,
             "field": field,
             "openmsx_value": ov,
             "msxorg_value": mv,
-            "used": "msxorg",
+            "used": "openmsx",
         })
 
     return result, conflicts
