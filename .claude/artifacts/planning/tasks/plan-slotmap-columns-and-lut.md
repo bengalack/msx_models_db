@@ -35,7 +35,7 @@
   - Group IDs 8–11 are assigned to "Slotmap, slot 0–3" in order; no gaps.
   - Column IDs start at 30 (next after existing 29); sequential through 93; no gaps; no reuse.
   - Column key convention: `slotmap_{ms}_{ss}_{p}` where ms=main slot (0–3), ss=sub-slot (0–3), p=page (0–3).
-  - Column label convention: `{ms}-{ss}/{p}` e.g. `0-0/0`, `2-3/1`.
+  - Column label convention: `{ss} / P{p}` (with non-breaking spaces) e.g. `0 / P0`, `2 / P1`; the main slot is shown in the group header.
   - `~` and mirror `*` are runtime values, not LUT entries.
   - `CS{N}` is handled in scraper code (derived from XML `slot` attribute), not a LUT entry.
   - LUT rules are evaluated in order; first match wins.
@@ -71,7 +71,7 @@ Feature: Slot map column definitions and LUT
     And GROUPS contains exactly 12 entries
     And COLUMNS contains exactly 93 entries
     And each slotmap column key matches the pattern "slotmap_{ms}_{ss}_{p}"
-    And each slotmap column label matches the pattern "{ms}-{ss}/{p}"
+    And each slotmap column label matches the pattern "{ss} / P{p}" (non-breaking spaces)
 
   Scenario: Slot map groups are numbered and ordered correctly
     When the module is imported
@@ -138,7 +138,7 @@ Feature: Slot map column definitions and LUT
 
 ## Testing Strategy (Tier 0/1/2)
 - Tier 0 (required — pytest):
-  - `test_columns_slotmap.py`: import `columns.py`; assert group count = 12, column count = 93; assert group IDs 8–11 exist with correct labels/order; assert all slotmap column keys match `slotmap_{ms}_{ss}_{p}` pattern; assert all slotmap labels match `{ms}-{ss}/{p}` pattern; assert no duplicate IDs or keys.
+  - `test_columns_slotmap.py`: import `columns.py`; assert group count = 12, column count = 93; assert group IDs 8–11 exist with correct labels/order; assert all slotmap column keys match `slotmap_{ms}_{ss}_{p}` pattern; assert all slotmap labels match `{ss} / P{p}` pattern (non-breaking spaces); assert no duplicate IDs or keys.
   - `test_slotmap_lut.py`: happy-path load of starter LUT; duplicate abbr rejection; malformed regex rejection; missing file raises `FileNotFoundError`; `compact_lut()` returns `{abbr: tooltip}` only (no element/id_pattern).
 - Tier 1 (build integration — pytest):
   - Run `python -m scraper build` against cached raw data; assert `docs/data.js` contains `slotmap_lut` with all 13 starter abbrs; assert `groups` array in data.js has 12 entries; assert `columns` array has 93 entries.
@@ -229,7 +229,7 @@ Feature: Slot map column definitions and LUT
 
 - [x] Chunk 1: Slot map groups + columns in columns.py
   - [x] T-010 Add Group entries IDs 8–11 ("Slotmap, slot 0–3") to GROUPS in `scraper/columns.py`
-  - [x] T-011 Generate and add 64 Column entries (IDs 30–93, keys `slotmap_{ms}_{ss}_{p}`, labels `{ms}-{ss}/{p}`, group `slotmap_{ms}`, type "string") to COLUMNS in `scraper/columns.py`
+  - [x] T-011 Generate and add 64 Column entries (IDs 30–93, keys `slotmap_{ms}_{ss}_{p}`, labels `{ss} / P{p}` (non-breaking spaces), group `slotmap_{ms}`, type "string") to COLUMNS in `scraper/columns.py`
   - [x] T-012 Tests: create `tests/scraper/test_columns_slotmap.py` — assert 12 groups, 93 columns, no duplicate IDs/keys, correct group labels/order, all slotmap key/label patterns valid
 
 - [x] Chunk 2: LUT file + load/validate module

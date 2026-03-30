@@ -67,11 +67,11 @@ The existing MSX Models DB captures hardware specs (CPU, RAM, video, audio, etc.
 
 ## In Scope
 - 64 new columns across 4 new column groups (16 columns each):
-  - "Slotmap, slot 0": `0-0/0` … `0-3/3`
-  - "Slotmap, slot 1": `1-0/0` … `1-3/3`
-  - "Slotmap, slot 2": `2-0/0` … `2-3/3`
-  - "Slotmap, slot 3": `3-0/0` … `3-3/3`
-- Column naming convention: `MS-SS/P` (Main Slot – Sub Slot / Page), pages 0–3 map to address ranges 0x0000–0x3FFF, 0x4000–0x7FFF, 0x8000–0xBFFF, 0xC000–0xFFFF
+  - "Slotmap, slot 0": `0 / P0` … `3 / P3`
+  - "Slotmap, slot 1": `0 / P0` … `3 / P3`
+  - "Slotmap, slot 2": `0 / P0` … `3 / P3`
+  - "Slotmap, slot 3": `0 / P0` … `3 / P3`
+- Column naming convention: `SS / Pp` (Sub Slot / Page, with non-breaking spaces), e.g. `2 / P0`; the main slot is shown in the group header. Pages 0–3 map to address ranges 0x0000–0x3FFF, 0x4000–0x7FFF, 0x8000–0xBFFF, 0xC000–0xFFFF
 - A maintainer-controlled LUT JSON file (`data/slotmap-lut.json` or similar) mapping regex patterns to `{ abbr, tooltip }` pairs (~20 entries to start; grows as new device strings are encountered)
 - `~` sentinel value for cells outside a model's physical slot configuration (tooltip: "Not expanded")
 - Mirror convention: `*` appended to the origin abbreviation (e.g. `MAIN*`) — no separate LUT entry needed, derived at scrape time

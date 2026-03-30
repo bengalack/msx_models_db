@@ -78,7 +78,7 @@ def test_slotmap_group_order_matches_id():
 
 SLOTMAP_COLS = [c for c in COLUMNS if c.key.startswith("slotmap_")]
 KEY_PATTERN   = re.compile(r"^slotmap_([0-3])_([0-3])_([0-3])$")
-LABEL_PATTERN = re.compile(r"^([0-3])-([0-3])/([0-3])$")
+LABEL_PATTERN = re.compile("^([0-3])\u00a0/\u00a0P([0-3])$")
 
 
 def test_slotmap_column_count():
@@ -101,12 +101,13 @@ def test_slotmap_column_labels_pattern():
 
 
 def test_slotmap_column_key_label_consistency():
-    """Key slotmap_{ms}_{ss}_{p} must match label {ms}-{ss}/{p}."""
+    """Key slotmap_{ms}_{ss}_{p} must match label {ss}\u00a0/\u00a0P{p}."""
     for col in SLOTMAP_COLS:
         km = KEY_PATTERN.match(col.key)
         lm = LABEL_PATTERN.match(col.label)
         assert km and lm
-        assert km.groups() == lm.groups(), (
+        _ms, ss, p = km.groups()
+        assert (ss, p) == lm.groups(), (
             f"Key/label mismatch for column id={col.id}: "
             f"key={col.key!r} label={col.label!r}"
         )

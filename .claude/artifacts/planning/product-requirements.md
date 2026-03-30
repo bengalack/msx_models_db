@@ -191,7 +191,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Priority: Must
   - Acceptance Criteria:
     - Four column groups are present: "Slotmap, slot 0", "Slotmap, slot 1", "Slotmap, slot 2", "Slotmap, slot 3".
-    - Each group has exactly 16 columns named by the convention `MS-SS/P` (e.g. `0-0/0`, `0-1/3`), covering 4 sub-slots × 4 pages.
+    - Each group has exactly 16 columns named by the convention `SS / Pp` (sub-slot and page, with non-breaking spaces; e.g. `0 / P0`, `1 / P3`), covering 4 sub-slots × 4 pages. The main slot is shown in the group header.
     - Page numbers 0–3 correspond to Z80 address ranges 0x0000–0x3FFF, 0x4000–0x7FFF, 0x8000–0xBFFF, 0xC000–0xFFFF respectively.
     - All 64 columns are present for every model (uniform schema — no per-model column variation).
     - Cells outside a model's physically supported slot configuration display `~`.
