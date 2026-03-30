@@ -216,7 +216,7 @@ function buildDataRow(
       // Slot map tooltip + visual markers
       if (col.key.startsWith('slotmap_') && typeof rawValue === 'string') {
         const tooltip = resolveSlotmapTooltip(rawValue, slotmapLut);
-        if (tooltip !== null) td.title = tooltip;
+        if (tooltip !== null) td.dataset.tooltip = tooltip;
         if (rawValue === '\u2327') {
           td.classList.add('cell-slotmap-empty');
         } else if (rawValue.endsWith('*')) {
@@ -713,7 +713,12 @@ export function buildGrid(data: MSXData, opts?: {
     if (td.scrollWidth > td.offsetWidth) {
       td.title = td.textContent ?? '';
     } else {
-      td.removeAttribute('title');
+      const staticTooltip = td.dataset.tooltip;
+      if (staticTooltip) {
+        td.title = staticTooltip;
+      } else {
+        td.removeAttribute('title');
+      }
     }
   }, true);
 
