@@ -199,13 +199,13 @@ Feature: Slot map cell tooltips
   - [x] T-023 Update plan checkboxes and verify all Vitest tests pass
 
 - [ ] Quality gate
-  - [ ] T-900 Run formatters (eslint --fix / prettier if configured)
-  - [ ] T-901 Run linters
-  - [ ] T-902 Run full test suite (Vitest + pytest)
+  - [x] T-900 Run formatters (eslint --fix / prettier if configured)
+  - [x] T-901 Run linters
+  - [x] T-902 Run full test suite (Vitest + pytest)
 
 - [ ] Merge to trunk
-  - [ ] T-950 Rebase onto trunk and merge (fast-forward only)
-  - [ ] T-951 Move backlog item to "In product (shipped)"
+  - [x] T-950 Rebase onto trunk and merge (fast-forward only)
+  - [x] T-951 Move backlog item to "In product (shipped)"
 
 ## Open Questions
 - None.

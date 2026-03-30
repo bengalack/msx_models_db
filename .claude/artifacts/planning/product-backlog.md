@@ -42,10 +42,6 @@
     - Match models from both sources by natural key (manufacturer + model name)
     - For conflicting field values: print summary, prompt maintainer to choose per conflict
     - For fields present in only one source: use that value without prompting
-  - Slot map — browser tooltip rendering
-    - On hover of a slot map cell, look up cell value in MSXData.slotmap_lut to get tooltip text
-    - Render tooltip for ~ sentinel ("Not expanded") and mirror cells (abbr* → origin tooltip + " (mirror)")
-    - Cells with raw unknown strings (not in LUT) show no tooltip
 
 - Later
   - Scraper — write output (replaced by column-config-and-registry feature)
@@ -67,6 +63,11 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Slot map — browser tooltip rendering
+    - Native title tooltip on hover for slotmap cells; resolveSlotmapTooltip() helper
+    - ~ cells: "Not expanded"; abbr* mirrors: "<base tooltip> (mirror)"; unknown: no tooltip
+    - cell-slotmap-tilde (muted/faded) and cell-slotmap-mirror (italic + muted) CSS markers
+    - 13 Vitest unit tests
   - Slot map — XML extractor
     - scraper/slotmap.py: match_lut(), pages_for_mem(), extract_slotmap(), load_sha1_index()
     - All 64 slotmap_{ms}_{ss}_{p} keys always present per model, defaulting to ~
