@@ -131,6 +131,10 @@ def parse_machine_xml(xml_bytes: bytes, filename: str) -> dict[str, Any] | None:
         log.warning("XML parse error in %s — skipped", filename)
         return None
 
+    if root is None:
+        log.warning("XML parse error in %s — skipped", filename)
+        return None
+
     info = root.find("info")
     if info is None:
         log.warning("No <info> in %s — skipped", filename)
