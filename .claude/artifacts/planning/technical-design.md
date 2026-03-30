@@ -1,7 +1,7 @@
 # Technical Design: MSX Models DB
 
 ## Metadata
-- Date: 2026-03-27
+- Date: 2026-03-30
 - Related:
   - PRD: .claude/artifacts/planning/product-requirements.md
   - Risk review: .claude/artifacts/planning/risk-assumption-review.md
@@ -19,6 +19,8 @@ The **scraper** is an offline Python CLI. The maintainer runs it on demand to fe
 
 No server is involved at any point. The two sub-systems only communicate through files on disk.
 
+The slot map feature adds 64 columns per model, extracted exclusively from openMSX machine XML files. A maintainer-controlled **Slot Map LUT** (`data/slotmap-lut.json`) maps XML device types and `id` patterns to short abbreviations and tooltip strings. The LUT is consumed by the scraper at build time (regex matching) and embedded in `data.js` as a compact key→tooltip map for runtime tooltip lookup in the browser. Mirror cells are detected in the XML via three methods (explicit `<Mirror>` element, ROM file size vs mapped range, `<rom_visibility>` vs `<mem>` range) and encoded as `<abbr>*` in the output.
+
 ## Domain Boundaries
 
 - Web page (UI)
@@ -27,9 +29,9 @@ No server is involved at any point. The two sub-systems only communicate through
   - External Interfaces: Reads `window.MSX_DATA` (set by data.js); writes URL hash via `history.replaceState`
 
 - Scraper (data pipeline)
-  - Responsibilities: Fetch, parse, merge, compute derived columns, conflict-resolve, and write model data; maintain model ID registry
-  - Owns Data: `scraper/columns.py` (single source of truth for column/group definitions); `data/id-registry.json` (source of truth for model IDs); writes `docs/data.js`
-  - External Interfaces: HTTP GET to msx.org (HTML scraping); HTTP GET to raw.githubusercontent.com or GitHub API (XML files); stdin/stdout for conflict prompts
+  - Responsibilities: Fetch, parse, merge, compute derived columns, conflict-resolve, and write model data; maintain model ID registry; extract and classify slot map data from openMSX XML; detect slot map mirrors
+  - Owns Data: `scraper/columns.py` (single source of truth for column/group definitions); `data/id-registry.json` (source of truth for model IDs); `data/slotmap-lut.json` (slot map vocabulary — maintained by maintainer); writes `docs/data.js`
+  - External Interfaces: HTTP GET to msx.org (HTML scraping); HTTP GET to raw.githubusercontent.com or GitHub API (XML files); stdin/stdout for conflict prompts; read-only access to `systemroms/machines/` (ROM file size lookups for mirror detection)
 
 ## Components
 
@@ -62,6 +64,18 @@ No server is involved at any point. The two sub-systems only communicate through
   - Responsibilities: Map model natural keys to permanent integer IDs; record retired model IDs. Column IDs are defined in `scraper/columns.py` and are not part of the registry.
   - Depends On: -
   - Data Stores: `data/id-registry.json`
+
+- Slot Map LUT
+  - Type: File artifact (JSON), maintainer-controlled
+  - Responsibilities: Define the vocabulary for slot map cell classification. Each entry maps an XML element type + case-insensitive `id` regex pattern to a short abbreviation and tooltip string. Rules are tested in order; first match wins. Embedded in `data.js` at build time as a compact `{ abbr: tooltip }` map for browser-side tooltip rendering.
+  - Depends On: -
+  - Data Stores: `data/slotmap-lut.json`
+
+- Slot Map Extractor
+  - Type: Library (module within Scraper CLI)
+  - Responsibilities: Walk `<primary>`/`<secondary>` XML hierarchy per machine; classify each device via LUT; compute page assignments from `<mem base size>`; detect mirrors via three methods; emit 64 slot map column values per model; warn on unknown device strings (never abort)
+  - Depends On: `data/slotmap-lut.json`, `systemroms/machines/all_sha1s.txt` + ROM files (optional; for mirror method 2)
+  - Data Stores: -
 
 ## Key Flows
 
@@ -112,6 +126,24 @@ No server is involved at any point. The two sub-systems only communicate through
   - Data touched: id-registry.json (read+write), docs/data.js (write), cached raw JSON (read, or write if --fetch)
   - Failure handling: HTTP errors → retry once, then log and skip model. Parse failures → log field name and raw value, continue. If >20% of models fail to parse, abort before writing output. Missing cached files without --fetch → error with clear message.
 
+- Slot map extraction (per machine XML)
+  - Trigger: Scraper processes an openMSX machine XML file during the build flow
+  - Steps:
+    1. Parse XML with `lxml` (`recover=True`); locate `<devices>` element
+    2. First pass — walk all `<primary slot="N">` elements:
+       - If `external="true"`: classify as `CS{N}` for sub-slot 0 pages 0–3; mark sub-slots 1–3 as `~`
+       - If no `<secondary>` children: classify direct child devices against LUT; assign to pages via `<mem base size>`; mark sub-slots 1–3 as `~`
+       - If `<secondary>` children present: for each sub-slot 0–3, classify child devices against LUT and assign pages; any missing sub-slot element → `~` for all 4 pages
+    3. For each device assignment: determine which pages (0–3) its `<mem>` range covers (page N = range intersects [N×0x4000, (N+1)×0x4000)); assign abbreviation to those pages
+    4. If no LUT rule matches a device: emit `[WARN] Unmatched device: <element> id="<id>" in <filename>` to stdout; write raw device string as cell value
+    5. Second pass — resolve mirrors:
+       - Method 1 (`<Mirror>` elements): look up referenced slot by `<ps>`/`<ss>`; find abbreviation already assigned to that slot in pass 1; write `<abbr>*` to the pages covered by `<Mirror>`'s `<mem>` range
+       - Method 2 (ROM file size): for each ROM device, look up all `<sha1>` values in `all_sha1s.txt`; try each until a file is found on disk; measure file size; compare to byte count covered by `<mem>`; pages beyond file size → `<abbr>*`; warn if no SHA1 resolves
+       - Method 3 (`<rom_visibility>`): pages within `<mem>` range but outside `<rom_visibility>` range → `<abbr>*`; `rom_visibility` page = original
+    6. Write all 64 slot map values to the model record (keyed by column key, e.g. `slotmap_0_0_0` … `slotmap_3_3_3`)
+  - Data touched: XML file, `data/slotmap-lut.json`, `systemroms/machines/all_sha1s.txt` + ROM files (optional)
+  - Failure handling: Unknown device → warn + raw string. SHA1 not found → warn + skip mirror detection for that ROM. Overlapping `<mem>` ranges → warn + first device wins. Scraper never aborts on slot map issues.
+
 ## Data Model
 
 - MSXData (runtime, in data.js)
@@ -143,6 +175,18 @@ No server is involved at any point. The two sub-systems only communicate through
   - Key fields: `version` (2), `models` (object: natural key → id), `retired_models` (int[]), `next_model_id`
   - Relationships: Source of truth for model ID assignment only
   - Retention: Committed to repo; never reset; append-only for retirements
+
+- SlotMapLUT (build-time + runtime)
+  - Purpose: Vocabulary for slot map cell classification. Used as ordered rule list at build time; shipped to browser as flat `{ abbr: tooltip }` map for tooltip rendering.
+  - Key fields (per rule): `element` (XML element type or `"*"`), `id_pattern` (case-insensitive regex string), `abbr` (short string), `tooltip` (display string)
+  - Relationships: Consumed by Slot Map Extractor at build time; embedded in MSXData as `slotmap_lut: { [abbr]: tooltip }` for browser use
+  - Retention: Committed to repo; grows as new device strings are encountered; never loses entries
+
+- SlotMapColumns (in data.js, part of ColumnDef)
+  - Purpose: The 64 slot map columns — 4 groups × 16 columns. Each is a standard ColumnDef with a stable ID and a key of the form `slotmap_{ms}_{ss}_{p}` (main slot, sub-slot, page).
+  - Key fields: same as ColumnDef (`id`, `key`, `label`, `groupId`, `type: 'string'`)
+  - Relationships: 4 GroupDefs added ("Slotmap, slot 0–3"); 16 ColumnDefs per group
+  - Retention: IDs permanent once assigned; groups and columns defined in `scraper/columns.py`
 
 - ViewState (in-memory only, serialized to URL)
   - Purpose: Encodes the complete current view
@@ -275,20 +319,27 @@ msx_models_db/
 │   ├── __main__.py         # Entry point (python -m scraper)
 │   ├── sources/
 │   │   ├── msx_org.py      # msx.org HTML scraper
-│   │   └── openmsx_xml.py  # openMSX XML parser
+│   │   └── openmsx_xml.py  # openMSX XML parser (general fields)
+│   ├── slotmap.py          # Slot map extractor + LUT loader + mirror detection
 │   ├── merge.py            # Merge + interactive conflict resolution
 │   ├── registry.py         # ID registry load/save/match/assign
 │   └── output.py           # Write data.js
 ├── data/
 │   ├── id-registry.json    # Stable ID registry (committed, never deleted)
+│   ├── slotmap-lut.json    # Slot map vocabulary (maintained by maintainer)
 │   └── schema.md           # MSXData schema documentation
+├── systemroms/
+│   └── machines/
+│       ├── all_sha1s.txt   # SHA1→relative-path index (for mirror ROM size lookup)
+│       └── …               # ROM files (not committed; present in maintainer's local env)
 ├── tests/
 │   ├── web/                # Vitest tests
 │   │   ├── codec.test.ts
 │   │   └── state.test.ts
 │   └── scraper/            # pytest tests
 │       ├── test_registry.py
-│       └── test_merge.py
+│       ├── test_merge.py
+│       └── test_slotmap.py  # LUT matching, page assignment, mirror detection
 ├── index.html              # Vite dev entry point
 ├── vite.config.ts
 ├── tsconfig.json
@@ -345,3 +396,19 @@ msx_models_db/
 - No row virtualisation
   - Why chosen: Assumed < 300 rows; simple DOM table is faster to implement and easier to style
   - Cost: If row count grows significantly beyond 300, performance may degrade; add virtualisation at that point
+
+- Slot map LUT as a separate maintainer-edited JSON file (not code)
+  - Why chosen: New device strings will appear as more machines are parsed; maintainer must be able to extend vocabulary without touching scraper code
+  - Cost: An extra file to maintain; scraper must validate LUT on load (duplicate abbrs, malformed patterns)
+
+- Two-pass XML walk for mirror resolution (`<Mirror>` element method)
+  - Why chosen: `<Mirror>` references a slot by number (`<ps>`/`<ss>`), which may appear later in document order; a second pass guarantees all slot content is classified before cross-references are resolved
+  - Cost: Slightly more complex extraction logic; first pass must store intermediate slot→abbr map before second pass
+
+- `systemroms/` not committed to the repository
+  - Why chosen: ROM files are copyrighted; only the SHA1 index (`all_sha1s.txt`) is committed; mirror detection gracefully degrades when ROM files are absent
+  - Cost: Mirror detection method 2 (ROM file size) is unavailable in CI and on machines without the ROM collection; mirrors in those cases are silently missed rather than flagged
+
+- Slot map column keys use positional naming (`slotmap_{ms}_{ss}_{p}`)
+  - Why chosen: Systematic and derivable from slot coordinates; no ambiguity; easy to generate programmatically in `scraper/columns.py`
+  - Cost: Keys are not human-readable at a glance; rely on `label` field for display

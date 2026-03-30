@@ -1,9 +1,10 @@
 # Risk & Assumption Review: MSX Models DB
 
 ## Metadata
-- Date: 2026-03-27
+- Date: 2026-03-30
 - Reviewed Artifacts:
   - .claude/artifacts/planning/problem-description.md
+  - .claude/artifacts/planning/problem-description-slotmap.md
   - .claude/artifacts/planning/product-requirements.md
 - Open Questions:
   - .claude/artifacts/decisions/open-questions.md
@@ -78,6 +79,41 @@
   - Mitigation: URL decoder must silently ignore any ID not found in the current data; never throw on unknown IDs.
   - Owner: Implementation
 
+- Unknown LUT device strings silently widen slot map cells in the browser
+  - Category: Data
+  - Likelihood: Medium — new device strings likely as more models are parsed
+  - Impact: Low — visible but contained; maintainer will spot it in the grid
+  - Mitigation: Scraper warns to stdout on every unmatched device string (with model name and XML element); maintainer extends LUT and rebuilds. Raw string is written as-is so data is not lost.
+  - Owner: bengalack
+
+- SHA1-based ROM file lookup fails for mirror detection
+  - Category: Data
+  - Likelihood: Medium — `systemroms/` is not guaranteed to have every ROM
+  - Impact: Low — mirror pages are shown as originals rather than `*`; data is not wrong, just less precise
+  - Mitigation: If SHA1 is not found in `all_sha1s.txt` or the resolved file is absent on disk, scraper skips mirror detection for that ROM and emits a warning. Never aborts.
+  - Owner: Implementation
+
+- Multiple devices mapped to the same page in one sub-slot
+  - Category: Data
+  - Likelihood: Low — unusual in practice but XML allows it
+  - Impact: Low — cell would be ambiguous
+  - Mitigation: Scraper warns and uses the first device encountered (document order in XML). If this produces wrong output, maintainer can extend conflict system to handle it.
+  - Owner: Implementation
+
+- 64 extra columns degrade grid performance
+  - Category: Technical
+  - Likelihood: Low — row count is small (<200); column count increases but cells are simple text
+  - Impact: Low — observable slowdown unlikely on modern desktop browsers
+  - Mitigation: Slot map groups default to collapsible; user can hide all 64 at once. Monitor actual load time; add virtualization only if measured.
+  - Owner: Implementation
+
+- `<Mirror>` element references a slot not yet parsed (ordering dependency)
+  - Category: Technical
+  - Likelihood: Low — `<ps>`/`<ss>` reference a primary/secondary slot number, not a parse-order position
+  - Impact: Low — mirror cell would be misclassified if the referenced slot content isn't resolved yet
+  - Mitigation: Parse all slot content first (two-pass); resolve `<Mirror>` cross-references in a second pass after all devices are classified.
+  - Owner: Implementation
+
 ## Dangerous Assumptions
 
 - msx.org allows programmatic scraping
@@ -100,8 +136,19 @@
   - How to validate: Confirm preferred runtime with maintainer before choosing scraper language.
   - If false, what breaks: Scraper must be rewritten in a different runtime.
 
+- `systemroms/machines/` directory and `all_sha1s.txt` are present when the scraper runs
+  - Why dangerous: Mirror detection method 2 (ROM size) depends entirely on this directory. If absent, all size-based mirrors are missed silently.
+  - How to validate: Scraper checks for the directory and index file at startup; warns clearly if missing rather than silently skipping.
+  - If false, what breaks: Mirror detection degrades to explicit `<Mirror>` element and `<rom_visibility>` only — mirrors in most models go undetected.
+
+- The starter LUT covers all device types in in-scope XML files
+  - Why dangerous: Any unmatched device writes its raw XML string as cell content — maintainer may not notice until the grid renders with wide cells.
+  - How to validate: Do a dry-run parse of all 109 in-scope XML files and log every device string against the LUT before shipping the scraper.
+  - If false, what breaks: Some cells show raw strings (ugly but not broken); LUT needs extension before the grid looks correct.
+
 ## Scope Creep Watchlist
 
+- msx.org slot map parsing is deferred but will likely be requested once XML-only data reveals gaps (models with no openMSX XML entry).
 - FPGA model list is undefined — could expand to dozens of community models with sparse or no structured data source.
 - The "Emulation" column group could invite requests to launch openMSX directly from the page (out of scope — data reference only).
 - Blogger/Blogspot embed support could grow into a full embeddable widget with custom sizing, theming, or iframe API.
@@ -121,6 +168,12 @@
 
 - Scraper trying to reconcile every possible data conflict automatically
   - Simplest safe alternative: Flag conflicts in the JSON with a `_conflict` field and let the maintainer resolve manually on first run.
+
+- Building a custom LUT matching engine with complex parameterisation for CS{N}
+  - Simplest safe alternative: One special-case rule in the scraper: if `<primary external="true">`, read slot number from the attribute and emit `CS{N}`. All other LUT entries are straight element-type + regex-on-id. No template engine needed.
+
+- Implementing all three mirror detection methods simultaneously
+  - Simplest safe alternative: Ship method 3 (`<rom_visibility>`) first — it is fully self-contained in the XML with no file I/O. Add method 2 (SHA1/file size) second. Add method 1 (`<Mirror>` element, two-pass) last — it is the rarest pattern.
 
 ## Recommended Simplifications
 

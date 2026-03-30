@@ -93,7 +93,7 @@
   - URL state codec + sync
     - ViewState binary codec (versioned format v1, URL-safe base64)
     - Encode/decode: sort, filters, hidden cols/rows, collapsed groups, selected cells
-    - Debounced URL sync (300 ms idle) via history.replaceState
+    - Debounced URL sync (1000 ms idle) via history.replaceState
     - Restore on page load; fall back to show-all if hash empty or unreadable
     - 29 Vitest codec unit tests (round-trip, boundary, version/compat, resilience, URL-layer)
   - Project scaffold (Vite + TypeScript, Python scraper stub, docs/ on main)

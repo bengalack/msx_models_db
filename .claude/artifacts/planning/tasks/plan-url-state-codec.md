@@ -12,7 +12,7 @@
 - Problem: All view state is ephemeral in-memory. Refreshing the page or sharing a URL loses every filter, sort, hidden column, and selection the user set up. There is no way to share or bookmark a specific view.
 - Target user: Any visitor who wants to share a filtered/sorted view, or restore their last working configuration after a page reload
 - Success criteria (observable):
-  - After any state change (sort, filter, hide, collapse, select), the URL hash updates after a short debounce (~300 ms idle)
+  - After any state change (sort, filter, hide, collapse, select), the URL hash updates after a short debounce (~1000 ms idle)
   - Copying the URL and opening it in a new tab/window restores the identical view
   - Refreshing the page restores the view exactly
   - If the URL hash is absent or unreadable, the page loads with default (show-all) state — no error shown
@@ -20,14 +20,14 @@
   - `npm test --run`, `npm run typecheck`, `npm run lint`, `npm run build` all exit 0
 - Primary user flow:
   1. User configures a view (sort by year, filter by "turboR", hide audio columns)
-  2. URL hash updates after each interaction (within ~300 ms)
+  2. URL hash updates after each interaction (within ~1000 ms)
   3. User copies URL and sends it to a colleague
   4. Colleague opens the link and sees the identical view
 - Must never happen:
   - A corrupt or tampered hash causes a JavaScript error or blank page
   - The page loads slower because of URL decode work on startup
   - Any state change fails to eventually update the URL (within the debounce window)
-  - `history.replaceState` is called more than once per 300 ms during rapid interactions (filter typing, cell drag-select)
+  - `history.replaceState` is called more than once per 1000 ms during rapid interactions (filter typing, cell drag-select)
   - localStorage or any persistent storage is used for view state (theme stays in localStorage, view state goes in URL only)
 - Key edge cases:
   - Empty/absent hash → load default (show-all) state, no hash written until first interaction
@@ -43,7 +43,7 @@
   - history.replaceState is used (not pushState) — no back-button history entries created
   - View state is never written to localStorage; only theme uses localStorage
 - Non-functional requirements:
-  - Performance: decode on load is synchronous and must complete before first render; codec operates on small byte arrays (< 500 bytes typical) so encode/decode cost is negligible; URL writes are debounced (300 ms idle) to avoid churning `history.replaceState` during rapid interactions (filter typing at 10–20 Hz, cell drag-select at 30–60 Hz)
+  - Performance: decode on load is synchronous and must complete before first render; codec operates on small byte arrays (< 500 bytes typical) so encode/decode cost is negligible; URL writes are debounced (1000 ms idle) to avoid churning `history.replaceState` during rapid interactions (filter typing at 10–20 Hz, cell drag-select at 30–60 Hz)
   - Reliability: decoder never throws; all error paths are caught and fall back to empty state
 - Minimal viable increment (MVI): codec + grid state extraction + sync wired in main.ts + codec unit tests
 - Deferred:
@@ -60,14 +60,14 @@ Feature: URL state codec and sync
   Scenario: URL hash updates after a sort interaction (debounced)
     Given the page is loaded with no URL hash
     When the user clicks a column header to sort ascending
-    And 300 ms pass without further interaction
+    And 1000 ms pass without further interaction
     Then the URL hash is non-empty
     And reloading the page restores the same sort column and direction
 
   Scenario: Rapid filter typing produces only one URL update
     Given the page is loaded with no URL hash
-    When the user types "turboR" quickly into a filter input (6 keystrokes in under 300 ms)
-    Then the URL hash updates only once after the last keystroke + 300 ms idle
+    When the user types "turboR" quickly into a filter input (6 keystrokes in under 1000 ms)
+    Then the URL hash updates only once after the last keystroke + 1000 ms idle
     And the hash encodes the full filter string "turboR"
 
   Scenario: Full view state round-trips across a page reload
@@ -273,7 +273,7 @@ All multi-byte integers are big-endian (DataView default).
 
 - [x] Chunk 3: Wire URL sync in main.ts + rebuild docs/
   - [x] T-030 In `src/main.ts`: on load, call `decodeFromHash(window.location.hash)` → `initialState`; pass to `buildGrid`; if `initialState.filters.size > 0`, call `toggleFilters()` after grid build and set `filtersOn = true`
-  - [x] T-031 Pass `onStateChange` callback to `buildGrid` that **debounces** URL writes (300 ms idle timeout). The callback resets a `setTimeout`; when the timer fires, it calls `encodeToHash(grid.getViewState())` and updates URL via `history.replaceState(null, '', hash)` (wrapped in try/catch → `console.warn` on failure). Rationale: filter typing and cell drag-select fire at 10–60 Hz; the URL should reflect settled state, not every transient frame.
+  - [x] T-031 Pass `onStateChange` callback to `buildGrid` that **debounces** URL writes (1000 ms idle timeout). The callback resets a `setTimeout`; when the timer fires, it calls `encodeToHash(grid.getViewState())` and updates URL via `history.replaceState(null, '', hash)` (wrapped in try/catch → `console.warn` on failure). Rationale: filter typing and cell drag-select fire at 10–60 Hz; the URL should reflect settled state, not every transient frame.
   - [x] T-032 Verify full smoke path: sort → URL hash updates; copy URL → new tab → state restored; corrupt hash → default state; `npm run build` exits 0
   - [ ] T-033 Commit: `feat: wire URL hash sync — encode on change, restore on load`
   - [ ] T-034 Commit built `docs/`: `chore: update docs/ build output with URL state sync`

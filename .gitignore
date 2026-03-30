@@ -6,3 +6,4 @@ venv/
 *.egg-info/
 dist-types/
 data/*-raw.json
+systemroms/**
