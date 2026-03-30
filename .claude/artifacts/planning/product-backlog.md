@@ -31,11 +31,6 @@
     - Status bar (bottom, 24px) shows "Copied N cell(s)"
 
 - Now / Next
-  - Scraper — openMSX XML source
-    - Fetch machine XML file listing via GitHub API (/repos/openMSX/openMSX/contents/share/machines)
-    - Fetch and parse each XML file with lxml recover=True (lenient — files are non-strict)
-    - Extract fields: CPU, clock, RAM, VRAM, VDP, PSG, mapper, openMSX machine ID
-    - Log unrecoverable elements; continue on parse failure
   - Slot map — XML extractor
   - Slot map — XML extractor
     - scraper/slotmap.py: load and validate LUT; first pass: walk `primary`/`secondary` hierarchy, classify devices by element type + id regex, assign pages via `mem base+size`
@@ -85,6 +80,12 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Scraper — openMSX XML source
+    - Fetch machine XML file listing via GitHub API; fetch and parse each XML with lxml recover=True
+    - Extract fields: manufacturer, model, standard, year, region, RAM, VRAM, VDP, PSG, FM chip, floppy drives, cartridge slots, CPU, keyboard layout, openMSX machine ID
+    - Skip non-MSX2+ types, SKIP_PREFIXES, ExcludeList (filename + manufacturer+model)
+    - Log parse failures per file; continue on error; never abort
+    - 52 unit tests (all field extractors, skip conditions, malformed XML recovery, HTTP-layer mocking)
   - Scraper — exclude list
     - data/exclude.json: maintainer-edited, committed to repo
     - Match by manufacturer+model (both scrapers, post-parse); "" = empty field; "*" = wildcard

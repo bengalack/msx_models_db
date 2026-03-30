@@ -217,10 +217,10 @@ Feature: openMSX XML source scraper
   - [x] T-901 Run linters (`ruff check scraper/ tests/` or `flake8`) — no linter configured; N/A
   - [x] T-902 Run tests (`pytest tests/scraper/ -v`) — 168 passed
 
-- [ ] Merge to trunk
-  - [ ] T-950 Squash intermediate commits into logical commits (one per chunk)
-  - [ ] T-951 Ensure all commits follow Conventional Commits
-  - [ ] T-952 Rebase onto trunk and merge (fast-forward only)
+- [x] Merge to trunk
+  - [x] T-950 Squash intermediate commits into logical commits (one per chunk)
+  - [x] T-951 Ensure all commits follow Conventional Commits
+  - [x] T-952 Rebase onto trunk and merge (fast-forward only)
 
 ## Open Questions
 - None
