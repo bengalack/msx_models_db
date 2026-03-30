@@ -18,7 +18,8 @@ const STARTER_LUT: Record<string, string> = {
   PM: 'Panasonic Mapper',
   RAM: 'RAM (no memory mapper)',
   EXP: 'Expansion Bus',
-  '\u2612': 'Not expanded',
+  '\u2327': 'Sub-slot absent (not expanded)',
+  '\u2022': 'Empty page — no device mapped',
 };
 
 describe('resolveSlotmapTooltip', () => {
@@ -42,9 +43,15 @@ describe('resolveSlotmapTooltip', () => {
     });
   });
 
-  describe('☒ sentinel (U+2612)', () => {
-    it('returns "Not expanded" for ☒', () => {
-      expect(resolveSlotmapTooltip('\u2612', STARTER_LUT)).toBe('Not expanded');
+  describe('⌧ absent sentinel (U+2327)', () => {
+    it('returns tooltip for ⌧', () => {
+      expect(resolveSlotmapTooltip('\u2327', STARTER_LUT)).toBe('Sub-slot absent (not expanded)');
+    });
+  });
+
+  describe('• empty sentinel (U+2022)', () => {
+    it('returns tooltip for •', () => {
+      expect(resolveSlotmapTooltip('\u2022', STARTER_LUT)).toBe('Empty page — no device mapped');
     });
   });
 
@@ -83,7 +90,8 @@ describe('resolveSlotmapTooltip', () => {
   describe('empty LUT', () => {
     it('returns null for any value when LUT is empty', () => {
       expect(resolveSlotmapTooltip('MAIN', {})).toBeNull();
-      expect(resolveSlotmapTooltip('~', {})).toBeNull();
+      expect(resolveSlotmapTooltip('\u2327', {})).toBeNull();
+      expect(resolveSlotmapTooltip('\u2022', {})).toBeNull();
       expect(resolveSlotmapTooltip('SUB*', {})).toBeNull();
     });
   });

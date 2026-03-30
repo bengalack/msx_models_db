@@ -196,7 +196,7 @@ function buildDataRow(
       if (col.key.startsWith('slotmap_') && typeof rawValue === 'string') {
         const tooltip = resolveSlotmapTooltip(rawValue, slotmapLut);
         if (tooltip !== null) td.title = tooltip;
-        if (rawValue === '\u2612') {
+        if (rawValue === '\u2327') {
           td.classList.add('cell-slotmap-empty');
         } else if (rawValue.endsWith('*')) {
           td.classList.add('cell-slotmap-mirror');

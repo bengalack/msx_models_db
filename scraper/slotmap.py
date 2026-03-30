@@ -5,7 +5,8 @@ slot map LUT, producing 64 cell values (4 main slots × 4 sub-slots × 4 pages)
 per machine.
 
 Cell value conventions:
-  "~"        — slot/page not expanded (default)
+  "⌧"        — sub-slot physically absent (non-expanded SS1-3, cartridge SS1-3)
+  "•"        — page is present in a real sub-slot but has no device mapped
   "CS{N}"    — cartridge slot N (external primary, derived from slot="N")
   "<abbr>"   — LUT-matched abbreviation (e.g. "MAIN", "MM", "DSK")
   "<abbr>*"  — mirror page (origin abbreviation + asterisk)
@@ -29,10 +30,11 @@ _ALL_KEYS: list[str] = [
     for p in range(4)
 ]
 
-# ☒ U+2612: used for pages that exist within a physical (non-expanded) sub-slot
-# but have no device mapped there.  Visually distinct from em-dash (—) used
-# for truly absent/null values.
-_EMPTY_PAGE = "\u2612"  # ☒
+# ⌧ U+2327: sub-slot is physically absent (non-expanded SS1-3, cartridge SS1-3).
+_ABSENT = "\u2327"  # ⌧
+
+# • U+2022: sub-slot is real but the page has no device mapped there.
+_EMPTY_PAGE = "\u2022"  # •
 
 # Pages 0-3 correspond to address ranges 0x0000-0x3FFF, 0x4000-0x7FFF, etc.
 _PAGE_SIZE = 0x4000
@@ -146,7 +148,7 @@ def _classify_devices(
 
 
 def _page_map_to_cells(page_map: dict[int, str]) -> list[str]:
-    """Convert a {page: abbr} map to a 4-element list (pages 0-3), defaulting to '~'."""
+    """Convert a {page: abbr} map to a 4-element list (pages 0-3), defaulting to '•'."""
     return [page_map.get(p, _EMPTY_PAGE) for p in range(4)]
 
 
@@ -160,9 +162,8 @@ def extract_slotmap(
     """Extract all 64 slot map cell values from an openMSX machine XML root.
 
     Returns a dict with all 64 keys (slotmap_{ms}_{ss}_{p}), each valued as:
-    None  — slot/sub-slot absent, or page has no mapped device in expanded slot
-    "☒"   — page is within a physical (non-expanded) sub-slot 0 but has no
-            device mapped (U+2612)
+    "⌧"   — sub-slot is physically absent (non-expanded SS1-3, cartridge SS1-3)
+    "•"   — sub-slot is real but the page has no device mapped (U+2022)
     "CS{N}" — cartridge slot N (all 4 pages of sub-slot 0)
     "<abbr>" — LUT-matched abbreviation (e.g. "MAIN", "MM", "DSK")
     "<abbr>*" — mirror page (origin abbreviation + asterisk)
@@ -170,11 +171,11 @@ def extract_slotmap(
 
     Rules:
     - Non-expanded primary (no <secondary> children): sub-slot 0 pages with no
-      device → "☒"; sub-slots 1-3 → None.
+      device → "•"; sub-slots 1-3 → "⌧".
     - External primary (cartridge): sub-slot 0 → "CS{N}" on all 4 pages;
-      sub-slots 1-3 → None.
-    - Expanded primary (<secondary> children): pages with no device in any
-      sub-slot → None.
+      sub-slots 1-3 → "⌧".
+    - Expanded primary (<secondary> children): pages with no device in a
+      present sub-slot → "•"; sub-slots absent from XML → "⌧".
 
     Args:
         root: Parsed lxml element (<msxconfig> or <machine> root).
@@ -183,8 +184,8 @@ def extract_slotmap(
         sha1_index: Optional mapping of SHA1 → Path for mirror method 2.
         systemroms_root: Base directory for ROM file lookups (mirror method 2).
     """
-    # Initialise all 64 cells to None (absent / no device)
-    result: dict[str, str | None] = {k: None for k in _ALL_KEYS}
+    # Initialise all 64 cells to ⌧ (absent); real sub-slots are filled below.
+    result: dict[str, str | None] = {k: _ABSENT for k in _ALL_KEYS}
 
     devices = root.find("devices")
     if devices is None:
@@ -214,7 +215,7 @@ def extract_slotmap(
             for p in range(4):
                 result[f"slotmap_{ms}_0_{p}"] = abbr
                 slot_abbrs[ms][0][p] = abbr
-            # Sub-slots 1-3: None (no secondary expansion on a cartridge slot)
+            # Sub-slots 1-3: ⌧ (no secondary expansion on a cartridge slot)
             continue
 
         # Check for secondary children
@@ -228,11 +229,11 @@ def extract_slotmap(
             for p, abbr in page_map.items():
                 result[f"slotmap_{ms}_0_{p}"] = abbr
                 slot_abbrs[ms][0][p] = abbr
-            # Sub-slot 0: pages with no device → ☒ (page is real but nothing there)
+            # Sub-slot 0: pages with no device → • (real page, nothing mapped)
             for p in range(4):
-                if result[f"slotmap_{ms}_0_{p}"] is None:
+                if result[f"slotmap_{ms}_0_{p}"] == _ABSENT:
                     result[f"slotmap_{ms}_0_{p}"] = _EMPTY_PAGE
-            # Sub-slots 1-3: None (no secondary expansion exists)
+            # Sub-slots 1-3: ⌧ (no secondary expansion exists)
         else:
             # Expanded primary: classify each secondary slot
             for secondary in secondaries:
@@ -252,6 +253,10 @@ def extract_slotmap(
                 for p, abbr in page_map.items():
                     result[f"slotmap_{ms}_{ss}_{p}"] = abbr
                     slot_abbrs[ms][ss][p] = abbr
+                # Pages with no device in this real sub-slot → •
+                for p in range(4):
+                    if result[f"slotmap_{ms}_{ss}_{p}"] == _ABSENT:
+                        result[f"slotmap_{ms}_{ss}_{p}"] = _EMPTY_PAGE
 
     # ── Second pass: resolve Mirror elements ─────────────────────────────
     _apply_mirror_elements(root, devices, result, slot_abbrs, filename)
@@ -399,7 +404,7 @@ def _apply_mirror_elements(
 
         # Use the most common abbr in the origin slot as the mirror label
         # (typically all pages in the origin have the same abbr)
-        abbrs = [a for a in origin_pages.values() if not a.endswith("*") and a != _EMPTY_PAGE]
+        abbrs = [a for a in origin_pages.values() if not a.endswith("*") and a not in (_EMPTY_PAGE, _ABSENT)]
         if not abbrs:
             continue
         origin_abbr = max(set(abbrs), key=abbrs.count)

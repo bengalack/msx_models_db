@@ -117,7 +117,7 @@ class TestBuildSlotmapLUT:
     STARTER_ABBRS = {
         "MAIN", "SUB", "KAN", "HAN", "JE", "MOD", "DOS2", "CP/M",
         "FW", "DSK", "MUS", "RS", "RSFW", "MM", "PM",
-        "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2612",
+        "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2327", "\u2022",
     }
 
     def _run_build(self, tmp_path):

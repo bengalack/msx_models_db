@@ -396,7 +396,7 @@ thead .gutter {
 
 /* ── Slot map cell markers ───────────────────────────────────────────────── */
 
-/* ☒ sentinel: muted — slot/page is not expanded */
+/* ⌧ sentinel: muted — sub-slot is physically absent */
 .cell-slotmap-empty {
   color: var(--color-text-muted);
   opacity: 0.5;

@@ -140,7 +140,13 @@
   {
     "element": "__sentinel__",
     "id_pattern": null,
-    "abbr": "\u2612",
-    "tooltip": "Not expanded"
+    "abbr": "\u2327",
+    "tooltip": "Sub-slot absent (not expanded)"
+  },
+  {
+    "element": "__sentinel__",
+    "id_pattern": null,
+    "abbr": "\u2022",
+    "tooltip": "Empty page — no device mapped"
   }
 ]
