@@ -399,7 +399,6 @@ thead .gutter {
 /* ⌧ sentinel: muted — sub-slot is physically absent */
 .cell-slotmap-empty {
   color: var(--color-text-muted);
-  opacity: 0.5;
 }
 
 /* abbr* mirror: italic + muted — visually secondary to the origin page */
