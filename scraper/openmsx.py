@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import logging
 import time
+from pathlib import Path
 from typing import Any
 
 import requests
 from lxml import etree
 
 from .exclude import ExcludeList
+from .slotmap import extract_slotmap, load_sha1_index
 
 log = logging.getLogger(__name__)
 
@@ -122,7 +124,13 @@ def list_machine_files(
     return entries
 
 
-def parse_machine_xml(xml_bytes: bytes, filename: str) -> dict[str, Any] | None:
+def parse_machine_xml(
+    xml_bytes: bytes,
+    filename: str,
+    lut_rules: list[dict] | None = None,
+    sha1_index: dict[str, Path] | None = None,
+    systemroms_root: Path | None = None,
+) -> dict[str, Any] | None:
     """Parse a single openMSX machine XML.  Returns field dict or None if skipped."""
     try:
         parser = etree.XMLParser(recover=True)
@@ -173,6 +181,17 @@ def parse_machine_xml(xml_bytes: bytes, filename: str) -> dict[str, Any] | None:
     _extract_cpu(devices, result, msx_type)
     _extract_keyboard(devices, result)
     _extract_connectivity(devices, result)
+
+    # Slot map extraction (only when LUT rules are provided)
+    if lut_rules is not None:
+        slotmap = extract_slotmap(
+            root,
+            lut_rules,
+            filename=filename,
+            sha1_index=sha1_index,
+            systemroms_root=systemroms_root,
+        )
+        result.update(slotmap)
 
     return result
 
@@ -354,6 +373,9 @@ def fetch_all(
     delay: float = 0.3,
     limit: int | None = None,
     exclude_list: ExcludeList | None = None,
+    lut_rules: list[dict] | None = None,
+    sha1_index: dict[str, Path] | None = None,
+    systemroms_root: Path | None = None,
 ) -> list[dict[str, Any]]:
     """Fetch and parse all openMSX machine configs.  Returns list of model dicts."""
     if session is None:
@@ -378,7 +400,12 @@ def fetch_all(
         try:
             resp = session.get(url, timeout=30)
             resp.raise_for_status()
-            result = parse_machine_xml(resp.content, name)
+            result = parse_machine_xml(
+                resp.content, name,
+                lut_rules=lut_rules,
+                sha1_index=sha1_index,
+                systemroms_root=systemroms_root,
+            )
             if result:
                 if exclude_list and exclude_list.is_excluded(
                     result.get("manufacturer"), result.get("model")

@@ -17,6 +17,7 @@ from .columns import (
 )
 from .exclude import load_excludes
 from .registry import IDRegistry
+from .slotmap import load_sha1_index
 from .slotmap_lut import compact_lut, load_slotmap_lut
 
 log = logging.getLogger(__name__)
@@ -27,6 +28,8 @@ RAW_MSXORG = Path("data/msxorg-raw.json")
 REGISTRY_PATH = Path("data/id-registry.json")
 EXCLUDE_PATH = Path("data/exclude.json")
 SLOTMAP_LUT_PATH = Path("data/slotmap-lut.json")
+SHA1_INDEX_PATH = Path("systemroms/machines/all_sha1s.txt")
+SYSTEMROMS_ROOT = Path("systemroms/machines")
 DATA_JS_PATH = Path("docs/data.js")
 
 
@@ -35,10 +38,18 @@ def fetch_sources(
     openmsx_path: Path = RAW_OPENMSX,
     msxorg_path: Path = RAW_MSXORG,
     delay: float = 0.3,
+    lut_rules: list | None = None,
+    sha1_index: dict | None = None,
+    systemroms_root: Path | None = None,
 ) -> None:
     """Fetch fresh data from external sources and cache to disk."""
     log.info("Fetching openMSX data…")
-    openmsx_models = openmsx.fetch_all(delay=delay)
+    openmsx_models = openmsx.fetch_all(
+        delay=delay,
+        lut_rules=lut_rules,
+        sha1_index=sha1_index,
+        systemroms_root=systemroms_root,
+    )
     _write_json(openmsx_models, openmsx_path)
     log.info("Wrote %d openMSX models to %s", len(openmsx_models), openmsx_path)
 
@@ -56,6 +67,8 @@ def build(
     registry_path: Path = REGISTRY_PATH,
     exclude_path: Path = EXCLUDE_PATH,
     slotmap_lut_path: Path = SLOTMAP_LUT_PATH,
+    sha1_index_path: Path = SHA1_INDEX_PATH,
+    systemroms_root: Path = SYSTEMROMS_ROOT,
     output_path: Path = DATA_JS_PATH,
     resolutions_path: Path | None = None,
 ) -> None:
@@ -65,9 +78,23 @@ def build(
     slotmap_rules = load_slotmap_lut(slotmap_lut_path)
     slotmap_lut_compact = compact_lut(slotmap_rules)
 
+    # Load SHA1 index for mirror detection (gracefully absent)
+    sha1_index = load_sha1_index(sha1_index_path if sha1_index_path.exists() else None)
+    sr_root = systemroms_root if systemroms_root.exists() else None
+    if sha1_index:
+        log.info("Loaded SHA1 index: %d entries from %s", len(sha1_index), sha1_index_path)
+    else:
+        log.info("SHA1 index not found at %s — mirror method 2 disabled", sha1_index_path)
+
     # Step 1: Fetch if requested
     if do_fetch:
-        fetch_sources(openmsx_path=openmsx_path, msxorg_path=msxorg_path)
+        fetch_sources(
+            openmsx_path=openmsx_path,
+            msxorg_path=msxorg_path,
+            lut_rules=slotmap_rules,
+            sha1_index=sha1_index or None,
+            systemroms_root=sr_root,
+        )
 
     # Step 2: Load cached raw data
     if not openmsx_path.exists():

@@ -247,3 +247,52 @@ class TestBuildExcludeList:
         content = output_path.read_text()
         assert "HB-75P" in content
         assert "NMS 8250" in content or "Philips" in content
+
+
+class TestBuildSlotmapExtractor:
+    """Integration: slotmap keys appear in data.js when model has slotmap data."""
+
+    def test_slotmap_keys_present_in_model_values(self, tmp_path):
+        """A model dict with slotmap keys produces correct positional values in data.js."""
+        # Build a model that already has slotmap keys (as if extracted by the scraper)
+        slotmap_data = {f"slotmap_{ms}_{ss}_{p}": "~"
+                        for ms in range(4) for ss in range(4) for p in range(4)}
+        # Override a few known cells
+        slotmap_data["slotmap_0_0_0"] = "MAIN"
+        slotmap_data["slotmap_0_0_1"] = "MAIN"
+        slotmap_data["slotmap_1_0_0"] = "CS1"
+
+        openmsx = [{"manufacturer": "Sony", "model": "HB-F1XV",
+                    "standard": "MSX2+", **slotmap_data}]
+        msxorg = []
+
+        openmsx_path = tmp_path / "openmsx.json"
+        msxorg_path = tmp_path / "msxorg.json"
+        output_path = tmp_path / "data.js"
+
+        openmsx_path.write_text(json.dumps(openmsx))
+        msxorg_path.write_text(json.dumps(msxorg))
+
+        build(
+            openmsx_path=openmsx_path,
+            msxorg_path=msxorg_path,
+            registry_path=tmp_path / "registry.json",
+            output_path=output_path,
+        )
+
+        content = output_path.read_text()
+        json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
+        json_end = content.rindex(";")
+        data = json.loads(content[json_start:json_end])
+
+        # Find the slotmap_0_0_0 column position
+        col_keys = [c["key"] for c in data["columns"]]
+        assert "slotmap_0_0_0" in col_keys
+        assert "slotmap_1_0_0" in col_keys
+
+        model = data["models"][0]
+        idx_main = col_keys.index("slotmap_0_0_0")
+        idx_cs1 = col_keys.index("slotmap_1_0_0")
+
+        assert model["values"][idx_main] == "MAIN"
+        assert model["values"][idx_cs1] == "CS1"
