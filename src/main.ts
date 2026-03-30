@@ -66,7 +66,7 @@ if (!window.MSX_DATA) {
         // eslint-disable-next-line no-console
         console.warn('[url-codec] replaceState failed', { error: String(err) });
       }
-    }, 300);
+    }, 1000);
   }
 
   const grid = buildGrid(window.MSX_DATA, {
@@ -172,12 +172,13 @@ if (!window.MSX_DATA) {
     }
   });
 
-  // Deselect cells on outside click (click on dead space, not buttons/headers/gutter)
+  // Deselect cells on outside click (click on dead space, not buttons/panels/grid)
   document.addEventListener('mousedown', (e: MouseEvent) => {
     const target = e.target as HTMLElement;
     if (
       !gridEl.contains(target) &&
-      !toolbarEl.contains(target) &&
+      !pickerEl.contains(target) &&
+      !helpPanel.contains(target) &&
       !target.closest('button') &&
       !target.closest('a')
     ) {
