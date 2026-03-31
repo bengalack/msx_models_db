@@ -234,8 +234,10 @@ def extract_slotmap(
                 if result[f"slotmap_{ms}_0_{p}"] == _ABSENT:
                     result[f"slotmap_{ms}_0_{p}"] = _EMPTY_PAGE
             # Sub-slots 1-3: ⌧ (no secondary expansion exists)
+
         else:
             # Expanded primary: classify each secondary slot
+            present_subslots = set()
             for secondary in secondaries:
                 ss_attr = secondary.get("slot")
                 if ss_attr is None:
@@ -247,6 +249,7 @@ def extract_slotmap(
                 if ss not in range(4):
                     continue
 
+                present_subslots.add(ss)
                 page_map = _classify_devices(secondary, lut_rules, filename)
                 page_map = _apply_rom_visibility(secondary, page_map, lut_rules,
                                                  filename, sha1_index, systemroms_root)
@@ -257,6 +260,14 @@ def extract_slotmap(
                 for p in range(4):
                     if result[f"slotmap_{ms}_{ss}_{p}"] == _ABSENT:
                         result[f"slotmap_{ms}_{ss}_{p}"] = _EMPTY_PAGE
+
+            # If any subslot is present, all subslots 0-3 must be considered present (never ⌧)
+            if present_subslots:
+                for ss in range(4):
+                    for p in range(4):
+                        key = f"slotmap_{ms}_{ss}_{p}"
+                        if result[key] == _ABSENT:
+                            result[key] = _EMPTY_PAGE
 
     # ── Second pass: resolve Mirror elements ─────────────────────────────
     _apply_mirror_elements(root, devices, result, slot_abbrs, filename)
