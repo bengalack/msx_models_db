@@ -1,7 +1,7 @@
 # Technical Design: MSX Models DB
 
 ## Metadata
-- Date: 2026-03-30
+- Date: 2026-04-01
 - Related:
   - PRD: .claude/artifacts/planning/product-requirements.md
   - Risk review: .claude/artifacts/planning/risk-assumption-review.md
@@ -41,6 +41,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Sticky UI: Implements four sticky header rows (page header, toolbar, group header, column header, filter row) and a sticky left gutter (row numbers, hide/unhide controls, gap indicators) as per UX guide. All sticky elements remain visible during both horizontal and vertical scroll, ensuring context is preserved for large grids and wide slot map columns.
   - Sticky Columns: The left gutter (row numbers, hide/unhide) is implemented as a sticky column, always visible regardless of horizontal scroll. The Identity group columns (Manufacturer, Model) are also frozen/sticky during horizontal scroll, pinned immediately to the right of the gutter. The Identity group header is likewise frozen. Gap indicator rows include frozen cells in the frozen panel so the dashed line remains visible. Sticky slot map columns may be considered in future versions if user need arises.
   - Slot Map Columns: Renders all 64 slot map columns (4 groups × 16 columns) for every model, with group headers and tooltips as defined in the requirements. Cells outside a model's physical slot configuration display `~`. Mirror cells display `<abbr>*` and are visually distinct. All slot map columns are scrollable horizontally, but their group headers and column headers remain sticky.
+  - Group Filter Indicator: Each group header `<th>` contains a FontAwesome `fas fa-filter` icon element (hidden by default). When any column in the group has a non-empty filter value, the header gets class `group-header--filtered` which reveals the icon. The `recalcGroupHeader()` function handles this alongside its existing `group-header--partial` logic. The indicator is visible in both expanded and collapsed states.
   - Depends On: `window.MSX_DATA` (set by data.js before app script runs)
   - Data Stores: In-memory only (no localStorage except theme preference)
 
@@ -113,6 +114,16 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     4. Show status bar message: `Copied N cell(s)`
   - Data touched: in-memory selection state
   - Failure handling: If clipboard API unavailable (some file:// environments), fall back to `document.execCommand('copy')` on a hidden textarea
+
+- Filter state → group header indicator
+  - Trigger: Any code path that modifies the `filters` Map (filter input handler, filter clear button, toggleFilters hide-all, URL state restore)
+  - Steps:
+    1. After modifying `filters`, determine affected group ID(s) from the column's `groupId`
+    2. In `recalcGroupHeader(groupId)`: check whether any column in the group has a non-empty entry in `filters`
+    3. Toggle `group-header--filtered` class on the group `<th>` accordingly
+    4. CSS rule `.group-header--filtered .filter-indicator { display: inline }` reveals the icon; removal hides it
+  - Data touched: `filters` Map (read-only), group header DOM element (class toggle)
+  - Failure handling: If the group header `<th>` is not found (group has 0 visible columns), skip silently — same as existing `recalcGroupHeader` behavior
 
 - Scraper build (primary workflow)
   - Trigger: Maintainer runs `python -m scraper build` (or `build --fetch` for fresh data)

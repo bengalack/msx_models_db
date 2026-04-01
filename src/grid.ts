@@ -89,12 +89,16 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
     }
 
     const label = document.createTextNode(group.label);
+    const filterIcon = document.createElement('i');
+    filterIcon.className = 'fas fa-filter filter-indicator';
+    filterIcon.setAttribute('aria-hidden', 'true');
     const chevron = document.createElement('i');
     chevron.className = 'chevron';
     chevron.setAttribute('aria-hidden', 'true');
     chevron.textContent = '\u25bc'; // ▼
 
     th.appendChild(label);
+    th.appendChild(filterIcon);
     th.appendChild(chevron);
     tr.appendChild(th);
   }
@@ -483,6 +487,10 @@ export function buildGrid(data: MSXData, opts?: {
     const totalCols = groupCols.length;
     const visibleCount = totalCols - hiddenInGroup;
 
+    // Filter indicator: show if any column in this group has an active filter
+    const hasFilter = groupCols.some(({ idx }) => filters.has(idx));
+    th.classList.toggle('group-header--filtered', hasFilter);
+
     if (collapsedGroups.has(groupId)) {
       // Collapsed: colSpan is always 1 while collapsed; indicator still applies
       th.classList.toggle('group-header--partial', hiddenInGroup > 0);
@@ -689,7 +697,16 @@ export function buildGrid(data: MSXData, opts?: {
       input.classList.add('filter-input--active');
       (input.nextElementSibling as HTMLElement | null)?.classList.remove('filter-clear--hidden');
     }
-    if (init.filters.size > 0) updateGutterIndicator();
+    if (init.filters.size > 0) {
+      updateGutterIndicator();
+      // Update group headers for groups that have filters
+      const affectedGroups = new Set<number>();
+      for (const [colIdx] of filters) {
+        const gid = data.columns[colIdx]?.groupId;
+        if (gid !== undefined) affectedGroups.add(gid);
+      }
+      for (const gid of affectedGroups) recalcGroupHeader(gid);
+    }
 
     // Hidden columns in thead (tbody handled in renderRows)
     for (const colIdx of hiddenCols) {
@@ -1018,6 +1035,8 @@ export function buildGrid(data: MSXData, opts?: {
         const clearBtn = input.nextElementSibling as HTMLElement | null;
         clearBtn?.classList.add('filter-clear--hidden');
       }
+      const groupId = data.columns[colIdx]?.groupId;
+      if (groupId !== undefined) recalcGroupHeader(groupId);
       updateGutterIndicator();
       renderRows();
       opts?.onStateChange?.();
@@ -1033,6 +1052,8 @@ export function buildGrid(data: MSXData, opts?: {
       filters.delete(colIdx);
       input.classList.remove('filter-input--active');
       btn.classList.add('filter-clear--hidden');
+      const groupId = data.columns[colIdx]?.groupId;
+      if (groupId !== undefined) recalcGroupHeader(groupId);
       updateGutterIndicator();
       renderRows();
       opts?.onStateChange?.();
@@ -1053,6 +1074,8 @@ export function buildGrid(data: MSXData, opts?: {
         inp.classList.remove('filter-input--active');
         (inp.nextElementSibling as HTMLElement | null)?.classList.add('filter-clear--hidden');
       });
+      // Update all group headers to remove filter indicators
+      for (const g of data.groups) recalcGroupHeader(g.id);
       updateGutterIndicator();
       renderRows();
     } else {

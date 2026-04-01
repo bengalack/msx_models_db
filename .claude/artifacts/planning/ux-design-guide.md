@@ -1,7 +1,7 @@
 # UX Design Guide: MSX Models DB
 
 ## Metadata
-- Date: 2026-03-27
+- Date: 2026-04-01
 - Related:
   - PRD: .claude/artifacts/planning/product-requirements.md
 
@@ -157,6 +157,14 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - Collapsed state: group header cell shrinks to colSpan=1; text truncated with ellipsis if too narrow
 - Overflow: group and column header text is clipped with `text-overflow: ellipsis`, matching data cell behavior
 - Active/expanded: `var(--color-border-strong)` bottom border
+- **Filter indicator**: a FontAwesome filter icon (`fas fa-filter`) displayed inside the group header cell when one or more columns in the group have an active (non-empty) filter value.
+  - Position: inline, between the group label text and the chevron. Uses a small left margin (4px) to separate from the label.
+  - Size: same font-size as the group header text (12px), inherits `var(--color-gutter-indicator)` (amber) to distinguish it from the label text and match existing indicator color language.
+  - Visibility: the `<i>` element is always present in the DOM but hidden by default (`display: none`). When the group header `<th>` has class `group-header--filtered`, the icon becomes visible (`display: inline`).
+  - Behavior: purely visual — no click handler, no `cursor: pointer`, no hover effect. The icon does not consume click events (the group header click-to-collapse still works normally through it).
+  - Collapsed state: the icon remains visible when the group is collapsed (colSpan=1). Because the header text is truncated with ellipsis, the icon may be the only visible content alongside the chevron — this is the intended and most important use case (user sees "a filter is active in this collapsed group").
+  - Interaction with hidden-columns indicator (`group-header--partial`): both indicators can appear simultaneously. The filter icon appears inline after the label; the partial/hidden indicator is a separate visual treatment (e.g. different border style). They do not conflict.
+  - Update trigger: the `recalcGroupHeader()` function (or a dedicated helper called alongside it) checks whether any column in the group has an active filter and toggles `group-header--filtered` accordingly. This must be called from every code path that modifies filters: filter input handler, filter clear button, URL state restore, and any future bulk-clear action.
 
 ### Grid — column headers
 - Height: 38px (room for 2 lines of text)

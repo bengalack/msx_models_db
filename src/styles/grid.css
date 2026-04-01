@@ -134,6 +134,18 @@
   opacity: 0.6;
 }
 
+/* Filter indicator icon — hidden by default, revealed via group-header--filtered */
+.group-header .filter-indicator {
+  display: none;
+  margin-left: 4px;
+  font-size: 9.5px;
+  color: inherit;
+}
+
+.group-header--filtered .filter-indicator {
+  display: inline;
+}
+
 .group-header .chevron {
   position: absolute;
   right: 8px;

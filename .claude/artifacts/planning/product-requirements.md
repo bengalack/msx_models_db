@@ -1,7 +1,7 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.3
+- Version: 0.4
 - Date: 2026-04-01
 er: bengalack
 
@@ -59,6 +59,17 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Clicking a group header collapses all its columns (they disappear from view).
     - Clicking again expands them.
     - Collapsed state is reflected in the URL.
+
+- Group filter indicator
+  - Description: Each group header displays a FontAwesome filter icon when any column within that group has an active filter. The icon is a purely visual indicator (no click action). It is visible whether the group is expanded or collapsed, ensuring the user always knows which groups have active filters.
+  - Priority: Must
+  - Acceptance Criteria:
+    - When one or more columns in a group have a non-empty filter value, the group header shows a FontAwesome filter icon.
+    - When no columns in the group have an active filter, the icon is not displayed.
+    - The icon is visible both when the group is expanded and when it is collapsed.
+    - The icon does not interfere with the existing hidden-columns indicator or the collapse/expand chevron.
+    - The icon is purely informational — clicking it does not trigger any action.
+    - Clearing all filters in a group causes the icon to disappear immediately.
 
 - Column sorting
   - Description: Clicking a column header sorts the grid by that column. Clicking again reverses the sort order.
