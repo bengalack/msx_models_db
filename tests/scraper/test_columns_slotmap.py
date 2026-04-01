@@ -12,7 +12,7 @@ from scraper.columns import COLUMNS, GROUPS, validate_config
 # ---------------------------------------------------------------------------
 
 def test_group_count():
-    assert len(GROUPS) == 12
+    assert len(GROUPS) == 13
 
 
 def test_column_count():
@@ -69,7 +69,7 @@ def test_slotmap_group_labels():
 
 def test_slotmap_group_order_matches_id():
     for g in SLOTMAP_GROUPS:
-        assert g.order == g.id, f"Group {g.key}: order {g.order} != id {g.id}"
+        assert g.order == g.id + 1, f"Group {g.key}: order {g.order} != id+1 {g.id + 1}"
 
 
 # ---------------------------------------------------------------------------

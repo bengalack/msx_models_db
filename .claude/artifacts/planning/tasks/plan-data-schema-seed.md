@@ -1,5 +1,7 @@
 # Plan: Data Schema + Seed Data
 
+> **Note (2026-04-01):** This plan was written for the original 8-group, 29-column schema. The schema has since evolved: Identity was split into Identity (Manufacturer, Model) + Release (Year, Region, Generation, Form Factor); "MSX Standard" was renamed to "Generation"; group count is now 13 (9 main + 4 slotmap). See `scraper/columns.py` and `data/schema.md` for current definitions.
+
 ## Metadata
 - Date: 2026-03-27
 - Backlog item: Data schema + seed data

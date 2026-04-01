@@ -128,15 +128,19 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
   4. **Column header row** — individual column names, sort arrows (height: 28px, sticky)
   5. **Filter row** — one input per visible column (height: 28px, sticky, toggleable)
   6. **Data rows** — model data (height: 24px per row)
-- Left gutter: 52px wide strip — × hide button (left), row number (right), row-selection highlight, gap indicator
+- Left gutter: 32px wide strip — row number, hidden-row indicator
 - The grid body scrolls both horizontally and vertically; all 4 header rows and the left gutter remain sticky
+- The Identity group columns (Manufacturer, Model) and their group header are frozen/sticky during horizontal scroll, pinned immediately to the right of the gutter. Gap indicator rows include frozen cells so the dashed line stays aligned in the frozen panel.
 - Z-index stacking order (within `.grid-wrap` scroll container, low → high):
-  1. **tbody gutter** — `z-index: 2` (sticky left column in data rows)
-  2. **Gap indicator line** (`gutter--gap::before`) — `z-index: 3`
-  3. **Unhide button** (`gutter__unhide-btn`) — `z-index: 4`
-  4. **Selected cells** (`cell--selected`) — `z-index: 5` (selection outline always above gap indicators)
-  5. **Header cells** (group, column, filter) — `z-index: 10`
-  6. **Header gutter corner** (`thead .gutter`) — `z-index: 11`
+  1. **Gap indicator line** (`gutter--gap::before`) — `z-index: 3`
+  2. **Selected cells** (`cell--selected`) — `z-index: 5`
+  3. **Frozen data cells** (`.col--frozen`) — `z-index: 6`
+  4. **Frozen + selected** (`.col--frozen.cell--selected`) — `z-index: 7`
+  5. **tbody gutter** — `z-index: 8` (sticky left column in data rows)
+  6. **Gap gutter / unhide button** — `z-index: 9`
+  7. **Header cells** (group, column, filter) — `z-index: 10`
+  8. **Frozen header cells** (`thead .col--frozen`, `.group-header--frozen`) — `z-index: 11`
+  9. **Header gutter corner** (`thead .gutter`) — `z-index: 12`
 
 ## Components
 

@@ -1,5 +1,11 @@
 import type { MSXData, GroupDef, ColumnDef, ModelRecord, ViewState } from './types.js';
 
+/** Number of leading data columns (0-based) that are pinned during horizontal scroll. */
+export const FROZEN_COL_COUNT = 2;
+
+/** Width of the row-number gutter in pixels — must match .gutter { width } in grid.css. */
+const GUTTER_WIDTH = 52;
+
 // Normalize (sort) comma-separated string values (e.g., for Conn/Ports)
 function normalizeCommaList(value: string): string {
   // Split by comma, trim, sort, and join
@@ -58,6 +64,12 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
   gutterCorner.rowSpan = 3; // spans group header, col header, and filter rows
   tr.appendChild(gutterCorner);
 
+  // Build a map of groupId → first column index in the columns array
+  const groupStartIdx = new Map<number, number>();
+  columns.forEach((col, idx) => {
+    if (!groupStartIdx.has(col.groupId)) groupStartIdx.set(col.groupId, idx);
+  });
+
   // One th per group, spanning its columns
   for (const group of [...groups].sort((a, b) => a.order - b.order)) {
     const groupCols = columns.filter(c => c.groupId === group.id);
@@ -69,6 +81,12 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
     th.scope = 'colgroup';
     th.dataset.groupId = String(group.id);
     th.dataset.colCount = String(groupCols.length);
+
+    // Freeze group header if ALL its columns fall within the frozen range
+    const startIdx = groupStartIdx.get(group.id) ?? 0;
+    if (startIdx + groupCols.length <= FROZEN_COL_COUNT) {
+      th.classList.add('group-header--frozen');
+    }
 
     const label = document.createTextNode(group.label);
     const chevron = document.createElement('i');
@@ -101,6 +119,7 @@ function buildColHeaderRow(columns: ColumnDef[]): HTMLTableRowElement {
     const order = groupOrder.get(col.groupId) ?? 0;
     th.dataset.colOrder = String(order);
     groupOrder.set(col.groupId, order + 1);
+    if (colIndex < FROZEN_COL_COUNT) th.classList.add('col--frozen');
     tr.appendChild(th);
   });
   return tr;
@@ -148,6 +167,7 @@ function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
     const order = groupOrder.get(columns[i].groupId) ?? 0;
     td.dataset.colOrder = String(order);
     groupOrder.set(columns[i].groupId, order + 1);
+    if (i < FROZEN_COL_COUNT) td.classList.add('col--frozen');
 
     const input = document.createElement('input');
     input.type = 'text';
@@ -209,6 +229,7 @@ function buildDataRow(
     const order = groupOrder.get(col.groupId) ?? 0;
     td.dataset.colOrder = String(order);
     groupOrder.set(col.groupId, order + 1);
+    if (i < FROZEN_COL_COUNT) td.classList.add('col--frozen');
 
     if (isNullish(rawValue)) {
       td.classList.add('cell-null');
@@ -263,10 +284,18 @@ function buildGapIndicator(
   gutterTd.appendChild(btn);
   tr.appendChild(gutterTd);
 
-  // Data cell — spans remaining columns, carries the dashed line
+  // Frozen data cells — one per frozen column, each sticky with the dashed line
+  for (let i = 0; i < FROZEN_COL_COUNT; i++) {
+    const frozenTd = document.createElement('td');
+    frozenTd.className = 'gutter--gap gutter--gap-frozen';
+    frozenTd.setAttribute('data-col-index', String(i));
+    tr.appendChild(frozenTd);
+  }
+
+  // Scrollable data cell — spans remaining columns, carries the dashed line
   const dataTd = document.createElement('td');
   dataTd.className = 'gutter--gap';
-  dataTd.colSpan = colCount;
+  dataTd.colSpan = colCount - FROZEN_COL_COUNT;
   tr.appendChild(dataTd);
 
   return tr;
@@ -565,15 +594,19 @@ export function buildGrid(data: MSXData, opts?: {
     // Re-apply selection highlights
     applySelectionToDOM();
     applyRowSelectionToDOM();
-    // Defer gap visibility check — on initial load the element may not be in
-    // the DOM yet, so getBoundingClientRect() would return zeros.
-    requestAnimationFrame(updateGapVisibility);
+    // Defer layout-dependent updates — on initial load the element may not be in
+    // the DOM yet, so getBoundingClientRect()/offsetWidth would return zeros.
+    requestAnimationFrame(() => {
+      updateGapVisibility();
+      updateFrozenOffsets();
+    });
   }
 
   // ── Gap indicator scroll-awareness ──────────────────────────────────────
   // Hide the dashed line + unhide button when a gap indicator scrolls under
   // the sticky header — show them again once the gap is fully below it.
   function updateGapVisibility(): void {
+
     const headerBottom = thead.getBoundingClientRect().bottom;
     for (const row of Array.from(tbody.querySelectorAll<HTMLTableRowElement>('.row-gap-indicator'))) {
       const btn = row.querySelector<HTMLElement>('.gutter__unhide-btn');
@@ -583,6 +616,23 @@ export function buildGrid(data: MSXData, opts?: {
       const btnBottom = btn.getBoundingClientRect().bottom;
       const hidden = btnBottom <= headerBottom;
       row.classList.toggle('row-gap-indicator--under-header', hidden);
+    }
+  }
+
+  // ── Frozen-column left-offset computation ────────────────────────────────
+  // Writes CSS custom properties (--frozen-colN-left) onto the .grid-wrap so
+  // each sticky column knows its exact `left` value regardless of which
+  // preceding columns are hidden.  Called after every renderRows() and when
+  // columns are shown/hidden.
+  function updateFrozenOffsets(): void {
+    let left = GUTTER_WIDTH; // starts just after the 52px row-number gutter
+    for (let i = 0; i < FROZEN_COL_COUNT; i++) {
+      wrap.style.setProperty(`--frozen-col${i}-left`, `${left}px`);
+      if (!hiddenCols.has(i)) {
+        // Measure the actual rendered width of any frozen header for column i
+        const th = thead.querySelector<HTMLElement>(`th.col--frozen[data-col-index="${i}"]`);
+        left += th ? th.offsetWidth : 0;
+      }
     }
   }
 
@@ -1046,5 +1096,11 @@ export function buildGrid(data: MSXData, opts?: {
 
   wrap.appendChild(table);
   wrap.addEventListener('scroll', updateGapVisibility, { passive: true });
+
+  // Recalculate frozen-column left offsets when the table layout changes size
+  // (e.g. window resize, font load, zoom change).
+  const resizeObs = new ResizeObserver(() => updateFrozenOffsets());
+  resizeObs.observe(table);
+
   return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols, getHiddenRows, hideRow, getSelectedCells, clearAllSelection, copySelection, getViewState };
 }

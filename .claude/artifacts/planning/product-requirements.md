@@ -49,9 +49,10 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - All MSX2, MSX2+, and MSX turbo R models present in the JSON file appear as rows.
     - Each column defined in the JSON schema is rendered as a grid column.
     - The grid is readable and usable without horizontal scrolling for the Identity group at minimum.
+    - The Identity group columns (Manufacturer, Model) and their group header are frozen/sticky during horizontal scroll.
 
 - Column groups
-  - Description: Columns are organized into named groups: Identity, Memory, Video, Audio, Media, CPU/Chipsets, Other, Emulation. Each group has a header that can be clicked to collapse or expand all columns in that group.
+  - Description: Columns are organized into named groups: Identity, Release, Memory, Video, Audio, Media, CPU/Chipsets, Other, Emulation. Each group has a header that can be clicked to collapse or expand all columns in that group.
   - Priority: Must
   - Acceptance Criteria:
     - Each column belongs to exactly one group.

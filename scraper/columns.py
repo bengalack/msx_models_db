@@ -96,18 +96,19 @@ def validate_config(groups: list[Group], columns: list[Column]) -> None:
 # ---------------------------------------------------------------------------
 
 GROUPS: list[Group] = [
-    Group(id=0, key="identity",   label="Identity",        order=0),
-    Group(id=1, key="memory",     label="Memory",           order=1),
-    Group(id=2, key="video",      label="Video",            order=2),
-    Group(id=3, key="audio",      label="Audio",            order=3),
-    Group(id=4, key="media",      label="Media",            order=4),
-    Group(id=5, key="cpu",        label="CPU/Chipsets",     order=5),
-    Group(id=6, key="other",      label="Other",            order=6),
-    Group(id=7, key="emulation",  label="Emulation",        order=7),
-    Group(id=8, key="slotmap_0",  label="Slotmap, slot 0",  order=8),
-    Group(id=9, key="slotmap_1",  label="Slotmap, slot 1",  order=9),
-    Group(id=10, key="slotmap_2", label="Slotmap, slot 2",  order=10),
-    Group(id=11, key="slotmap_3", label="Slotmap, slot 3",  order=11),
+    Group(id=0,  key="identity",   label="Identity",        order=0),
+    Group(id=12, key="release",    label="Release",         order=1),
+    Group(id=1,  key="memory",     label="Memory",           order=2),
+    Group(id=2,  key="video",      label="Video",            order=3),
+    Group(id=3,  key="audio",      label="Audio",            order=4),
+    Group(id=4,  key="media",      label="Media",            order=5),
+    Group(id=5,  key="cpu",        label="CPU/Chipsets",     order=6),
+    Group(id=6,  key="other",      label="Other",            order=7),
+    Group(id=7,  key="emulation",  label="Emulation",        order=8),
+    Group(id=8,  key="slotmap_0",  label="Slotmap, slot 0",  order=9),
+    Group(id=9,  key="slotmap_1",  label="Slotmap, slot 1",  order=10),
+    Group(id=10, key="slotmap_2", label="Slotmap, slot 2",  order=11),
+    Group(id=11, key="slotmap_3", label="Slotmap, slot 3",  order=12),
 ]
 
 
@@ -119,10 +120,11 @@ COLUMNS: list[Column] = [
     # Identity
     Column(id=1,  key="manufacturer",      label="Manufacturer",        group="identity", type="string"),
     Column(id=2,  key="model",             label="Model",               group="identity", type="string", linkable=True),
-    Column(id=3,  key="year",              label="Year",                group="identity", type="number"),
-    Column(id=4,  key="region",            label="Region",              group="identity", type="string"),
-    Column(id=5,  key="standard",          label="MSX Standard",        group="identity", type="string"),
-    Column(id=6,  key="form_factor",       label="Form Factor",         group="identity", type="string"),
+    # Release
+    Column(id=3,  key="year",              label="Year",                group="release",  type="number"),
+    Column(id=4,  key="region",            label="Region",              group="release",  type="string"),
+    Column(id=5,  key="standard",          label="Generation",          group="release",  type="string", short_label="Gen"),
+    Column(id=6,  key="form_factor",       label="Form Factor",         group="release",  type="string"),
     # Memory
     Column(id=7,  key="main_ram_kb",       label="Main RAM (KB)",       group="memory",   type="number", short_label="Main RAM",    tooltip="Main RAM (KB)"),
     Column(id=8,  key="vram_kb",           label="VRAM (KB)",           group="memory",   type="number", short_label="VRAM",         tooltip="VRAM (KB)"),

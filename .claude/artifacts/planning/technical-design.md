@@ -37,7 +37,10 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 
 - Grid App (web page)
   - Type: Web App (static SPA)
-  - Responsibilities: Grid display, column groups, sort/filter, row/column show-hide, cell selection, clipboard copy, URL state sync, theme toggle
+  - Responsibilities: Grid display, column groups, sort/filter, row/column show-hide, cell selection, clipboard copy, URL state sync, theme toggle, **sticky headers and sticky left gutter**
+  - Sticky UI: Implements four sticky header rows (page header, toolbar, group header, column header, filter row) and a sticky left gutter (row numbers, hide/unhide controls, gap indicators) as per UX guide. All sticky elements remain visible during both horizontal and vertical scroll, ensuring context is preserved for large grids and wide slot map columns.
+  - Sticky Columns: The left gutter (row numbers, hide/unhide) is implemented as a sticky column, always visible regardless of horizontal scroll. The Identity group columns (Manufacturer, Model) are also frozen/sticky during horizontal scroll, pinned immediately to the right of the gutter. The Identity group header is likewise frozen. Gap indicator rows include frozen cells in the frozen panel so the dashed line remains visible. Sticky slot map columns may be considered in future versions if user need arises.
+  - Slot Map Columns: Renders all 64 slot map columns (4 groups × 16 columns) for every model, with group headers and tooltips as defined in the requirements. Cells outside a model's physical slot configuration display `~`. Mirror cells display `<abbr>*` and are visually distinct. All slot map columns are scrollable horizontally, but their group headers and column headers remain sticky.
   - Depends On: `window.MSX_DATA` (set by data.js before app script runs)
   - Data Stores: In-memory only (no localStorage except theme preference)
 
@@ -378,8 +381,8 @@ msx_models_db/
 ## Known Tradeoffs
 
 - Vanilla TS + hand-rolled grid (no table library)
-  - Why chosen: The cell-level selection model (non-contiguous multi-cell, drag) and custom column group headers don't map well onto standard table library abstractions; hand-rolling avoids fighting the library
-  - Cost: More implementation work; selection and drag logic must be carefully tested
+  - Why chosen: The cell-level selection model (non-contiguous multi-cell, drag), custom column group headers, and **multi-row sticky headers/left gutter** do not map well onto standard table library abstractions; hand-rolling avoids fighting the library and enables precise sticky behavior as required.
+  - Cost: More implementation work; selection, drag, and sticky logic must be carefully tested, especially for edge cases (e.g., wide slot map columns, many hidden columns, simultaneous vertical/horizontal scroll).
 
 - Build step required (Vite)
   - Why chosen: TypeScript, npm packages (codec utilities), and clean module organisation require a build step; output is still plain static files
@@ -394,8 +397,8 @@ msx_models_db/
   - Cost: Two runtimes (Node.js for web, Python for scraper); contributors need both installed
 
 - No row virtualisation
-  - Why chosen: Assumed < 300 rows; simple DOM table is faster to implement and easier to style
-  - Cost: If row count grows significantly beyond 300, performance may degrade; add virtualisation at that point
+  - Why chosen: Assumed < 300 rows; simple DOM table is faster to implement and easier to style, and enables reliable sticky header/gutter behavior without virtualization complexity.
+  - Cost: If row count grows significantly beyond 300, performance may degrade; add virtualization at that point, ensuring sticky header/gutter logic is preserved.
 
 - Slot map LUT as a separate maintainer-edited JSON file (not code)
   - Why chosen: New device strings will appear as more machines are parsed; maintainer must be able to extend vocabulary without touching scraper code

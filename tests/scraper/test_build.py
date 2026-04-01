@@ -160,13 +160,13 @@ class TestBuildSlotmapLUT:
         for abbr, tooltip in data["slotmap_lut"].items():
             assert isinstance(tooltip, str), f"Tooltip for {abbr!r} is not a string"
 
-    def test_data_js_has_12_groups(self, tmp_path):
+    def test_data_js_has_13_groups(self, tmp_path):
         output_path = self._run_build(tmp_path)
         content = output_path.read_text(encoding="utf-8")
         json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
         json_end = content.rindex(";")
         data = json.loads(content[json_start:json_end])
-        assert len(data["groups"]) == 12
+        assert len(data["groups"]) == 13
 
     def test_data_js_has_93_columns(self, tmp_path):
         output_path = self._run_build(tmp_path)

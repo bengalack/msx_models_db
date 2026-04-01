@@ -10,7 +10,7 @@
 - Goal: a single static web page presenting all relevant MSX models in a sortable, filterable grid.
 - First iteration covers MSX2, MSX2+, and MSX turbo R models only (including unofficial FPGA-based models).
 - Grid supports rich cell selection (click, CTRL+click, SHIFT+click, drag) with visual highlight and native copy.
-- Column groups (Identity, Memory, Video, Audio, Media, CPU/Chipsets, Other, Emulation) can collapse/expand.
+- Column groups (Identity, Release, Memory, Video, Audio, Media, CPU/Chipsets, Other, Emulation) can collapse/expand.
 - URL encodes current grid state (selections, sort, filters) to enable sharing and bookmarking.
 - Data is stored in a local JSON file consumed directly by the HTML page.
 - A separate scraper process populates/refreshes the JSON from msx.org wiki and openMSX GitHub XML files.
@@ -132,7 +132,8 @@ Today, finding detailed and comparable specs for MSX computer models requires vi
 
 | Group | Proposed Columns |
 |---|---|
-| Identity | Manufacturer, Model Name, Year, Region/Market, MSX Standard, Form Factor |
+| Identity | Manufacturer, Model Name |
+| Release | Year, Region/Market, Generation, Form Factor |
 | Memory | Main RAM, VRAM, ROM (BIOS size) |
 | Video | Video Chip (VDP), Max Resolution, Max Colors, Max Sprites |
 | Audio | Sound Chip(s), Audio Channels |

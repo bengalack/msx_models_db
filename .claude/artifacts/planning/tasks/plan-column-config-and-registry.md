@@ -1,5 +1,7 @@
 # Column Config + ID Registry Implementation Plan
 
+> **Note (2026-04-01):** Column examples in this plan reflect the original schema. Since then: Identity was split into Identity + Release; "MSX Standard" → "Generation" (short_label: "Gen"); columns 3–6 moved to group "release" (id=12). See `scraper/columns.py` for current definitions.
+
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Create a single-source column configuration (`scraper/columns.py`) that drives all column/group definitions, derived columns, and data.js generation — plus a model ID registry — so the maintainer edits one file to add/remove/retire columns.

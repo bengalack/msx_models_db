@@ -1,47 +1,44 @@
-- In product (shipped)
-  - Column group collapse / expand
-    - Click group header to collapse all child columns
-    - Click again to expand; chevron indicator (▶ / ▼)
-    - Hidden column indicator in group header strip when any column in group is individually hidden
-  - Column sorting
-    - Click column header: sort ascending; again: descending; again: clear
-    - ↑ / ↓ indicator appended to active sort column header
-  - Column filtering
-    - Toolbar toggle shows/hides filter row
-    - Text input per visible column; filters rows immediately on input
-    - Active filter: accent border on input, clear (×) button
-    - Gutter indicator in column header strip when any rows are filtered out
-  - Column show / hide
-    - Toolbar "⊞ Columns" button opens column picker panel
-    - Checkbox per column grouped by group; toggle visibility individually
-    - Panel closes on outside click
-  - Row show / hide
-    - Right-click row number → context menu: Hide Row
-    - Hidden rows removed from grid
-    - Amber ▼▲ indicator in gutter at each gap; click to unhide
-  - Cell selection
-    - Click: select single cell, clear previous selection
-    - CTRL/CMD+click: toggle cell in/out of selection
-    - SHIFT+click: extend selection rectangle from anchor to clicked cell
-    - Click+drag: select cells covered by drag (snap to cell on mouseenter)
-    - Selected cells: accent-dim fill + solid accent border; dark mode adds glow
-  - Clipboard copy
-    - CTRL+C / CMD+C copies selected cells as TSV (columns tab-separated, rows newline-separated)
-    - Fallback to execCommand('copy') if clipboard API unavailable
-    - Status bar (bottom, 24px) shows "Copied N cell(s)"
 
 - Now / Next
-  - Scraper — msx.org HTML source
-    - Enumerate MSX2, MSX2+, turboR model pages from msx.org category pages
-    - Scrape each model page with beautifulsoup4 + lxml
-    - Extract fields matching column schema
-    - Log parse failures per field; do not abort on partial failure
-    - Abort if >20% of models fail to parse
-    - Use custom User-Agent: msxmodelsdb-scraper/1.0; 500ms delay between requests
-  - Scraper — merge + conflict resolution
-    - Match models from both sources by natural key (manufacturer + model name)
-    - For conflicting field values: print summary, prompt maintainer to choose per conflict
-    - For fields present in only one source: use that value without prompting
+  - Implement sticky grid UI
+    - Sticky headers (page header, toolbar, group header, column header, filter row)
+    - Sticky left gutter (row numbers, hide/unhide, gap indicators)
+    - Slot map columns (64 columns, 4 groups, tooltips, mirror cell handling)
+  - Column/row show-hide controls
+    - Column picker panel
+    - Row hide/unhide via gutter
+  - Cell selection and clipboard copy
+    - Multi-cell selection (click, CTRL, SHIFT, drag)
+    - Copy as TSV (CTRL+C)
+  - Live URL state encoding
+    - Encode/decode full view state (sort, filter, selection, hidden/collapsed)
+    - Versioned binary codec, base64 in hash
+  - Scraper: slot map extraction and LUT integration
+    - XML parsing, device classification, mirror detection
+    - LUT file support and warning on unmatched devices
+
+- Later
+  - msx.org slot map extraction (HTML parsing)
+  - Default view configuration for slot map columns
+  - Multi-sort support
+  - Row virtualization for large datasets
+  - Blogger/Blogspot embed enhancements (widget, theming)
+  - FPGA model list expansion
+
+- Inbox (untriaged)
+  - Launch openMSX from grid (emulation integration)
+  - Per-model detail panel or modal
+  - Custom column groupings by user
+
+- In product (shipped)
+  - Static SPA grid UI
+  - Column groups and collapse/expand
+  - Stable ID registry for models/columns
+  - Scraper: msx.org and openMSX XML merge
+  - Data.js loaded via <script> tag
+  - Theme toggle (dark/light, CSS custom properties)
+  - Keyboard accessibility (sort, filter, copy)
+  - Build output committed to docs/ for GitHub Pages
 
 - Later
   - Scraper — write output (replaced by column-config-and-registry feature)
@@ -58,7 +55,6 @@
   - Multi-column sort
   - Per-model detail panel / expanded view
   - Column width resizing
-  - Freeze / pin columns (e.g. keep Identity group always visible while scrolling)
   - Export visible data as CSV file download
   - "Share this view" copy-URL button with visual feedback
 
@@ -105,6 +101,17 @@
     - 41 Python tests (columns, registry, build integration)
     - Removed src/columns.ts (column config is now Python-only)
   - Data schema + seed data (TypeScript types, schema.md, 10-model seed, id-registry.json)
+  - Frozen / pinned Identity columns
+    - Identity group (Manufacturer, Model) frozen/sticky during horizontal scroll with group header
+    - Gap indicator rows include frozen cells for dashed-line alignment
+    - FROZEN_COL_COUNT=2, ResizeObserver for offset recalculation
+    - z-index stack: 3 (gap line) → 5 (selected) → 6 (frozen) → 7 (frozen+selected) → 8 (gutter) → 9 (gap-gutter) → 10 (thead) → 11 (frozen thead) → 12 (thead gutter)
+    - 22 Vitest tests
+  - Column rename + group split
+    - "MSX Standard" renamed to "Generation" (short_label: "Gen")
+    - Identity group split: Identity (Manufacturer, Model) + Release (Year, Region, Generation, Form Factor)
+    - Release group id=12, order=1; all other group orders shifted +1
+    - 13 groups total (9 main + 4 slotmap)
   - Theme system (CSS custom properties, dark/light toggle, localStorage persistence)
   - Grid rendering (display only — header rows, toolbar, data rows, gutter, null/em-dash, overflow tooltip)
   - Slot map — column definitions + LUT
