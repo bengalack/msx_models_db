@@ -11,6 +11,7 @@ import requests
 from lxml import etree
 
 from .exclude import ExcludeList
+from .http import fetch_with_retry
 from .slotmap import extract_slotmap, load_sha1_index
 
 log = logging.getLogger(__name__)
@@ -105,8 +106,7 @@ def list_machine_files(
     exclude_list: ExcludeList | None = None,
 ) -> list[dict[str, str]]:
     """Return list of {name, download_url} for .xml machine files."""
-    resp = session.get(GITHUB_API_URL, timeout=30)
-    resp.raise_for_status()
+    resp = fetch_with_retry(session, GITHUB_API_URL)
     entries: list[dict[str, str]] = []
     for item in resp.json():
         name: str = item["name"]
@@ -398,8 +398,7 @@ def fetch_all(
         name = f["name"]
         url = f["download_url"]
         try:
-            resp = session.get(url, timeout=30)
-            resp.raise_for_status()
+            resp = fetch_with_retry(session, url)
             result = parse_machine_xml(
                 resp.content, name,
                 lut_rules=lut_rules,

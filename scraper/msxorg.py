@@ -12,6 +12,7 @@ import requests
 from bs4 import BeautifulSoup, Tag
 
 from .exclude import ExcludeList
+from .http import fetch_with_retry
 
 log = logging.getLogger(__name__)
 
@@ -73,8 +74,7 @@ def list_model_pages(
 
     for standard, cat_url in CATEGORY_URLS.items():
         log.info("Fetching category page for %s…", standard)
-        resp = session.get(cat_url, timeout=30)
-        resp.raise_for_status()
+        resp = fetch_with_retry(session, cat_url)
         soup = BeautifulSoup(resp.content, "lxml")
 
         # Model links are inside the <div id="mw-pages"> or similar.
@@ -354,8 +354,7 @@ def fetch_all(
         url = page["url"]
         standard = page["standard"]
         try:
-            resp = session.get(url, timeout=30)
-            resp.raise_for_status()
+            resp = fetch_with_retry(session, url)
             result = parse_model_page(resp.content, standard, title)
             if result:
                 if exclude_list and exclude_list.is_excluded(
