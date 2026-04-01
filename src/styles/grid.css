@@ -346,6 +346,12 @@ thead .gutter {
 
 /* ── Row gap indicator (sticky gutter + frozen gaps + scrollable data) ── */
 
+/* Remove bottom border from data row immediately above a gap indicator
+   so the row border doesn't double-up with the dashed line (1px → 2px). */
+.row-before-gap td {
+  border-bottom: none !important;
+}
+
 /* Zero-height shared styles for both gap cells */
 .grid tbody td.gutter--gap,
 .grid tbody td.gutter--gap-gutter {
@@ -362,6 +368,7 @@ thead .gutter {
 /* Data cell — carries the dashed line across the data area */
 .gutter--gap {
   position: relative;
+  z-index: 1;             /* stacking context so ::before paints over adjacent row borders */
   overflow: visible;
 }
 
@@ -396,8 +403,7 @@ thead .gutter {
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
-  transform: translateY(-50%);
+  top: -1px;
   height: 1px;
   background: repeating-linear-gradient(
     to right,

@@ -573,6 +573,8 @@ export function buildGrid(data: MSXData, opts?: {
         buffer.push(model.id);
       } else {
         if (buffer.length > 0) {
+          // Mark the previous data row so its border-bottom doesn't overlap the dashed line
+          if (rows.length > 0) rows[rows.length - 1].classList.add('row-before-gap');
           rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
           buffer = [];
         }
