@@ -99,7 +99,7 @@ window.MSX_DATA = {
       "groupId": 0,
       "type": "string",
       "linkable": true,
-      "truncateLimit": 10
+      "truncateLimit": 16
     },
     {
       "id": 3,
