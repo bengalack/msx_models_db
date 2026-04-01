@@ -217,27 +217,27 @@ Feature: Cell value truncation
   - [x] T-012 In `scraper/build.py`, serialise `truncateLimit` into the `ColumnDef` dict when `col.truncate_limit > 0`
   - [x] T-013 Tests: extend `tests/scraper/test_columns.py` — default is `0`; `manufacturer` and `model` have `truncate_limit = 10`
   - [x] T-014 Tests: extend `tests/scraper/test_build.py` — `truncateLimit` emitted when non-zero; omitted when zero
-  - [ ] T-015 Rebuild `data.js`: run `python -m scraper build` and commit updated `data/openmsx-raw.json` / `docs/data.js` if needed (or note to do at end)
+  - [x] T-015 Rebuild `data.js`: run `python -m scraper build` and commit updated `docs/data.js`
 
-- [ ] Chunk B — TypeScript types + render + tooltip
-  - [ ] T-020 Add `truncateLimit?: number` to `ColumnDef` interface in `src/types.ts`
-  - [ ] T-021 In `buildDataRow` (`src/grid.ts`): after computing `text`, apply truncation — `if (col.truncateLimit && text.length > col.truncateLimit) { td.dataset.fullValue = text; displayText = text.slice(0, col.truncateLimit - 1) + '…'; } else { displayText = text; }` — use `displayText` everywhere `text` was used
-  - [ ] T-022 For link cells in `buildDataRow`: when `td.dataset.fullValue` is set, replace `a.title = url` with `a.title = td.dataset.fullValue + ' — ' + url`
-  - [ ] T-023 In `mouseenter` handler (`src/grid.ts`): add `if (td.dataset.fullValue) { td.title = td.dataset.fullValue; return; }` as the first check after the existing `a.cell-link` guard
-  - [ ] T-024 Create `tests/web/cell-truncation.test.ts`: Vitest tests covering — value > limit truncated + `data-full-value` set; value == limit unchanged; value < limit unchanged; limit=0 unchanged; link cell with truncation has combined `a.title`; link cell without truncation has URL-only `a.title`
+- [x] Chunk B — TypeScript types + render + tooltip
+  - [x] T-020 Add `truncateLimit?: number` to `ColumnDef` interface in `src/types.ts`
+  - [x] T-021 In `buildDataRow` (`src/grid.ts`): after computing `text`, apply truncation — `if (col.truncateLimit && text.length > col.truncateLimit) { td.dataset.fullValue = text; displayText = text.slice(0, col.truncateLimit - 1) + '…'; } else { displayText = text; }` — use `displayText` everywhere `text` was used
+  - [x] T-022 For link cells in `buildDataRow`: when `td.dataset.fullValue` is set, replace `a.title = url` with `a.title = td.dataset.fullValue + ' — ' + url`
+  - [x] T-023 In `mouseenter` handler (`src/grid.ts`): add `if (td.dataset.fullValue) { td.title = td.dataset.fullValue; return; }` as the first check after the existing `a.cell-link` guard
+  - [x] T-024 Create `tests/web/cell-truncation.test.ts`: 12 Vitest tests across 3 describe blocks — plain cell truncation (6), link cell truncation (4), mouseenter handler (2)
 
-- [ ] Quality gate
-  - [ ] T-900 Run `npm run lint` — green
-  - [ ] T-901 Run `npm run typecheck` — green
-  - [ ] T-902 Run `npm test -- --run` — all Vitest tests green
-  - [ ] T-903 Run `pytest tests/scraper/` — all pytest tests green
-  - [ ] T-904 Run `npm run build` — clean build, no errors
+- [x] Quality gate
+  - [x] T-900 Run `npm run lint` — N/A (no lint script configured)
+  - [x] T-901 Run `npm run typecheck` — 7 pre-existing errors in unrelated test files, 0 new errors
+  - [x] T-902 Run `npm test -- --run` — 88 Vitest tests green (76 pre-existing + 12 new)
+  - [x] T-903 Run `pytest tests/scraper/` — 238 pytest tests green
+  - [x] T-904 Run `npm run build` — clean build, bundle 94.98 kB
 
 - [ ] Merge to trunk
   - [ ] T-950 Squash intermediate commits into logical commits (one per chunk)
   - [ ] T-951 Verify all commits follow Conventional Commits (`feat:` for T-010..T-024, `test:` for test-only commits)
   - [ ] T-952 Rebase onto trunk and merge (fast-forward only)
-  - [ ] T-953 Update `product-backlog.md` — move "Cell value truncation" to "In product (shipped)"
+  - [x] T-953 Update `product-backlog.md` — move "Cell value truncation" to "In product (shipped)"
 
 ## Open Questions
 - None.

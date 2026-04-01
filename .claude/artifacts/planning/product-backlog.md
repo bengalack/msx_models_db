@@ -31,6 +31,13 @@
   - Custom column groupings by user
 
 - In product (shipped)
+  - Cell value truncation
+    - `truncate_limit: int = 0` on `Column` dataclass; `truncate_limit=10` on manufacturer (id=1) and model (id=2)
+    - `truncateLimit` serialised to data.js when non-zero; omitted otherwise
+    - `buildDataRow`: clip to `(limit−1)` chars + `…`; full value in `td.dataset.fullValue`
+    - mouseenter handler: `data-full-value` checked first (highest priority)
+    - Link cells: `a.title = fullValue + ' — ' + url` when truncated; URL-only otherwise
+    - 12 Vitest tests + 6 pytest tests
   - Static SPA grid UI
   - Column groups and collapse/expand
   - Stable ID registry for models/columns
