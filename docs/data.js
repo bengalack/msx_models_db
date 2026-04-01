@@ -89,7 +89,8 @@ window.MSX_DATA = {
       "key": "manufacturer",
       "label": "Manufacturer",
       "groupId": 0,
-      "type": "string"
+      "type": "string",
+      "truncateLimit": 10
     },
     {
       "id": 2,
@@ -97,7 +98,8 @@ window.MSX_DATA = {
       "label": "Model",
       "groupId": 0,
       "type": "string",
-      "linkable": true
+      "linkable": true,
+      "truncateLimit": 10
     },
     {
       "id": 3,
