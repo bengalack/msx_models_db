@@ -119,7 +119,7 @@ GROUPS: list[Group] = [
 
 COLUMNS: list[Column] = [
     # Identity
-    Column(id=1,  key="manufacturer",      label="Manufacturer",        group="identity", type="string", truncate_limit=10),
+    Column(id=1,  key="manufacturer",      label="Manufacturer",        group="identity", type="string", truncate_limit=12),
     Column(id=2,  key="model",             label="Model",               group="identity", type="string", linkable=True, truncate_limit=16),
     # Release
     Column(id=3,  key="year",              label="Year",                group="release",  type="number"),

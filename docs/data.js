@@ -90,7 +90,7 @@ window.MSX_DATA = {
       "label": "Manufacturer",
       "groupId": 0,
       "type": "string",
-      "truncateLimit": 10
+      "truncateLimit": 12
     },
     {
       "id": 2,
