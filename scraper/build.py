@@ -181,6 +181,8 @@ def build(
             entry["tooltip"] = col.tooltip
         if col.linkable:
             entry["linkable"] = True
+        if col.truncate_limit > 0:
+            entry["truncateLimit"] = col.truncate_limit
         js_columns.append(entry)
 
     js_models = []

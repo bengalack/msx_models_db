@@ -298,3 +298,42 @@ class TestBuildSlotmapExtractor:
 
         assert model["values"][idx_main] == "MAIN"
         assert model["values"][idx_cs1] == "CS1"
+
+
+class TestBuildTruncateLimit:
+    """Tests for truncateLimit serialisation in ColumnDef output."""
+
+    def _build_and_parse(self, tmp_path) -> dict:
+        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        openmsx_path = tmp_path / "openmsx.json"
+        msxorg_path = tmp_path / "msxorg.json"
+        output_path = tmp_path / "data.js"
+        openmsx_path.write_text(json.dumps(raw))
+        msxorg_path.write_text(json.dumps([]))
+        from scraper.build import build
+        build(
+            openmsx_path=openmsx_path,
+            msxorg_path=msxorg_path,
+            registry_path=tmp_path / "registry.json",
+            output_path=output_path,
+        )
+        content = output_path.read_text(encoding="utf-8")
+        json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
+        json_end = content.rindex(";")
+        return json.loads(content[json_start:json_end])
+
+    def test_manufacturer_column_has_truncate_limit(self, tmp_path):
+        data = self._build_and_parse(tmp_path)
+        col = next(c for c in data["columns"] if c["key"] == "manufacturer")
+        assert col.get("truncateLimit") == 10
+
+    def test_model_column_has_truncate_limit(self, tmp_path):
+        data = self._build_and_parse(tmp_path)
+        col = next(c for c in data["columns"] if c["key"] == "model")
+        assert col.get("truncateLimit") == 10
+
+    def test_other_column_omits_truncate_limit(self, tmp_path):
+        """Columns with truncate_limit=0 must NOT emit truncateLimit."""
+        data = self._build_and_parse(tmp_path)
+        year_col = next(c for c in data["columns"] if c["key"] == "year")
+        assert "truncateLimit" not in year_col

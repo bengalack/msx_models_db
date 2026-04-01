@@ -33,6 +33,7 @@ class Column:
     short_label: str | None = None
     tooltip: str | None = None
     linkable: bool = False
+    truncate_limit: int = 0               # 0 = no truncation; positive = clip to (limit-1) chars + ellipsis
     hidden: bool = False                  # scraped, available to derive, not shipped to browser
     retired: bool = False                 # permanently removed, ID preserved, excluded entirely
     derive: Callable[[dict[str, Any]], Any] | None = None
@@ -118,8 +119,8 @@ GROUPS: list[Group] = [
 
 COLUMNS: list[Column] = [
     # Identity
-    Column(id=1,  key="manufacturer",      label="Manufacturer",        group="identity", type="string"),
-    Column(id=2,  key="model",             label="Model",               group="identity", type="string", linkable=True),
+    Column(id=1,  key="manufacturer",      label="Manufacturer",        group="identity", type="string", truncate_limit=10),
+    Column(id=2,  key="model",             label="Model",               group="identity", type="string", linkable=True, truncate_limit=10),
     # Release
     Column(id=3,  key="year",              label="Year",                group="release",  type="number"),
     Column(id=4,  key="region",            label="Region",              group="release",  type="string"),
