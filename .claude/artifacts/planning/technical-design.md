@@ -426,3 +426,93 @@ msx_models_db/
 - Slot map column keys use positional naming (`slotmap_{ms}_{ss}_{p}`)
   - Why chosen: Systematic and derivable from slot coordinates; no ambiguity; easy to generate programmatically in `scraper/columns.py`
   - Cost: Keys are not human-readable at a glance; rely on `label` field for display
+
+---
+
+## Feature Design: Cell Value Truncation
+
+### Overview
+
+Columns may declare an optional `truncate_limit` (positive integer). When a string cell value exceeds this limit, the rendered text is clipped to `(truncate_limit − 1)` characters followed by `…`. The full value is preserved in a `data-full-value` DOM attribute and exposed via a native `title` tooltip. Sorting and clipboard copy are unaffected because both already read from `ModelRecord.values[]` directly — not from `td.textContent`.
+
+### Schema Change — `ColumnDef`
+
+Add one optional field to `ColumnDef` (TypeScript) and the `Column` dataclass (Python):
+
+```ts
+// src/types.ts
+export interface ColumnDef {
+  // ... existing fields ...
+  truncateLimit?: number;   // positive int; absent or 0 = no truncation
+}
+```
+
+```python
+# scraper/columns.py
+@dataclass
+class Column:
+    # ... existing fields ...
+    truncate_limit: int = 0   # 0 = no truncation
+```
+
+The scraper serialises `truncate_limit` (renamed `truncateLimit` in camelCase) into `data.js` only when non-zero, keeping the output compact.
+
+Initial values:
+- `manufacturer` (id=1): `truncate_limit = 10`
+- `model` (id=2): `truncate_limit = 10`
+
+### Render Path — `buildDataRow` (grid.ts)
+
+After computing `text = cellText(rawValue, col)`, apply truncation before writing to the DOM:
+
+```
+if col.truncateLimit > 0 and text.length > col.truncateLimit:
+    td.dataset.fullValue = text
+    displayText = text.slice(0, truncateLimit - 1) + '…'
+else:
+    displayText = text
+```
+
+For **plain cells**: `td.textContent = displayText`
+
+For **link cells** (where `col.linkable` and a URL is present):
+- `a.textContent = displayText`
+- `a.title = fullValue + ' — ' + url`  (replaces the current `a.title = url`)
+
+### Tooltip Path — `mouseenter` handler (grid.ts)
+
+The current handler skips cells with `a.cell-link` and falls through to per-cell overflow or `data-tooltip` logic. The update:
+
+1. **Link cells with truncation** — no longer skipped early; if `td.dataset.fullValue` is set, the combined `a.title` was already written at render time. The handler still exits early — the `<a>` manages its own `title`.
+2. **Plain cells with truncation** — `td.dataset.fullValue` is set; handler sets `td.title = td.dataset.fullValue` (takes priority over the existing overflow check, because the full value is always the right tooltip regardless of whether the cell visually overflows).
+3. **Cells without truncation** — existing behavior unchanged.
+
+Priority order inside mouseenter for non-link cells:
+```
+if td.dataset.fullValue  → td.title = td.dataset.fullValue
+else if scrollWidth > offsetWidth → td.title = td.textContent
+else if td.dataset.tooltip → td.title = td.dataset.tooltip
+else → removeAttribute('title')
+```
+
+### Clipboard Copy — no change needed
+
+`copySelection()` reads `model.values[c]` directly, bypassing all DOM text. No modification required.
+
+### Sort — no change needed
+
+`sortModels()` reads `model.values[colIndex]` directly. No modification required.
+
+### Data flows affected
+
+| Path | Change |
+|---|---|
+| `scraper/columns.py` | Add `truncate_limit` field; set 10 on `manufacturer` and `model` |
+| `scraper/build.py` (or equivalent serialiser) | Serialise `truncateLimit` into `ColumnDef` in `data.js` when non-zero |
+| `src/types.ts` | Add `truncateLimit?: number` to `ColumnDef` |
+| `src/grid.ts` — `buildDataRow` | Apply truncation; set `data-full-value`; update `a.title` for link cells |
+| `src/grid.ts` — `mouseenter` handler | Prefer `data-full-value` over overflow check for plain cells |
+| Clipboard copy | No change |
+| Sort | No change |
+| URL codec | No change |
+| Filter | No change |

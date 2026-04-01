@@ -1,7 +1,7 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.5
+- Version: 0.6
 - Date: 2026-04-01
 er: bengalack
 
@@ -187,6 +187,19 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Derived columns are supported. A derived column specifies a Python function that receives the full merged row (including hidden columns) and returns the computed value. Example: a "NMOS/CMOS" column that deduces its value from the VDP chipset field.
     - Derived columns are computed during the merge/build step and stored in data.js — not computed at runtime in the browser.
     - The web page requires no column configuration of its own; it reads all column and group definitions from data.js at load time.
+
+- Cell value truncation
+  - Description: Column definitions may specify an optional `truncate_limit` (positive integer). When a cell's string value exceeds this limit, the visible text is trimmed: the first `(truncate_limit − 1)` characters are shown, followed by `…`. A tooltip reveals the full value. When the cell also links to a URL, the tooltip shows `"<full value> — <url>"` on a single line. Sorting always uses the full original value from the data record, unaffected by truncation.
+  - Priority: Must
+  - Acceptance Criteria:
+    - `ColumnDef` accepts an optional integer `truncate_limit` field (absent or `0` = no truncation).
+    - The `Model` column has `truncate_limit = 10`.
+    - The `Manufacturer` column has `truncate_limit = 10`.
+    - A cell whose value length exceeds `truncate_limit` displays the first `(truncate_limit − 1)` characters followed by `…`.
+    - A cell whose value length is at or below `truncate_limit` is displayed unchanged.
+    - Hovering a truncated cell shows a native tooltip (`title`) containing the full, untruncated value.
+    - When a truncated cell also carries a URL link, the tooltip is `"<full value> — <url>"` on a single line.
+    - Sorting by a column with `truncate_limit` uses the full original value from the data record, not the truncated display string.
 
 - Scraper process
   - Description: A runnable script (not part of the web page) fetches model data from msx.org wiki pages and openMSX GitHub XML files, merges them, computes derived columns, and writes the output to the JSON data file.
