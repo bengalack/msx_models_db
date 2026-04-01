@@ -1,7 +1,7 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.4
+- Version: 0.5
 - Date: 2026-04-01
 er: bengalack
 
@@ -59,6 +59,13 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Clicking a group header collapses all its columns (they disappear from view).
     - Clicking again expands them.
     - Collapsed state is reflected in the URL.
+
+- Collapsed group header chevron visibility
+  - Description: The collapse/expand chevron (▶) in a collapsed group header must remain visible on mouse-over. When collapsed, the header uses an inverted color scheme (text becomes background, background becomes text); the chevron must inherit that inverted foreground color so it is always legible, including on hover.
+  - Priority: Must
+  - Acceptance Criteria:
+    - The chevron is visible at all times when the group header is collapsed — both at rest and on hover.
+    - The chevron color matches the group header's current foreground text color in all states (normal, collapsed, collapsed+hover).
 
 - Group filter indicator
   - Description: Each group header displays a FontAwesome filter icon when any column within that group has an active filter. The icon is a purely visual indicator (no click action). It is visible whether the group is expanded or collapsed, ensuring the user always knows which groups have active filters.

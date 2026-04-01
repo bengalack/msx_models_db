@@ -93,9 +93,8 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
     filterIcon.className = 'fas fa-filter filter-indicator';
     filterIcon.setAttribute('aria-hidden', 'true');
     const chevron = document.createElement('i');
-    chevron.className = 'chevron';
+    chevron.className = 'chevron fas fa-chevron-down';
     chevron.setAttribute('aria-hidden', 'true');
-    chevron.textContent = '\u25bc'; // ▼
 
     th.appendChild(label);
     th.appendChild(filterIcon);
@@ -726,7 +725,7 @@ export function buildGrid(data: MSXData, opts?: {
       th.colSpan = 1;
       th.classList.add('collapsed');
       const chevron = th.querySelector<HTMLElement>('.chevron');
-      if (chevron) chevron.textContent = '\u25b6'; // ▶
+      if (chevron) { chevron.classList.remove('fa-chevron-down'); chevron.classList.add('fa-chevron-right'); }
       thead.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
         if (cell.dataset.colOrder === '0') {
           cell.classList.add('col-group-stub');
@@ -966,7 +965,7 @@ export function buildGrid(data: MSXData, opts?: {
         // Expand — restore all cells except those individually hidden
         collapsedGroups.delete(groupId);
         th.classList.remove('collapsed');
-        chevron.textContent = '\u25bc'; // ▼
+        chevron.classList.remove('fa-chevron-right'); chevron.classList.add('fa-chevron-down');
         table.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
           const cellColIdx = cell.dataset.colIndex !== undefined ? Number(cell.dataset.colIndex) : -1;
           if (hiddenCols.has(cellColIdx)) return; // leave individually-hidden cells hidden
@@ -981,7 +980,7 @@ export function buildGrid(data: MSXData, opts?: {
         collapsedGroups.add(groupId);
         th.colSpan = 1;
         th.classList.add('collapsed');
-        chevron.textContent = '\u25b6'; // ▶
+        chevron.classList.remove('fa-chevron-down'); chevron.classList.add('fa-chevron-right');
         table.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
           if (cell.dataset.colOrder === '0') {
             cell.classList.add('col-group-stub');

@@ -149,10 +149,17 @@
 .group-header .chevron {
   position: absolute;
   right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  font-size: 9px;
   color: var(--color-text-muted);
-  font-style: normal;
+}
+
+/* Collapsed: chevron must inherit the inverted foreground so it stays visible on hover */
+.group-header.collapsed .chevron {
+  color: inherit;
 }
 
 /* Frozen group header — sticky horizontally alongside the frozen data columns */
