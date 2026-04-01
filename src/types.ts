@@ -16,6 +16,8 @@ export interface ColumnDef {
   type: 'string' | 'number' | 'boolean';
   /** When true, cells in this column may render as hyperlinks (see ModelRecord.links). */
   linkable?: boolean;
+  /** When set (> 0), cell values longer than this limit are clipped to (limit-1) chars + '…'. */
+  truncateLimit?: number;
 }
 
 /** A collapsible group of columns. */

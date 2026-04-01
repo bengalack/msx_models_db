@@ -226,7 +226,18 @@ function buildDataRow(
     const col = columns[i];
     const td = document.createElement('td');
     const text = cellText(rawValue, col);
-    td.textContent = text;
+
+    // Apply truncation when the column has a positive truncateLimit
+    const limit = col.truncateLimit ?? 0;
+    let displayText: string;
+    if (limit > 0 && text.length > limit) {
+      td.dataset.fullValue = text;
+      displayText = text.slice(0, limit - 1) + '\u2026';
+    } else {
+      displayText = text;
+    }
+
+    td.textContent = displayText;
     td.dataset.colGroup = String(col.groupId);
     td.dataset.colIndex = String(i);
     const order = groupOrder.get(col.groupId) ?? 0;
@@ -256,8 +267,9 @@ function buildDataRow(
         a.href = url;
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
-        a.title = url;
-        a.textContent = text;
+        // When truncated, combine full value + URL in the tooltip; otherwise URL only
+        a.title = td.dataset.fullValue ? `${td.dataset.fullValue} \u2014 ${url}` : url;
+        a.textContent = displayText;
         td.appendChild(a);
       }
     }
@@ -778,7 +790,9 @@ export function buildGrid(data: MSXData, opts?: {
     const td = (e.target as HTMLElement).closest<HTMLTableCellElement>('td[data-col-index]');
     if (!td) return;
     if (td.querySelector('a.cell-link')) return;
-    if (td.scrollWidth > td.offsetWidth) {
+    if (td.dataset.fullValue) {
+      td.title = td.dataset.fullValue;
+    } else if (td.scrollWidth > td.offsetWidth) {
       td.title = td.textContent ?? '';
     } else {
       const staticTooltip = td.dataset.tooltip;
