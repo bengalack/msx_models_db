@@ -16549,6 +16549,10 @@ window.MSX_DATA = {
     "BUN": "Bunsetsu Henkan - Hiragana text 🠆 Kanji Japanese",
     "SFG5": "Yamaha SFG-05",
     "SFG1": "Yamaha SFG-01",
+    "CS1": "Cartridge slot 1",
+    "CS2": "Cartridge slot 2",
+    "CS3": "Cartridge slot 3",
+    "CS4": "Cartridge slot 4",
     "EXP": "Expansion Bus",
     "⌧": "Sub-slot absent (not expanded)",
     "•": "Empty page — no device mapped"

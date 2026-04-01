@@ -7,7 +7,7 @@ per machine.
 Cell value conventions:
   "⌧"        — sub-slot physically absent (non-expanded SS1-3, cartridge SS1-3)
   "•"        — page is present in a real sub-slot but has no device mapped
-  "CS{N}"    — cartridge slot N (external primary, derived from slot="N")
+  "CS{N}"    — cartridge slot N (sequential counter, not slot index)
   "<abbr>"   — LUT-matched abbreviation (e.g. "MAIN", "MM", "DSK")
   "<abbr>*"  — mirror page (origin abbreviation + asterisk)
   "<tag>"    — unmatched device element tag (with [WARN] logged to stdout)
@@ -76,7 +76,7 @@ def match_lut(element_tag: str, element_id: str | None, rules: list[dict]) -> st
     for rule in rules:
         rule_element = rule.get("element", "")
         # Skip structural/sentinel entries
-        if rule_element in ("__sentinel__", "secondary"):
+        if rule_element in ("__sentinel__", "__cartridge__", "secondary"):
             continue
         alternatives = [e.strip() for e in rule_element.split("|")]
         if element_tag not in alternatives:
@@ -164,7 +164,7 @@ def extract_slotmap(
     Returns a dict with all 64 keys (slotmap_{ms}_{ss}_{p}), each valued as:
     "⌧"   — sub-slot is physically absent (non-expanded SS1-3, cartridge SS1-3)
     "•"   — sub-slot is real but the page has no device mapped (U+2022)
-    "CS{N}" — cartridge slot N (all 4 pages of sub-slot 0)
+    "CS{N}" — cartridge slot N (sequential 1-based counter)
     "<abbr>" — LUT-matched abbreviation (e.g. "MAIN", "MM", "DSK")
     "<abbr>*" — mirror page (origin abbreviation + asterisk)
     "<tag>" — unmatched device element tag (with [WARN] logged)
@@ -172,7 +172,8 @@ def extract_slotmap(
     Rules:
     - Non-expanded primary (no <secondary> children): sub-slot 0 pages with no
       device → "•"; sub-slots 1-3 → "⌧".
-    - External primary (cartridge): sub-slot 0 → "CS{N}" on all 4 pages;
+    - External primary (cartridge): sub-slot 0 → "CS{N}" on all 4 pages
+      (N is a sequential 1-based counter, not the slot index);
       sub-slots 1-3 → "⌧".
     - Expanded primary (<secondary> children): pages with no device in a
       present sub-slot → "•"; sub-slots absent from XML → "⌧".
@@ -198,6 +199,9 @@ def extract_slotmap(
         ms: {ss: {} for ss in range(4)} for ms in range(4)
     }
 
+    # Sequential counter for cartridge slot numbering (CS1, CS2, …)
+    cs_counter = 0
+
     for primary in devices.findall("primary"):
         ms_attr = primary.get("slot")
         if ms_attr is None:
@@ -211,7 +215,8 @@ def extract_slotmap(
 
         # External primary: cartridge slot
         if primary.get("external") == "true":
-            abbr = f"CS{ms}"
+            cs_counter += 1
+            abbr = f"CS{cs_counter}"
             for p in range(4):
                 result[f"slotmap_{ms}_0_{p}"] = abbr
                 slot_abbrs[ms][0][p] = abbr

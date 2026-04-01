@@ -1,8 +1,8 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- V- Version: 0.2
-- Date: 2026-03-30
+- Version: 0.3
+- Date: 2026-04-01
 er: bengalack
 
 ## Problem Statement
@@ -211,7 +211,8 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - At scrape/build time, each device is classified by testing LUT rules in order; the first match wins.
     - If no LUT rule matches a device, the scraper emits a warning to stdout, writes the raw device string as the cell value (unabbreviated), and continues — it does not abort.
     - The maintainer can extend the LUT to handle newly encountered device strings without changing scraper code.
-    - The starter LUT covers at minimum: `MAIN`, `SUB`, `KNJ`, `JE`, `FW`, `DSK`, `MUS`, `RS2`, `MM`, `PM`, `RAM`, `CS{N}` (parameterised), `EXP`, `~`.
+    - The starter LUT covers at minimum: `MAIN`, `SUB`, `KNJ`, `JE`, `FW`, `DSK`, `MUS`, `RS2`, `MM`, `PM`, `RAM`, `CS1`–`CS4` (explicit entries), `EXP`, `⌧`, `•`.
+    - Cartridge slot abbreviations (`CS1`–`CS4`) are explicit LUT entries with their own tooltip text (e.g. "Cartridge slot 1"). They are not parameterised — each has its own entry so the browser can resolve their tooltip via the standard `{abbr: tooltip}` map.
 
 - Slot map XML extraction
   - Description: The scraper extracts slot map data from openMSX machine XML files by walking the `<primary>` and `<secondary>` element hierarchy and classifying each device against the LUT.
@@ -219,7 +220,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Acceptance Criteria:
     - Non-expanded primary slots (devices as direct children of `<primary>`, no `<secondary>` elements) are classified and written to sub-slot 0 columns; sub-slots 1–3 receive `~`.
     - Expanded primary slots (containing `<secondary slot="N">` children) are walked per sub-slot; missing sub-slot elements receive `~` for all 4 pages.
-    - Cartridge/expansion slots (`<primary external="true" slot="N"/>`) produce `CS{N}` in all 4 pages of sub-slot 0; sub-slots 1–3 receive `~` (unless `<secondary external="true">` elements are present, which produce `EXP`).
+    - Cartridge/expansion slots (`<primary external="true" slot="N"/>`) produce `CS{N}` in all 4 pages of sub-slot 0, where `{N}` is a sequential 1-based counter incremented for each cartridge slot found (not the slot index); sub-slots 1–3 receive `⌧` (unless `<secondary external="true">` elements are present, which produce `EXP`).
     - Multiple devices in the same sub-slot with non-overlapping `<mem>` ranges are each assigned to their respective page(s); the cell value is the abbreviation of the device covering that page's address range.
     - If multiple devices overlap the same page, the scraper emits a warning and uses the first device encountered.
     - Mirror detection applies three methods (in order of precedence):

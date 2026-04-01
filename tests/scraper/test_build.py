@@ -118,6 +118,7 @@ class TestBuildSlotmapLUT:
         "MAIN", "SUB", "KAN", "HAN", "JE", "MOD", "DOS2", "CP/M",
         "FW", "DSK", "MUS", "RS", "RSFW", "MM", "PM",
         "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2327", "\u2022",
+        "CS1", "CS2", "CS3", "CS4",
     }
 
     def _run_build(self, tmp_path):

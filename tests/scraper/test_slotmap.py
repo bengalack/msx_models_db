@@ -35,6 +35,10 @@ LUT_RULES: list[dict] = [
     {"element": "PanasonicRAM", "id_pattern": None, "abbr": "PM", "tooltip": "Panasonic Mapper"},
     {"element": "RAM", "id_pattern": None, "abbr": "RAM", "tooltip": "RAM (no memory mapper)"},
     {"element": "secondary", "id_pattern": None, "abbr": "EXP", "tooltip": "Expansion Bus"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS1", "tooltip": "Cartridge slot 1"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS2", "tooltip": "Cartridge slot 2"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS3", "tooltip": "Cartridge slot 3"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS4", "tooltip": "Cartridge slot 4"},
     {"element": "__sentinel__", "id_pattern": None, "abbr": "\u2327", "tooltip": "Sub-slot absent (not expanded)"},
 ]
 
@@ -123,6 +127,9 @@ class TestMatchLut:
 
     def test_sentinel_never_matched(self):
         assert match_lut("__sentinel__", None, LUT_RULES) is None
+
+    def test_cartridge_never_matched(self):
+        assert match_lut("__cartridge__", None, LUT_RULES) is None
 
     def test_id_pattern_case_insensitive(self):
         assert match_lut("ROM", "msx bios with basic rom", LUT_RULES) == "MAIN"
@@ -384,6 +391,42 @@ class TestExtractSlotmapEdgeCases:
         result = extract_slotmap(_root(xml), LUT_RULES)
         # Primary skipped entirely — all 64 cells remain ⌧
         assert all(v == "\u2327" for v in result.values())
+
+    def test_cartridge_numbering_is_sequential_not_slot_index(self):
+        """CS numbering starts at 1 and increments per cartridge found, regardless of slot index."""
+        xml = """
+        <msxconfig><devices>
+          <primary slot="0">
+            <ROM id="MSX BIOS with BASIC ROM">
+              <mem base="0x0000" size="0x8000"/>
+            </ROM>
+          </primary>
+          <primary external="true" slot="3"/>
+        </devices></msxconfig>
+        """
+        result = extract_slotmap(_root(xml), LUT_RULES)
+        # Cartridge at slot index 3 → CS1 (first cartridge found)
+        for p in range(4):
+            assert result[f"slotmap_3_0_{p}"] == "CS1"
+
+    def test_cartridge_numbering_multiple_non_contiguous(self):
+        """Two cartridge slots at indices 0 and 3 → CS1 and CS2."""
+        xml = """
+        <msxconfig><devices>
+          <primary external="true" slot="0"/>
+          <primary slot="1">
+            <ROM id="MSX BIOS with BASIC ROM">
+              <mem base="0x0000" size="0x8000"/>
+            </ROM>
+          </primary>
+          <primary external="true" slot="3"/>
+        </devices></msxconfig>
+        """
+        result = extract_slotmap(_root(xml), LUT_RULES)
+        for p in range(4):
+            assert result[f"slotmap_0_0_{p}"] == "CS1"
+        for p in range(4):
+            assert result[f"slotmap_3_0_{p}"] == "CS2"
 
 
 # ---------------------------------------------------------------------------

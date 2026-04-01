@@ -18,6 +18,10 @@ const STARTER_LUT: Record<string, string> = {
   PM: 'Panasonic Mapper',
   RAM: 'RAM (no memory mapper)',
   EXP: 'Expansion Bus',
+  CS1: 'Cartridge slot 1',
+  CS2: 'Cartridge slot 2',
+  CS3: 'Cartridge slot 3',
+  CS4: 'Cartridge slot 4',
   '\u2327': 'Sub-slot absent (not expanded)',
   '\u2022': 'Empty page — no device mapped',
 };
@@ -64,8 +68,8 @@ describe('resolveSlotmapTooltip', () => {
       expect(resolveSlotmapTooltip('MAIN*', STARTER_LUT)).toBe('MSX BIOS with BASIC ROM (mirror)');
     });
 
-    it('returns null for mirror with unknown base', () => {
-      expect(resolveSlotmapTooltip('CS1*', STARTER_LUT)).toBeNull();
+    it('returns "Cartridge slot 1 (mirror)" for CS1*', () => {
+      expect(resolveSlotmapTooltip('CS1*', STARTER_LUT)).toBe('Cartridge slot 1 (mirror)');
     });
 
     it('returns null for bare * (empty base)', () => {
@@ -74,12 +78,12 @@ describe('resolveSlotmapTooltip', () => {
   });
 
   describe('unknown / unmatched values', () => {
-    it('returns null for CS1 (not in starter LUT)', () => {
-      expect(resolveSlotmapTooltip('CS1', STARTER_LUT)).toBeNull();
+    it('returns tooltip for CS1', () => {
+      expect(resolveSlotmapTooltip('CS1', STARTER_LUT)).toBe('Cartridge slot 1');
     });
 
-    it('returns null for CS2', () => {
-      expect(resolveSlotmapTooltip('CS2', STARTER_LUT)).toBeNull();
+    it('returns tooltip for CS2', () => {
+      expect(resolveSlotmapTooltip('CS2', STARTER_LUT)).toBe('Cartridge slot 2');
     });
 
     it('returns null for raw unknown device tag', () => {

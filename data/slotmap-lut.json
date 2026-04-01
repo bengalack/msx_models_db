@@ -132,6 +132,30 @@
     "tooltip": "Yamaha SFG-01"
   },
   {
+    "element": "__cartridge__",
+    "id_pattern": null,
+    "abbr": "CS1",
+    "tooltip": "Cartridge slot 1"
+  },
+  {
+    "element": "__cartridge__",
+    "id_pattern": null,
+    "abbr": "CS2",
+    "tooltip": "Cartridge slot 2"
+  },
+  {
+    "element": "__cartridge__",
+    "id_pattern": null,
+    "abbr": "CS3",
+    "tooltip": "Cartridge slot 3"
+  },
+  {
+    "element": "__cartridge__",
+    "id_pattern": null,
+    "abbr": "CS4",
+    "tooltip": "Cartridge slot 4"
+  },
+  {
     "element": "secondary",
     "id_pattern": null,
     "abbr": "EXP",
