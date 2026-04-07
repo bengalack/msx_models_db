@@ -25,7 +25,12 @@ def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
 
 def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
     """Fetch and parse all msx.org wiki model pages, emit JSON."""
-    models = msxorg.fetch_all(limit=args.limit, delay=args.delay)
+    from .mirror import MirrorPageSource
+    if args.local_mirror:
+        source = MirrorPageSource(Path(args.local_mirror))
+        models = msxorg.fetch_all(source=source, limit=args.limit)
+    else:
+        models = msxorg.fetch_all(limit=args.limit, delay=args.delay)
     output = json.dumps(models, indent=2, ensure_ascii=False)
     if args.output:
         with open(args.output, "w", encoding="utf-8") as f:
@@ -38,9 +43,11 @@ def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
 def cmd_build(args: argparse.Namespace) -> None:
     """Run the full build pipeline."""
     resolutions_path = Path(args.resolutions) if args.resolutions else None
+    mirror_path = Path(args.local_mirror) if args.local_mirror else None
     build_module.build(
         do_fetch=args.fetch,
         resolutions_path=resolutions_path,
+        mirror_path=mirror_path,
     )
 
 
@@ -102,6 +109,11 @@ def main() -> None:
         "--resolutions", default=None,
         help="Path to conflict resolution file",
     )
+    p_build.add_argument(
+        "--local-mirror", default=None, metavar="DIR",
+        help="Read msx.org pages from a local directory of browser-saved HTML files"
+             " instead of fetching live (overrides msxorg_mirror_path in scraper-config.json)",
+    )
     p_build.set_defaults(func=cmd_build)
 
     # ── fetch-openmsx ────────────────────────────────────────────────
@@ -137,6 +149,11 @@ def main() -> None:
     p_msxorg.add_argument(
         "--delay", type=float, default=0.5,
         help="Delay between requests in seconds (default: 0.5)",
+    )
+    p_msxorg.add_argument(
+        "--local-mirror", default=None, metavar="DIR",
+        help="Read msx.org pages from a local directory of browser-saved HTML files"
+             " instead of fetching live",
     )
     p_msxorg.set_defaults(func=cmd_fetch_msxorg)
 

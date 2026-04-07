@@ -16,6 +16,7 @@ from .columns import (
     active_columns, group_by_key,
 )
 from .exclude import load_excludes
+from .mirror import MirrorPageSource
 from .registry import IDRegistry
 from .slotmap import load_sha1_index
 from .slotmap_lut import compact_lut, load_slotmap_lut
@@ -31,6 +32,19 @@ SLOTMAP_LUT_PATH = Path("data/slotmap-lut.json")
 SHA1_INDEX_PATH = Path("systemroms/machines/all_sha1s.txt")
 SYSTEMROMS_ROOT = Path("systemroms/machines")
 DATA_JS_PATH = Path("docs/data.js")
+SCRAPER_CONFIG_PATH = Path("data/scraper-config.json")
+
+
+def load_scraper_config(path: Path = SCRAPER_CONFIG_PATH) -> dict:
+    """Load scraper-config.json, returning {} if absent or malformed."""
+    if not path.exists():
+        return {}
+    try:
+        with open(path, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        log.exception("Failed to load scraper config: %s — using defaults", path)
+        return {}
 
 
 def fetch_sources(
@@ -41,6 +55,7 @@ def fetch_sources(
     lut_rules: list | None = None,
     sha1_index: dict | None = None,
     systemroms_root: Path | None = None,
+    mirror_path: Path | None = None,
 ) -> None:
     """Fetch fresh data from external sources and cache to disk."""
     log.info("Fetching openMSX data…")
@@ -54,7 +69,12 @@ def fetch_sources(
     log.info("Wrote %d openMSX models to %s", len(openmsx_models), openmsx_path)
 
     log.info("Fetching msx.org data…")
-    msxorg_models = msxorg.fetch_all(delay=delay)
+    if mirror_path is not None:
+        log.info("[mirror:mode] Using local mirror | path=%s", mirror_path)
+        msxorg_source = MirrorPageSource(mirror_path)
+        msxorg_models = msxorg.fetch_all(source=msxorg_source)
+    else:
+        msxorg_models = msxorg.fetch_all(delay=delay)
     _write_json(msxorg_models, msxorg_path)
     log.info("Wrote %d msx.org models to %s", len(msxorg_models), msxorg_path)
 
@@ -71,6 +91,7 @@ def build(
     systemroms_root: Path = SYSTEMROMS_ROOT,
     output_path: Path = DATA_JS_PATH,
     resolutions_path: Path | None = None,
+    mirror_path: Path | None = None,
 ) -> None:
     """Run the full build pipeline."""
     # Step 0: Load config files (fail fast before any I/O if files are malformed)
@@ -88,12 +109,20 @@ def build(
 
     # Step 1: Fetch if requested
     if do_fetch:
+        # Resolve mirror path: explicit arg > config file
+        resolved_mirror = mirror_path
+        if resolved_mirror is None:
+            cfg = load_scraper_config()
+            raw = cfg.get("msxorg_mirror_path")
+            if raw:
+                resolved_mirror = Path(raw)
         fetch_sources(
             openmsx_path=openmsx_path,
             msxorg_path=msxorg_path,
             lut_rules=slotmap_rules,
             sha1_index=sha1_index or None,
             systemroms_root=sr_root,
+            mirror_path=resolved_mirror,
         )
 
     # Step 2: Load cached raw data

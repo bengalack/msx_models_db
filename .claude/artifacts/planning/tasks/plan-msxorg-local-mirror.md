@@ -231,10 +231,10 @@ Feature: msx.org local mirror scraping
   - [x] T-013 Tests: extend `tests/scraper/test_msxorg.py` — `fetch_all` with `MirrorPageSource` returns parsed models; missing category → empty for that standard; missing model file → skip + warning; no-source path creates LivePageSource (existing tests still pass)
 
 - [ ] Implement: Chunk 2 — Config file + CLI wiring
-  - [ ] T-020 Create `data/scraper-config.json` as `{}`
-  - [ ] T-021 Add config loading to `scraper/build.py`: `load_scraper_config(path)` reads `data/scraper-config.json` if present (ignore if absent or malformed + log ERROR); `fetch()` in build reads `msxorg_mirror_path` from config; passes `MirrorPageSource` or `None` to `msxorg.fetch_all()`
-  - [ ] T-022 Add `--local-mirror` flag to `scraper/__main__.py`: add to both `build` and `fetch-msxorg` subcommands; flag value passed through to `build_module.build()` and `cmd_fetch_msxorg()`; flag overrides config path when both present
-  - [ ] T-023 Tests: extend `tests/scraper/test_build.py` — config `msxorg_mirror_path` used when no flag; flag overrides config; missing config → live mode; malformed config → live mode + ERROR log
+  - [x] T-020 Create `data/scraper-config.json` as `{}`
+  - [x] T-021 Add config loading to `scraper/build.py`: `load_scraper_config(path)` reads `data/scraper-config.json` if present (ignore if absent or malformed + log ERROR); `fetch()` in build reads `msxorg_mirror_path` from config; passes `MirrorPageSource` or `None` to `msxorg.fetch_all()`
+  - [x] T-022 Add `--local-mirror` flag to `scraper/__main__.py`: add to both `build` and `fetch-msxorg` subcommands; flag value passed through to `build_module.build()` and `cmd_fetch_msxorg()`; flag overrides config path when both present
+  - [x] T-023 Tests: extend `tests/scraper/test_build.py` — config `msxorg_mirror_path` used when no flag; flag overrides config; missing config → live mode; malformed config → live mode + ERROR log
 
 - [ ] Quality gate
   - [ ] T-900 Run formatters (N/A — no formatter configured)

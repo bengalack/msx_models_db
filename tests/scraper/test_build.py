@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
-from scraper.build import build
+from scraper.build import build, load_scraper_config
 from scraper.registry import IDRegistry
 
 
@@ -337,3 +338,153 @@ class TestBuildTruncateLimit:
         data = self._build_and_parse(tmp_path)
         year_col = next(c for c in data["columns"] if c["key"] == "year")
         assert "truncateLimit" not in year_col
+
+
+# ---------------------------------------------------------------------------
+# load_scraper_config
+# ---------------------------------------------------------------------------
+
+class TestLoadScraperConfig:
+    def test_missing_file_returns_empty(self, tmp_path):
+        result = load_scraper_config(tmp_path / "no-such-file.json")
+        assert result == {}
+
+    def test_empty_object_returns_empty(self, tmp_path):
+        cfg = tmp_path / "scraper-config.json"
+        cfg.write_text("{}")
+        assert load_scraper_config(cfg) == {}
+
+    def test_mirror_path_key_returned(self, tmp_path):
+        cfg = tmp_path / "scraper-config.json"
+        cfg.write_text('{"msxorg_mirror_path": "/some/path"}')
+        result = load_scraper_config(cfg)
+        assert result["msxorg_mirror_path"] == "/some/path"
+
+    def test_malformed_json_returns_empty(self, tmp_path):
+        cfg = tmp_path / "scraper-config.json"
+        cfg.write_text("not json {{{")
+        result = load_scraper_config(cfg)
+        assert result == {}
+
+
+# ---------------------------------------------------------------------------
+# Mirror path wiring through build()
+# ---------------------------------------------------------------------------
+
+class TestBuildMirrorWiring:
+    """mirror_path reaches msxorg.fetch_all as a MirrorPageSource."""
+
+    _OPENMSX = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+    _MSXORG: list = []
+
+    def _write_cache(self, tmp_path: Path) -> tuple[Path, Path]:
+        op = tmp_path / "openmsx.json"
+        mx = tmp_path / "msxorg.json"
+        op.write_text(json.dumps(self._OPENMSX))
+        mx.write_text(json.dumps(self._MSXORG))
+        return op, mx
+
+    def test_explicit_mirror_path_passed_to_fetch_sources(self, tmp_path):
+        mirror_dir = tmp_path / "mirror"
+        mirror_dir.mkdir()
+        op, mx = self._write_cache(tmp_path)
+
+        captured = {}
+
+        import scraper.build as build_mod
+        original_fetch = build_mod.fetch_sources
+
+        def fake_fetch(**kwargs):
+            captured["mirror_path"] = kwargs.get("mirror_path")
+
+        with patch.object(build_mod, "fetch_sources", side_effect=fake_fetch):
+            build(
+                do_fetch=True,
+                openmsx_path=op,
+                msxorg_path=mx,
+                output_path=tmp_path / "data.js",
+                mirror_path=mirror_dir,
+            )
+
+        assert captured["mirror_path"] == mirror_dir
+
+    def test_config_mirror_path_used_when_no_flag(self, tmp_path):
+        mirror_dir = tmp_path / "mirror"
+        mirror_dir.mkdir()
+        cfg = tmp_path / "scraper-config.json"
+        cfg.write_text(json.dumps({"msxorg_mirror_path": str(mirror_dir)}))
+        op, mx = self._write_cache(tmp_path)
+
+        captured = {}
+
+        import scraper.build as build_mod
+        original_load = build_mod.load_scraper_config
+
+        def fake_load(path=None):
+            return {"msxorg_mirror_path": str(mirror_dir)}
+
+        def fake_fetch(**kwargs):
+            captured["mirror_path"] = kwargs.get("mirror_path")
+
+        with patch.object(build_mod, "load_scraper_config", side_effect=fake_load), \
+             patch.object(build_mod, "fetch_sources", side_effect=fake_fetch):
+            build(
+                do_fetch=True,
+                openmsx_path=op,
+                msxorg_path=mx,
+                output_path=tmp_path / "data.js",
+            )
+
+        assert captured["mirror_path"] == Path(str(mirror_dir))
+
+    def test_explicit_flag_overrides_config(self, tmp_path):
+        flag_dir = tmp_path / "flag_mirror"
+        config_dir = tmp_path / "config_mirror"
+        flag_dir.mkdir()
+        config_dir.mkdir()
+        op, mx = self._write_cache(tmp_path)
+
+        captured = {}
+
+        import scraper.build as build_mod
+
+        def fake_load(path=None):
+            return {"msxorg_mirror_path": str(config_dir)}
+
+        def fake_fetch(**kwargs):
+            captured["mirror_path"] = kwargs.get("mirror_path")
+
+        with patch.object(build_mod, "load_scraper_config", side_effect=fake_load), \
+             patch.object(build_mod, "fetch_sources", side_effect=fake_fetch):
+            build(
+                do_fetch=True,
+                openmsx_path=op,
+                msxorg_path=mx,
+                output_path=tmp_path / "data.js",
+                mirror_path=flag_dir,
+            )
+
+        assert captured["mirror_path"] == flag_dir
+
+    def test_no_mirror_configured_uses_none(self, tmp_path):
+        op, mx = self._write_cache(tmp_path)
+        captured = {}
+
+        import scraper.build as build_mod
+
+        def fake_load(path=None):
+            return {}
+
+        def fake_fetch(**kwargs):
+            captured["mirror_path"] = kwargs.get("mirror_path")
+
+        with patch.object(build_mod, "load_scraper_config", side_effect=fake_load), \
+             patch.object(build_mod, "fetch_sources", side_effect=fake_fetch):
+            build(
+                do_fetch=True,
+                openmsx_path=op,
+                msxorg_path=mx,
+                output_path=tmp_path / "data.js",
+            )
+
+        assert captured["mirror_path"] is None
