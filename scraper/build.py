@@ -16,7 +16,7 @@ from .columns import (
     active_columns, group_by_key,
 )
 from .exclude import load_excludes
-from .mirror import MirrorPageSource
+from .mirror import FallbackPageSource, MirrorPageSource
 from .registry import IDRegistry
 from .slotmap import load_sha1_index
 from .slotmap_lut import compact_lut, load_slotmap_lut
@@ -56,8 +56,14 @@ def fetch_sources(
     sha1_index: dict | None = None,
     systemroms_root: Path | None = None,
     mirror_path: Path | None = None,
+    local_only: bool = False,
 ) -> None:
-    """Fetch fresh data from external sources and cache to disk."""
+    """Fetch fresh data from external sources and cache to disk.
+
+    mirror_path + local_only=False → FallbackPageSource (live first, mirror on failure)
+    mirror_path + local_only=True  → MirrorPageSource (skip live entirely)
+    no mirror_path                 → LivePageSource (live only)
+    """
     log.info("Fetching openMSX data…")
     openmsx_models = openmsx.fetch_all(
         delay=delay,
@@ -69,9 +75,17 @@ def fetch_sources(
     log.info("Wrote %d openMSX models to %s", len(openmsx_models), openmsx_path)
 
     log.info("Fetching msx.org data…")
-    if mirror_path is not None:
-        log.info("[mirror:mode] Using local mirror | path=%s", mirror_path)
+    if mirror_path is not None and local_only:
+        log.info("[mirror:mode] Local-only | path=%s", mirror_path)
         msxorg_source = MirrorPageSource(mirror_path)
+        msxorg_models = msxorg.fetch_all(source=msxorg_source)
+    elif mirror_path is not None:
+        log.info("[mirror:mode] Live-with-fallback | path=%s", mirror_path)
+        import requests as _requests
+        session = _requests.Session()
+        session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
+        from .mirror import LivePageSource
+        msxorg_source = FallbackPageSource(LivePageSource(session), MirrorPageSource(mirror_path))
         msxorg_models = msxorg.fetch_all(source=msxorg_source)
     else:
         msxorg_models = msxorg.fetch_all(delay=delay)
@@ -92,6 +106,7 @@ def build(
     output_path: Path = DATA_JS_PATH,
     resolutions_path: Path | None = None,
     mirror_path: Path | None = None,
+    local_only: bool = False,
 ) -> None:
     """Run the full build pipeline."""
     # Step 0: Load config files (fail fast before any I/O if files are malformed)
@@ -113,7 +128,7 @@ def build(
         resolved_mirror = mirror_path
         if resolved_mirror is None:
             cfg = load_scraper_config()
-            raw = cfg.get("msxorg_mirror_path")
+            raw = cfg.get("msxorg_mirror")
             if raw:
                 resolved_mirror = Path(raw)
         fetch_sources(
@@ -123,6 +138,7 @@ def build(
             sha1_index=sha1_index or None,
             systemroms_root=sr_root,
             mirror_path=resolved_mirror,
+            local_only=local_only,
         )
 
     # Step 2: Load cached raw data

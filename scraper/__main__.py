@@ -25,9 +25,16 @@ def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
 
 def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
     """Fetch and parse all msx.org wiki model pages, emit JSON."""
-    from .mirror import MirrorPageSource
-    if args.local_mirror:
-        source = MirrorPageSource(Path(args.local_mirror))
+    from .mirror import FallbackPageSource, LivePageSource, MirrorPageSource
+    import requests as _requests
+    mirror_path = Path(args.msxorg_mirror) if args.msxorg_mirror else None
+    if mirror_path is not None and args.local_msxorg_only:
+        source = MirrorPageSource(mirror_path)
+        models = msxorg.fetch_all(source=source, limit=args.limit)
+    elif mirror_path is not None:
+        session = _requests.Session()
+        session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
+        source = FallbackPageSource(LivePageSource(session), MirrorPageSource(mirror_path))
         models = msxorg.fetch_all(source=source, limit=args.limit)
     else:
         models = msxorg.fetch_all(limit=args.limit, delay=args.delay)
@@ -43,11 +50,12 @@ def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
 def cmd_build(args: argparse.Namespace) -> None:
     """Run the full build pipeline."""
     resolutions_path = Path(args.resolutions) if args.resolutions else None
-    mirror_path = Path(args.local_mirror) if args.local_mirror else None
+    mirror_path = Path(args.msxorg_mirror) if args.msxorg_mirror else None
     build_module.build(
         do_fetch=args.fetch,
         resolutions_path=resolutions_path,
         mirror_path=mirror_path,
+        local_only=args.local_msxorg_only,
     )
 
 
@@ -110,9 +118,15 @@ def main() -> None:
         help="Path to conflict resolution file",
     )
     p_build.add_argument(
-        "--local-mirror", default=None, metavar="DIR",
-        help="Read msx.org pages from a local directory of browser-saved HTML files"
-             " instead of fetching live (overrides msxorg_mirror_path in scraper-config.json)",
+        "--msxorg-mirror", default=None, metavar="DIR",
+        help="Local directory of browser-saved msx.org HTML files."
+             " Overrides msxorg_mirror in scraper-config.json."
+             " Default mode: try live first, use mirror on failure.",
+    )
+    p_build.add_argument(
+        "--local-msxorg-only", action="store_true",
+        help="Skip live msx.org requests entirely; use mirror files only."
+             " Requires --msxorg-mirror or msxorg_mirror in scraper-config.json.",
     )
     p_build.set_defaults(func=cmd_build)
 
@@ -151,9 +165,13 @@ def main() -> None:
         help="Delay between requests in seconds (default: 0.5)",
     )
     p_msxorg.add_argument(
-        "--local-mirror", default=None, metavar="DIR",
-        help="Read msx.org pages from a local directory of browser-saved HTML files"
-             " instead of fetching live",
+        "--msxorg-mirror", default=None, metavar="DIR",
+        help="Local directory of browser-saved msx.org HTML files."
+             " Default mode: try live first, use mirror on failure.",
+    )
+    p_msxorg.add_argument(
+        "--local-msxorg-only", action="store_true",
+        help="Skip live msx.org requests entirely; use mirror files only.",
     )
     p_msxorg.set_defaults(func=cmd_fetch_msxorg)
 

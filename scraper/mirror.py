@@ -120,3 +120,29 @@ class MirrorPageSource:
     def fetch_page(self, title: str, url: str) -> bytes | None:
         filename = _slug_to_filename(url)
         return self._read(filename, f"model {title!r}")
+
+
+class FallbackPageSource:
+    """Try live first; on any failure fall back to the local mirror.
+
+    Use this when the live site may be inaccessible (e.g. intermittent 403)
+    but local files are available as a safety net.
+    """
+
+    def __init__(self, live: LivePageSource, mirror: MirrorPageSource) -> None:
+        self._live = live
+        self._mirror = mirror
+
+    def fetch_category(self, standard: str, url: str) -> bytes | None:
+        content = self._live.fetch_category(standard, url)
+        if content is not None:
+            return content
+        log.info("Live fetch failed for category %r — falling back to mirror", standard)
+        return self._mirror.fetch_category(standard, url)
+
+    def fetch_page(self, title: str, url: str) -> bytes | None:
+        content = self._live.fetch_page(title, url)
+        if content is not None:
+            return content
+        log.info("Live fetch failed for model %r — falling back to mirror", title)
+        return self._mirror.fetch_page(title, url)

@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from scraper.mirror import LivePageSource, MirrorPageSource, _slug_to_filename
+from scraper.mirror import FallbackPageSource, LivePageSource, MirrorPageSource, _slug_to_filename
 
 
 # ---------------------------------------------------------------------------
@@ -122,3 +122,54 @@ class TestLivePageSource:
         src = LivePageSource(session)
         result = src.fetch_page("Sony HB-F9S", "https://www.msx.org/wiki/Sony_HB-F9S")
         assert result is None
+
+
+# ---------------------------------------------------------------------------
+# FallbackPageSource
+# ---------------------------------------------------------------------------
+
+class TestFallbackPageSource:
+    _CAT_URL = "https://www.msx.org/wiki/Category:MSX2_Computers"
+    _PAGE_URL = "https://www.msx.org/wiki/Sony_HB-F9S"
+
+    def _live(self, category_result, page_result=None):
+        src = MagicMock(spec=LivePageSource)
+        src.fetch_category.return_value = category_result
+        src.fetch_page.return_value = page_result
+        return src
+
+    def _mirror(self, category_result, page_result=None):
+        src = MagicMock(spec=MirrorPageSource)
+        src.fetch_category.return_value = category_result
+        src.fetch_page.return_value = page_result
+        return src
+
+    def test_returns_live_content_when_live_succeeds(self):
+        live = self._live(b"live-cat", b"live-page")
+        mirror = self._mirror(b"mirror-cat", b"mirror-page")
+        src = FallbackPageSource(live, mirror)
+        assert src.fetch_category("MSX2", self._CAT_URL) == b"live-cat"
+        assert src.fetch_page("Sony HB-F9S", self._PAGE_URL) == b"live-page"
+        mirror.fetch_category.assert_not_called()
+        mirror.fetch_page.assert_not_called()
+
+    def test_falls_back_to_mirror_when_live_category_fails(self):
+        live = self._live(None)
+        mirror = self._mirror(b"mirror-cat")
+        src = FallbackPageSource(live, mirror)
+        result = src.fetch_category("MSX2", self._CAT_URL)
+        assert result == b"mirror-cat"
+        mirror.fetch_category.assert_called_once()
+
+    def test_falls_back_to_mirror_when_live_page_fails(self):
+        live = self._live(b"live-cat", None)
+        mirror = self._mirror(b"mirror-cat", b"mirror-page")
+        src = FallbackPageSource(live, mirror)
+        assert src.fetch_page("Sony HB-F9S", self._PAGE_URL) == b"mirror-page"
+
+    def test_returns_none_when_both_fail(self):
+        live = self._live(None, None)
+        mirror = self._mirror(None, None)
+        src = FallbackPageSource(live, mirror)
+        assert src.fetch_category("MSX2", self._CAT_URL) is None
+        assert src.fetch_page("Sony HB-F9S", self._PAGE_URL) is None

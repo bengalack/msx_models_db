@@ -356,9 +356,9 @@ class TestLoadScraperConfig:
 
     def test_mirror_path_key_returned(self, tmp_path):
         cfg = tmp_path / "scraper-config.json"
-        cfg.write_text('{"msxorg_mirror_path": "/some/path"}')
+        cfg.write_text('{"msxorg_mirror": "/some/path"}')
         result = load_scraper_config(cfg)
-        assert result["msxorg_mirror_path"] == "/some/path"
+        assert result["msxorg_mirror"] == "/some/path"
 
     def test_malformed_json_returns_empty(self, tmp_path):
         cfg = tmp_path / "scraper-config.json"
@@ -412,7 +412,7 @@ class TestBuildMirrorWiring:
         mirror_dir = tmp_path / "mirror"
         mirror_dir.mkdir()
         cfg = tmp_path / "scraper-config.json"
-        cfg.write_text(json.dumps({"msxorg_mirror_path": str(mirror_dir)}))
+        cfg.write_text(json.dumps({"msxorg_mirror": str(mirror_dir)}))
         op, mx = self._write_cache(tmp_path)
 
         captured = {}
@@ -421,7 +421,7 @@ class TestBuildMirrorWiring:
         original_load = build_mod.load_scraper_config
 
         def fake_load(path=None):
-            return {"msxorg_mirror_path": str(mirror_dir)}
+            return {"msxorg_mirror": str(mirror_dir)}
 
         def fake_fetch(**kwargs):
             captured["mirror_path"] = kwargs.get("mirror_path")
@@ -449,7 +449,7 @@ class TestBuildMirrorWiring:
         import scraper.build as build_mod
 
         def fake_load(path=None):
-            return {"msxorg_mirror_path": str(config_dir)}
+            return {"msxorg_mirror": str(config_dir)}
 
         def fake_fetch(**kwargs):
             captured["mirror_path"] = kwargs.get("mirror_path")
@@ -488,3 +488,26 @@ class TestBuildMirrorWiring:
             )
 
         assert captured["mirror_path"] is None
+
+    def test_local_only_passed_through(self, tmp_path):
+        mirror_dir = tmp_path / "mirror"
+        mirror_dir.mkdir()
+        op, mx = self._write_cache(tmp_path)
+        captured = {}
+
+        import scraper.build as build_mod
+
+        def fake_fetch(**kwargs):
+            captured["local_only"] = kwargs.get("local_only")
+
+        with patch.object(build_mod, "fetch_sources", side_effect=fake_fetch):
+            build(
+                do_fetch=True,
+                openmsx_path=op,
+                msxorg_path=mx,
+                output_path=tmp_path / "data.js",
+                mirror_path=mirror_dir,
+                local_only=True,
+            )
+
+        assert captured["local_only"] is True
