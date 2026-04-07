@@ -1,4 +1,9 @@
 - In product (shipped)
+  - Scraper — msx.org local mirror
+    - PageSource abstraction (LivePageSource, MirrorPageSource, FallbackPageSource)
+    - --msxorg-mirror DIR: try live, fall back to mirror on failure
+    - --local-msxorg-only: skip live entirely, read mirror files only
+    - data/scraper-config.json key msxorg_mirror for persistent default path
   - Column group collapse / expand
     - Click group header to collapse all child columns
     - Click again to expand; chevron indicator (▶ / ▼)

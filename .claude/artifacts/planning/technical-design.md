@@ -60,8 +60,22 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 - Scraper CLI
   - Type: Job (offline Python script)
   - Responsibilities: Scrape msx.org, parse openMSX XML, merge sources, compute derived columns, prompt on conflicts, assign/reuse stable model IDs, write data.js
-  - Depends On: `scraper/columns.py` (column config), id-registry.json (model IDs), msx.org HTTP, GitHub raw HTTP
-  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write)
+  - Depends On: `scraper/columns.py` (column config), id-registry.json (model IDs), msx.org HTTP (or local mirror), GitHub raw HTTP
+  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional)
+
+- msx.org Page Source
+  - Type: Library (module `scraper/mirror.py`)
+  - Responsibilities: Abstract the origin of msx.org HTML pages behind a `PageSource` protocol so the rest of the scraper is source-agnostic. Three implementations:
+    - `LivePageSource` — fetches from the live msx.org website; returns `None` + logs on any HTTP error.
+    - `MirrorPageSource` — reads browser-saved HTML files from a local directory. Filename convention: wiki URL slug → URL-decode → underscores→spaces → colons→underscores → append ` - MSX Wiki.html`. Returns `None` + WARN when a file is missing; ERROR when the directory is missing.
+    - `FallbackPageSource` — wraps live + mirror; tries live first, falls back to mirror on failure.
+  - CLI flags (on `build` and `fetch-msxorg`):
+    - `--msxorg-mirror DIR` — enables FallbackPageSource (live-with-fallback)
+    - `--msxorg-mirror DIR --local-msxorg-only` — enables MirrorPageSource (skip live entirely)
+    - No flag — LivePageSource (default)
+  - Config: `data/scraper-config.json` key `msxorg_mirror` provides a persistent default mirror path; CLI flag overrides it.
+  - Depends On: `requests` (live), filesystem (mirror)
+  - Data Stores: local mirror directory (read-only)
 
 - ID Registry
   - Type: File artifact (JSON)
