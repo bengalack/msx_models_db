@@ -12,6 +12,7 @@ import requests
 from bs4 import BeautifulSoup, Tag
 
 from .exclude import ExcludeList
+from .mirror import LivePageSource, MirrorPageSource, PageSource
 
 log = logging.getLogger(__name__)
 
@@ -60,7 +61,7 @@ def _text_content(tag: Tag) -> str:
 
 
 def list_model_pages(
-    session: requests.Session,
+    source: PageSource,
     *,
     delay: float = 0.5,
 ) -> list[dict[str, str]]:
@@ -73,13 +74,10 @@ def list_model_pages(
 
     for standard, cat_url in CATEGORY_URLS.items():
         log.info("Fetching category page for %s…", standard)
-        try:
-            resp = session.get(cat_url, timeout=30)
-            resp.raise_for_status()
-        except Exception:
-            log.exception("Failed to fetch category page for %s (%s) — skipping", standard, cat_url)
+        content = source.fetch_category(standard, cat_url)
+        if content is None:
             continue
-        soup = BeautifulSoup(resp.content, "lxml")
+        soup = BeautifulSoup(content, "lxml")
 
         # Model links are inside the <div id="mw-pages"> or similar.
         # They appear as <a> tags inside list items under the category listing.
@@ -104,7 +102,8 @@ def list_model_pages(
                 "standard": standard,
             })
 
-        time.sleep(delay)
+        if delay:
+            time.sleep(delay)
 
     log.info("Found %d model pages across all categories", len(models))
     return models
@@ -334,20 +333,23 @@ def parse_model_page(
 def fetch_all(
     session: requests.Session | None = None,
     *,
+    source: PageSource | None = None,
     delay: float = 0.5,
     limit: int | None = None,
     exclude_list: ExcludeList | None = None,
 ) -> list[dict[str, Any]]:
-    """Fetch and parse all msx.org model pages. Returns list of model dicts."""
-    if session is None:
-        session = requests.Session()
-    session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
+    """Fetch and parse all msx.org model pages. Returns list of model dicts.
 
-    try:
-        pages = list_model_pages(session, delay=delay)
-    except Exception:
-        log.exception("Failed to enumerate msx.org model pages — returning empty result")
-        return []
+    If *source* is provided it is used directly (e.g. ``MirrorPageSource``).
+    Otherwise a ``LivePageSource`` backed by *session* is created.
+    """
+    if source is None:
+        if session is None:
+            session = requests.Session()
+        session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
+        source = LivePageSource(session)
+
+    pages = list_model_pages(source, delay=delay)
     if limit:
         pages = pages[:limit]
 
@@ -360,10 +362,12 @@ def fetch_all(
         title = page["title"]
         url = page["url"]
         standard = page["standard"]
+        content = source.fetch_page(title, url)
+        if content is None:
+            errors += 1
+            continue
         try:
-            resp = session.get(url, timeout=30)
-            resp.raise_for_status()
-            result = parse_model_page(resp.content, standard, title)
+            result = parse_model_page(content, standard, title)
             if result:
                 if exclude_list and exclude_list.is_excluded(
                     result.get("manufacturer"), result.get("model")
@@ -378,7 +382,7 @@ def fetch_all(
             else:
                 skipped += 1
         except Exception:
-            log.exception("Error fetching/parsing %s", title)
+            log.exception("Error parsing %s", title)
             errors += 1
 
         if delay and i < len(pages) - 1:
