@@ -730,3 +730,59 @@ class TestLoadSha1Index:
         index_file.write_text("aabbcc  ./subdir/file.rom\n")
         result = load_sha1_index(index_file)
         assert result["aabbcc"] == Path("subdir/file.rom")
+
+
+# ---------------------------------------------------------------------------
+# ToshibaTCX-200x transparent wrapper
+# ---------------------------------------------------------------------------
+
+class TestToshibaTCX200xWrapper:
+    """Devices nested inside a <ToshibaTCX-200x> wrapper are classified normally."""
+
+    _XML = """\
+<msxconfig>
+  <devices>
+    <primary slot="3">
+      <secondary slot="3">
+        <ToshibaTCX-200x id="Toshiba TCX-2001/2002">
+          <mem base="0x4000" size="0x8000"/>
+          <MSX-RS232 id="RS-232C Interface">
+            <mem base="0xC000" size="0x4000"/>
+          </MSX-RS232>
+          <ROM id="Word Processor ROM">
+            <mem base="0x4000" size="0x8000"/>
+          </ROM>
+        </ToshibaTCX-200x>
+      </secondary>
+    </primary>
+  </devices>
+</msxconfig>"""
+
+    def _slotmap(self) -> dict:
+        root = _root(self._XML)
+        return extract_slotmap(root, LUT_RULES, filename="Victor_HC-90A.xml")
+
+    def test_rs232_on_page3(self):
+        sm = self._slotmap()
+        # 0xC000 → page 3
+        assert sm["slotmap_3_3_3"] == "RS2"
+
+    def test_wordpro_rom_on_pages1_and_2(self):
+        sm = self._slotmap()
+        # 0x4000–0xBFFF → pages 1 and 2; "Word Processor ROM" doesn't match
+        # any LUT rule in the test fixture → falls back to raw tag name "ROM"
+        assert sm["slotmap_3_3_1"] == "ROM"
+        assert sm["slotmap_3_3_2"] == "ROM"
+
+    def test_wrapper_itself_not_classified_as_device(self):
+        """The ToshibaTCX-200x element must not appear as a cell value."""
+        sm = self._slotmap()
+        for v in sm.values():
+            assert "ToshibaTCX" not in (v or "")
+
+    def test_absent_subslots_remain_absent(self):
+        sm = self._slotmap()
+        # Sub-slots 0, 1, 2 of ms=3 are not in the XML
+        for ss in (0, 1, 2):
+            for p in range(4):
+                assert sm[f"slotmap_3_{ss}_{p}"] == "\u2022"  # • (empty page in present subslot)

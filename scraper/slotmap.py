@@ -90,6 +90,33 @@ def match_lut(element_tag: str, element_id: str | None, rules: list[dict]) -> st
     return None
 
 
+def _iter_slot_devices(slot_el: etree._Element):
+    """Iterate device children of *slot_el*, transparently entering ToshibaTCX-200x wrappers.
+
+    Yields child elements while:
+    - Skipping structural elements (secondary, Mirror, primary, non-string tags).
+    - Descending into <ToshibaTCX-200x> wrapper elements so their children are
+      processed as if they were direct slot children.
+    """
+    for child in slot_el:
+        tag = child.tag
+        if not isinstance(tag, str):
+            continue
+        if tag in ("secondary", "Mirror", "primary"):
+            continue
+        if tag == "ToshibaTCX-200x":
+            # Transparent proprietary wrapper — enter and yield its children.
+            for grandchild in child:
+                gc_tag = grandchild.tag
+                if not isinstance(gc_tag, str):
+                    continue
+                if gc_tag in ("secondary", "Mirror", "primary"):
+                    continue
+                yield grandchild
+        else:
+            yield child
+
+
 def _classify_devices(
     slot_el: etree._Element,
     lut_rules: list[dict],
@@ -100,16 +127,12 @@ def _classify_devices(
     Returns a page map (pages 0-3). Devices with no <mem> child are skipped.
     Overlapping pages: first assignment wins; [WARN] logged for subsequent.
     Unknown devices: raw element tag used as value; [WARN] logged.
+    ToshibaTCX-200x wrapper elements are entered transparently.
     """
     page_map: dict[int, str] = {}
 
-    for child in slot_el:
+    for child in _iter_slot_devices(slot_el):
         tag = child.tag
-        # Skip structural/non-device elements
-        if not isinstance(tag, str):
-            continue
-        if tag in ("secondary", "Mirror", "primary"):
-            continue
 
         mem_el = child.find("mem")
         if mem_el is None:
@@ -292,12 +315,8 @@ def _apply_rom_visibility(
 
     Modifies page_map in place. Returns the modified page_map.
     """
-    for child in slot_el:
+    for child in _iter_slot_devices(slot_el):
         tag = child.tag
-        if not isinstance(tag, str):
-            continue
-        if tag in ("secondary", "Mirror", "primary"):
-            continue
 
         mem_el = child.find("mem")
         if mem_el is None:
