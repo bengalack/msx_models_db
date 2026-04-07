@@ -1,51 +1,52 @@
+- In product (shipped)
+  - Column group collapse / expand
+    - Click group header to collapse all child columns
+    - Click again to expand; chevron indicator (▶ / ▼)
+    - Hidden column indicator in group header strip when any column in group is individually hidden
+  - Column sorting
+    - Click column header: sort ascending; again: descending; again: clear
+    - ↑ / ↓ indicator appended to active sort column header
+  - Column filtering
+    - Toolbar toggle shows/hides filter row
+    - Text input per visible column; filters rows immediately on input
+    - Active filter: accent border on input, clear (×) button
+    - Gutter indicator in column header strip when any rows are filtered out
+  - Column show / hide
+    - Toolbar "⊞ Columns" button opens column picker panel
+    - Checkbox per column grouped by group; toggle visibility individually
+    - Panel closes on outside click
+  - Row show / hide
+    - Right-click row number → context menu: Hide Row
+    - Hidden rows removed from grid
+    - Amber ▼▲ indicator in gutter at each gap; click to unhide
+  - Cell selection
+    - Click: select single cell, clear previous selection
+    - CTRL/CMD+click: toggle cell in/out of selection
+    - SHIFT+click: extend selection rectangle from anchor to clicked cell
+    - Click+drag: select cells covered by drag (snap to cell on mouseenter)
+    - Selected cells: accent-dim fill + solid accent border; dark mode adds glow
+  - Clipboard copy
+    - CTRL+C / CMD+C copies selected cells as TSV (columns tab-separated, rows newline-separated)
+    - Fallback to execCommand('copy') if clipboard API unavailable
+    - Status bar (bottom, 24px) shows "Copied N cell(s)"
 
 - Now / Next
-  - Implement sticky grid UI
-    - Sticky headers (page header, toolbar, group header, column header, filter row)
-    - Sticky left gutter (row numbers, hide/unhide, gap indicators)
-    - Slot map columns (64 columns, 4 groups, tooltips, mirror cell handling)
-  - Column/row show-hide controls
-    - Column picker panel
-    - Row hide/unhide via gutter
-  - Cell selection and clipboard copy
-    - Multi-cell selection (click, CTRL, SHIFT, drag)
-    - Copy as TSV (CTRL+C)
-  - Live URL state encoding
-    - Encode/decode full view state (sort, filter, selection, hidden/collapsed)
-    - Versioned binary codec, base64 in hash
-  - Scraper: slot map extraction and LUT integration
-    - XML parsing, device classification, mirror detection
-    - LUT file support and warning on unmatched devices
-
-- Later
-  - msx.org slot map extraction (HTML parsing)
-  - Default view configuration for slot map columns
-  - Multi-sort support
-  - Row virtualization for large datasets
-  - Blogger/Blogspot embed enhancements (widget, theming)
-  - FPGA model list expansion
-
-- Inbox (untriaged)
-  - Launch openMSX from grid (emulation integration)
-  - Per-model detail panel or modal
-  - Custom column groupings by user
-
-- In product (shipped)
-  - Cell value truncation
-    - `truncate_limit: int = 0` on `Column` dataclass; `truncate_limit=10` on manufacturer (id=1) and model (id=2)
-    - `truncateLimit` serialised to data.js when non-zero; omitted otherwise
-    - `buildDataRow`: clip to `(limit−1)` chars + `…`; full value in `td.dataset.fullValue`
-    - mouseenter handler: `data-full-value` checked first (highest priority)
-    - Link cells: `a.title = fullValue + ' — ' + url` when truncated; URL-only otherwise
-    - 12 Vitest tests + 6 pytest tests
-  - Static SPA grid UI
-  - Column groups and collapse/expand
-  - Stable ID registry for models/columns
-  - Scraper: msx.org and openMSX XML merge
-  - Data.js loaded via <script> tag
-  - Theme toggle (dark/light, CSS custom properties)
-  - Keyboard accessibility (sort, filter, copy)
-  - Build output committed to docs/ for GitHub Pages
+  - Scraper — openMSX XML source
+    - Fetch machine XML file listing via GitHub API (/repos/openMSX/openMSX/contents/share/machines)
+    - Fetch and parse each XML file with lxml recover=True (lenient — files are non-strict)
+    - Extract fields: CPU, clock, RAM, VRAM, VDP, PSG, mapper, openMSX machine ID
+    - Log unrecoverable elements; continue on parse failure
+  - Scraper — msx.org HTML source
+    - Enumerate MSX2, MSX2+, turboR model pages from msx.org category pages
+    - Scrape each model page with beautifulsoup4 + lxml
+    - Extract fields matching column schema
+    - Log parse failures per field; do not abort on partial failure
+    - Abort if >20% of models fail to parse
+    - Use custom User-Agent: msxmodelsdb-scraper/1.0; 500ms delay between requests
+  - Scraper — merge + conflict resolution
+    - Match models from both sources by natural key (manufacturer + model name)
+    - For conflicting field values: print summary, prompt maintainer to choose per conflict
+    - For fields present in only one source: use that value without prompting
 
 - Later
   - Scraper — write output (replaced by column-config-and-registry feature)
@@ -62,30 +63,11 @@
   - Multi-column sort
   - Per-model detail panel / expanded view
   - Column width resizing
+  - Freeze / pin columns (e.g. keep Identity group always visible while scrolling)
   - Export visible data as CSV file download
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
-  - Slot map — browser tooltip rendering
-    - Native title tooltip on hover for slotmap cells; resolveSlotmapTooltip() helper
-    - ~ cells: "Not expanded"; abbr* mirrors: "<base tooltip> (mirror)"; unknown: no tooltip
-    - cell-slotmap-tilde (muted/faded) and cell-slotmap-mirror (italic + muted) CSS markers
-    - 13 Vitest unit tests
-  - Slot map — XML extractor
-    - scraper/slotmap.py: match_lut(), pages_for_mem(), extract_slotmap(), load_sha1_index()
-    - All 64 slotmap_{ms}_{ss}_{p} keys always present per model, defaulting to ~
-    - CS{N} for external primary slots; LUT classification for device children
-    - Mirror detection: rom_visibility (method 1), ROM file size via SHA1 index (method 2), Mirror element two-pass (method 3)
-    - Missing systemroms/: mirror method 2 gracefully disabled; no exception
-    - Unknown device: [WARN] + raw tag; never aborts
-    - Wired into openmsx.py (parse_machine_xml + fetch_all) and build.py
-    - 59 slotmap unit tests + 1 build integration test
-  - Scraper — openMSX XML source
-    - Fetch machine XML file listing via GitHub API; fetch and parse each XML with lxml recover=True
-    - Extract fields: manufacturer, model, standard, year, region, RAM, VRAM, VDP, PSG, FM chip, floppy drives, cartridge slots, CPU, keyboard layout, openMSX machine ID
-    - Skip non-MSX2+ types, SKIP_PREFIXES, ExcludeList (filename + manufacturer+model)
-    - Log parse failures per file; continue on error; never abort
-    - 52 unit tests (all field extractors, skip conditions, malformed XML recovery, HTTP-layer mocking)
   - Scraper — exclude list
     - data/exclude.json: maintainer-edited, committed to repo
     - Match by manufacturer+model (both scrapers, post-parse); "" = empty field; "*" = wildcard
@@ -96,7 +78,7 @@
   - URL state codec + sync
     - ViewState binary codec (versioned format v1, URL-safe base64)
     - Encode/decode: sort, filters, hidden cols/rows, collapsed groups, selected cells
-    - Debounced URL sync (1000 ms idle) via history.replaceState
+    - Debounced URL sync (300 ms idle) via history.replaceState
     - Restore on page load; fall back to show-all if hash empty or unreadable
     - 29 Vitest codec unit tests (round-trip, boundary, version/compat, resilience, URL-layer)
   - Project scaffold (Vite + TypeScript, Python scraper stub, docs/ on main)
@@ -108,22 +90,5 @@
     - 41 Python tests (columns, registry, build integration)
     - Removed src/columns.ts (column config is now Python-only)
   - Data schema + seed data (TypeScript types, schema.md, 10-model seed, id-registry.json)
-  - Frozen / pinned Identity columns
-    - Identity group (Manufacturer, Model) frozen/sticky during horizontal scroll with group header
-    - Gap indicator rows include frozen cells for dashed-line alignment
-    - FROZEN_COL_COUNT=2, ResizeObserver for offset recalculation
-    - z-index stack: 3 (gap line) → 5 (selected) → 6 (frozen) → 7 (frozen+selected) → 8 (gutter) → 9 (gap-gutter) → 10 (thead) → 11 (frozen thead) → 12 (thead gutter)
-    - 22 Vitest tests
-  - Column rename + group split
-    - "MSX Standard" renamed to "Generation" (short_label: "Gen")
-    - Identity group split: Identity (Manufacturer, Model) + Release (Year, Region, Generation, Form Factor)
-    - Release group id=12, order=1; all other group orders shifted +1
-    - 13 groups total (9 main + 4 slotmap)
   - Theme system (CSS custom properties, dark/light toggle, localStorage persistence)
   - Grid rendering (display only — header rows, toolbar, data rows, gutter, null/em-dash, overflow tooltip)
-  - Slot map — column definitions + LUT
-    - 4 slotmap groups (IDs 8–11) and 64 columns (IDs 30–93) in scraper/columns.py
-    - data/slotmap-lut.json: 13 starter rules, ordered array, validated on load
-    - scraper/slotmap_lut.py: load_slotmap_lut(), compact_lut(); fail fast on duplicate abbr or bad regex
-    - LUT embedded in data.js as slotmap_lut {abbr: tooltip} map
-    - 33 tests (19 column + 14 LUT unit + 6 build integration)
