@@ -12,7 +12,6 @@ import requests
 from bs4 import BeautifulSoup, Tag
 
 from .exclude import ExcludeList
-from .http import fetch_with_retry
 
 log = logging.getLogger(__name__)
 
@@ -74,7 +73,12 @@ def list_model_pages(
 
     for standard, cat_url in CATEGORY_URLS.items():
         log.info("Fetching category page for %s…", standard)
-        resp = fetch_with_retry(session, cat_url)
+        try:
+            resp = session.get(cat_url, timeout=30)
+            resp.raise_for_status()
+        except Exception:
+            log.exception("Failed to fetch category page for %s (%s) — skipping", standard, cat_url)
+            continue
         soup = BeautifulSoup(resp.content, "lxml")
 
         # Model links are inside the <div id="mw-pages"> or similar.
@@ -233,8 +237,7 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
             break
 
     if ports:
-        # Sort ports alphabetically for normalization
-        result["connectivity"] = ", ".join(sorted(ports, key=lambda s: s.lower()))
+        result["connectivity"] = ", ".join(ports)
     return result
 
 
@@ -340,7 +343,11 @@ def fetch_all(
         session = requests.Session()
     session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
 
-    pages = list_model_pages(session, delay=delay)
+    try:
+        pages = list_model_pages(session, delay=delay)
+    except Exception:
+        log.exception("Failed to enumerate msx.org model pages — returning empty result")
+        return []
     if limit:
         pages = pages[:limit]
 
@@ -354,7 +361,8 @@ def fetch_all(
         url = page["url"]
         standard = page["standard"]
         try:
-            resp = fetch_with_retry(session, url)
+            resp = session.get(url, timeout=30)
+            resp.raise_for_status()
             result = parse_model_page(resp.content, standard, title)
             if result:
                 if exclude_list and exclude_list.is_excluded(

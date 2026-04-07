@@ -481,3 +481,10 @@ class TestFetchAll:
         ]
         models = fetch_all(session=session, delay=0)
         assert len(models) == 0
+
+    def test_listing_failure_returns_empty_not_raises(self):
+        """A 403/network error on the GitHub API listing returns [] gracefully."""
+        session = MagicMock()
+        session.get.side_effect = Exception("403 Forbidden")
+        models = fetch_all(session=session, delay=0)
+        assert models == []

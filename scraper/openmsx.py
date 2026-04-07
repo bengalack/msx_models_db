@@ -383,7 +383,11 @@ def fetch_all(
         session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
 
     log.info("Listing openMSX machine files…")
-    files = list_machine_files(session, exclude_list=exclude_list)
+    try:
+        files = list_machine_files(session, exclude_list=exclude_list)
+    except Exception:
+        log.exception("Failed to list openMSX machine files — returning empty result")
+        return []
     log.info("Found %d XML files", len(files))
 
     if limit:
