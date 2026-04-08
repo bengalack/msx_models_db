@@ -168,8 +168,9 @@
     "c-bios|msx2+": 165,
     "c-bios|msx2+ br": 166,
     "c-bios|msx2+ eu": 167,
-    "c-bios|msx2+ jp": 168
+    "c-bios|msx2+ jp": 168,
+    "ese|one chip msx": 169
   },
   "retired_models": [],
-  "next_model_id": 169
+  "next_model_id": 170
 }
