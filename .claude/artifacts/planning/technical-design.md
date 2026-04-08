@@ -60,7 +60,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 - Scraper CLI
   - Type: Job (offline Python script)
   - Responsibilities: Scrape msx.org, parse openMSX XML, merge sources, compute derived columns, prompt on conflicts, assign/reuse stable model IDs, write data.js
-  - Depends On: `scraper/columns.py` (column config), id-registry.json (model IDs), msx.org HTTP (or local mirror), GitHub raw HTTP
+  - Depends On: `scraper/columns.py` (column config), id-registry.json (model IDs), msx.org HTTP or local mirror (`PageSource`), GitHub API/raw HTTP or local mirror (`XMLSource`)
   - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional)
 
 - msx.org Page Source
@@ -74,6 +74,20 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     - `--msxorg-mirror DIR --local-msxorg-only` — enables MirrorPageSource (skip live entirely)
     - No flag — LivePageSource (default)
   - Config: `data/scraper-config.json` key `msxorg_mirror` provides a persistent default mirror path; CLI flag overrides it.
+  - Depends On: `requests` (live), filesystem (mirror)
+  - Data Stores: local mirror directory (read-only)
+
+- openMSX XML Source
+  - Type: Library (module `scraper/openmsx_source.py`)
+  - Responsibilities: Abstract the origin of openMSX machine XML files behind an `XMLSource` protocol so the rest of the scraper is source-agnostic. Three implementations:
+    - `LiveXMLSource` — lists files via GitHub API and fetches each from raw.githubusercontent.com; caches download URLs from the listing response.
+    - `MirrorXMLSource` — reads `.xml` files from a local directory (e.g. the openMSX `share/machines` folder). Lists files via `glob("*.xml")` (sorted, skip-prefixes applied). Returns `None` + WARN when a file is missing; ERROR when the directory is missing. No delay between reads.
+    - `FallbackXMLSource` — wraps live + mirror; tries GitHub first, falls back to mirror on any listing or fetch failure.
+  - CLI flags (on `build` and `fetch-openmsx`):
+    - `--openmsx-mirror DIR` — enables FallbackXMLSource (live-with-fallback)
+    - `--openmsx-mirror DIR --local-openmsx-only` — enables MirrorXMLSource (skip GitHub entirely)
+    - No flag — LiveXMLSource (default)
+  - Config: `data/scraper-config.json` key `openmsx_mirror` provides a persistent default mirror path; CLI flag overrides it.
   - Depends On: `requests` (live), filesystem (mirror)
   - Data Stores: local mirror directory (read-only)
 
@@ -275,7 +289,7 @@ Future format changes increment the version byte; the decoder checks version and
 - openMSX GitHub repository
   - Direction: Outbound (scraper reads)
   - Interface: HTTP GET to raw.githubusercontent.com XML files
-  - Notes: Fetch file listing via GitHub API (`/repos/openMSX/openMSX/contents/share/machines`); then fetch individual XML files
+  - Notes: Fetch file listing via GitHub API (`/repos/openMSX/openMSX/contents/share/machines`); then fetch individual XML files. Can be replaced by a local mirror directory (`--openmsx-mirror DIR`) containing the same `.xml` files — no network access in that mode.
 
 ## Technology Stack
 
@@ -394,7 +408,11 @@ msx_models_db/
 - (No auto-deploy; maintainer commits docs/ manually after scraper run)
 
 ### Environment Model
-- Configuration sources: None at runtime. Scraper has no required env vars.
+
+- Configuration sources: None at runtime. Scraper reads `data/scraper-config.json` (optional JSON object) for persistent local paths:
+  - `msxorg_mirror` — path to local msx.org mirror directory (browser-saved HTML files)
+  - `openmsx_mirror` — path to local openMSX mirror directory (XML files, e.g. `share/machines`)
+  CLI flags `--msxorg-mirror`, `--local-msxorg-only`, `--openmsx-mirror`, `--local-openmsx-only` override config values.
 - Optional scraper env vars:
   - `SCRAPER_DELAY_MS`: delay between HTTP requests (default: 500)
   - `GITHUB_TOKEN`: GitHub API token to avoid rate limits when fetching XML file listings

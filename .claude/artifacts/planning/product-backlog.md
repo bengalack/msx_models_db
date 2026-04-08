@@ -1,4 +1,10 @@
 - In product (shipped)
+  - Scraper — openMSX local mirror
+    - XMLSource abstraction (LiveXMLSource, MirrorXMLSource, FallbackXMLSource) in scraper/openmsx_source.py
+    - --openmsx-mirror DIR: try GitHub, fall back to mirror on failure
+    - --local-openmsx-only: skip GitHub entirely, read local XML files only
+    - data/scraper-config.json key openmsx_mirror for persistent default path
+    - No delay in local-only mode; mirror directory scanned with glob (sorted, skip-prefixes applied)
   - Scraper — msx.org local mirror
     - PageSource abstraction (LivePageSource, MirrorPageSource, FallbackPageSource)
     - --msxorg-mirror DIR: try live, fall back to mirror on failure
