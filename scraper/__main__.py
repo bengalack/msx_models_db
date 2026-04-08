@@ -25,6 +25,11 @@ def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
     sr_root = build_module.SYSTEMROMS_ROOT if build_module.SYSTEMROMS_ROOT.exists() else None
 
     mirror_path = Path(args.openmsx_mirror) if args.openmsx_mirror else None
+    if mirror_path is None:
+        cfg = build_module.load_scraper_config()
+        raw = cfg.get("openmsx_mirror")
+        if raw:
+            mirror_path = Path(raw)
     if mirror_path is not None and args.local_openmsx_only:
         source = MirrorXMLSource(mirror_path)
         delay = 0.0
@@ -59,6 +64,11 @@ def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
     from .mirror import FallbackPageSource, LivePageSource, MirrorPageSource
     import requests as _requests
     mirror_path = Path(args.msxorg_mirror) if args.msxorg_mirror else None
+    if mirror_path is None:
+        cfg = build_module.load_scraper_config()
+        raw = cfg.get("msxorg_mirror")
+        if raw:
+            mirror_path = Path(raw)
     if mirror_path is not None and args.local_msxorg_only:
         source = MirrorPageSource(mirror_path)
         models = msxorg.fetch_all(source=source, limit=args.limit)
