@@ -17,6 +17,7 @@ from .columns import (
 )
 from .exclude import load_excludes
 from .mirror import FallbackPageSource, MirrorPageSource
+from .openmsx_source import FallbackXMLSource, LiveXMLSource, MirrorXMLSource
 from .registry import IDRegistry
 from .slotmap import load_sha1_index
 from .slotmap_lut import compact_lut, load_slotmap_lut
@@ -55,32 +56,52 @@ def fetch_sources(
     lut_rules: list | None = None,
     sha1_index: dict | None = None,
     systemroms_root: Path | None = None,
+    openmsx_mirror_path: Path | None = None,
+    local_openmsx_only: bool = False,
     mirror_path: Path | None = None,
     local_only: bool = False,
 ) -> None:
     """Fetch fresh data from external sources and cache to disk.
 
-    mirror_path + local_only=False → FallbackPageSource (live first, mirror on failure)
-    mirror_path + local_only=True  → MirrorPageSource (skip live entirely)
-    no mirror_path                 → LivePageSource (live only)
+    openMSX source selection (openmsx_mirror_path / local_openmsx_only):
+      mirror + local_openmsx_only=True  → MirrorXMLSource (skip GitHub entirely)
+      mirror + local_openmsx_only=False → FallbackXMLSource (GitHub first, mirror on failure)
+      no mirror                         → LiveXMLSource (GitHub only)
+
+    msx.org source selection (mirror_path / local_only):
+      mirror + local_only=True  → MirrorPageSource (skip live entirely)
+      mirror + local_only=False → FallbackPageSource (live first, mirror on failure)
+      no mirror                 → LivePageSource (live only)
     """
     log.info("Fetching openMSX data…")
-    openmsx_models = openmsx.fetch_all(
-        delay=delay,
-        lut_rules=lut_rules,
-        sha1_index=sha1_index,
-        systemroms_root=systemroms_root,
-    )
+    if openmsx_mirror_path is not None and local_openmsx_only:
+        log.info("[mirror:mode] openMSX local-only | path=%s", openmsx_mirror_path)
+        openmsx_source = MirrorXMLSource(openmsx_mirror_path)
+        openmsx_models = openmsx.fetch_all(source=openmsx_source, delay=0,
+                                           lut_rules=lut_rules, sha1_index=sha1_index,
+                                           systemroms_root=systemroms_root)
+    elif openmsx_mirror_path is not None:
+        log.info("[mirror:mode] openMSX live-with-fallback | path=%s", openmsx_mirror_path)
+        import requests as _requests
+        _session = _requests.Session()
+        _session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
+        openmsx_source = FallbackXMLSource(LiveXMLSource(_session), MirrorXMLSource(openmsx_mirror_path))
+        openmsx_models = openmsx.fetch_all(source=openmsx_source, delay=delay,
+                                           lut_rules=lut_rules, sha1_index=sha1_index,
+                                           systemroms_root=systemroms_root)
+    else:
+        openmsx_models = openmsx.fetch_all(delay=delay, lut_rules=lut_rules,
+                                           sha1_index=sha1_index, systemroms_root=systemroms_root)
     _write_json(openmsx_models, openmsx_path)
     log.info("Wrote %d openMSX models to %s", len(openmsx_models), openmsx_path)
 
     log.info("Fetching msx.org data…")
     if mirror_path is not None and local_only:
-        log.info("[mirror:mode] Local-only | path=%s", mirror_path)
+        log.info("[mirror:mode] msx.org local-only | path=%s", mirror_path)
         msxorg_source = MirrorPageSource(mirror_path)
         msxorg_models = msxorg.fetch_all(source=msxorg_source)
     elif mirror_path is not None:
-        log.info("[mirror:mode] Live-with-fallback | path=%s", mirror_path)
+        log.info("[mirror:mode] msx.org live-with-fallback | path=%s", mirror_path)
         import requests as _requests
         session = _requests.Session()
         session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
@@ -105,6 +126,8 @@ def build(
     systemroms_root: Path = SYSTEMROMS_ROOT,
     output_path: Path = DATA_JS_PATH,
     resolutions_path: Path | None = None,
+    openmsx_mirror_path: Path | None = None,
+    local_openmsx_only: bool = False,
     mirror_path: Path | None = None,
     local_only: bool = False,
 ) -> None:
@@ -124,10 +147,15 @@ def build(
 
     # Step 1: Fetch if requested
     if do_fetch:
-        # Resolve mirror path: explicit arg > config file
+        # Resolve mirror paths: explicit arg > config file
+        cfg = load_scraper_config()
+        resolved_openmsx_mirror = openmsx_mirror_path
+        if resolved_openmsx_mirror is None:
+            raw = cfg.get("openmsx_mirror")
+            if raw:
+                resolved_openmsx_mirror = Path(raw)
         resolved_mirror = mirror_path
         if resolved_mirror is None:
-            cfg = load_scraper_config()
             raw = cfg.get("msxorg_mirror")
             if raw:
                 resolved_mirror = Path(raw)
@@ -137,6 +165,8 @@ def build(
             lut_rules=slotmap_rules,
             sha1_index=sha1_index or None,
             systemroms_root=sr_root,
+            openmsx_mirror_path=resolved_openmsx_mirror,
+            local_openmsx_only=local_openmsx_only,
             mirror_path=resolved_mirror,
             local_only=local_only,
         )

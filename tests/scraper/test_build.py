@@ -511,3 +511,138 @@ class TestBuildMirrorWiring:
             )
 
         assert captured["local_only"] is True
+
+
+class TestBuildOpenMSXMirrorWiring:
+    """openmsx_mirror_path reaches fetch_sources; config key openmsx_mirror honoured."""
+
+    _OPENMSX = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+    _MSXORG: list = []
+
+    def _write_cache(self, tmp_path: Path) -> tuple[Path, Path]:
+        op = tmp_path / "openmsx.json"
+        mx = tmp_path / "msxorg.json"
+        op.write_text(json.dumps(self._OPENMSX))
+        mx.write_text(json.dumps(self._MSXORG))
+        return op, mx
+
+    def test_explicit_openmsx_mirror_passed_to_fetch_sources(self, tmp_path):
+        mirror_dir = tmp_path / "mirror"
+        mirror_dir.mkdir()
+        op, mx = self._write_cache(tmp_path)
+        captured = {}
+
+        import scraper.build as build_mod
+
+        def fake_fetch(**kwargs):
+            captured["openmsx_mirror_path"] = kwargs.get("openmsx_mirror_path")
+
+        with patch.object(build_mod, "fetch_sources", side_effect=fake_fetch):
+            build(
+                do_fetch=True,
+                openmsx_path=op,
+                msxorg_path=mx,
+                output_path=tmp_path / "data.js",
+                openmsx_mirror_path=mirror_dir,
+            )
+
+        assert captured["openmsx_mirror_path"] == mirror_dir
+
+    def test_config_openmsx_mirror_used_when_no_flag(self, tmp_path):
+        mirror_dir = tmp_path / "mirror"
+        mirror_dir.mkdir()
+        op, mx = self._write_cache(tmp_path)
+        captured = {}
+
+        import scraper.build as build_mod
+
+        def fake_load(path=None):
+            return {"openmsx_mirror": str(mirror_dir)}
+
+        def fake_fetch(**kwargs):
+            captured["openmsx_mirror_path"] = kwargs.get("openmsx_mirror_path")
+
+        with patch.object(build_mod, "load_scraper_config", side_effect=fake_load), \
+             patch.object(build_mod, "fetch_sources", side_effect=fake_fetch):
+            build(
+                do_fetch=True,
+                openmsx_path=op,
+                msxorg_path=mx,
+                output_path=tmp_path / "data.js",
+            )
+
+        assert captured["openmsx_mirror_path"] == Path(str(mirror_dir))
+
+    def test_explicit_openmsx_flag_overrides_config(self, tmp_path):
+        flag_dir = tmp_path / "flag_mirror"
+        config_dir = tmp_path / "config_mirror"
+        flag_dir.mkdir()
+        config_dir.mkdir()
+        op, mx = self._write_cache(tmp_path)
+        captured = {}
+
+        import scraper.build as build_mod
+
+        def fake_load(path=None):
+            return {"openmsx_mirror": str(config_dir)}
+
+        def fake_fetch(**kwargs):
+            captured["openmsx_mirror_path"] = kwargs.get("openmsx_mirror_path")
+
+        with patch.object(build_mod, "load_scraper_config", side_effect=fake_load), \
+             patch.object(build_mod, "fetch_sources", side_effect=fake_fetch):
+            build(
+                do_fetch=True,
+                openmsx_path=op,
+                msxorg_path=mx,
+                output_path=tmp_path / "data.js",
+                openmsx_mirror_path=flag_dir,
+            )
+
+        assert captured["openmsx_mirror_path"] == flag_dir
+
+    def test_no_openmsx_mirror_configured_uses_none(self, tmp_path):
+        op, mx = self._write_cache(tmp_path)
+        captured = {}
+
+        import scraper.build as build_mod
+
+        def fake_load(path=None):
+            return {}
+
+        def fake_fetch(**kwargs):
+            captured["openmsx_mirror_path"] = kwargs.get("openmsx_mirror_path")
+
+        with patch.object(build_mod, "load_scraper_config", side_effect=fake_load), \
+             patch.object(build_mod, "fetch_sources", side_effect=fake_fetch):
+            build(
+                do_fetch=True,
+                openmsx_path=op,
+                msxorg_path=mx,
+                output_path=tmp_path / "data.js",
+            )
+
+        assert captured["openmsx_mirror_path"] is None
+
+    def test_local_openmsx_only_passed_through(self, tmp_path):
+        mirror_dir = tmp_path / "mirror"
+        mirror_dir.mkdir()
+        op, mx = self._write_cache(tmp_path)
+        captured = {}
+
+        import scraper.build as build_mod
+
+        def fake_fetch(**kwargs):
+            captured["local_openmsx_only"] = kwargs.get("local_openmsx_only")
+
+        with patch.object(build_mod, "fetch_sources", side_effect=fake_fetch):
+            build(
+                do_fetch=True,
+                openmsx_path=op,
+                msxorg_path=mx,
+                output_path=tmp_path / "data.js",
+                openmsx_mirror_path=mirror_dir,
+                local_openmsx_only=True,
+            )
+
+        assert captured["local_openmsx_only"] is True

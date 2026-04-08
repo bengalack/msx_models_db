@@ -11,23 +11,24 @@ import requests
 from lxml import etree
 
 from .exclude import ExcludeList
-from .http import fetch_with_retry
+from .openmsx_source import (
+    GITHUB_API_URL,
+    SKIP_PREFIXES,
+    FallbackXMLSource,
+    LiveXMLSource,
+    MirrorXMLSource,
+    XMLSource,
+)
 from .slotmap import extract_slotmap, load_sha1_index
 
 log = logging.getLogger(__name__)
 
-GITHUB_API_URL = (
-    "https://api.github.com/repos/openMSX/openMSX/contents/share/machines"
-)
 RAW_BASE_URL = (
     "https://raw.githubusercontent.com/openMSX/openMSX/master/share/machines"
 )
 
 # MSX standards we care about (MSX1 is out of scope for iteration 1).
 WANTED_TYPES = {"MSX2", "MSX2+", "MSXturboR"}
-
-# Files / prefixes to skip (test rigs, boosted configs, WIP).
-SKIP_PREFIXES = ("Acid", "Boosted_", "WIP_", "ColecoVision", "Sega_")
 
 # openMSX region codes → human-readable region strings.
 REGION_MAP: dict[str, str] = {
@@ -106,22 +107,9 @@ def list_machine_files(
     exclude_list: ExcludeList | None = None,
 ) -> list[dict[str, str]]:
     """Return list of {name, download_url} for .xml machine files."""
-    resp = fetch_with_retry(session, GITHUB_API_URL)
-    entries: list[dict[str, str]] = []
-    for item in resp.json():
-        name: str = item["name"]
-        if item["type"] != "file" or not name.endswith(".xml"):
-            continue
-        if any(name.startswith(p) for p in SKIP_PREFIXES):
-            continue
-        if exclude_list and exclude_list.is_excluded_by_filename(name):
-            log.debug("[exclude:skip] Excluded filename | filename=%s", name)
-            continue
-        entries.append({
-            "name": name,
-            "download_url": item["download_url"],
-        })
-    return entries
+    src = LiveXMLSource(session)
+    names = src.list_files(exclude_list=exclude_list)
+    return [{"name": n, "download_url": src._url_map[n]} for n in names]
 
 
 def parse_machine_xml(
@@ -370,6 +358,7 @@ def _extract_connectivity(devices: etree._Element, out: dict[str, Any]) -> None:
 def fetch_all(
     session: requests.Session | None = None,
     *,
+    source: XMLSource | None = None,
     delay: float = 0.3,
     limit: int | None = None,
     exclude_list: ExcludeList | None = None,
@@ -377,34 +366,42 @@ def fetch_all(
     sha1_index: dict[str, Path] | None = None,
     systemroms_root: Path | None = None,
 ) -> list[dict[str, Any]]:
-    """Fetch and parse all openMSX machine configs.  Returns list of model dicts."""
-    if session is None:
-        session = requests.Session()
-        session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
+    """Fetch and parse all openMSX machine configs.  Returns list of model dicts.
+
+    When *source* is given it is used as-is (live, mirror, or fallback).
+    When *source* is None a ``LiveXMLSource`` is created from *session*
+    (creating a default session when *session* is also None).
+    """
+    if source is None:
+        if session is None:
+            session = requests.Session()
+            session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
+        source = LiveXMLSource(session)
 
     log.info("Listing openMSX machine files…")
     try:
-        files = list_machine_files(session, exclude_list=exclude_list)
+        names = source.list_files(exclude_list=exclude_list)
     except Exception:
         log.exception("Failed to list openMSX machine files — returning empty result")
         return []
-    log.info("Found %d XML files", len(files))
+    log.info("Found %d XML files", len(names))
 
     if limit:
-        files = files[:limit]
+        names = names[:limit]
 
     models: list[dict[str, Any]] = []
     excluded = 0
     skipped = 0
     errors = 0
 
-    for i, f in enumerate(files):
-        name = f["name"]
-        url = f["download_url"]
+    for i, name in enumerate(names):
         try:
-            resp = fetch_with_retry(session, url)
+            xml_bytes = source.fetch_file(name)
+            if xml_bytes is None:
+                skipped += 1
+                continue
             result = parse_machine_xml(
-                resp.content, name,
+                xml_bytes, name,
                 lut_rules=lut_rules,
                 sha1_index=sha1_index,
                 systemroms_root=systemroms_root,
@@ -423,10 +420,10 @@ def fetch_all(
             else:
                 skipped += 1
         except Exception:
-            log.exception("Error fetching/parsing %s", name)
+            log.exception("Error parsing %s", name)
             errors += 1
 
-        if delay and i < len(files) - 1:
+        if delay and i < len(names) - 1:
             time.sleep(delay)
 
     log.info(

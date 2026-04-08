@@ -13,17 +13,34 @@ from . import build as build_module, merge, msxorg, openmsx
 
 def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
     """Fetch and parse all openMSX machine configs, emit JSON."""
+    from .openmsx_source import FallbackXMLSource, LiveXMLSource, MirrorXMLSource
     from .slotmap import load_sha1_index
     from .slotmap_lut import load_slotmap_lut
+    import requests as _requests
 
     lut_rules = load_slotmap_lut(build_module.SLOTMAP_LUT_PATH)
     sha1_index = load_sha1_index(
         build_module.SHA1_INDEX_PATH if build_module.SHA1_INDEX_PATH.exists() else None
     )
     sr_root = build_module.SYSTEMROMS_ROOT if build_module.SYSTEMROMS_ROOT.exists() else None
+
+    mirror_path = Path(args.openmsx_mirror) if args.openmsx_mirror else None
+    if mirror_path is not None and args.local_openmsx_only:
+        source = MirrorXMLSource(mirror_path)
+        delay = 0.0
+    elif mirror_path is not None:
+        session = _requests.Session()
+        session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
+        source = FallbackXMLSource(LiveXMLSource(session), MirrorXMLSource(mirror_path))
+        delay = args.delay
+    else:
+        source = None
+        delay = args.delay
+
     models = openmsx.fetch_all(
+        source=source,
         limit=args.limit,
-        delay=args.delay,
+        delay=delay,
         lut_rules=lut_rules,
         sha1_index=sha1_index or None,
         systemroms_root=sr_root,
@@ -64,10 +81,13 @@ def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
 def cmd_build(args: argparse.Namespace) -> None:
     """Run the full build pipeline."""
     resolutions_path = Path(args.resolutions) if args.resolutions else None
+    openmsx_mirror_path = Path(args.openmsx_mirror) if args.openmsx_mirror else None
     mirror_path = Path(args.msxorg_mirror) if args.msxorg_mirror else None
     build_module.build(
         do_fetch=args.fetch,
         resolutions_path=resolutions_path,
+        openmsx_mirror_path=openmsx_mirror_path,
+        local_openmsx_only=args.local_openmsx_only,
         mirror_path=mirror_path,
         local_only=args.local_msxorg_only,
     )
@@ -148,6 +168,17 @@ def main() -> None:
         help="Skip live msx.org requests entirely; use mirror files only."
              " Requires --msxorg-mirror or msxorg_mirror in scraper-config.json.",
     )
+    p_build.add_argument(
+        "--openmsx-mirror", default=None, metavar="DIR",
+        help="Local directory of openMSX machine XML files (e.g. share/machines)."
+             " Overrides openmsx_mirror in scraper-config.json."
+             " Default mode: try GitHub first, use mirror on failure.",
+    )
+    p_build.add_argument(
+        "--local-openmsx-only", action="store_true",
+        help="Skip live GitHub requests for openMSX data entirely; use mirror files only."
+             " Requires --openmsx-mirror or openmsx_mirror in scraper-config.json.",
+    )
     p_build.set_defaults(func=cmd_build)
 
     # ── fetch-openmsx ────────────────────────────────────────────────
@@ -165,6 +196,15 @@ def main() -> None:
     p_openmsx.add_argument(
         "--delay", type=float, default=0.3,
         help="Delay between requests in seconds (default: 0.3)",
+    )
+    p_openmsx.add_argument(
+        "--openmsx-mirror", default=None, metavar="DIR",
+        help="Local directory of openMSX machine XML files (e.g. share/machines)."
+             " Default mode: try GitHub first, use mirror on failure.",
+    )
+    p_openmsx.add_argument(
+        "--local-openmsx-only", action="store_true",
+        help="Skip live GitHub requests entirely; use mirror files only.",
     )
     p_openmsx.set_defaults(func=cmd_fetch_openmsx)
 
