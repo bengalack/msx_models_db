@@ -340,6 +340,6 @@ Priority: Must
 - The number of in-scope models is small enough (likely < 200) that all rows can be rendered in the DOM without virtualization.
 - The maintainer has Node.js or Python available locally to run the scraper.
 - Column definitions (names, groups, derived rules) are fixed at build/data time and do not change per-user at runtime. They are maintained in a single Python configuration file and generated into data.js by the scraper.
-- FPGA-based unofficial models will be included if they appear in the openMSX XML or have a dedicated msx.org wiki page.
+- FPGA-based unofficial models will be included if they appear in the openMSX XML or have a dedicated msx.org wiki page. Specifically: **1chipMSX** and **Omega MSX** are in scope. MiSTer MSX core is out of scope (does not represent a distinct MSX model).
 - The `systemroms/machines/` directory and `all_sha1s.txt` index are available locally when the scraper runs (required for ROM-size-based mirror detection).
 - The starter LUT vocabulary covers all device types present in in-scope openMSX XML files; unknown strings will be rare and handled by maintainer LUT extension.

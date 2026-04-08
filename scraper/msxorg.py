@@ -27,8 +27,10 @@ CATEGORY_URLS: dict[str, str] = {
 }
 
 # Pages that are overview/standard pages, not actual model pages.
+# NOTE: "1chipMSX" is intentionally NOT in this set — it is an FPGA-based
+# unofficial model with a dedicated wiki page and must be scraped as a model.
 SKIP_TITLES = {
-    "MSX2", "MSX2+", "MSX turbo R", "1chipMSX",
+    "MSX2", "MSX2+", "MSX turbo R",
 }
 
 # ── Regex helpers for field extraction ───────────────────────────────
