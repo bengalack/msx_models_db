@@ -160,8 +160,16 @@
     "yamaha|yis-604/128": 157,
     "yamaha|yis-805/128 or yis-805/256": 158,
     "yamaha|yis-805/128r2": 159,
-    "|ma-20 br": 160
+    "|ma-20 br": 160,
+    "c-bios|msx2": 161,
+    "c-bios|msx2 br": 162,
+    "c-bios|msx2 eu": 163,
+    "c-bios|msx2 jp": 164,
+    "c-bios|msx2+": 165,
+    "c-bios|msx2+ br": 166,
+    "c-bios|msx2+ eu": 167,
+    "c-bios|msx2+ jp": 168
   },
   "retired_models": [],
-  "next_model_id": 161
+  "next_model_id": 169
 }
