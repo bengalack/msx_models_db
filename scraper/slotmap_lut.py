@@ -23,8 +23,11 @@ Usage::
 from __future__ import annotations
 
 import json
+import logging
 import re
 from pathlib import Path
+
+log = logging.getLogger(__name__)
 
 
 def load_slotmap_lut(path: str | Path) -> list[dict]:
@@ -78,7 +81,7 @@ def load_slotmap_lut(path: str | Path) -> list[dict]:
                     f"invalid id_pattern {id_pattern!r}: {exc}"
                 ) from exc
 
-    print(f"[INFO] Loaded slotmap LUT: {len(rules)} rules from {path}")
+    log.info("Loaded slotmap LUT: %d rules from %s", len(rules), path)
     return rules
 
 

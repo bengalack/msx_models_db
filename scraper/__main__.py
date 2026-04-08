@@ -13,7 +13,21 @@ from . import build as build_module, merge, msxorg, openmsx
 
 def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
     """Fetch and parse all openMSX machine configs, emit JSON."""
-    models = openmsx.fetch_all(limit=args.limit, delay=args.delay)
+    from .slotmap import load_sha1_index
+    from .slotmap_lut import load_slotmap_lut
+
+    lut_rules = load_slotmap_lut(build_module.SLOTMAP_LUT_PATH)
+    sha1_index = load_sha1_index(
+        build_module.SHA1_INDEX_PATH if build_module.SHA1_INDEX_PATH.exists() else None
+    )
+    sr_root = build_module.SYSTEMROMS_ROOT if build_module.SYSTEMROMS_ROOT.exists() else None
+    models = openmsx.fetch_all(
+        limit=args.limit,
+        delay=args.delay,
+        lut_rules=lut_rules,
+        sha1_index=sha1_index or None,
+        systemroms_root=sr_root,
+    )
     output = json.dumps(models, indent=2, ensure_ascii=False)
     if args.output:
         with open(args.output, "w", encoding="utf-8") as f:
@@ -94,6 +108,12 @@ def cmd_merge(args: argparse.Namespace) -> None:
 
 
 def main() -> None:
+    # Ensure stdout/stderr can handle Unicode (slotmap uses ⌧, • etc.)
+    if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    if sys.stderr and hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8")
+
     parser = argparse.ArgumentParser(
         prog="python -m scraper",
         description="MSX Models DB scraper pipeline",
