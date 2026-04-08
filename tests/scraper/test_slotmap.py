@@ -737,7 +737,13 @@ class TestLoadSha1Index:
 # ---------------------------------------------------------------------------
 
 class TestToshibaTCX200xWrapper:
-    """Devices nested inside a <ToshibaTCX-200x> wrapper are classified normally."""
+    """ToshibaTCX-200x compound device with <window>-based sub-devices (HX-33/HX-34).
+
+    The wrapper's <mem base="0x4000" size="0x8000"/> spans pages 1-2.
+    Inner ROMs use <window size> for sequential packing within that range:
+      rs232  (window size 0x4000 = 1 page) → page 1
+      wordpro (window size 0x10000, clamped) → page 2
+    """
 
     _XML = """\
 <msxconfig>
@@ -745,13 +751,13 @@ class TestToshibaTCX200xWrapper:
     <primary slot="3">
       <secondary slot="3">
         <ToshibaTCX-200x id="Toshiba TCX-2001/2002">
+          <rom id="rs232">
+            <window base="0xC000" size="0x4000"/>
+          </rom>
+          <rom id="wordpro">
+            <window base="0x10000" size="0x10000"/>
+          </rom>
           <mem base="0x4000" size="0x8000"/>
-          <MSX-RS232 id="RS-232C Interface">
-            <mem base="0xC000" size="0x4000"/>
-          </MSX-RS232>
-          <ROM id="Word Processor ROM">
-            <mem base="0x4000" size="0x8000"/>
-          </ROM>
         </ToshibaTCX-200x>
       </secondary>
     </primary>
@@ -760,19 +766,29 @@ class TestToshibaTCX200xWrapper:
 
     def _slotmap(self) -> dict:
         root = _root(self._XML)
-        return extract_slotmap(root, LUT_RULES, filename="Victor_HC-90A.xml")
+        return extract_slotmap(root, LUT_RULES, filename="Toshiba_HX-33.xml")
 
-    def test_rs232_on_page3(self):
+    def test_rs232_on_page1(self):
         sm = self._slotmap()
-        # 0xC000 → page 3
-        assert sm["slotmap_3_3_3"] == "RS2"
-
-    def test_wordpro_rom_on_pages1_and_2(self):
-        sm = self._slotmap()
-        # 0x4000–0xBFFF → pages 1 and 2; "Word Processor ROM" doesn't match
-        # any LUT rule in the test fixture → falls back to raw tag name "ROM"
+        # First child packed at wrapper base 0x4000 → page 1
+        # <rom id="rs232"> normalised to ROM; no test-LUT match → raw "ROM"
         assert sm["slotmap_3_3_1"] == "ROM"
+
+    def test_wordpro_on_page2(self):
+        sm = self._slotmap()
+        # Second child packed at 0x8000 (after rs232's 0x4000 window) → page 2
+        # <rom id="wordpro"> normalised to ROM; no test-LUT match → raw "ROM"
         assert sm["slotmap_3_3_2"] == "ROM"
+
+    def test_page0_empty(self):
+        sm = self._slotmap()
+        # Wrapper starts at 0x4000 — page 0 (0x0000-0x3FFF) is unmapped
+        assert sm["slotmap_3_3_0"] == "\u2022"
+
+    def test_page3_empty(self):
+        sm = self._slotmap()
+        # Wrapper ends at 0xBFFF — page 3 (0xC000-0xFFFF) is unmapped
+        assert sm["slotmap_3_3_3"] == "\u2022"
 
     def test_wrapper_itself_not_classified_as_device(self):
         """The ToshibaTCX-200x element must not appear as a cell value."""
@@ -782,7 +798,7 @@ class TestToshibaTCX200xWrapper:
 
     def test_absent_subslots_remain_absent(self):
         sm = self._slotmap()
-        # Sub-slots 0, 1, 2 of ms=3 are not in the XML
+        # Sub-slots 0, 1, 2 of ms=3 are not in XML but slot is expanded
         for ss in (0, 1, 2):
             for p in range(4):
-                assert sm[f"slotmap_3_{ss}_{p}"] == "\u2022"  # • (empty page in present subslot)
+                assert sm[f"slotmap_3_{ss}_{p}"] == "\u2022"

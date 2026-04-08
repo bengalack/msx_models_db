@@ -91,12 +91,11 @@ def match_lut(element_tag: str, element_id: str | None, rules: list[dict]) -> st
 
 
 def _iter_slot_devices(slot_el: etree._Element):
-    """Iterate device children of *slot_el*, transparently entering ToshibaTCX-200x wrappers.
+    """Iterate device children of *slot_el*, skipping structural elements.
 
-    Yields child elements while:
-    - Skipping structural elements (secondary, Mirror, primary, non-string tags).
-    - Descending into <ToshibaTCX-200x> wrapper elements so their children are
-      processed as if they were direct slot children.
+    Yields child elements while skipping secondary, Mirror, primary, and
+    non-string tags.  ToshibaTCX-200x wrappers are yielded as-is (handled
+    specially by ``_classify_tcx_wrapper``).
     """
     for child in slot_el:
         tag = child.tag
@@ -104,17 +103,73 @@ def _iter_slot_devices(slot_el: etree._Element):
             continue
         if tag in ("secondary", "Mirror", "primary"):
             continue
-        if tag == "ToshibaTCX-200x":
-            # Transparent proprietary wrapper — enter and yield its children.
-            for grandchild in child:
-                gc_tag = grandchild.tag
-                if not isinstance(gc_tag, str):
-                    continue
-                if gc_tag in ("secondary", "Mirror", "primary"):
-                    continue
-                yield grandchild
-        else:
-            yield child
+        yield child
+
+
+def _classify_tcx_wrapper(
+    wrapper_el: etree._Element,
+    lut_rules: list[dict],
+    filename: str,
+) -> dict[int, str]:
+    """Classify sub-devices inside a <ToshibaTCX-200x> compound device.
+
+    The wrapper's own ``<mem base size>`` defines the Z80 address range.
+    Inner ROM/device children use ``<window size>`` to declare their internal
+    bank size.  Sub-devices are packed sequentially into the wrapper's address
+    range, each consuming ``min(window_size, remaining_space)`` bytes.
+
+    Returns a ``{page: abbr}`` map for the pages covered.
+    """
+    # Wrapper's Z80 address range
+    wrapper_mem = wrapper_el.find("mem")
+    if wrapper_mem is None:
+        return {}
+    wrapper_base = _parse_hex_or_int(wrapper_mem.get("base"))
+    wrapper_size = _parse_hex_or_int(wrapper_mem.get("size"))
+    if wrapper_base is None or wrapper_size is None:
+        return {}
+    wrapper_end = wrapper_base + wrapper_size
+
+    page_map: dict[int, str] = {}
+    offset = wrapper_base
+
+    for child in wrapper_el:
+        child_tag = child.tag
+        if not isinstance(child_tag, str):
+            continue
+        # Skip non-device children (mem, sramname, initialContent, etc.)
+        window_el = child.find("window")
+        if window_el is None:
+            continue
+        win_size = _parse_hex_or_int(window_el.get("size"))
+        if win_size is None or win_size <= 0:
+            continue
+
+        # How much space this child occupies in the Z80 range
+        effective_size = min(win_size, wrapper_end - offset)
+        if effective_size <= 0:
+            break  # no room left in the wrapper's range
+
+        pages = _pages_for_mem(offset, effective_size)
+        element_id = child.get("id")
+        # TCX wrapper uses lowercase tags (e.g. <rom>) but the LUT uses
+        # the canonical uppercase form (<ROM>), so normalise for matching.
+        lut_tag = child_tag.upper()
+        abbr = match_lut(lut_tag, element_id, lut_rules)
+        if abbr is None:
+            print(
+                f"[WARN] Unmatched device: {lut_tag} id={element_id!r} in {filename}",
+                file=sys.stderr,
+            )
+            abbr = lut_tag
+
+        for p in pages:
+            if p not in page_map:
+                page_map[p] = abbr
+
+        offset += win_size  # advance by full window size for packing
+
+    return page_map
 
 
 def _classify_devices(
@@ -127,12 +182,20 @@ def _classify_devices(
     Returns a page map (pages 0-3). Devices with no <mem> child are skipped.
     Overlapping pages: first assignment wins; [WARN] logged for subsequent.
     Unknown devices: raw element tag used as value; [WARN] logged.
-    ToshibaTCX-200x wrapper elements are entered transparently.
+    ToshibaTCX-200x compound devices are handled via ``_classify_tcx_wrapper``.
     """
     page_map: dict[int, str] = {}
 
     for child in _iter_slot_devices(slot_el):
         tag = child.tag
+
+        # Compound wrapper — sub-devices use <window>, not <mem>
+        if tag == "ToshibaTCX-200x":
+            tcx_map = _classify_tcx_wrapper(child, lut_rules, filename)
+            for p, abbr in tcx_map.items():
+                if p not in page_map:
+                    page_map[p] = abbr
+            continue
 
         mem_el = child.find("mem")
         if mem_el is None:
@@ -317,6 +380,10 @@ def _apply_rom_visibility(
     """
     for child in _iter_slot_devices(slot_el):
         tag = child.tag
+
+        # ToshibaTCX-200x children use <window>, not <mem> — no rom_visibility
+        if tag == "ToshibaTCX-200x":
+            continue
 
         mem_el = child.find("mem")
         if mem_el is None:
