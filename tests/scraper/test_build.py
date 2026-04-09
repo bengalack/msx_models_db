@@ -42,7 +42,7 @@ class TestBuildPipeline:
         )
 
         # data.js exists and contains window.MSX_DATA
-        content = output_path.read_text()
+        content = output_path.read_text(encoding="utf-8")
         assert "window.MSX_DATA" in content
 
         # Registry was created with at least one model
@@ -64,13 +64,13 @@ class TestBuildPipeline:
 
         build(openmsx_path=openmsx_path, msxorg_path=msxorg_path,
               registry_path=registry_path, output_path=output_path)
-        content1 = output_path.read_text()
-        reg1 = registry_path.read_text()
+        content1 = output_path.read_text(encoding="utf-8")
+        reg1 = registry_path.read_text(encoding="utf-8")
 
         build(openmsx_path=openmsx_path, msxorg_path=msxorg_path,
               registry_path=registry_path, output_path=output_path)
-        content2 = output_path.read_text()
-        reg2 = registry_path.read_text()
+        content2 = output_path.read_text(encoding="utf-8")
+        reg2 = registry_path.read_text(encoding="utf-8")
 
         assert content1 == content2
         assert reg1 == reg2
@@ -120,6 +120,7 @@ class TestBuildSlotmapLUT:
         "FW", "DSK", "MUS", "RS", "RSFW", "MM", "PM",
         "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2327", "\u2022",
         "CS1", "CS2", "CS3", "CS4",
+        "CS1!", "CS2!", "CS3!", "CS4!",
     }
 
     def _run_build(self, tmp_path):
@@ -227,7 +228,7 @@ class TestBuildExcludeList:
             output_path=output_path,
         )
 
-        content = output_path.read_text()
+        content = output_path.read_text(encoding="utf-8")
         # Philips present, Sony absent
         assert "NMS 8250" in content or "Philips" in content
         assert "HB-75P" not in content
@@ -362,7 +363,7 @@ class TestBuildExcludeList:
             output_path=output_path,
         )
 
-        content = output_path.read_text()
+        content = output_path.read_text(encoding="utf-8")
         assert "HB-75P" in content
         assert "NMS 8250" in content or "Philips" in content
 

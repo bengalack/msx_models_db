@@ -16,6 +16,7 @@ EXPECTED_ABBRS = {
     "FW", "DSK", "MUS", "RS", "RSFW", "MM", "PM",
     "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2327", "\u2022",
     "CS1", "CS2", "CS3", "CS4",
+    "CS1!", "CS2!", "CS3!", "CS4!",
 }
 
 
@@ -30,7 +31,7 @@ def test_load_starter_lut_returns_list():
 
 def test_load_starter_lut_count():
     rules = load_slotmap_lut(STARTER_LUT)
-    assert len(rules) == 29
+    assert len(rules) == 33
 
 
 def test_load_starter_lut_rule_keys():
@@ -78,7 +79,7 @@ def test_compact_lut_known_entries():
     lut = compact_lut(rules)
     assert lut["MAIN"] == "MSX BIOS with BASIC ROM"
     assert lut["\u2327"] == "Sub-slot absent (not expanded)"
-    assert lut["\u2022"] == "Empty page — no device mapped"
+    assert lut["\u2022"] == "Empty page \u2014 no device mapped"
     assert lut["DSK"] == "Disk ROM"
 
 

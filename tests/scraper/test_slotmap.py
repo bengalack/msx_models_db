@@ -35,10 +35,14 @@ LUT_RULES: list[dict] = [
     {"element": "PanasonicRAM", "id_pattern": None, "abbr": "PM", "tooltip": "Panasonic Mapper"},
     {"element": "RAM", "id_pattern": None, "abbr": "RAM", "tooltip": "RAM (no memory mapper)"},
     {"element": "secondary", "id_pattern": None, "abbr": "EXP", "tooltip": "Expansion Bus"},
-    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS1", "tooltip": "Cartridge slot 1"},
-    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS2", "tooltip": "Cartridge slot 2"},
-    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS3", "tooltip": "Cartridge slot 3"},
-    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS4", "tooltip": "Cartridge slot 4"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS1",  "tooltip": "Cartridge slot 1"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS2",  "tooltip": "Cartridge slot 2"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS3",  "tooltip": "Cartridge slot 3"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS4",  "tooltip": "Cartridge slot 4"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS1!", "tooltip": "Cartridge slot 1 (in subslot \u2014 non-standard)"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS2!", "tooltip": "Cartridge slot 2 (in subslot \u2014 non-standard)"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS3!", "tooltip": "Cartridge slot 3 (in subslot \u2014 non-standard)"},
+    {"element": "__cartridge__", "id_pattern": None, "abbr": "CS4!", "tooltip": "Cartridge slot 4 (in subslot \u2014 non-standard)"},
     {"element": "__sentinel__", "id_pattern": None, "abbr": "\u2327", "tooltip": "Sub-slot absent (not expanded)"},
 ]
 
@@ -802,3 +806,62 @@ class TestToshibaTCX200xWrapper:
         for ss in (0, 1, 2):
             for p in range(4):
                 assert sm[f"slotmap_3_{ss}_{p}"] == "\u2022"
+
+
+# ---------------------------------------------------------------------------
+# Cartridge slots in subslots (non-standard, CS{N}! suffix)
+# ---------------------------------------------------------------------------
+
+class TestSubslotCartridge:
+    """secondary external='true' inside an expanded primary → CS{N}! with ! suffix."""
+
+    _XML = """\
+<msxconfig>
+  <devices>
+    <primary slot="0">
+      <secondary external="true" slot="0"/>
+      <secondary external="true" slot="1"/>
+    </primary>
+    <primary external="true" slot="1"/>
+  </devices>
+</msxconfig>"""
+
+    def _slotmap(self):
+        root = _root(self._XML)
+        return extract_slotmap(root, LUT_RULES)
+
+    def test_subslot_cartridge_gets_bang_suffix(self):
+        """secondary external='true' produces CS{N}! not CS{N}."""
+        sm = self._slotmap()
+        for p in range(4):
+            assert sm[f"slotmap_0_0_{p}"] == "CS1!"
+            assert sm[f"slotmap_0_1_{p}"] == "CS2!"
+
+    def test_primary_cartridge_after_subslot_carts_numbered_correctly(self):
+        """Primary external slot gets sequential CS{N} continuing from subslot count."""
+        sm = self._slotmap()
+        for p in range(4):
+            assert sm[f"slotmap_1_0_{p}"] == "CS3"
+
+    def test_subslot_cartridge_not_absent(self):
+        """Subslot cartridge cells must not be ⌧ or absent."""
+        sm = self._slotmap()
+        for p in range(4):
+            assert sm[f"slotmap_0_0_{p}"] not in ("\u2327", None)
+
+    def test_mixed_expanded_primary_with_subslot_carts(self):
+        """Expanded primary can have a mix of external and internal secondaries."""
+        xml = """\
+<msxconfig><devices>
+  <primary slot="0">
+    <secondary external="true" slot="0"/>
+    <secondary slot="1">
+      <MemoryMapper id="Main RAM"><size>512</size><mem base="0x0000" size="0x10000"/></MemoryMapper>
+    </secondary>
+  </primary>
+</devices></msxconfig>"""
+        root = _root(xml)
+        sm = extract_slotmap(root, LUT_RULES)
+        for p in range(4):
+            assert sm[f"slotmap_0_0_{p}"] == "CS1!"
+        assert sm["slotmap_0_1_0"] == "MM"

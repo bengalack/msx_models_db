@@ -341,6 +341,17 @@ def extract_slotmap(
                     continue
 
                 present_subslots.add(ss)
+
+                # External secondary: cartridge slot in a subslot (non-standard).
+                # Mark with ! suffix to signal the unusual placement.
+                if secondary.get("external") == "true":
+                    cs_counter += 1
+                    abbr = f"CS{cs_counter}!"
+                    for p in range(4):
+                        result[f"slotmap_{ms}_{ss}_{p}"] = abbr
+                        slot_abbrs[ms][ss][p] = abbr
+                    continue
+
                 page_map = _classify_devices(secondary, lut_rules, filename)
                 page_map = _apply_rom_visibility(secondary, page_map, lut_rules,
                                                  filename, sha1_index, systemroms_root)

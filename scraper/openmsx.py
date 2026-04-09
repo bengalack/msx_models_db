@@ -289,13 +289,18 @@ def _extract_media(devices: etree._Element, out: dict[str, Any]) -> None:
     if floppy_count:
         out["floppy_drives"] = str(floppy_count)
 
-    # Cartridge slots: count primary slots marked external="true".
+    # Cartridge slots: count primary slots marked external="true", plus secondary
+    # slots marked external="true" (cartridge in a subslot — non-standard design).
     root = devices.getparent()
     cart_count = 0
     if root is not None:
         for primary in root.iter("primary"):
             if primary.get("external") == "true":
                 cart_count += 1
+            else:
+                for secondary in primary.findall("secondary"):
+                    if secondary.get("external") == "true":
+                        cart_count += 1
     if cart_count:
         out["cartridge_slots"] = cart_count
 

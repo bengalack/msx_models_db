@@ -34,25 +34,25 @@
     "id_pattern": "Modem ROM",
     "abbr": "MOD",
     "tooltip": "Modem ROM"
-  },  
+  },
   {
     "element": "ROM",
     "id_pattern": "MSX-DOS",
     "abbr": "DOS2",
     "tooltip": "MSX-DOS 2 ROM"
-  },  
+  },
   {
     "element": "ROM",
     "id_pattern": "CP/M ROM",
     "abbr": "CP/M",
     "tooltip": "CP/M ROM"
-  },  
+  },
   {
     "element": "MSX-Modem",
     "id_pattern": null,
     "abbr": "MOD",
     "tooltip": "Modem ROM"
-  },    
+  },
   {
     "element": "ROM",
     "id_pattern": "BASIC|Cockpit|Designer|Desk Pac|Firmware|Memovision|MSX JUSHO|NIA-2001|Painter|Program|ROM|Sakhr|Set-Up|Super Impose|Utility|Word|Word Font|wordpro|Write",
@@ -117,7 +117,7 @@
     "element": "Bunsetsu",
     "id_pattern": null,
     "abbr": "BUN",
-    "tooltip": "Bunsetsu Henkan - Hiragana text 🠆 Kanji Japanese"
+    "tooltip": "Bunsetsu Henkan - Hiragana text ðŸ † Kanji Japanese"
   },
   {
     "element": "YamahaSFG",
@@ -156,6 +156,30 @@
     "tooltip": "Cartridge slot 4"
   },
   {
+    "element": "__cartridge__",
+    "id_pattern": null,
+    "abbr": "CS1!",
+    "tooltip": "Cartridge slot 1 (in subslot — non-standard)"
+  },
+  {
+    "element": "__cartridge__",
+    "id_pattern": null,
+    "abbr": "CS2!",
+    "tooltip": "Cartridge slot 2 (in subslot — non-standard)"
+  },
+  {
+    "element": "__cartridge__",
+    "id_pattern": null,
+    "abbr": "CS3!",
+    "tooltip": "Cartridge slot 3 (in subslot — non-standard)"
+  },
+  {
+    "element": "__cartridge__",
+    "id_pattern": null,
+    "abbr": "CS4!",
+    "tooltip": "Cartridge slot 4 (in subslot — non-standard)"
+  },
+  {
     "element": "secondary",
     "id_pattern": null,
     "abbr": "EXP",
@@ -164,13 +188,13 @@
   {
     "element": "__sentinel__",
     "id_pattern": null,
-    "abbr": "\u2327",
+    "abbr": "⌧",
     "tooltip": "Sub-slot absent (not expanded)"
   },
   {
     "element": "__sentinel__",
     "id_pattern": null,
-    "abbr": "\u2022",
+    "abbr": "•",
     "tooltip": "Empty page — no device mapped"
   }
 ]
