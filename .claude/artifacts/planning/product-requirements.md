@@ -187,6 +187,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Derived columns are supported. A derived column specifies a Python function that receives the full merged row (including hidden columns) and returns the computed value. Derived columns are computed during the merge/build step and stored in data.js — not computed at runtime in the browser.
     - Defined derived column rules:
       - `nmos_cmos`: "CMOS" if the `engine` field matches `*T976*` (i.e. contains the substring "T976", e.g. T9769, T9769B, T9769C); "NMOS" otherwise.
+      - `fpga_support`: "Yes" if the `engine` field matches `*Altera*` (i.e. contains the substring "Altera", e.g. Altera Cyclone IV); `null` (empty) otherwise.
     - The web page requires no column configuration of its own; it reads all column and group definitions from data.js at load time.
 
 - Local supplemental data source
