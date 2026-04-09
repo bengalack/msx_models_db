@@ -154,7 +154,8 @@ COLUMNS: list[Column] = [
     Column(id=27, key="connectivity",     label="Connectivity/Ports",   group="other",    type="string", short_label="Conn/ Ports",  tooltip="Connectivity/Ports"),
     # Emulation
     Column(id=28, key="openmsx_id",       label="openMSX Machine ID",   group="emulation", type="string", short_label="openMSX ID",  tooltip="openMSX Machine ID"),
-    Column(id=29, key="fpga_support",     label="FPGA/MiSTer Support",  group="emulation", type="string", short_label="FPGA/ MiSTer", tooltip="FPGA/MiSTer Support"),
+    Column(id=29, key="fpga_support",     label="FPGA",                 group="emulation", type="string",
+           derive=lambda m: "Yes" if "Altera" in (m.get("engine") or "") else None),
 
     # Slotmap, slot 0  (IDs 30–45)  — ms=0, ss=0..3, p=0..3
     Column(id=30, key="slotmap_0_0_0", label="0 / P0", group="slotmap_0", type="string"),
