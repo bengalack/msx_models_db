@@ -26,6 +26,9 @@ CATEGORY_URLS: dict[str, str] = {
     "turbo R": f"{WIKI_URL}Category:MSX_turbo_R_Computers",
 }
 
+# Ranking for "pick the highest" logic when a model appears in multiple categories.
+GENERATION_RANK: dict[str, int] = {"MSX1": 0, "MSX2": 1, "MSX2+": 2, "turbo R": 3}
+
 # Pages that are overview/standard pages, not actual model pages.
 # NOTE: "1chipMSX" is intentionally NOT in this set — it is an FPGA-based
 # unofficial model with a dedicated wiki page and must be scraped as a model.
@@ -71,8 +74,8 @@ def list_model_pages(
 
     Returns list of {title, url, standard}.
     """
-    models: list[dict[str, str]] = []
-    seen_urls: set[str] = set()
+    # url → entry dict; we update standard when a higher category is seen.
+    url_to_entry: dict[str, dict[str, str]] = {}
 
     for standard, cat_url in CATEGORY_URLS.items():
         log.info("Fetching category page for %s…", standard)
@@ -95,18 +98,22 @@ def list_model_pages(
             if title in SKIP_TITLES:
                 continue
             full_url = urljoin(BASE_URL, href)
-            if full_url in seen_urls:
+            if full_url in url_to_entry:
+                # Keep the highest generation for models listed in multiple categories.
+                entry = url_to_entry[full_url]
+                if GENERATION_RANK.get(standard, -1) > GENERATION_RANK.get(entry["standard"], -1):
+                    entry["standard"] = standard
                 continue
-            seen_urls.add(full_url)
-            models.append({
+            url_to_entry[full_url] = {
                 "title": title,
                 "url": full_url,
                 "standard": standard,
-            })
+            }
 
         if delay:
             time.sleep(delay)
 
+    models = list(url_to_entry.values())
     log.info("Found %d model pages across all categories", len(models))
     return models
 
@@ -158,10 +165,15 @@ def _parse_vram_kb(raw: str) -> int | None:
     return int(m.group(1)) if m else None
 
 
+_VDP_RANK: dict[str, int] = {"v9958": 2, "v9938": 1}  # TMS99xx → 0 (default)
+
+
 def _parse_vdp(raw: str) -> str | None:
-    """Extract VDP chip name from strings like 'Yamaha V9958'."""
-    m = _RE_VDP.search(raw)
-    return m.group(1) if m else None
+    """Extract VDP chip name; when multiple are listed, return the highest-ranked."""
+    matches = _RE_VDP.findall(raw)
+    if not matches:
+        return None
+    return max(matches, key=lambda v: _VDP_RANK.get(v.lower(), 0))
 
 
 def _parse_audio(raw: str) -> dict[str, Any]:

@@ -5,7 +5,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 from scraper.mirror import MirrorPageSource
-from scraper.msxorg import fetch_all, list_model_pages
+from scraper.msxorg import _parse_vdp, fetch_all, list_model_pages
 
 
 _GOOD_CATEGORY_HTML = (
@@ -37,6 +37,71 @@ class _StubSource:
 
     def fetch_page(self, title: str, url: str) -> bytes | None:  # pragma: no cover
         return None
+
+
+# ---------------------------------------------------------------------------
+# _parse_vdp — pick highest when multiple VDPs listed
+# ---------------------------------------------------------------------------
+
+class TestParseVdp:
+    def test_single_v9938(self):
+        assert _parse_vdp("Yamaha V9938") == "V9938"
+
+    def test_single_v9958(self):
+        assert _parse_vdp("Yamaha V9958") == "V9958"
+
+    def test_multiple_picks_highest(self):
+        assert _parse_vdp("V9938 / V9958") == "V9958"
+
+    def test_multiple_reversed_order_still_picks_highest(self):
+        assert _parse_vdp("V9958 / V9938") == "V9958"
+
+    def test_tms_is_lowest(self):
+        assert _parse_vdp("TMS9918A / V9938") == "V9938"
+
+    def test_no_match_returns_none(self):
+        assert _parse_vdp("no vdp here") is None
+
+
+# ---------------------------------------------------------------------------
+# list_model_pages — pick highest generation for multi-category models
+# ---------------------------------------------------------------------------
+
+class TestListModelPagesHighestGeneration:
+    """A model in multiple categories gets the highest generation standard."""
+
+    _MSX2_CAT = (
+        b"<html><body>"
+        b'<div id="mw-pages">'
+        b'<a href="/wiki/1chipMSX" title="1chipMSX">1chipMSX</a>'
+        b"</div></body></html>"
+    )
+    _MSX2PLUS_CAT = (
+        b"<html><body>"
+        b'<div id="mw-pages">'
+        b'<a href="/wiki/1chipMSX" title="1chipMSX">1chipMSX</a>'
+        b"</div></body></html>"
+    )
+    _EMPTY_CAT = b"<html><body><div id='mw-pages'></div></body></html>"
+
+    def test_model_in_both_msx2_and_msx2plus_gets_msx2plus(self):
+        # MSX2 category first, then MSX2+ — model should end up as MSX2+
+        source = _StubSource([self._MSX2_CAT, self._MSX2PLUS_CAT, self._EMPTY_CAT])
+        pages = list_model_pages(source, delay=0)
+        assert len(pages) == 1
+        assert pages[0]["standard"] == "MSX2+"
+
+    def test_model_only_in_msx2_stays_msx2(self):
+        source = _StubSource([self._MSX2_CAT, self._EMPTY_CAT, self._EMPTY_CAT])
+        pages = list_model_pages(source, delay=0)
+        assert len(pages) == 1
+        assert pages[0]["standard"] == "MSX2"
+
+    def test_model_only_in_turbor_gets_turbor(self):
+        source = _StubSource([self._EMPTY_CAT, self._EMPTY_CAT, self._MSX2_CAT])
+        pages = list_model_pages(source, delay=0)
+        assert len(pages) == 1
+        assert pages[0]["standard"] == "turbo R"
 
 
 class TestListModelPagesGraceful:
