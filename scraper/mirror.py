@@ -73,7 +73,7 @@ class LivePageSource:
             return None
 
 
-def _slug_to_filename(url: str) -> str:
+def slug_to_filename(url: str) -> str:
     """Derive the browser Save-As filename from a msx.org wiki URL.
 
     Extracts the wiki slug from the URL, applies the naming convention, and
@@ -117,11 +117,11 @@ class MirrorPageSource:
         return path.read_bytes()
 
     def fetch_category(self, standard: str, url: str) -> bytes | None:
-        filename = _slug_to_filename(url)
+        filename = slug_to_filename(url)
         return self._read(filename, f"category {standard!r}")
 
     def fetch_page(self, title: str, url: str) -> bytes | None:
-        filename = _slug_to_filename(url)
+        filename = slug_to_filename(url)
         return self._read(filename, f"model {title!r}")
 
 
