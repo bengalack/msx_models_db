@@ -1,1 +1,13 @@
-[{"manufacturer": "", "model": "MA-20 BR"}]
+[
+    {"manufacturer": "*", "model": "MA-20 BR"},
+    {"filename": "8bits4ever*.html"},
+    {"filename": "AGE Labs*.html"},
+    {"filename": "Niga MSX2 VersionUP Kit*.html"},
+    {"filename": "MA20*.html"},
+    {"filename": "C-BIOS_MSX*"},
+    {"filename": "Boosted*"},
+    {"filename": "ColecoVision*"},
+    {"filename": "Sega*"},
+    {"filename": "WIP*"},
+    {"filename": "Acid*"}
+]
