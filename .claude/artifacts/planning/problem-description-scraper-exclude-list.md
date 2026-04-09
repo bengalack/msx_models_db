@@ -7,10 +7,11 @@
 
 ## Summary
 - The scrapers currently fetch every model they discover — there is no way to skip unwanted models.
-- A maintainer-editable `data/exclude.json` lists entries to skip **before any HTTP request** is made.
-- Each entry matches by **manufacturer + model** (both scrapers) or by **XML filename** (openMSX only).
-- Empty string `""` in a field means the field itself must be empty to match.
-- `"*"` is a wildcard meaning "any value in this field".
+- A maintainer-editable `data/exclude.json` lists entries to skip **before any fetch or parse** is attempted.
+- Each entry matches by **manufacturer + model** (both scrapers) or by **filename** (both scrapers; glob patterns supported).
+- Empty string `""` in a manufacturer/model field means the field itself must be empty to match.
+- `"*"` is a wildcard meaning "any value in this field" (manufacturer/model only).
+- Filename rules support full glob patterns: `*` (any chars), `?` (single char), `[seq]` (character set).
 - A missing `exclude.json` is treated as an empty list (no exclusions).
 - Every skipped model is logged so the maintainer can audit exclusions.
 
@@ -59,19 +60,18 @@ The scrapers fetch every model they discover from the openMSX GitHub repository 
 
 ## In Scope
 - `data/exclude.json` — maintainer-edited file, committed to the repo
-- Exclude check in `scraper/openmsx.py` — applied after file listing, before fetching each XML
-- Exclude check in `scraper/msxorg.py` — applied after category enumeration, before fetching each model page
+- Exclude check in `scraper/openmsx.py` — filename rule applied at file listing; manufacturer+model applied post-parse
+- Exclude check in `scraper/msxorg.py` — filename rule applied before fetching each page (suppresses fetch and any parse warning); manufacturer+model applied post-parse
 - Match modes per entry (one entry uses one mode):
-  - `manufacturer` + `model`: exact string match on both fields; `""` matches an empty field; `"*"` matches any value
-  - `filename`: openMSX only; exact match on XML filename (e.g. `"Sony_HB-75P.xml"`)
-- INFO-level log line for each skipped model
-- Fail-fast validation of `exclude.json` at scraper startup (before any network calls)
+  - `manufacturer` + `model`: both fields required; `""` matches empty/missing; `"*"` matches any value
+  - `filename`: applies to both scrapers; supports glob patterns (`*`, `?`, `[seq]`); on openMSX matches the XML filename (e.g. `"C-BIOS*"`); on msx.org matches the mirror HTML filename derived from the URL slug (e.g. `"AGE Labs GR8BIT*"`)
+- DEBUG-level log line for each skipped model/file
+- WARNING logged at build end for any exclude rule that matched nothing (dead-rule detection)
+- Fail-fast validation of `exclude.json` at build startup (before any network calls)
 - Missing `exclude.json` → treated as empty list, no error
-- Unit tests for the matching logic
+- Unit tests for all matching logic and scraper wiring
 
 ## Out of Scope
-- Excluding models after they have been fetched (merge-time filtering)
-- Regex or glob patterns beyond `"*"` wildcard
 - Wildcards on fields other than manufacturer and model (e.g. wildcard on year or region)
 - UI or web-facing exclusion management
 - Automatic population of the exclude list
@@ -79,8 +79,9 @@ The scrapers fetch every model they discover from the openMSX GitHub repository 
 ## Constraints
 - `data/exclude.json` must be valid JSON, pretty-printed, human-readable, and diff-friendly.
   - Source: Operational — maintainer edits by hand and reviews diffs in git.
-- Exclude check must occur **before** any HTTP request for the excluded model.
-  - Source: Operational — purpose is to avoid unnecessary network traffic.
+- Filename exclude check must occur **before** any HTTP request or mirror file read for that model.
+  - Source: Operational — prevents "Mirror file not found" warnings for intentionally excluded pages.
+- Manufacturer+model check fires post-parse (requires successful fetch and parse to know the model identity).
 
 ## Risks
 - Overly broad wildcard entry accidentally excludes wanted models.

@@ -29,8 +29,9 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - External Interfaces: Reads `window.MSX_DATA` (set by data.js); writes URL hash via `history.replaceState`
 
 - Scraper (data pipeline)
-  - Responsibilities: Fetch, parse, merge, compute derived columns, conflict-resolve, and write model data; maintain model ID registry; extract and classify slot map data from openMSX XML; detect slot map mirrors
-  - Owns Data: `scraper/columns.py` (single source of truth for column/group definitions); `data/id-registry.json` (source of truth for model IDs); `data/slotmap-lut.json` (slot map vocabulary — maintained by maintainer); writes `docs/data.js`
+  - Responsibilities: Fetch, parse, merge all three sources, compute derived columns, conflict-resolve, and write model data; maintain model ID registry; extract and classify slot map data from openMSX XML; detect slot map mirrors
+  - Owns Data: `scraper/columns.py` (single source of truth for column/group definitions); `data/id-registry.json` (source of truth for model IDs); `data/slotmap-lut.json` (slot map vocabulary — maintained by maintainer); `data/local-raw.json` (manually curated supplemental data, highest authority); writes `docs/data.js`
+  - Merge strategy: openMSX + msx.org merged first (openMSX wins on conflict); local overrides applied on top (local wins for any field it provides)
   - External Interfaces: HTTP GET to msx.org (HTML scraping); HTTP GET to raw.githubusercontent.com or GitHub API (XML files); stdin/stdout for conflict prompts; read-only access to `systemroms/machines/` (ROM file size lookups for mirror detection)
 
 ## Components
@@ -59,9 +60,9 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 
 - Scraper CLI
   - Type: Job (offline Python script)
-  - Responsibilities: Scrape msx.org, parse openMSX XML, merge sources, compute derived columns, prompt on conflicts, assign/reuse stable model IDs, write data.js
+  - Responsibilities: Scrape msx.org, parse openMSX XML, load local supplemental data, merge all three sources, compute derived columns, prompt on conflicts, assign/reuse stable model IDs, write data.js
   - Depends On: `scraper/columns.py` (column config), id-registry.json (model IDs), msx.org HTTP or local mirror (`PageSource`), GitHub API/raw HTTP or local mirror (`XMLSource`)
-  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional)
+  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional), `data/local-raw.json` (read-only, optional)
 
 - msx.org Page Source
   - Type: Library (module `scraper/mirror.py`)
@@ -157,14 +158,15 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Trigger: Maintainer runs `python -m scraper build` (or `build --fetch` for fresh data)
   - Steps:
     1. Load column configuration from `scraper/columns.py` (groups, columns, derive functions); validate (no duplicate IDs, no ID 0, group refs valid, etc.)
-    2. Load cached raw data from `data/openmsx-raw.json` and `data/msxorg-raw.json`
-    3. If `--fetch`: fetch fresh data from msx.org and openMSX GitHub first, overwriting cached files
-    4. Merge msx.org and openMSX data per model; for conflicting fields, print summary and prompt maintainer to choose
-    5. Compute derived columns: for each model row, run every `Column.derive` callable; store results under the column's key
-    6. Load `data/id-registry.json`; match models by natural key (manufacturer + model name); assign new IDs for unmatched entries
-    7. Build output: generate `docs/data.js` with groups (from config), active columns (excluding hidden/retired), and model values[] positionally aligned to active columns
-    8. Atomic write `docs/data.js` and `data/id-registry.json`
-    9. Print summary: N models written, M conflicts resolved, K parse failures
+    2. Load cached raw data from `data/openmsx-raw.json` and `data/msxorg-raw.json`; rename `"standard"` → `"generation"` in cached dicts for backward compatibility
+    3. Load local supplemental data from `data/local-raw.json` (optional; absent file is not an error)
+    4. If `--fetch`: fetch fresh data from msx.org and openMSX GitHub first, overwriting cached files
+    5. Merge msx.org and openMSX data per model (openMSX wins on conflict); then apply local overrides on top (local wins for any field it provides)
+    6. Compute derived columns: for each model row, run every `Column.derive` callable; store results under the column's key
+    7. Load `data/id-registry.json`; match models by natural key (manufacturer + model name); assign new IDs for unmatched entries
+    8. Build output: generate `docs/data.js` with groups (from config), active columns (excluding hidden/retired), and model values[] positionally aligned to active columns
+    9. Atomic write `docs/data.js` and `data/id-registry.json`
+    10. Print summary: N models written, M conflicts resolved, K parse failures
   - Data touched: id-registry.json (read+write), docs/data.js (write), cached raw JSON (read, or write if --fetch)
   - Failure handling: HTTP errors → retry once, then log and skip model. Parse failures → log field name and raw value, continue. If >20% of models fail to parse, abort before writing output. Missing cached files without --fetch → error with clear message.
 

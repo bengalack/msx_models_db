@@ -188,6 +188,16 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Derived columns are computed during the merge/build step and stored in data.js — not computed at runtime in the browser.
     - The web page requires no column configuration of its own; it reads all column and group definitions from data.js at load time.
 
+- Local supplemental data source
+  - Description: A maintainer-curated JSON file (`data/local-raw.json`) serves as a third data source alongside openMSX XML and msx.org. It supplies data for fields that cannot be scraped automatically (e.g. SRAM, HIMEM Addr, Wait Cycles, NMOS/CMOS, RTC, Engine). Values in the local file take precedence over both openMSX and msx.org for any field they provide.
+  - Priority: Must
+  - Acceptance Criteria:
+    - `data/local-raw.json` is a JSON array of model objects with the same schema as `msxorg-raw.json`.
+    - Each entry requires at minimum `manufacturer` and `model` keys to match against the merged dataset.
+    - During build, local values overwrite the openMSX+msx.org merged value for any field they supply.
+    - Models present only in `local-raw.json` (not in openMSX or msx.org) are included in the output.
+    - If `data/local-raw.json` is absent, the build completes normally (local source is optional).
+
 - Cell value truncation
   - Description: Column definitions may specify an optional `truncate_limit` (positive integer). When a cell's string value exceeds this limit, the visible text is trimmed: the first `(truncate_limit − 1)` characters are shown, followed by `…`. A tooltip reveals the full value. When the cell also links to a URL, the tooltip shows `"<full value> — <url>"` on a single line. Sorting always uses the full original value from the data record, unaffected by truncation.
   - Priority: Must
@@ -337,6 +347,7 @@ Priority: Must
 
 ## Assumptions
 - msx.org wiki and openMSX GitHub XML files are publicly accessible and scrapeable.
+- `data/local-raw.json` can override fields from both openMSX and msx.org for any model. Local values are assumed to be manually verified and authoritative.
 - The number of in-scope models is small enough (likely < 200) that all rows can be rendered in the DOM without virtualization.
 - The maintainer has Node.js or Python available locally to run the scraper.
 - Column definitions (names, groups, derived rules) are fixed at build/data time and do not change per-user at runtime. They are maintained in a single Python configuration file and generated into data.js by the scraper.
