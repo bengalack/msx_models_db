@@ -7,4 +7,6 @@ venv/
 dist-types/
 data/*-raw.json
 data/scraper-config.json
-systemroms/**
+systemroms/extensions/**
+systemroms/machines/**
+!systemroms/machines/all_sha1s.txt
