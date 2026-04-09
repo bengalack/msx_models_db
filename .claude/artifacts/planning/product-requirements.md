@@ -219,6 +219,8 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Acceptance Criteria:
     - The scraper can be invoked by the maintainer with a single command.
     - It scrapes MSX2, MSX2+, and MSX turbo R model pages from msx.org.
+    - A model that appears in multiple msx.org category pages is assigned the highest generation. The ranking from lowest to highest is: MSX1 < MSX2 < MSX2+ < turbo R.
+    - When a model's VDP field lists multiple chips (e.g. "V9938 / V9958"), the highest-ranked chip is used. The ranking from lowest to highest is: TMS99xx < V9938 < V9958.
     - It parses machine XML files from the openMSX GitHub repository's share folder.
     - When both sources have data for the same model and the values conflict, the scraper summarizes all conflicts and prompts the maintainer to choose which value to keep be    - When both sources have data for the same model and the values conflict, openMSX is used by default (it is considered the more authoritative source for hardware specifications). All conflicts are recorded in a file for maintainer review; the maintainer can override individual field choices and re-run the build with a resolutions file.
  ID registry).
