@@ -97,9 +97,9 @@ def cmd_build(args: argparse.Namespace) -> None:
         do_fetch=args.fetch,
         resolutions_path=resolutions_path,
         openmsx_mirror_path=openmsx_mirror_path,
-        local_openmsx_only=args.local_openmsx_only,
+        local_openmsx_only=args.local_only or args.local_openmsx_only,
         mirror_path=mirror_path,
-        local_only=args.local_msxorg_only,
+        local_only=args.local_only or args.local_msxorg_only,
     )
 
 
@@ -174,6 +174,11 @@ def main() -> None:
              " Default mode: try live first, use mirror on failure.",
     )
     p_build.add_argument(
+        "-l", "--local-only", action="store_true",
+        help="Skip all live requests; use local mirror files for both msx.org and openMSX."
+             " Shorthand for --local-msxorg-only --local-openmsx-only.",
+    )
+    p_build.add_argument(
         "--local-msxorg-only", action="store_true",
         help="Skip live msx.org requests entirely; use mirror files only."
              " Requires --msxorg-mirror or msxorg_mirror in scraper-config.json.",
@@ -213,7 +218,7 @@ def main() -> None:
              " Default mode: try GitHub first, use mirror on failure.",
     )
     p_openmsx.add_argument(
-        "--local-openmsx-only", action="store_true",
+        "-l", "--local-openmsx-only", action="store_true",
         help="Skip live GitHub requests entirely; use mirror files only.",
     )
     p_openmsx.set_defaults(func=cmd_fetch_openmsx)
@@ -240,7 +245,7 @@ def main() -> None:
              " Default mode: try live first, use mirror on failure.",
     )
     p_msxorg.add_argument(
-        "--local-msxorg-only", action="store_true",
+        "-l", "--local-msxorg-only", action="store_true",
         help="Skip live msx.org requests entirely; use mirror files only.",
     )
     p_msxorg.set_defaults(func=cmd_fetch_msxorg)
