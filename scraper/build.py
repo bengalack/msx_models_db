@@ -324,11 +324,19 @@ def build(
         len(js_models), len(js_columns), len(js_groups), output_path,
     )
 
-    # Dead-rule check — warn for any exclude rule that matched nothing
-    for i in exclude_list.dead_rules():
-        log.warning(
-            "[exclude:dead_rule] Rule matched nothing | rule=%d entry=%s",
-            i, exclude_list.rules[i],
+    # Dead-rule check — only meaningful after a full fetch.
+    # Without --fetch, filename rules are never evaluated (no file listing occurs)
+    # and manufacturer+model rules may appear dead because a previous fetch already
+    # removed matching models from the cache.
+    if do_fetch:
+        for i in exclude_list.dead_rules():
+            log.warning(
+                "[exclude:dead_rule] Rule matched nothing | rule=%d entry=%s",
+                i, exclude_list.rules[i],
+            )
+    else:
+        log.debug(
+            "[exclude:dead_rule] Skipping dead-rule check (requires --fetch for accurate results)"
         )
 
 

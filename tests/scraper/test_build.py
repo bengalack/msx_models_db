@@ -293,6 +293,61 @@ class TestBuildExcludeList:
         el.is_excluded_by_filename("Boosted_MSX2_JP.xml")
         assert el.dead_rules() == [], "Boosted* rule should not be dead after a match"
 
+    def test_dead_rule_warning_suppressed_without_fetch(self, tmp_path, caplog):
+        """Dead-rule warnings must not appear when build() is called without --fetch.
+
+        Filename rules are never evaluated without a fetch (no file listing occurs),
+        and manufacturer+model rules may appear dead because a previous fetch already
+        removed the models from cache. Reporting them as dead would be a false positive.
+        """
+        import logging
+
+        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        exclude_path = tmp_path / "exclude.json"
+        exclude_path.write_text(json.dumps([
+            {"filename": "Boosted*"},
+            {"manufacturer": "Sony", "model": "HB-99Z"},  # model not in cache
+        ]))
+
+        with caplog.at_level(logging.WARNING, logger="scraper.build"):
+            build(
+                do_fetch=False,
+                openmsx_path=openmsx_path,
+                msxorg_path=msxorg_path,
+                registry_path=registry_path,
+                exclude_path=exclude_path,
+                output_path=output_path,
+            )
+
+        assert "[exclude:dead_rule]" not in caplog.text, (
+            "dead_rule warnings must not appear without --fetch"
+        )
+
+    def test_dead_rule_warning_emitted_with_fetch(self, tmp_path, caplog):
+        """Dead-rule warnings ARE emitted when build() is called with --fetch."""
+        import logging
+        import scraper.build as build_mod
+
+        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        exclude_path = tmp_path / "exclude.json"
+        exclude_path.write_text(json.dumps([
+            {"manufacturer": "Sony", "model": "HB-99Z"},  # model not in cache → dead
+        ]))
+
+        with patch.object(build_mod, "fetch_sources"):  # skip actual fetch
+            with caplog.at_level(logging.WARNING, logger="scraper.build"):
+                build(
+                    do_fetch=True,
+                    openmsx_path=openmsx_path,
+                    msxorg_path=msxorg_path,
+                    registry_path=registry_path,
+                    exclude_path=exclude_path,
+                    output_path=output_path,
+                )
+
+        assert "[exclude:dead_rule]" in caplog.text
+        assert "HB-99Z" in caplog.text
+
     def test_empty_excludelist_is_noop(self, tmp_path):
         """An empty exclude.json leaves output identical to no-exclude baseline."""
         openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
