@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from scraper.mirror import FallbackPageSource, LivePageSource, MirrorPageSource, _slug_to_filename
+from scraper.mirror import FallbackPageSource, LivePageSource, MirrorPageSource, slug_to_filename as _slug_to_filename
 
 
 # ---------------------------------------------------------------------------

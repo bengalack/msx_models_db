@@ -184,8 +184,9 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Removing a column during development (before the first public release) requires only deleting the entry from the configuration. No other files need manual changes.
     - Retiring a column after the first public release is done by setting a flag on the entry. The column's ID is preserved forever for URL compatibility, but the column is excluded from the generated data.js output.
     - A column can be marked as hidden: it is scraped and available as input to derived columns, but not shipped to the browser.
-    - Derived columns are supported. A derived column specifies a Python function that receives the full merged row (including hidden columns) and returns the computed value. Example: a "NMOS/CMOS" column that deduces its value from the VDP chipset field.
-    - Derived columns are computed during the merge/build step and stored in data.js — not computed at runtime in the browser.
+    - Derived columns are supported. A derived column specifies a Python function that receives the full merged row (including hidden columns) and returns the computed value. Derived columns are computed during the merge/build step and stored in data.js — not computed at runtime in the browser.
+    - Defined derived column rules:
+      - `nmos_cmos`: "CMOS" if the `engine` field matches `*T976*` (i.e. contains the substring "T976", e.g. T9769, T9769B, T9769C); "NMOS" otherwise.
     - The web page requires no column configuration of its own; it reads all column and group definitions from data.js at load time.
 
 - Local supplemental data source

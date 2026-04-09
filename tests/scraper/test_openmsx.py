@@ -63,7 +63,7 @@ class TestParseXMLHappyPath:
         assert result is not None
         assert result["manufacturer"] == "Sony"
         assert result["model"] == "HB-75P"
-        assert result["standard"] == "MSX2"
+        assert result["generation"] == "MSX2"
         assert result["year"] == 1985
         assert result["region"] == "Europe"
 
@@ -77,13 +77,13 @@ class TestParseXMLHappyPath:
         xml = _xml(_info(msx_type="MSX2+"))
         result = parse_machine_xml(xml, "Panasonic_FS-A1WX.xml")
         assert result is not None
-        assert result["standard"] == "MSX2+"
+        assert result["generation"] == "MSX2+"
 
     def test_turbor_standard_normalised(self):
         xml = _xml(_info(msx_type="MSXturboR"))
         result = parse_machine_xml(xml, "Panasonic_FS-A1ST.xml")
         assert result is not None
-        assert result["standard"] == "turbo R"
+        assert result["generation"] == "turbo R"
 
 
 class TestParseXMLSkipConditions:
