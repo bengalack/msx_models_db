@@ -11,12 +11,15 @@ Filename convention (MirrorPageSource):
     1. URL-decoding percent-encoded characters (``%2B`` → ``+``)
     2. Replacing underscores with spaces
     3. Replacing colons with underscores (Windows forbids colons in filenames)
-    4. Appending `` - MSX Wiki.html``
+    4. Replacing forward slashes with underscores (Windows forbids slashes in
+       filenames; browsers apply the same substitution when saving pages)
+    5. Appending `` - MSX Wiki.html``
 
   Examples:
     ``Sony_HB-F9S``            → ``Sony HB-F9S - MSX Wiki.html``
     ``Category:MSX2_Computers`` → ``Category_MSX2 Computers - MSX Wiki.html``
     ``CIEL_Expert_2%2B_Turbo`` → ``CIEL Expert 2+ Turbo - MSX Wiki.html``
+    ``Yamaha_CX7M/128``        → ``Yamaha CX7M_128 - MSX Wiki.html``
 """
 
 from __future__ import annotations
@@ -80,8 +83,8 @@ def _slug_to_filename(url: str) -> str:
     slug = url.split("/wiki/", 1)[-1] if "/wiki/" in url else url
     # URL-decode percent-encoded chars, then underscores → spaces
     title = unquote(slug).replace("_", " ")
-    # Colons are illegal in Windows filenames → replace with underscore
-    safe_title = title.replace(":", "_")
+    # Colons and slashes are illegal in Windows filenames → replace with underscore
+    safe_title = title.replace(":", "_").replace("/", "_")
     return f"{safe_title} - MSX Wiki.html"
 
 

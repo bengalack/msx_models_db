@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import fnmatch
 import json
 import logging
 from dataclasses import dataclass, field
@@ -68,15 +69,16 @@ class ExcludeList:
         return False
 
     def is_excluded_by_filename(self, filename: str) -> bool:
-        """Return True if a filename matches any filename rule (exact match).
+        """Return True if a filename matches any filename rule.
 
+        Supports glob-style wildcards (``*``, ``?``, ``[seq]``) via fnmatch.
         Checks only entries with the {filename} mode.
         Updates internal match counters for dead-rule detection.
         """
         for i, rule in enumerate(self.rules):
             if "filename" not in rule:
                 continue
-            if rule["filename"] == filename:
+            if fnmatch.fnmatch(filename, rule["filename"]):
                 self._match_counts[i] += 1
                 return True
         return False
