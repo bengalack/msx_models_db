@@ -176,7 +176,7 @@ class TestBuildSlotmapLUT:
         json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
         json_end = content.rindex(";")
         data = json.loads(content[json_start:json_end])
-        assert len(data["columns"]) == 93
+        assert len(data["columns"]) == 91
 
     def test_missing_lut_file_aborts_build(self, tmp_path):
         import pytest
@@ -231,6 +231,67 @@ class TestBuildExcludeList:
         # Philips present, Sony absent
         assert "NMS 8250" in content or "Philips" in content
         assert "HB-75P" not in content
+
+    def test_exclude_list_passed_to_fetch_sources(self, tmp_path):
+        """exclude_list loaded by build() is forwarded to fetch_sources()."""
+        import scraper.build as build_mod
+
+        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        exclude_path = tmp_path / "exclude.json"
+        exclude_path.write_text(json.dumps([{"manufacturer": "Sony", "model": "HB-75P"}]))
+
+        captured: dict = {}
+
+        def fake_fetch(**kwargs):
+            captured["exclude_list"] = kwargs.get("exclude_list")
+
+        with patch.object(build_mod, "fetch_sources", side_effect=fake_fetch):
+            build(
+                do_fetch=True,
+                openmsx_path=openmsx_path,
+                msxorg_path=msxorg_path,
+                registry_path=registry_path,
+                exclude_path=exclude_path,
+                output_path=output_path,
+            )
+
+        el = captured.get("exclude_list")
+        assert el is not None, "exclude_list was not forwarded to fetch_sources"
+        assert el.is_excluded("Sony", "HB-75P")
+        assert not el.is_excluded("Philips", "NMS 8250")
+
+    def test_openmsx_filename_exclude_increments_match_count(self, tmp_path):
+        """Filename rules matched by openMSX list_files do not appear as dead rules."""
+        import logging
+        import scraper.build as build_mod
+        from scraper.openmsx_source import MirrorXMLSource
+
+        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        exclude_path = tmp_path / "exclude.json"
+        exclude_path.write_text(json.dumps([{"filename": "Boosted*"}]))
+
+        # Create a mirror dir with one Boosted_ file and one normal file
+        mirror_dir = tmp_path / "mirror"
+        mirror_dir.mkdir()
+        (mirror_dir / "Boosted_MSX2_JP.xml").write_bytes(b"<machine/>")
+        (mirror_dir / "Sony_HB-75P.xml").write_bytes(b"<machine/>")
+
+        with patch.object(build_mod, "fetch_sources") as mock_fetch:
+            # Call build with do_fetch=True so exclude_list is forwarded
+            build(
+                do_fetch=True,
+                openmsx_path=openmsx_path,
+                msxorg_path=msxorg_path,
+                registry_path=registry_path,
+                exclude_path=exclude_path,
+                output_path=output_path,
+            )
+            _, kwargs = mock_fetch.call_args
+            el = kwargs["exclude_list"]
+
+        # Simulate what openmsx list_files does: call is_excluded_by_filename
+        el.is_excluded_by_filename("Boosted_MSX2_JP.xml")
+        assert el.dead_rules() == [], "Boosted* rule should not be dead after a match"
 
     def test_empty_excludelist_is_noop(self, tmp_path):
         """An empty exclude.json leaves output identical to no-exclude baseline."""

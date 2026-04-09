@@ -101,6 +101,48 @@ class TestIsExcludedByFilename:
         el = ExcludeList()
         assert not el.is_excluded_by_filename("Sony_HB-75P.xml")
 
+    # ── glob / wildcard patterns ──────────────────────────────────────────
+
+    def test_glob_star_matches_prefix(self):
+        el = self._make({"filename": "C-BIOS*"})
+        assert el.is_excluded_by_filename("C-BIOS_MSX2_EU.xml")
+        assert el.is_excluded_by_filename("C-BIOS_MSX2+_JP.xml")
+
+    def test_glob_star_no_match_different_prefix(self):
+        el = self._make({"filename": "C-BIOS*"})
+        assert not el.is_excluded_by_filename("Sony_HB-F9S.xml")
+
+    def test_glob_star_matches_any_xml(self):
+        el = self._make({"filename": "*.xml"})
+        assert el.is_excluded_by_filename("Sony_HB-F9S.xml")
+        assert el.is_excluded_by_filename("Boosted_MSX2_JP.xml")
+
+    def test_glob_star_extension_does_not_match_html(self):
+        el = self._make({"filename": "*.xml"})
+        assert not el.is_excluded_by_filename("Sony HB-75P - MSX Wiki.html")
+
+    def test_glob_question_mark_single_char(self):
+        el = self._make({"filename": "Sony_HB-75?.xml"})
+        assert el.is_excluded_by_filename("Sony_HB-75P.xml")
+        assert not el.is_excluded_by_filename("Sony_HB-750XX.xml")
+
+    def test_glob_partial_pattern_with_prefix_and_extension(self):
+        el = self._make({"filename": "Boosted_*.xml"})
+        assert el.is_excluded_by_filename("Boosted_MSX2_JP.xml")
+        assert not el.is_excluded_by_filename("Sony_HB-F9S.xml")
+
+    def test_glob_html_wildcard_for_msxorg_mirror(self):
+        """Glob patterns work on msx.org mirror HTML filenames too."""
+        el = self._make({"filename": "AGE Labs*.html"})
+        assert el.is_excluded_by_filename("AGE Labs GR8BIT - MSX Wiki.html")
+        assert not el.is_excluded_by_filename("Sony HB-75P - MSX Wiki.html")
+
+    def test_glob_multiple_rules_first_match_wins(self):
+        el = self._make({"filename": "Sony*"}, {"filename": "Philips*"})
+        assert el.is_excluded_by_filename("Sony_HB-F9S.xml")
+        assert el.is_excluded_by_filename("Philips_NMS8250.xml")
+        assert not el.is_excluded_by_filename("Panasonic_FS-A1WX.xml")
+
 
 # ── ExcludeList.dead_rules ───────────────────────────────────────────────
 
@@ -127,6 +169,16 @@ class TestDeadRules:
     def test_empty_list_has_no_dead_rules(self):
         el = ExcludeList()
         assert el.dead_rules() == []
+
+    def test_wildcard_filename_rule_matched_is_not_dead(self):
+        el = ExcludeList(rules=[{"filename": "C-BIOS*"}])
+        el.is_excluded_by_filename("C-BIOS_MSX2_EU.xml")
+        assert el.dead_rules() == []
+
+    def test_wildcard_filename_rule_unmatched_is_dead(self):
+        el = ExcludeList(rules=[{"filename": "C-BIOS*"}])
+        el.is_excluded_by_filename("Sony_HB-F9S.xml")
+        assert el.dead_rules() == [0]
 
 
 # ── load_excludes ─────────────────────────────────────────────────────────
@@ -249,29 +301,149 @@ class TestOpenMSXWiring:
 
 
 class TestMsxOrgWiring:
-    """Tests for ExcludeList wired into msxorg.fetch_all (post-parse check)."""
+    """Tests for ExcludeList wired into msxorg.fetch_all.
 
-    # Minimal msx.org model page HTML with Philips NMS 8250 specs
-    _HTML = b"""<html><body>
-<h1 id="firstHeading">Philips NMS 8250</h1>
-<table class="wikitable">
-<tr><th>Manufacturer</th><td>Philips</td></tr>
-<tr><th>Year</th><td>1985</td></tr>
-</table>
-</body></html>"""
+    Covers both the pre-fetch filename check (fires before fetch_page is called)
+    and the post-parse manufacturer+model check (fires after parse_model_page).
+    """
 
-    def test_model_excluded_post_parse(self):
-        from scraper.msxorg import parse_model_page
-        el = ExcludeList(rules=[{"manufacturer": "Philips", "model": "NMS 8250"}])
-        result = parse_model_page(self._HTML, "MSX2", "Philips NMS 8250")
-        # parse_model_page may return partial result; we only need manufacturer+model
-        # to be present for the exclude check
-        if result:
-            assert el.is_excluded(result.get("manufacturer"), result.get("model"))
+    # Category page listing one model
+    _CATEGORY_HTML = (
+        b"<html><body>"
+        b'<div id="mw-pages">'
+        b'<a href="/wiki/Sony_HB-75P" title="Sony HB-75P">Sony HB-75P</a>'
+        b"</div></body></html>"
+    )
+    # Model page with a parseable specs table (Brand + Model minimum)
+    _GOOD_MODEL_HTML = b"""
+    <html><body><table class="wikitable">
+      <tr><th>Brand</th><td>Sony</td></tr>
+      <tr><th>Model</th><td>HB-75P</td></tr>
+    </table></body></html>
+    """
+    # Model page with no specs table — triggers "No specs table found" warning
+    _NO_SPECS_HTML = b"<html><body><h1>Sony HB-75P</h1><p>No table here.</p></body></html>"
 
-    def test_non_excluded_model_passes(self):
-        from scraper.msxorg import parse_model_page
+    def _write_all_categories(self, tmp_path, html: bytes = None):
+        """Write all three category files so list_model_pages can enumerate them."""
+        cats = [
+            "Category_MSX2 Computers",
+            "Category_MSX2+ Computers",
+            "Category_MSX turbo R Computers",
+        ]
+        for cat in cats:
+            content = html if html is not None else b"<html><body></body></html>"
+            (tmp_path / f"{cat} - MSX Wiki.html").write_bytes(content)
+
+    # ── pre-fetch filename check ──────────────────────────────────────────
+
+    def test_filename_exclude_suppresses_no_specs_warning(self, tmp_path, caplog):
+        """Model with no specs table emits no warning when excluded by filename."""
+        import logging
+        from scraper.exclude import ExcludeList
+        from scraper.mirror import MirrorPageSource
+        from scraper.msxorg import fetch_all
+
+        self._write_all_categories(tmp_path, self._CATEGORY_HTML)
+        (tmp_path / "Sony HB-75P - MSX Wiki.html").write_bytes(self._NO_SPECS_HTML)
+
+        el = ExcludeList(rules=[{"filename": "Sony HB-75P*"}])
+        source = MirrorPageSource(tmp_path)
+
+        with caplog.at_level(logging.WARNING):
+            models = fetch_all(source=source, delay=0, exclude_list=el)
+
+        assert models == []
+        assert not any("No specs table" in r.message for r in caplog.records)
+
+    def test_no_specs_warning_emitted_without_exclude(self, tmp_path, caplog):
+        """Model with no specs table emits WARNING when no exclude rule applies."""
+        import logging
+        from scraper.mirror import MirrorPageSource
+        from scraper.msxorg import fetch_all
+
+        self._write_all_categories(tmp_path, self._CATEGORY_HTML)
+        (tmp_path / "Sony HB-75P - MSX Wiki.html").write_bytes(self._NO_SPECS_HTML)
+
+        source = MirrorPageSource(tmp_path)
+        with caplog.at_level(logging.WARNING):
+            models = fetch_all(source=source, delay=0)
+
+        assert models == []
+        assert any("No specs table" in r.message for r in caplog.records)
+
+    def test_filename_exclude_prevents_fetch_page_call(self, tmp_path):
+        """fetch_page is never called for a filename-excluded model."""
+        from scraper.exclude import ExcludeList
+        from scraper.msxorg import fetch_all
+
+        fetch_page_calls: list[str] = []
+
+        class TrackingSource:
+            def fetch_category(self, standard, url):
+                return self._CATEGORY_HTML
+
+            def fetch_page(self, title, url):
+                fetch_page_calls.append(title)
+                return None
+
+        # Bind category HTML via closure
+        TrackingSource._CATEGORY_HTML = self._CATEGORY_HTML
+
+        el = ExcludeList(rules=[{"filename": "Sony HB-75P - MSX Wiki.html"}])
+        fetch_all(source=TrackingSource(), delay=0, exclude_list=el)
+
+        assert "Sony HB-75P" not in fetch_page_calls
+
+    def test_filename_glob_exclude_prevents_fetch_page_call(self, tmp_path):
+        """Glob pattern filename rule also prevents fetch_page from being called."""
+        from scraper.exclude import ExcludeList
+        from scraper.msxorg import fetch_all
+
+        fetch_page_calls: list[str] = []
+
+        class TrackingSource:
+            _CATEGORY_HTML = self._CATEGORY_HTML
+
+            def fetch_category(self, standard, url):
+                return self._CATEGORY_HTML
+
+            def fetch_page(self, title, url):
+                fetch_page_calls.append(title)
+                return None
+
+        el = ExcludeList(rules=[{"filename": "Sony*"}])
+        fetch_all(source=TrackingSource(), delay=0, exclude_list=el)
+
+        assert fetch_page_calls == []
+
+    # ── post-parse manufacturer+model check ──────────────────────────────
+
+    def test_manufacturer_model_exclude_removes_parsed_model(self, tmp_path):
+        """Model that parses successfully is removed by a manufacturer+model rule."""
+        from scraper.exclude import ExcludeList
+        from scraper.mirror import MirrorPageSource
+        from scraper.msxorg import fetch_all
+
+        self._write_all_categories(tmp_path, self._CATEGORY_HTML)
+        (tmp_path / "Sony HB-75P - MSX Wiki.html").write_bytes(self._GOOD_MODEL_HTML)
+
         el = ExcludeList(rules=[{"manufacturer": "Sony", "model": "HB-75P"}])
-        result = parse_model_page(self._HTML, "MSX2", "Philips NMS 8250")
-        if result:
-            assert not el.is_excluded(result.get("manufacturer"), result.get("model"))
+        source = MirrorPageSource(tmp_path)
+        models = fetch_all(source=source, delay=0, exclude_list=el)
+        assert models == []
+
+    def test_non_matching_exclude_does_not_remove_model(self, tmp_path):
+        """An exclude rule that does not match leaves the model in the output."""
+        from scraper.exclude import ExcludeList
+        from scraper.mirror import MirrorPageSource
+        from scraper.msxorg import fetch_all
+
+        self._write_all_categories(tmp_path, self._CATEGORY_HTML)
+        (tmp_path / "Sony HB-75P - MSX Wiki.html").write_bytes(self._GOOD_MODEL_HTML)
+
+        el = ExcludeList(rules=[{"manufacturer": "Philips", "model": "NMS 8250"}])
+        source = MirrorPageSource(tmp_path)
+        models = fetch_all(source=source, delay=0, exclude_list=el)
+        assert len(models) == 1
+        assert models[0]["manufacturer"] == "Sony"

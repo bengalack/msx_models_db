@@ -69,6 +69,29 @@ class TestMirrorXMLSourceListFiles:
         assert "Panasonic_FS-A1WX.xml" in names
         assert "Sony_HB-F9S.xml" not in names
 
+    def test_exclude_list_checked_before_skip_prefixes(self, tmp_path):
+        """is_excluded_by_filename is called even for files that SKIP_PREFIXES would also catch.
+
+        This ensures match counts are incremented for exclude rules that overlap
+        with SKIP_PREFIXES (e.g. {'filename': 'Boosted*'}), preventing false
+        dead-rule warnings at the end of the build.
+        """
+        (tmp_path / "Boosted_MSX2_JP.xml").write_bytes(b"<machine/>")
+        (tmp_path / "Sony_HB-F9S.xml").write_bytes(b"<machine/>")
+
+        checked: list[str] = []
+
+        exclude = MagicMock()
+        exclude.is_excluded_by_filename.side_effect = lambda n: (checked.append(n), False)[1]
+
+        src = MirrorXMLSource(tmp_path)
+        src.list_files(exclude_list=exclude)
+
+        assert "Boosted_MSX2_JP.xml" in checked, (
+            "is_excluded_by_filename must be called for Boosted_ files so match "
+            "counts are incremented and dead-rule detection works correctly"
+        )
+
     def test_returns_sorted_names(self, tmp_path):
         (tmp_path / "Zylog_Z80.xml").write_bytes(b"<machine/>")
         (tmp_path / "Alpha_A1.xml").write_bytes(b"<machine/>")
