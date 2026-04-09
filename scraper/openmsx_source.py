@@ -57,10 +57,10 @@ class LiveXMLSource:
             name: str = item["name"]
             if item["type"] != "file" or not name.endswith(".xml"):
                 continue
-            if any(name.startswith(p) for p in SKIP_PREFIXES):
-                continue
             if exclude_list and exclude_list.is_excluded_by_filename(name):
                 log.debug("[exclude:skip] Excluded filename | filename=%s", name)
+                continue
+            if any(name.startswith(p) for p in SKIP_PREFIXES):
                 continue
             self._url_map[name] = item["download_url"]
             names.append(name)
@@ -103,10 +103,10 @@ class MirrorXMLSource:
         names: list[str] = []
         for path in sorted(self._dir.glob("*.xml")):
             name = path.name
-            if any(name.startswith(p) for p in SKIP_PREFIXES):
-                continue
             if exclude_list and exclude_list.is_excluded_by_filename(name):
                 log.debug("[exclude:skip] Excluded filename | filename=%s", name)
+                continue
+            if any(name.startswith(p) for p in SKIP_PREFIXES):
                 continue
             names.append(name)
         log.info(

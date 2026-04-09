@@ -10,7 +10,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from . import merge, msxorg, openmsx
+from . import local_source, merge, msxorg, openmsx
 from .columns import (
     COLUMNS, GROUPS, Column,
     active_columns, group_by_key,
@@ -27,6 +27,7 @@ log = logging.getLogger(__name__)
 # Default file paths
 RAW_OPENMSX = Path("data/openmsx-raw.json")
 RAW_MSXORG = Path("data/msxorg-raw.json")
+RAW_LOCAL = Path("data/local-raw.json")
 REGISTRY_PATH = Path("data/id-registry.json")
 EXCLUDE_PATH = Path("data/exclude.json")
 SLOTMAP_LUT_PATH = Path("data/slotmap-lut.json")
@@ -60,6 +61,7 @@ def fetch_sources(
     local_openmsx_only: bool = False,
     mirror_path: Path | None = None,
     local_only: bool = False,
+    exclude_list=None,
 ) -> None:
     """Fetch fresh data from external sources and cache to disk.
 
@@ -79,7 +81,8 @@ def fetch_sources(
         openmsx_source = MirrorXMLSource(openmsx_mirror_path)
         openmsx_models = openmsx.fetch_all(source=openmsx_source, delay=0,
                                            lut_rules=lut_rules, sha1_index=sha1_index,
-                                           systemroms_root=systemroms_root)
+                                           systemroms_root=systemroms_root,
+                                           exclude_list=exclude_list)
     elif openmsx_mirror_path is not None:
         log.info("[mirror:mode] openMSX live-with-fallback | path=%s", openmsx_mirror_path)
         import requests as _requests
@@ -88,10 +91,12 @@ def fetch_sources(
         openmsx_source = FallbackXMLSource(LiveXMLSource(_session), MirrorXMLSource(openmsx_mirror_path))
         openmsx_models = openmsx.fetch_all(source=openmsx_source, delay=delay,
                                            lut_rules=lut_rules, sha1_index=sha1_index,
-                                           systemroms_root=systemroms_root)
+                                           systemroms_root=systemroms_root,
+                                           exclude_list=exclude_list)
     else:
         openmsx_models = openmsx.fetch_all(delay=delay, lut_rules=lut_rules,
-                                           sha1_index=sha1_index, systemroms_root=systemroms_root)
+                                           sha1_index=sha1_index, systemroms_root=systemroms_root,
+                                           exclude_list=exclude_list)
     _write_json(openmsx_models, openmsx_path)
     log.info("Wrote %d openMSX models to %s", len(openmsx_models), openmsx_path)
 
@@ -99,7 +104,7 @@ def fetch_sources(
     if mirror_path is not None and local_only:
         log.info("[mirror:mode] msx.org local-only | path=%s", mirror_path)
         msxorg_source = MirrorPageSource(mirror_path)
-        msxorg_models = msxorg.fetch_all(source=msxorg_source)
+        msxorg_models = msxorg.fetch_all(source=msxorg_source, exclude_list=exclude_list)
     elif mirror_path is not None:
         log.info("[mirror:mode] msx.org live-with-fallback | path=%s", mirror_path)
         import requests as _requests
@@ -107,9 +112,9 @@ def fetch_sources(
         session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
         from .mirror import LivePageSource
         msxorg_source = FallbackPageSource(LivePageSource(session), MirrorPageSource(mirror_path))
-        msxorg_models = msxorg.fetch_all(source=msxorg_source)
+        msxorg_models = msxorg.fetch_all(source=msxorg_source, exclude_list=exclude_list)
     else:
-        msxorg_models = msxorg.fetch_all(delay=delay)
+        msxorg_models = msxorg.fetch_all(delay=delay, exclude_list=exclude_list)
     _write_json(msxorg_models, msxorg_path)
     log.info("Wrote %d msx.org models to %s", len(msxorg_models), msxorg_path)
 
@@ -119,6 +124,7 @@ def build(
     do_fetch: bool = False,
     openmsx_path: Path = RAW_OPENMSX,
     msxorg_path: Path = RAW_MSXORG,
+    local_path: Path = RAW_LOCAL,
     registry_path: Path = REGISTRY_PATH,
     exclude_path: Path = EXCLUDE_PATH,
     slotmap_lut_path: Path = SLOTMAP_LUT_PATH,
@@ -169,6 +175,7 @@ def build(
             local_openmsx_only=local_openmsx_only,
             mirror_path=resolved_mirror,
             local_only=local_only,
+            exclude_list=exclude_list,
         )
 
     # Step 2: Load cached raw data
@@ -188,8 +195,20 @@ def build(
     with open(msxorg_path, encoding="utf-8") as f:
         msxorg_data = json.load(f)
 
-    log.info("Loaded %d openMSX + %d msx.org models from cache",
-             len(openmsx_data), len(msxorg_data))
+    # Backward-compat migration: rename "standard" → "generation" in cached raw data
+    # (cached files may predate the rename; fetch regenerates with the correct key).
+    for model in openmsx_data:
+        if "standard" in model:
+            model["generation"] = model.pop("standard")
+    for model in msxorg_data:
+        if "standard" in model:
+            model["generation"] = model.pop("standard")
+
+    # Load local supplemental data (optional — absent file is not an error).
+    local_data = local_source.load_local(local_path)
+
+    log.info("Loaded %d openMSX + %d msx.org + %d local models from cache",
+             len(openmsx_data), len(msxorg_data), len(local_data))
 
     # Apply exclude list to cached data (handles the case where data was cached
     # before an exclusion rule was added, or when --fetch is not used)
@@ -217,7 +236,7 @@ def build(
     if resolutions_path:
         resolutions = merge.load_resolutions(resolutions_path)
 
-    merged, conflicts = merge.merge_models(openmsx_data, msxorg_data, resolutions=resolutions)
+    merged, conflicts = merge.merge_models(openmsx_data, msxorg_data, local=local_data, resolutions=resolutions)
     merge.print_conflict_summary(conflicts)
 
     # Step 4: Derive computed columns

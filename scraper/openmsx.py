@@ -153,7 +153,7 @@ def parse_machine_xml(
         "model": model,
         "year": _int(info.find("release_year")),
         "region": _map_region(_text(info.find("region"))),
-        "standard": _normalise_type(msx_type),
+        "generation": _normalise_type(msx_type),
         "openmsx_id": openmsx_id,
     }
 

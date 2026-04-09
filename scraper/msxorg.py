@@ -12,7 +12,7 @@ import requests
 from bs4 import BeautifulSoup, Tag
 
 from .exclude import ExcludeList
-from .mirror import LivePageSource, MirrorPageSource, PageSource
+from .mirror import LivePageSource, MirrorPageSource, PageSource, slug_to_filename
 
 log = logging.getLogger(__name__)
 
@@ -266,7 +266,7 @@ def parse_model_page(
     result: dict[str, Any] = {
         "manufacturer": brand,
         "model": model,
-        "standard": standard,
+        "generation": standard,
         "msxorg_title": page_title,
     }
 
@@ -312,6 +312,11 @@ def parse_model_page(
     media_raw = " ".join(filter(None, [specs.get("Media", ""), specs.get("Extras", "")]))
     if media_raw:
         result.update(_parse_media(media_raw))
+
+    # Engine (chipset)
+    chipset = specs.get("Chipset", "")
+    if chipset:
+        result["engine"] = chipset
 
     # Keyboard layout
     kb = specs.get("Keyboard layout", "")
@@ -364,6 +369,20 @@ def fetch_all(
         title = page["title"]
         url = page["url"]
         standard = page["standard"]
+
+        # Pre-fetch filename exclude: skip before attempting the mirror read so
+        # no "Mirror file not found" warning is emitted for intentionally
+        # excluded pages.
+        if exclude_list:
+            filename = slug_to_filename(url)
+            if exclude_list.is_excluded_by_filename(filename):
+                log.debug(
+                    "[exclude:skip] Excluded by filename | filename=%s source=msxorg",
+                    filename,
+                )
+                excluded += 1
+                continue
+
         content = source.fetch_page(title, url)
         if content is None:
             errors += 1
