@@ -124,34 +124,32 @@ COLUMNS: list[Column] = [
     # Release
     Column(id=3,  key="year",              label="Year",                group="release",  type="number"),
     Column(id=4,  key="region",            label="Region",              group="release",  type="string"),
-    Column(id=5,  key="standard",          label="Generation",          group="release",  type="string", short_label="Gen"),
-    Column(id=6,  key="form_factor",       label="Form Factor",         group="release",  type="string"),
+    Column(id=5,  key="generation",        label="Generation",          group="release",  type="string", short_label="Gen"),
     # Memory
     Column(id=7,  key="main_ram_kb",       label="Main RAM (KB)",       group="memory",   type="number", short_label="Main RAM",    tooltip="Main RAM (KB)"),
-    Column(id=8,  key="vram_kb",           label="VRAM (KB)",           group="memory",   type="number", short_label="VRAM",         tooltip="VRAM (KB)"),
-    Column(id=9,  key="rom_kb",            label="ROM/BIOS (KB)",       group="memory",   type="number", short_label="ROM/ BIOS",    tooltip="ROM/BIOS (KB)"),
-    Column(id=10, key="mapper",            label="Mapper",              group="memory",   type="string"),
+    Column(id=10, key="mapper",            label="Memory Mapper",       group="memory",   type="string"),
+    Column(id=94, key="sram_kb",           label="SRAM",                group="memory",   type="string"),
+    Column(id=95, key="himem_addr",        label="HIMEM Addr",          group="memory",   type="string"),
     # Video
     Column(id=11, key="vdp",              label="VDP",                  group="video",    type="string"),
-    Column(id=12, key="max_resolution",   label="Max Resolution",       group="video",    type="string", short_label="Max Res",      tooltip="Max Resolution"),
-    Column(id=13, key="max_colors",       label="Max Colors",           group="video",    type="number", short_label="Max Clrs",     tooltip="Max Colors"),
-    Column(id=14, key="max_sprites",      label="Max Sprites",          group="video",    type="number", short_label="Max Sprt",     tooltip="Max Sprites"),
+    Column(id=8,  key="vram_kb",           label="VRAM (KB)",           group="video",    type="number", short_label="VRAM",         tooltip="VRAM (KB)"),
+    Column(id=96, key="wait_cycles",       label="Wait Cycles",         group="video",    type="string"),
     # Audio
     Column(id=15, key="psg",              label="PSG",                  group="audio",    type="string"),
-    Column(id=16, key="fm_chip",          label="FM Chip",              group="audio",    type="string"),
-    Column(id=17, key="audio_channels",   label="Audio Channels",       group="audio",    type="number", short_label="PSG Chnls",    tooltip="PSG Channels"),
+    Column(id=16, key="fm_chip",          label="MSX-MUSIC",            group="audio",    type="string"),
     # Media
     Column(id=18, key="floppy_drives",    label="Floppy Drive(s)",      group="media",    type="string", short_label="Floppy Drv",   tooltip="Floppy Drive(s)"),
     Column(id=19, key="cartridge_slots",  label="Cartridge Slots",      group="media",    type="number", short_label="Cart Slots",   tooltip="Cartridge Slots"),
     Column(id=20, key="tape_interface",   label="Tape Interface",       group="media",    type="string", short_label="Tape I/F",     tooltip="Tape Interface"),
-    Column(id=21, key="other_storage",    label="Other Storage",        group="media",    type="string", short_label="Other Stor",   tooltip="Other Storage"),
     # CPU/Chipsets
     Column(id=22, key="cpu",              label="CPU",                  group="cpu",      type="string"),
     Column(id=23, key="cpu_speed_mhz",    label="CPU Speed (MHz)",      group="cpu",      type="number", short_label="CPU MHz",      tooltip="CPU Speed (MHz)"),
     Column(id=24, key="sub_cpu",          label="Sub-CPU",              group="cpu",      type="string"),
+    Column(id=97, key="nmos_cmos",        label="NMOS/CMOS",            group="cpu",      type="string", short_label="NMOS/\u200bCMOS"),
+    Column(id=98, key="rtc",              label="RTC",                  group="cpu",      type="string"),
+    Column(id=99, key="engine",           label="Engine",               group="cpu",      type="string"),
     # Other
     Column(id=25, key="keyboard_layout",  label="Keyboard Layout",      group="other",    type="string", short_label="KB Layout",    tooltip="Keyboard Layout"),
-    Column(id=26, key="built_in_software", label="Built-in Software",   group="other",    type="string", short_label="Built-in SW",  tooltip="Built-in Software"),
     Column(id=27, key="connectivity",     label="Connectivity/Ports",   group="other",    type="string", short_label="Conn/ Ports",  tooltip="Connectivity/Ports"),
     # Emulation
     Column(id=28, key="openmsx_id",       label="openMSX Machine ID",   group="emulation", type="string", short_label="openMSX ID",  tooltip="openMSX Machine ID"),

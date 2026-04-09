@@ -31,8 +31,15 @@ _REGION_NORM: dict[str, str] = {
 }
 
 _FM_NORM: dict[str, str] = {
-    "msx-music": "MSX-MUSIC",
-    "msx music": "MSX-MUSIC",
+    # YM2413 aliases — all normalize to the chip part number
+    "msx-music": "YM2413",
+    "msx music": "YM2413",
+    "fm-pac": "YM2413",
+    "fmpac": "YM2413",
+    "fm-pak": "YM2413",
+    "fmpak": "YM2413",
+    "ym2413": "YM2413",
+    # Other FM chips
     "msx-audio": "MSX-AUDIO",
     "msx audio": "MSX-AUDIO",
     "moonsound": "MoonSound",
@@ -74,7 +81,7 @@ _PREFER_OPENMSX: set[str] = {"cartridge_slots", "vdp", "vram_kb", "main_ram_kb",
 _FIELD_NORMALISERS: dict[str, Any] = {
     "region": _normalise_region,
     "fm_chip": _normalise_fm,
-    "standard": _normalise_standard,
+    "generation": _normalise_standard,
 }
 
 
@@ -94,13 +101,15 @@ def merge_models(
     openmsx: list[dict[str, Any]],
     msxorg: list[dict[str, Any]],
     *,
+    local: list[dict[str, Any]] | None = None,
     resolutions: dict[str, dict[str, str]] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Merge models from both sources.
+    """Merge models from all sources.
 
     Args:
         openmsx: Models from openMSX scraper.
         msxorg: Models from msx.org scraper.
+        local: Models from the local supplemental file (highest authority).
         resolutions: Optional pre-resolved conflicts.
             Format: {natural_key: {field: "openmsx"|"msxorg"}}
 
@@ -110,6 +119,8 @@ def merge_models(
     """
     if resolutions is None:
         resolutions = {}
+    if local is None:
+        local = []
 
     # Index by natural key.
     o_by_key: dict[str, dict[str, Any]] = {}
@@ -122,36 +133,51 @@ def merge_models(
         nm = normalise_model(m)
         m_by_key[natural_key(nm)] = nm
 
-    all_keys = sorted(set(o_by_key.keys()) | set(m_by_key.keys()))
+    l_by_key: dict[str, dict[str, Any]] = {}
+    for m in local:
+        nm = normalise_model(m)
+        l_by_key[natural_key(nm)] = nm
+
+    all_keys = sorted(set(o_by_key.keys()) | set(m_by_key.keys()) | set(l_by_key.keys()))
     merged: list[dict[str, Any]] = []
     conflicts: list[dict[str, Any]] = []
 
     for key in all_keys:
         o_model = o_by_key.get(key)
         m_model = m_by_key.get(key)
+        l_model = l_by_key.get(key)
 
         if o_model and not m_model:
-            # openMSX-only.
-            merged.append(o_model)
-            continue
-        if m_model and not o_model:
-            # msx.org-only.
-            merged.append(m_model)
-            continue
+            base = o_model
+        elif m_model and not o_model:
+            base = m_model
+        else:
+            # Both sources — merge field by field.
+            assert o_model is not None and m_model is not None
+            base, model_conflicts = _merge_single(key, o_model, m_model, resolutions.get(key, {}))
+            if model_conflicts:
+                conflicts.extend(model_conflicts)
 
-        # Both sources — merge field by field.
-        assert o_model is not None and m_model is not None
-        result, model_conflicts = _merge_single(key, o_model, m_model, resolutions.get(key, {}))
-        merged.append(result)
-        if model_conflicts:
-            conflicts.extend(model_conflicts)
+        # Apply local overrides on top (local wins for any field it provides).
+        if l_model:
+            result = dict(base)
+            for field, val in l_model.items():
+                if val is not None:
+                    result[field] = val
+            merged.append(result)
+        else:
+            merged.append(base)
 
+    local_only = set(l_by_key.keys()) - set(o_by_key.keys()) - set(m_by_key.keys())
     log.info(
-        "Merge: %d total models (%d matched, %d openMSX-only, %d msx.org-only), %d unresolved conflicts",
+        "Merge: %d total models (%d matched openmsx+msxorg, %d openMSX-only, %d msx.org-only,"
+        " %d local-only, %d local overrides), %d unresolved conflicts",
         len(merged),
         len(set(o_by_key.keys()) & set(m_by_key.keys())),
         len(set(o_by_key.keys()) - set(m_by_key.keys())),
         len(set(m_by_key.keys()) - set(o_by_key.keys())),
+        len(local_only),
+        len(set(l_by_key.keys()) - local_only),
         len(conflicts),
     )
     return merged, conflicts
