@@ -1,8 +1,8 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.6
-- Date: 2026-04-01
+- Version: 0.7
+- Date: 2026-04-10
 er: bengalack
 
 ## Problem Statement
@@ -24,10 +24,7 @@ The goal is a single static web page that presents all MSX2, MSX2+, and MSX turb
 - Mobile-first design.
 
 ## Users
-- MSX enthusia- Slot map extraction from msx.org wiki pages (deferred; XML-only for slot map data in this iteration).
-- Slot map mirror detection from msx.org (deferred alongside msx.org slot map parsing).
-- Default view configuration for slot map column groups (deferred to a later task).
-sts / collectors (Primary)
+- MSX enthusiasts / collectors (Primary)
 - MSX researchers and developers (Secondary)
 - bengalack, project maintainer (Internal)
 
@@ -234,18 +231,32 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - A model that appears in multiple msx.org category pages is assigned the highest generation. The ranking from lowest to highest is: MSX1 < MSX2 < MSX2+ < turbo R.
     - When a model's VDP field lists multiple chips (e.g. "V9938 / V9958"), the highest-ranked chip is used. The ranking from lowest to highest is: TMS99xx < V9938 < V9958.
     - It parses machine XML files from the openMSX GitHub repository's share folder.
-    - When both sources have data for the same model and the values conflict, the scraper summarizes all conflicts and prompts the maintainer to choose which value to keep be    - When both sources have data for the same model and the values conflict, openMSX is used by default (it is considered the more authoritative source for hardware specifications). All conflicts are recorded in a file for maintainer review; the maintainer can override individual field choices and re-run the build with a resolutions file.
- ID registry).
+    - When both sources have data for the same model and the values conflict, openMSX is used by default (it is considered the more authoritative source for hardware specifications). All conflicts are recorded in a file for maintainer review; the maintainer can override individual field choices and re-run the build with a resolutions file.
     - The scraper reads and updates a persistent ID registry to ensure stable IDs across runs.
     - The scraper supports a build mode that skips fetching from external sources and instead uses previously cached raw data files on disk. This is the default mode; fetching is opt-in (e.g. via a `--fetch` flag).
     - External sources (msx.org, openMSX GitHub) change infrequently; the maintainer fetches fresh data only when needed.
     - When fetching a URL that is expected to exist and the server responds with HTTP 502 or 503, the scraper waits 2 seconds and retries the request. A warning is logged for each retry attempt. The maximum number of retries is 5; if all retries fail the error is propagated normally.
 
-## Non-Functional Requirements
 
-- No runtime dependencies on external servers
-  - Target: Page loads and renders fully with no network requests at runtime (data file is local).
-  - - Slot map columns
+- Alias LUT
+  - Description: A maintainer-curated JSON file (`data/aliases.json`) normalizes known name variants to their canonical forms before merge, enabling cross-source records that differ only in name spelling to match correctly.
+  - Priority: Must
+  - Acceptance Criteria:
+    - `data/aliases.json` maps canonical names to arrays of alias strings, organized by field name (e.g. `manufacturer`, `model`).
+    - Before computing the merge natural key, every record from all sources is passed through the alias LUT: any alias value found in a named field is replaced with the canonical name.
+    - Matching is case-insensitive.
+    - An alias string mapped to two different canonical names in the same field is rejected at load time with a `ValueError`.
+    - If `data/aliases.json` is absent, no aliasing occurs and the build proceeds normally.
+
+- Build timing
+  - Description: The scraper logs elapsed time so the maintainer can see how long each phase took.
+  - Priority: Should
+  - Acceptance Criteria:
+    - At the end of every build, total elapsed time is logged.
+    - When `--fetch` is used, each data source (openMSX, msx.org) additionally logs its individual fetch duration.
+    - Times are reported to one decimal place in seconds (e.g. `42.3s`).
+
+- Slot map columns
   - Description: Each model row exposes 64 fixed slot map columns across 4 column groups ("Slotmap, slot 0–3"), showing what occupies each page of each sub-slot. All models carry all 64 columns. Cells outside a model's physical slot configuration show `~`.
   - Priority: Must
   - Acceptance Criteria:
@@ -269,7 +280,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - At scrape/build time, each device is classified by testing LUT rules in order; the first match wins.
     - If no LUT rule matches a device, the scraper emits a warning to stdout, writes the raw device string as the cell value (unabbreviated), and continues — it does not abort.
     - The maintainer can extend the LUT to handle newly encountered device strings without changing scraper code.
-    - The starter LUT covers at minimum: `MAIN`, `SUB`, `KNJ`, `JE`, `FW`, `DSK`, `MUS`, `RS2`, `MM`, `PM`, `RAM`, `CS1`–`CS4` (explicit entries), `EXP`, `⌧`, `•`.
+    - The starter LUT covers at minimum: `MAIN`, `SUB`, `KNJ`, `JE`, `FW`, `DSK`, `MUS`, `RS2`, `MM`, `PM`, `RAM`, `CS1`–`CS4` (explicit entries), `EXP`.
     - Cartridge slot abbreviations (`CS1`–`CS4`) are explicit LUT entries with their own tooltip text (e.g. "Cartridge slot 1"). They are not parameterised — each has its own entry so the browser can resolve their tooltip via the standard `{abbr: tooltip}` map.
 
 - Slot map XML extraction
@@ -278,16 +289,32 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Acceptance Criteria:
     - Non-expanded primary slots (devices as direct children of `<primary>`, no `<secondary>` elements) are classified and written to sub-slot 0 columns; sub-slots 1–3 receive `~`.
     - Expanded primary slots (containing `<secondary slot="N">` children) are walked per sub-slot; missing sub-slot elements receive `~` for all 4 pages.
-    - Cartridge/expansion slots (`<primary external="true" slot="N"/>`) produce `CS{N}` in all 4 pages of sub-slot 0, where `{N}` is a sequential 1-based counter incremented for each cartridge slot found (not the slot index); sub-slots 1–3 receive `⌧` (unless `<secondary external="true">` elements are present, which produce `EXP`).
+    - Cartridge/expansion slots (`<primary external="true" slot="N"/>`) produce `CS{N}` in all 4 pages of sub-slot 0, where `{N}` is a sequential 1-based counter incremented for each cartridge slot found (not the slot index); sub-slots 1–3 receive `~` for unoccupied sub-slots.
     - Multiple devices in the same sub-slot with non-overlapping `<mem>` ranges are each assigned to their respective page(s); the cell value is the abbreviation of the device covering that page's address range.
     - If multiple devices overlap the same page, the scraper emits a warning and uses the first device encountered.
     - Mirror detection applies three methods (in order of precedence):
-      1. Explicit `<Mirror>` element: `<mem>` defines affected pages; `<ps>`/`<ss>` identify the origin slot/device; those pages receive the origin abbreviation + `*`.
-      2. ROM file smaller than `<mem>` range: ROM file size is looked up via SHA1 in `all_sha1s.txt` then measured on disk; pages within `<mem>` range beyond the ROM's byte coverage are mirrors; first page = original, rest = `<abbr>*`.
-      3. `<rom_visibility>` narrower than `<mem>` range: pages within `<mem>` but outside `<rom_visibility>` are mirrors; `rom_visibility` page = original, others = `<abbr>*`.
+      1. Explicit `<Mirror>` element: `<mem>` defines affected pages; the origin abbreviation + `*` is written to those pages.
+      2. ROM file smaller than `<mem>` range: ROM file size is looked up via SHA1 in `all_sha1s.txt` then measured on disk; pages beyond the ROM's byte coverage are mirrors (`<abbr>*`).
+      3. `<rom_visibility>` narrower than `<mem>` range: pages within `<mem>` but outside `<rom_visibility>` are mirrors (`<abbr>*`).
     - If a SHA1 from the XML cannot be resolved to a file on disk (for method 2), the scraper skips mirror detection for that ROM and emits a warning.
 
-Priority: Must
+## Non-Functional Requirements
+
+- No runtime dependencies on external servers
+  - Target: Page loads and renders fully with no network requests at runtime (data file is local).
+  - Priority: Must
+  - Description: Each model row exposes 64 fixed slot map columns across 4 column groups ("Slotmap, slot 0–3"), showing what occupies each page of each sub-slot. All models carry all 64 columns. Cells outside a model's physical slot configuration show `~`.
+  - Priority: Must
+  - Acceptance Criteria:
+    - Four column groups are present: "Slotmap, slot 0", "Slotmap, slot 1", "Slotmap, slot 2", "Slotmap, slot 3".
+    - Each group has exactly 16 columns named by the convention `SS / Pp` (sub-slot and page, with non-breaking spaces; e.g. `0 / P0`, `1 / P3`), covering 4 sub-slots × 4 pages. The main slot is shown in the group header.
+    - Page numbers 0–3 correspond to Z80 address ranges 0x0000–0x3FFF, 0x4000–0x7FFF, 0x8000–0xBFFF, 0xC000–0xFFFF respectively.
+    - All 64 columns are present for every model (uniform schema — no per-model column variation).
+    - Cells outside a model's physically supported slot configuration display `~`.
+    - Cells that contain valid content display a short abbreviation (e.g. `MAIN`, `CS1`, `DSK`).
+    - Hovering a cell with an abbreviation shows a tooltip with the full human-readable description (e.g. "MSX BIOS with BASIC ROM").
+    - Mirror cells display the origin abbreviation with `*` appended (e.g. `SUB*`, `DSK*`).
+    - The `~` sentinel and mirror `*` notation are visually distinct from normal cell content.
 
 - URL length
   - Target: URL remains under 2000 characters for any realistic view state (all columns shown, up to 50 cells selected).
@@ -370,11 +397,3 @@ Priority: Must
 - FPGA-based unofficial models will be included if they appear in the openMSX XML or have a dedicated msx.org wiki page. Specifically: **1chipMSX** and **Omega MSX** are in scope. MiSTer MSX core is out of scope (does not represent a distinct MSX model).
 - The `systemroms/machines/` directory and `all_sha1s.txt` index are available locally when the scraper runs (required for ROM-size-based mirror detection).
 - The starter LUT vocabulary covers all device types present in in-scope openMSX XML files; unknown strings will be rare and handled by maintainer LUT extension.
-
-### Build timing
-
-At the end of every build, the scraper logs the total elapsed time. When run with `--fetch`, each data source (openMSX, msx.org) additionally logs its individual fetch duration. Times are reported to one decimal place in seconds (e.g. `42.3s`). Timing uses `time.perf_counter()` for accuracy.
-
-### Alias normalization (merge time)
-
-Before computing `natural_key()` during merge, all records are passed through an alias LUT (`data/aliases.json`). The LUT maps canonical names to arrays of known aliases, keyed by column name. Any alias value found in a record is replaced with the canonical name. Matching is case-insensitive. Conflicting alias definitions (same alias mapped to two different canonical names) are rejected at load time with a `ValueError`. If the file is absent, no aliasing occurs.
