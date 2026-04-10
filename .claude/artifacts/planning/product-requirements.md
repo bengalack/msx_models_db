@@ -359,6 +359,10 @@ Priority: Must
 - The `systemroms/machines/` directory and `all_sha1s.txt` index are available locally when the scraper runs (required for ROM-size-based mirror detection).
 - The starter LUT vocabulary covers all device types present in in-scope openMSX XML files; unknown strings will be rare and handled by maintainer LUT extension.
 
+### Build timing
+
+At the end of every build, the scraper logs the total elapsed time. When run with `--fetch`, each data source (openMSX, msx.org) additionally logs its individual fetch duration. Times are reported to one decimal place in seconds (e.g. `42.3s`). Timing uses `time.perf_counter()` for accuracy.
+
 ### Alias normalization (merge time)
 
 Before computing `natural_key()` during merge, all records are passed through an alias LUT (`data/aliases.json`). The LUT maps canonical names to arrays of known aliases, keyed by column name. Any alias value found in a record is replaced with the canonical name. Matching is case-insensitive. Conflicting alias definitions (same alias mapped to two different canonical names) are rejected at load time with a `ValueError`. If the file is absent, no aliasing occurs.

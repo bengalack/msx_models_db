@@ -6,6 +6,7 @@ import json
 import logging
 import os
 import tempfile
+import time
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -76,6 +77,7 @@ def fetch_sources(
       no mirror                 → LivePageSource (live only)
     """
     log.info("Fetching openMSX data…")
+    _t0_openmsx = time.perf_counter()
     if openmsx_mirror_path is not None and local_openmsx_only:
         log.info("[mirror:mode] openMSX local-only | path=%s", openmsx_mirror_path)
         openmsx_source = MirrorXMLSource(openmsx_mirror_path)
@@ -98,9 +100,11 @@ def fetch_sources(
                                            sha1_index=sha1_index, systemroms_root=systemroms_root,
                                            exclude_list=exclude_list)
     _write_json(openmsx_models, openmsx_path)
-    log.info("Wrote %d openMSX models to %s", len(openmsx_models), openmsx_path)
+    log.info("Wrote %d openMSX models to %s (%.1fs)", len(openmsx_models), openmsx_path,
+             time.perf_counter() - _t0_openmsx)
 
     log.info("Fetching msx.org data…")
+    _t0_msxorg = time.perf_counter()
     if mirror_path is not None and local_only:
         log.info("[mirror:mode] msx.org local-only | path=%s", mirror_path)
         msxorg_source = MirrorPageSource(mirror_path)
@@ -116,7 +120,8 @@ def fetch_sources(
     else:
         msxorg_models = msxorg.fetch_all(delay=delay, exclude_list=exclude_list)
     _write_json(msxorg_models, msxorg_path)
-    log.info("Wrote %d msx.org models to %s", len(msxorg_models), msxorg_path)
+    log.info("Wrote %d msx.org models to %s (%.1fs)", len(msxorg_models), msxorg_path,
+             time.perf_counter() - _t0_msxorg)
 
 
 def build(
@@ -138,6 +143,8 @@ def build(
     local_only: bool = False,
 ) -> None:
     """Run the full build pipeline."""
+    _t_start = time.perf_counter()
+
     # Step 0: Load config files (fail fast before any I/O if files are malformed)
     exclude_list = load_excludes(exclude_path)
     slotmap_rules = load_slotmap_lut(slotmap_lut_path)
@@ -326,8 +333,9 @@ def build(
     registry.save(registry_path)
 
     log.info(
-        "Build complete: %d models, %d columns, %d groups → %s",
+        "Build complete: %d models, %d columns, %d groups → %s (total %.1fs)",
         len(js_models), len(js_columns), len(js_groups), output_path,
+        time.perf_counter() - _t_start,
     )
 
     # Dead-rule check — only meaningful after a full fetch.
