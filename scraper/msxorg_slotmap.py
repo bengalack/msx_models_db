@@ -26,7 +26,9 @@ Limitations vs. the openMSX XML extractor:
 
 from __future__ import annotations
 
+import json
 import logging
+import pathlib
 import re
 import sys
 from typing import Any
@@ -174,46 +176,57 @@ _CART_RE = re.compile(
 # Expansion bus
 _EXP_RE = re.compile(r"expansion\s+bus", re.IGNORECASE)
 
-# Ordered list of (pattern, abbr) pairs.  First match wins.
-_TEXT_PATTERNS: list[tuple[re.Pattern[str], str]] = [
-    # Memory — most-specific first
-    (re.compile(r"panasonic\s+(?:mapper|ram)", re.IGNORECASE), "PM"),
-    (re.compile(r"memory\s+mapper", re.IGNORECASE),             "MM"),
-    (re.compile(r"\d+\s*[kmgt]b\s+memory", re.IGNORECASE),     "MM"),
-    (re.compile(r"\bram\b", re.IGNORECASE),                     "RAM"),
-    # System ROMs
-    (re.compile(r"main[\s\-]?rom", re.IGNORECASE),              "MAIN"),
-    (re.compile(r"sub[\s\-]?rom", re.IGNORECASE),               "SUB"),
-    # Localisation
-    (re.compile(r"kanji", re.IGNORECASE),                       "KAN"),
-    (re.compile(r"hangul", re.IGNORECASE),                      "HAN"),
-    # Specific subsystems
-    (re.compile(r"msx[\s\-]?je", re.IGNORECASE),                "JE"),
-    (re.compile(r"disk\s+rom|floppy\s+rom", re.IGNORECASE),     "DSK"),
-    (re.compile(r"msx[\s\-]?music|fm\s+(?:voicing|music)", re.IGNORECASE), "MUS"),
-    (re.compile(r"\brs[\s\-]?232\b", re.IGNORECASE),            "RS"),
-    (re.compile(r"modem", re.IGNORECASE),                       "MOD"),
-    (re.compile(r"bunsetsu", re.IGNORECASE),                    "BUN"),
-    # Catch-all firmware — anything ROM-like that did not match above
-    (re.compile(
-        r"\brom\b"
-        r"|basic(?:\s+kun)?"
-        r"|word[\s\-]?pro"
-        r"|firmware"
-        r"|set[\s\-]?up"
-        r"|cockpit"
-        r"|deskpac"
-        r"|opening"
-        r"|jusho"
-        r"|network"
-        r"|super\s+impose"
-        r"|ipl"
-        r"|serial"
-        r"|arabic"
-        r"|thai",
-        re.IGNORECASE,
-    ), "FW"),
-]
+# Patterns loaded from data/slotmap-lut.json.  ``element`` is ignored here
+# (it encodes openMSX XML element names, not HTML cell text).  Only entries
+# with a non-null ``id_pattern`` are used from the LUT.  A small supplemental
+# list handles element-only entries where ``id_pattern`` is null.
+_TEXT_PATTERNS: list[tuple[re.Pattern[str], str]]
+
+
+def _load_text_patterns() -> list[tuple[re.Pattern[str], str]]:
+    """Build (pattern, abbr) pairs from data/slotmap-lut.json.
+
+    LUT order is preserved and treated as priority order (first match wins).
+    Supplemental patterns for element-only entries are inserted just before
+    the broad FW firmware catch-all.
+    """
+    _SKIP = {"__cartridge__", "__sentinel__", "secondary"}
+
+    lut_path = pathlib.Path(__file__).parent.parent / "data" / "slotmap-lut.json"
+    with lut_path.open(encoding="utf-8") as fh:
+        lut: list[dict] = json.load(fh)
+
+    lut_patterns: list[tuple[re.Pattern[str], str]] = [
+        (re.compile(entry["id_pattern"], re.IGNORECASE), entry["abbr"])
+        for entry in lut
+        if entry["element"] not in _SKIP and entry.get("id_pattern")
+    ]
+
+    # Supplemental patterns for LUT entries that have no id_pattern (element
+    # names only).  These match the free-text device labels on msx.org pages.
+    # Order: PM before MM/RAM; MM before RAM; all before the FW catch-all.
+    supplemental: list[tuple[re.Pattern[str], str]] = [
+        (re.compile(r"panasonic\s+(?:mapper|ram)",            re.IGNORECASE), "PM"),
+        (re.compile(r"memory\s+mapper|\d+\s*[kmgt]b\s+memory\b", re.IGNORECASE), "MM"),
+        (re.compile(r"\bram\b",                               re.IGNORECASE), "RAM"),
+        # LUT "Main ROM" pattern won't match "Main-ROM" (hyphen); cover it here.
+        (re.compile(r"main[\s\-]rom",                         re.IGNORECASE), "MAIN"),
+        (re.compile(r"disk\s+rom|floppy",                     re.IGNORECASE), "DSK"),
+        (re.compile(r"msx[\s\-]?music|fmpac|fm\s+(?:voicing|music)", re.IGNORECASE), "MUS"),
+        (re.compile(r"\brs[\s\-]?232\b",                      re.IGNORECASE), "RS"),
+        (re.compile(r"\bmodem\b",                             re.IGNORECASE), "MOD"),
+        (re.compile(r"bunsetsu",                              re.IGNORECASE), "BUN"),
+    ]
+
+    # Insert supplemental just before the FW catch-all entry.
+    fw_pos = next(
+        (i for i, (_, abbr) in enumerate(lut_patterns) if abbr == "FW"),
+        len(lut_patterns),
+    )
+    return lut_patterns[:fw_pos] + supplemental + lut_patterns[fw_pos:]
+
+
+_TEXT_PATTERNS = _load_text_patterns()
 
 # Sentinel returned when the cell text looks like a cartridge slot.
 # The caller replaces this with "CS{N}".

@@ -225,7 +225,7 @@ class TestClassifyCellText:
         assert _classify_cell_text("Opening ROM") == "FW"
         assert _classify_cell_text("BASIC Kun") == "FW"
         assert _classify_cell_text("Word-Pro 1") == "FW"
-        assert _classify_cell_text("Deskpac 1") == "FW"
+        assert _classify_cell_text("Desk Pac 1") == "FW"
         assert _classify_cell_text("MSX Jusho") == "FW"
         assert _classify_cell_text("Set-Up RTC") == "FW"
         assert _classify_cell_text("MSX Serial/ Opening ROM") == "FW"
