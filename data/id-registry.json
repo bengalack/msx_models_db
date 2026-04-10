@@ -169,8 +169,15 @@
     "c-bios|msx2+ br": 166,
     "c-bios|msx2+ eu": 167,
     "c-bios|msx2+ jp": 168,
-    "ese|one chip msx": 169
+    "ese|one chip msx": 169,
+    "haesung|spinkick": 170,
+    "haesung|super free kick": 171,
+    "sakhr|ax-350ii": 172,
+    "sakhr|ax-350iif": 173,
+    "sanyo|phc-23(gr)": 174,
+    "ciel|expert turbo": 175,
+    "sakhr|ax370": 176
   },
   "retired_models": [],
-  "next_model_id": 170
+  "next_model_id": 177
 }
