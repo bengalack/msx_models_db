@@ -127,6 +127,15 @@ def test_invalid_json_raises_value_error(tmp_path):
         load_aliases(lut_file)
 
 
+def test_alias_not_a_list_raises_value_error(tmp_path):
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({
+        "manufacturer": {"Sakhr": "Al Alamiah"},  # string, not list
+    }), encoding="utf-8")
+    with pytest.raises(ValueError, match="must be a list"):
+        load_aliases(lut_file)
+
+
 def test_duplicate_alias_raises_value_error(tmp_path):
     lut_file = tmp_path / "aliases.json"
     lut_file.write_text(json.dumps({
@@ -135,5 +144,5 @@ def test_duplicate_alias_raises_value_error(tmp_path):
             "Al Sakhr": ["Al Alamiah"],  # same alias, different canonical
         },
     }), encoding="utf-8")
-    with pytest.raises(ValueError, match="duplicate alias"):
+    with pytest.raises(ValueError, match="duplicate alias.*Al Alamiah"):
         load_aliases(lut_file)
