@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup, Tag
 
 from .exclude import ExcludeList
 from .mirror import LivePageSource, MirrorPageSource, PageSource, slug_to_filename
+from .msxorg_slotmap import parse_slotmap_from_soup
 
 log = logging.getLogger(__name__)
 
@@ -351,6 +352,11 @@ def parse_model_page(
 
     # Remove None values.
     result = {k: v for k, v in result.items() if v is not None}
+
+    # Slot map — parsed from the same HTML page.
+    slotmap = parse_slotmap_from_soup(soup, page_title)
+    if slotmap is not None:
+        result.update(slotmap)
 
     # If the Model field contained " / ", emit one entry per variant.
     if len(model_names) == 1:
