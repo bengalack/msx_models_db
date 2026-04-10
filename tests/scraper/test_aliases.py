@@ -146,3 +146,25 @@ def test_duplicate_alias_raises_value_error(tmp_path):
     }), encoding="utf-8")
     with pytest.raises(ValueError, match="duplicate alias.*Al Alamiah"):
         load_aliases(lut_file)
+
+
+# ---------------------------------------------------------------------------
+# Integration — alias application in merge_models
+# ---------------------------------------------------------------------------
+
+def test_merge_uses_aliases(tmp_path):
+    """Two records with alias manufacturer names merge into one after alias application."""
+    import json
+    from scraper.merge import merge_models
+
+    alias_file = tmp_path / "aliases.json"
+    alias_file.write_text(json.dumps({
+        "manufacturer": {"Sakhr": ["Al Alamiah"]},
+    }), encoding="utf-8")
+
+    openmsx_records = [{"manufacturer": "Sakhr",      "model": "AX-350", "generation": "MSX2"}]
+    msxorg_records  = [{"manufacturer": "Al Alamiah", "model": "AX-350", "generation": "MSX2"}]
+
+    merged = merge_models(openmsx_records, msxorg_records, alias_path=alias_file)
+    assert len(merged) == 1
+    assert merged[0]["manufacturer"] == "Sakhr"

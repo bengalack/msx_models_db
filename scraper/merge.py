@@ -8,6 +8,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from scraper.aliases import apply_aliases, load_aliases
+
 log = logging.getLogger(__name__)
 
 # ── Natural key ──────────────────────────────────────────────────────
@@ -103,7 +105,8 @@ def merge_models(
     *,
     local: list[dict[str, Any]] | None = None,
     resolutions: dict[str, dict[str, str]] | None = None,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    alias_path: Path | None = None,
+) -> list[dict[str, Any]]:
     """Merge models from all sources.
 
     Args:
@@ -112,15 +115,23 @@ def merge_models(
         local: Models from the local supplemental file (highest authority).
         resolutions: Optional pre-resolved conflicts.
             Format: {natural_key: {field: "openmsx"|"msxorg"}}
+        alias_path: Optional path to aliases.json; when provided, alias values
+            in each record are replaced with their canonical form before
+            natural_key() matching.
 
     Returns:
-        (merged_models, unresolved_conflicts)
-        where unresolved_conflicts is a list of conflict dicts for the maintainer.
+        merged_models list (unresolved conflicts are logged via print_conflict_summary).
     """
     if resolutions is None:
         resolutions = {}
     if local is None:
         local = []
+
+    alias_lut: dict = {}
+    if alias_path is not None:
+        alias_lut = load_aliases(alias_path)
+    for record in [*openmsx, *(msxorg or []), *(local or [])]:
+        apply_aliases(record, alias_lut)
 
     # Index by natural key.
     o_by_key: dict[str, dict[str, Any]] = {}
@@ -180,7 +191,8 @@ def merge_models(
         len(set(l_by_key.keys()) - local_only),
         len(conflicts),
     )
-    return merged, conflicts
+    print_conflict_summary(conflicts)
+    return merged
 
 
 # Fields that are source-specific metadata (not merged as data fields).

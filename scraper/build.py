@@ -236,8 +236,14 @@ def build(
     if resolutions_path:
         resolutions = merge.load_resolutions(resolutions_path)
 
-    merged, conflicts = merge.merge_models(openmsx_data, msxorg_data, local=local_data, resolutions=resolutions)
-    merge.print_conflict_summary(conflicts)
+    alias_path = Path("data/aliases.json") if Path("data/aliases.json").exists() else None
+    merged = merge.merge_models(
+        openmsx_data,
+        msxorg_data,
+        local=local_data,
+        resolutions=resolutions,
+        alias_path=alias_path,
+    )
 
     # Step 4: Derive computed columns
     derive_cols = [c for c in COLUMNS if c.derive is not None]
