@@ -200,6 +200,18 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Models present only in `local-raw.json` (not in openMSX or msx.org) are included in the output.
     - If `data/local-raw.json` is absent, the build completes normally (local source is optional).
 
+- Link-shares LUT
+  - Description: A maintainer-curated JSON file (`data/link-shares.json`) allows models that have no msx.org page of their own to inherit the `links` entry from a donor model. This covers model variants (e.g. a regional or hardware-revision variant) that share the same msx.org wiki page as their base model.
+  - Priority: Must
+  - Acceptance Criteria:
+    - `data/link-shares.json` is a flat JSON object whose keys and values are natural keys in the form `"manufacturer|model"` (lowercase, trimmed), matching the merge natural-key format.
+    - Each entry maps a recipient model (key) to a donor model (value). The recipient will inherit the donor's `links` value in the output.
+    - If the recipient already has its own `links` entry, the share entry is ignored (no overwrite).
+    - If the donor model is not present in the dataset, or the donor itself has no `links` entry, the share entry is silently skipped and a warning is logged.
+    - A model cannot share links with itself (self-reference is a load-time error).
+    - If `data/link-shares.json` is absent, the build completes normally (link-shares is optional).
+    - 14 unit tests cover load/validate (happy path, file-not-found, invalid JSON, wrong structure, self-reference) and apply (copy, no-overwrite, missing donor, donor-no-links, noop, multi-recipient).
+
 - Cell value truncation
   - Description: Column definitions may specify an optional `truncate_limit` (positive integer). When a cell's string value exceeds this limit, the visible text is trimmed: the first `(truncate_limit − 1)` characters are shown, followed by `…`. A tooltip reveals the full value. When the cell also links to a URL, the tooltip shows `"<full value> — <url>"` on a single line. Sorting always uses the full original value from the data record, unaffected by truncation.
   - Priority: Must

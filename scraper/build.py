@@ -19,6 +19,7 @@ from .columns import (
 from .exclude import load_excludes
 from .mirror import FallbackPageSource, MirrorPageSource
 from .openmsx_source import FallbackXMLSource, LiveXMLSource, MirrorXMLSource
+from .link_shares import apply_link_shares, load_link_shares
 from .registry import IDRegistry
 from .slotmap import load_sha1_index
 from .slotmap_lut import compact_lut, load_slotmap_lut
@@ -315,6 +316,13 @@ def build(
             record["links"] = links
 
         js_models.append(record)
+
+    # Apply link-shares: back-fill missing links from a donor model
+    link_shares_path = Path("data/link-shares.json")
+    if link_shares_path.exists():
+        shares = load_link_shares(link_shares_path)
+        natural_keys = [merge.natural_key(m) for m in merged]
+        apply_link_shares(js_models, natural_keys, shares)
 
     # Sort models by ID for stable output
     js_models.sort(key=lambda m: m["id"])

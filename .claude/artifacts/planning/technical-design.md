@@ -62,7 +62,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Type: Job (offline Python script)
   - Responsibilities: Scrape msx.org, parse openMSX XML, load local supplemental data, merge all three sources, compute derived columns, prompt on conflicts, assign/reuse stable model IDs, write data.js
   - Depends On: `scraper/columns.py` (column config), id-registry.json (model IDs), msx.org HTTP or local mirror (`PageSource`), GitHub API/raw HTTP or local mirror (`XMLSource`)
-  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional), `data/local-raw.json` (read-only, optional)
+  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional), `data/local-raw.json` (read-only, optional), `data/aliases.json` (read-only, optional), `data/link-shares.json` (read-only, optional)
 
 - msx.org Page Source
   - Type: Library (module `scraper/mirror.py`)
@@ -97,6 +97,12 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Responsibilities: Map model natural keys to permanent integer IDs; record retired model IDs. Column IDs are defined in `scraper/columns.py` and are not part of the registry.
   - Depends On: -
   - Data Stores: `data/id-registry.json`
+
+- Link-Shares LUT
+  - Type: File artifact (JSON), maintainer-controlled
+  - Responsibilities: Allow models with no msx.org page of their own to inherit the `links` entry from a donor model. Keys and values are natural keys (`"manufacturer|model"`, lowercase). Applied in the build step after per-model `links` are computed and before the models list is sorted.
+  - Depends On: -
+  - Data Stores: `data/link-shares.json`
 
 - Slot Map LUT
   - Type: File artifact (JSON), maintainer-controlled
@@ -162,6 +168,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     3. Load local supplemental data from `data/local-raw.json` (optional; absent file is not an error)
     4. If `--fetch`: fetch fresh data from msx.org and openMSX GitHub first, overwriting cached files
     5. Merge msx.org and openMSX data per model (openMSX wins on conflict); then apply local overrides on top (local wins for any field it provides)
+    5a. After all per-model `links` are computed (keyed model URLs from `msxorg_title`), apply `data/link-shares.json`: for each entry whose recipient has no `links`, copy the donor's `links` (if present). Absent file is silently skipped.
     6. Compute derived columns: for each model row, run every `Column.derive` callable; store results under the column's key
     7. Load `data/id-registry.json`; match models by natural key (manufacturer + model name); assign new IDs for unmatched entries
     8. Build output: generate `docs/data.js` with groups (from config), active columns (excluding hidden/retired), and model values[] positionally aligned to active columns
