@@ -258,26 +258,33 @@ def parse_model_page(
     html: bytes,
     standard: str,
     page_title: str,
-) -> dict[str, Any] | None:
-    """Parse a single model wiki page. Returns field dict or None if no specs table."""
+) -> list[dict[str, Any]]:
+    """Parse a single model wiki page.
+
+    Returns a list of model dicts (one per variant when the Model field
+    contains " / ").  Returns an empty list if no specs table is found.
+    """
     soup = BeautifulSoup(html, "lxml")
     specs = _find_specs_table(soup)
     if not specs:
         log.warning("No specs table found on %s — skipped", page_title)
-        return None
+        return []
 
     brand = specs.get("Brand", "").strip()
-    model = specs.get("Model", "").strip()
-    if not model:
+    model_raw = specs.get("Model", "").strip()
+    if not model_raw:
         log.warning("No Model field in specs table on %s — skipped", page_title)
-        return None
+        return []
 
     # Clean up brand: "Philips (Manufacturer: Sanyo)" → "Philips"
     brand = re.sub(r"\s*\(.*?\)\s*", "", brand).strip()
 
+    # Split combined models like "AX-350II / AX-350IIF" into separate entries.
+    model_names = [m.strip() for m in model_raw.split(" / ")]
+
     result: dict[str, Any] = {
         "manufacturer": brand,
-        "model": model,
+        "model": model_names[0],
         "generation": standard,
         "msxorg_title": page_title,
     }
@@ -343,7 +350,21 @@ def parse_model_page(
             result[k] = v
 
     # Remove None values.
-    return {k: v for k, v in result.items() if v is not None}
+    result = {k: v for k, v in result.items() if v is not None}
+
+    # If the Model field contained " / ", emit one entry per variant.
+    if len(model_names) == 1:
+        return [result]
+    results = [result]
+    for extra_model in model_names[1:]:
+        variant = dict(result)
+        variant["model"] = extra_model
+        results.append(variant)
+    log.info(
+        "[msxorg:split] Split %d variants from %s | models=%s",
+        len(results), page_title, model_names,
+    )
+    return results
 
 
 # ── Main entry point ─────────────────────────────────────────────────
@@ -400,18 +421,19 @@ def fetch_all(
             errors += 1
             continue
         try:
-            result = parse_model_page(content, standard, title)
-            if result:
-                if exclude_list and exclude_list.is_excluded(
-                    result.get("manufacturer"), result.get("model")
-                ):
-                    log.debug(
-                        "[exclude:skip] Excluded model | manufacturer=%s model=%s source=msxorg",
-                        result.get("manufacturer"), result.get("model"),
-                    )
-                    excluded += 1
-                else:
-                    models.append(result)
+            parsed = parse_model_page(content, standard, title)
+            if parsed:
+                for result in parsed:
+                    if exclude_list and exclude_list.is_excluded(
+                        result.get("manufacturer"), result.get("model")
+                    ):
+                        log.debug(
+                            "[exclude:skip] Excluded model | manufacturer=%s model=%s source=msxorg",
+                            result.get("manufacturer"), result.get("model"),
+                        )
+                        excluded += 1
+                    else:
+                        models.append(result)
             else:
                 skipped += 1
         except Exception:

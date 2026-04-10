@@ -5,7 +5,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 from scraper.mirror import MirrorPageSource
-from scraper.msxorg import _parse_vdp, fetch_all, list_model_pages
+from scraper.msxorg import _parse_vdp, fetch_all, list_model_pages, parse_model_page
 
 
 _GOOD_CATEGORY_HTML = (
@@ -102,6 +102,64 @@ class TestListModelPagesHighestGeneration:
         pages = list_model_pages(source, delay=0)
         assert len(pages) == 1
         assert pages[0]["standard"] == "turbo R"
+
+
+# ---------------------------------------------------------------------------
+# parse_model_page — split combined models on " / "
+# ---------------------------------------------------------------------------
+
+class TestParseModelPageSplit:
+    """Model field with ' / ' produces one entry per variant."""
+
+    _COMBINED_HTML = b"""
+    <html><body><table class="wikitable">
+      <tr><th>Brand</th><td>Sakhr</td></tr>
+      <tr><th>Model</th><td>AX-350II / AX-350IIF</td></tr>
+      <tr><th>Year</th><td>1987</td></tr>
+    </table></body></html>
+    """
+    _SINGLE_HTML = b"""
+    <html><body><table class="wikitable">
+      <tr><th>Brand</th><td>Sony</td></tr>
+      <tr><th>Model</th><td>HB-75P</td></tr>
+    </table></body></html>
+    """
+
+    def test_combined_model_splits_into_two(self):
+        results = parse_model_page(self._COMBINED_HTML, "MSX2", "Sakhr AX-350II")
+        assert len(results) == 2
+        assert results[0]["model"] == "AX-350II"
+        assert results[1]["model"] == "AX-350IIF"
+
+    def test_split_entries_share_manufacturer(self):
+        results = parse_model_page(self._COMBINED_HTML, "MSX2", "Sakhr AX-350II")
+        assert all(r["manufacturer"] == "Sakhr" for r in results)
+
+    def test_split_entries_share_fields(self):
+        results = parse_model_page(self._COMBINED_HTML, "MSX2", "Sakhr AX-350II")
+        assert all(r["year"] == 1987 for r in results)
+        assert all(r["generation"] == "MSX2" for r in results)
+
+    def test_single_model_returns_one_entry(self):
+        results = parse_model_page(self._SINGLE_HTML, "MSX2", "Sony HB-75P")
+        assert len(results) == 1
+        assert results[0]["model"] == "HB-75P"
+
+    def test_triple_split(self):
+        html = b"""
+        <html><body><table class="wikitable">
+          <tr><th>Brand</th><td>Sanyo</td></tr>
+          <tr><th>Model</th><td>PHC-23J / PHC-23J(B) / PHC-23(GR)</td></tr>
+        </table></body></html>
+        """
+        results = parse_model_page(html, "MSX2", "Sanyo PHC-23J")
+        assert len(results) == 3
+        assert [r["model"] for r in results] == ["PHC-23J", "PHC-23J(B)", "PHC-23(GR)"]
+
+    def test_no_specs_table_returns_empty(self):
+        html = b"<html><body><p>No table here.</p></body></html>"
+        results = parse_model_page(html, "MSX2", "Missing")
+        assert results == []
 
 
 class TestListModelPagesGraceful:
