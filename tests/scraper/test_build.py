@@ -763,3 +763,14 @@ class TestBuildOpenMSXMirrorWiring:
             )
 
         assert captured["local_openmsx_only"] is True
+
+
+# ---------------------------------------------------------------------------
+# Aliases LUT
+# ---------------------------------------------------------------------------
+
+def test_aliases_json_loads_without_error():
+    from scraper.aliases import load_aliases
+    lut = load_aliases(Path("data/aliases.json"))
+    assert isinstance(lut, dict)
+    assert "manufacturer" in lut or "model" in lut
