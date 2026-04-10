@@ -44,7 +44,7 @@ if (!window.MSX_DATA) {
 } else {
   const { models, generated, columns, groups } = window.MSX_DATA;
 
-  const pageTitle = `MSX Models DB by Bengalack\u2002·\u2002${generated}`;
+  const pageTitle = `MSX Models DB by Bengalack\u2002·\u2002${models.length}\u00a0models\u2002·\u2002${generated}`;
   document.title = pageTitle;
   title.textContent = pageTitle;
 
