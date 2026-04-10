@@ -499,8 +499,8 @@ class Column:
 The scraper serialises `truncate_limit` (renamed `truncateLimit` in camelCase) into `data.js` only when non-zero, keeping the output compact.
 
 Initial values:
-- `manufacturer` (id=1): `truncate_limit = 10`
-- `model` (id=2): `truncate_limit = 10`
+- `manufacturer` (id=1): `truncate_limit = 12`
+- `model` (id=2): `truncate_limit = 16`
 
 ### Render Path — `buildDataRow` (grid.ts)
 

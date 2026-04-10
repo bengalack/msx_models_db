@@ -42,7 +42,7 @@
   - Clipboard copy reads `model.values[c]` directly — no change required.
   - Sort reads `model.values[colIndex]` directly — no change required.
   - `truncate_limit` is a Python-side property on `Column`; serialised as `truncateLimit` (camelCase) in `data.js` only when non-zero.
-  - Initial values: `manufacturer` (id=1) and `model` (id=2) both get `truncate_limit = 10`.
+  - Initial values: `manufacturer` (id=1) gets `truncate_limit = 12`; `model` (id=2) gets `truncate_limit = 16`.
 - Integrations: None — purely a rendering concern within the static web page and its data pipeline.
 - Non-functional requirements:
   - Performance: No additional DOM queries per cell; `dataset.fullValue` set at render time, not on hover.
@@ -130,7 +130,7 @@ Feature: Cell value truncation
 
 ## Testing Strategy (Tier 0/1/2)
 - Tier 0 — unit tests (required):
-  - **Python** (`tests/scraper/test_columns.py`): `Column` dataclass accepts `truncate_limit`; default is `0`; `manufacturer` and `model` columns in `COLUMNS` list have `truncate_limit = 10`.
+  - **Python** (`tests/scraper/test_columns.py`): `Column` dataclass accepts `truncate_limit`; default is `0`; `manufacturer` column has `truncate_limit = 12`; `model` column has `truncate_limit = 16`.
   - **Python** (`tests/scraper/test_build.py`): `ColumnDef` serialiser emits `truncateLimit` when non-zero; omits it when zero; value matches `Column.truncate_limit`.
   - **TypeScript** (`tests/web/cell-truncation.test.ts`): pure function `truncateValue(text, limit)` — happy path, exact limit, below limit, limit=0; `buildDataRow` integration: plain cell truncation, `data-full-value` attribute, link cell `a.title` combined format, non-truncated link cell `a.title` unchanged.
 - Tier 1 — integration: N/A (no server, no external calls).
@@ -213,9 +213,9 @@ Feature: Cell value truncation
 
 - [x] Chunk A — Schema + config (Python side)
   - [x] T-010 Add `truncate_limit: int = 0` to the `Column` dataclass in `scraper/columns.py`
-  - [x] T-011 Set `truncate_limit = 10` on `manufacturer` (id=1) and `model` (id=2) in `COLUMNS`
+  - [x] T-011 Set `truncate_limit = 12` on `manufacturer` (id=1) and `truncate_limit = 16` on `model` (id=2) in `COLUMNS`
   - [x] T-012 In `scraper/build.py`, serialise `truncateLimit` into the `ColumnDef` dict when `col.truncate_limit > 0`
-  - [x] T-013 Tests: extend `tests/scraper/test_columns.py` — default is `0`; `manufacturer` and `model` have `truncate_limit = 10`
+  - [x] T-013 Tests: extend `tests/scraper/test_columns.py` — default is `0`; `manufacturer` has `truncate_limit = 12`; `model` has `truncate_limit = 16`
   - [x] T-014 Tests: extend `tests/scraper/test_build.py` — `truncateLimit` emitted when non-zero; omitted when zero
   - [x] T-015 Rebuild `data.js`: run `python -m scraper build` and commit updated `docs/data.js`
 

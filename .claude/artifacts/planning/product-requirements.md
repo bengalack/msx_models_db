@@ -1,7 +1,7 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.7
+- Version: 0.8
 - Date: 2026-04-10
 - Owner: bengalack
 
@@ -213,8 +213,8 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Priority: Must
   - Acceptance Criteria:
     - `ColumnDef` accepts an optional integer `truncate_limit` field (absent or `0` = no truncation).
-    - The `Model` column has `truncate_limit = 10`.
-    - The `Manufacturer` column has `truncate_limit = 10`.
+    - The `Model` column has a configurable default `truncate_limit = 16` (adjustable without regression).
+    - The `Manufacturer` column has a configurable default `truncate_limit = 12` (adjustable without regression).
     - A cell whose value length exceeds `truncate_limit` displays the first `(truncate_limit − 1)` characters followed by `…`.
     - A cell whose value length is at or below `truncate_limit` is displayed unchanged.
     - Hovering a truncated cell shows a native tooltip (`title`) containing the full, untruncated value.
