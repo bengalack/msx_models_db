@@ -358,3 +358,7 @@ Priority: Must
 - FPGA-based unofficial models will be included if they appear in the openMSX XML or have a dedicated msx.org wiki page. Specifically: **1chipMSX** and **Omega MSX** are in scope. MiSTer MSX core is out of scope (does not represent a distinct MSX model).
 - The `systemroms/machines/` directory and `all_sha1s.txt` index are available locally when the scraper runs (required for ROM-size-based mirror detection).
 - The starter LUT vocabulary covers all device types present in in-scope openMSX XML files; unknown strings will be rare and handled by maintainer LUT extension.
+
+### Alias normalization (merge time)
+
+Before computing `natural_key()` during merge, all records are passed through an alias LUT (`data/aliases.json`). The LUT maps canonical names to arrays of known aliases, keyed by column name. Any alias value found in a record is replaced with the canonical name. Matching is case-insensitive. Conflicting alias definitions (same alias mapped to two different canonical names) are rejected at load time with a `ValueError`. If the file is absent, no aliasing occurs.
