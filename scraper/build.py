@@ -108,7 +108,7 @@ def fetch_sources(
     if mirror_path is not None and local_only:
         log.info("[mirror:mode] msx.org local-only | path=%s", mirror_path)
         msxorg_source = MirrorPageSource(mirror_path)
-        msxorg_models = msxorg.fetch_all(source=msxorg_source, exclude_list=exclude_list)
+        msxorg_models = msxorg.fetch_all(source=msxorg_source, delay=0, exclude_list=exclude_list)
     elif mirror_path is not None:
         log.info("[mirror:mode] msx.org live-with-fallback | path=%s", mirror_path)
         import requests as _requests
@@ -116,7 +116,7 @@ def fetch_sources(
         session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
         from .mirror import LivePageSource
         msxorg_source = FallbackPageSource(LivePageSource(session), MirrorPageSource(mirror_path))
-        msxorg_models = msxorg.fetch_all(source=msxorg_source, exclude_list=exclude_list)
+        msxorg_models = msxorg.fetch_all(source=msxorg_source, delay=delay, exclude_list=exclude_list)
     else:
         msxorg_models = msxorg.fetch_all(delay=delay, exclude_list=exclude_list)
     _write_json(msxorg_models, msxorg_path)
