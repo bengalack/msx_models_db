@@ -84,8 +84,18 @@ _CS_ES_RE = re.compile(r"^(CS|ES)(\d+)(!?)$")
 
 
 def _is_cs_or_es(value: Any) -> bool:
-    """Return True if *value* is a cartridge/expansion slot abbreviation."""
+    """Return True if *value* is a CS/ES numbered slot abbreviation (used by _renumber_cs_es)."""
     return isinstance(value, str) and bool(_CS_ES_RE.match(value))
+
+
+def _is_slot_type(value: Any) -> bool:
+    """Return True if *value* is any slot-type abbreviation: CS*, ES*, or EXP.
+
+    Used in merge preference: when both sources assign a slot-type value to the
+    same slotmap cell, msx.org always wins (it carries human-curated slot-type
+    information that openMSX XML cannot express, e.g. expansion-bus vs cartridge).
+    """
+    return _is_cs_or_es(value) or value == "EXP"
 
 # Normalisation functions per-field.
 _FIELD_NORMALISERS: dict[str, Any] = {
@@ -308,11 +318,12 @@ def _merge_single(
             result[field] = mv
             continue
 
-        # CS/ES type: msx.org wins when the only disagreement is cartridge vs
-        # expansion slot.  The numbers are provisional and will be reassigned
-        # by _renumber_cs_es() after the full merge.
-        if field.startswith("slotmap_") and _is_cs_or_es(ov) and _is_cs_or_es(mv):
-            result[field] = mv  # msx.org knows whether it's a cartridge or expansion slot
+        # Slot-type conflict (CS/ES/EXP): msx.org always wins.
+        # msx.org carries human-curated slot-type information (e.g. a connector
+        # that openMSX models as a cartridge slot may be an expansion bus).
+        # Numbers are provisional and reassigned by _renumber_cs_es() later.
+        if field.startswith("slotmap_") and _is_slot_type(ov) and _is_slot_type(mv):
+            result[field] = mv  # msx.org knows the slot type
             continue
 
         # Genuine unresolved conflict.

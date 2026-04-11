@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from scraper.merge import _renumber_cs_es, merge_models
+from scraper.merge import _renumber_cs_es, _is_slot_type, merge_models
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────
@@ -22,6 +22,22 @@ def _slotmap(**kwargs: str) -> dict:
 def _fill_slot(ms: int, ss: int, val: str) -> dict:
     """Return a dict of all 4 page keys for (ms, ss) set to val."""
     return {f"slotmap_{ms}_{ss}_{p}": val for p in range(4)}
+
+
+# ── _is_slot_type ─────────────────────────────────────────────────────────
+
+class TestIsSlotType:
+    def test_cs_is_slot_type(self):
+        assert _is_slot_type("CS1")
+        assert _is_slot_type("CS6!")
+    def test_es_is_slot_type(self):
+        assert _is_slot_type("ES1")
+        assert _is_slot_type("ES3!")
+    def test_exp_is_slot_type(self):
+        assert _is_slot_type("EXP")
+    def test_device_abbrs_not_slot_type(self):
+        for v in ("MAIN", "MM", "DSK", "MUS", "•", "⌧", None, 42):
+            assert not _is_slot_type(v)
 
 
 # ── _renumber_cs_es ───────────────────────────────────────────────────────
@@ -152,3 +168,32 @@ class TestMergeSlotMapCsEsPreference:
         # After merge and renumber: CS1 for slot 1, ES1 for slot 2
         assert m["slotmap_1_0_0"] == "CS1"
         assert m["slotmap_2_0_0"] == "ES1"
+
+    def test_msxorg_exp_overrides_openmsx_cs(self):
+        """When openMSX emits CS and msx.org emits EXP (expansion bus), msx.org wins.
+
+        Regression for: daewoo|cpc-300: openMSX='CS2' vs msx.org='EXP' [using openmsx]
+        """
+        openmsx = [_base_model(extra={**_fill_slot(2, 0, "CS2")})]
+        msxorg  = [_base_model(extra={**_fill_slot(2, 0, "EXP")})]
+        result = merge_models(openmsx, msxorg)
+        assert len(result) == 1
+        for p in range(4):
+            assert result[0][f"slotmap_2_0_{p}"] == "EXP"
+
+    def test_msxorg_exp_overrides_openmsx_es(self):
+        """When openMSX emits ES and msx.org emits EXP, msx.org wins."""
+        openmsx = [_base_model(extra={**_fill_slot(3, 0, "ES1")})]
+        msxorg  = [_base_model(extra={**_fill_slot(3, 0, "EXP")})]
+        result = merge_models(openmsx, msxorg)
+        assert len(result) == 1
+        for p in range(4):
+            assert result[0][f"slotmap_3_0_{p}"] == "EXP"
+
+    def test_exp_not_renumbered(self):
+        """EXP values are not touched by _renumber_cs_es (EXP has no number)."""
+        model = _slotmap(**_fill_slot(2, 0, "EXP"), **_fill_slot(1, 0, "CS1"))
+        result = _renumber_cs_es(model)
+        for p in range(4):
+            assert result[f"slotmap_2_0_{p}"] == "EXP"
+            assert result[f"slotmap_1_0_{p}"] == "CS1"
