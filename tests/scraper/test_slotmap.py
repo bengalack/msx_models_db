@@ -610,6 +610,42 @@ class TestMirrorMethod2RomFileSize:
         assert "not found" in captured.err.lower()
         assert result["slotmap_0_0_0"] == "MAIN"
 
+    def test_fdc_device_with_embedded_rom_smaller_than_mem_produces_mirror(self, tmp_path):
+        # WD2793 with a 0x4000 (16 KB) ROM mapped to mem size 0x8000 (2 pages).
+        # Reproduces the National FS-5000F2 disk controller layout:
+        #   page 1 (0x4000-0x7FFF) — real ROM content → DSK
+        #   page 2 (0x8000-0xBFFF) — mirror (ROM file exhausted) → DSK*
+        rom_file = tmp_path / "disk.rom"
+        rom_file.write_bytes(b"\x00" * 0x4000)  # 16 KB
+
+        sha1 = "cafebabe"
+        sha1_index = {sha1: Path("disk.rom")}
+
+        xml = f"""
+        <msxconfig><devices>
+          <primary slot="3">
+            <secondary slot="3">
+              <WD2793 id="Memory Mapped FDC">
+                <connectionstyle>National</connectionstyle>
+                <drives>2</drives>
+                <rom>
+                  <filename>disk.rom</filename>
+                  <sha1>{sha1}</sha1>
+                </rom>
+                <mem base="0x4000" size="0x8000"/>
+              </WD2793>
+            </secondary>
+          </primary>
+        </devices></msxconfig>
+        """
+        result = extract_slotmap(
+            _root(xml), LUT_RULES,
+            sha1_index=sha1_index,
+            systemroms_root=tmp_path,
+        )
+        assert result["slotmap_3_3_1"] == "DSK"   # page 1: real ROM
+        assert result["slotmap_3_3_2"] == "DSK*"  # page 2: mirror
+
 
 # ---------------------------------------------------------------------------
 # Mirror detection — Method 3: <Mirror> element two-pass (T-027)

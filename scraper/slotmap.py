@@ -387,6 +387,14 @@ def _apply_rom_visibility(
 ) -> dict[int, str]:
     """Apply mirror annotations from rom_visibility (method 1) and ROM file size (method 2).
 
+    Method 1: ``<rom_visibility base size>`` child on any device — pages outside the
+    visibility range are marked as mirrors.
+
+    Method 2: ROM file size vs ``<mem size>`` — applies to ``<ROM>`` elements and
+    to FDC/other devices (e.g. ``WD2793``, ``TC8566AF``) that have an embedded
+    ``<rom>`` child.  Pages whose start offset within the device's Z80 range is
+    >= the on-disk ROM file size are marked as mirrors.
+
     Modifies page_map in place. Returns the modified page_map.
     """
     for child in _iter_slot_devices(slot_el):
@@ -423,7 +431,10 @@ def _apply_rom_visibility(
                         page_map[p] = f"{abbr}*"
 
         # Method 2: ROM file size vs mem range
-        if tag == "ROM" and sha1_index is not None:
+        # Applies to <ROM> elements and to FDC/other devices with an embedded <rom> child
+        # (e.g. WD2793, TC8566AF) whose ROM is smaller than the mapped address range.
+        has_rom_child = child.find("rom") is not None
+        if (tag == "ROM" or has_rom_child) and sha1_index is not None:
             file_size = _rom_file_size(child, sha1_index, systemroms_root, filename)
             if file_size is not None and file_size < size:
                 # Pages whose start offset is >= file_size are mirrors
