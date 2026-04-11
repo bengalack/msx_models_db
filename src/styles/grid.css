@@ -102,7 +102,11 @@
   padding: 0 22px 0 8px;  /* extra right padding clears the absolute-positioned chevron */
   text-align: left;
   border-bottom: 1px solid var(--color-border-strong);
-  border-right: 1px solid var(--color-border);
+  /* Use box-shadow instead of border-right for the column separator.
+     border-right on sticky cells can be painted over by adjacent compositing
+     layers after a tbody reflow (e.g. triggered by active filter). box-shadow
+     is part of the element's own GPU layer and survives recompositing. */
+  box-shadow: inset -1px 0 0 0 var(--color-border);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -166,7 +170,7 @@
 .group-header--frozen {
   left: var(--frozen-col0-left, 52px); /* same left as the first frozen column */
   z-index: 11;           /* thead .col--frozen level — above scrolling headers (10) */
-  border-right: 2px solid var(--color-border-strong);
+  box-shadow: inset -2px 0 0 0 var(--color-border-strong);
 }
 
 /* Zero-width anchor cell keeping table column alignment intact for a collapsed group */
@@ -197,7 +201,8 @@
   padding: 2px 6px;
   text-align: left;
   border-bottom: 1px solid var(--color-border-strong);
-  border-right: 1px solid var(--color-border);
+  /* box-shadow instead of border-right — see .group-header comment above */
+  box-shadow: inset -1px 0 0 0 var(--color-border);
   /* No overflow:hidden — the sort arrow is absolute-positioned and must not be clipped.
      Text overflow is handled by col-header__text below. */
   vertical-align: middle;
@@ -505,9 +510,13 @@ thead .gutter {
 .col--frozen[data-col-index="1"] { left: var(--frozen-col1-left, 52px); }
 
 /* Stronger right-border on the last frozen column as a visual separator */
-td.col--frozen[data-col-index="1"],
-th.col--frozen[data-col-index="1"] {
+td.col--frozen[data-col-index="1"] {
   border-right: 2px solid var(--color-border-strong);
+}
+/* Header frozen separator uses box-shadow so it survives compositing reflows
+   (col-header already uses box-shadow; this overrides with the stronger value) */
+th.col--frozen[data-col-index="1"] {
+  box-shadow: inset -2px 0 0 0 var(--color-border-strong);
 }
 
 /* A selected frozen cell must remain position:sticky and sit above its
