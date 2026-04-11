@@ -21,6 +21,8 @@ No server is involved at any point. The two sub-systems only communicate through
 
 The slot map feature adds 64 columns per model, extracted exclusively from openMSX machine XML files. A maintainer-controlled **Slot Map LUT** (`data/slotmap-lut.json`) maps XML device types and `id` patterns to short abbreviations and tooltip strings. The LUT is consumed by the scraper at build time (regex matching) and embedded in `data.js` as a compact key→tooltip map for runtime tooltip lookup in the browser. Mirror cells are detected in the XML via three methods (explicit `<Mirror>` element, ROM file size vs mapped range, `<rom_visibility>` vs `<mem>` range) and encoded as `<abbr>*` in the output.
 
+**LUT override — `<mappertype>PANASONIC</mappertype>`:** Some devices (e.g. `<ROM id="Firmware">` in Panasonic turboR machines) wrap a banked firmware area controlled by the Panasonic mapper. A `<mappertype>PANASONIC</mappertype>` child element inside any device overrides whatever the LUT matched (e.g. `FW`) and forces the classification to `PM`. This takes precedence over the `id`-based LUT match and must be checked after the normal LUT lookup in `_classify_devices`.
+
 ## Domain Boundaries
 
 - Web page (UI)

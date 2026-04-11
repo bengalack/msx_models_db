@@ -215,6 +215,16 @@ def _classify_devices(
         element_id = child.get("id")
         abbr = match_lut(tag, element_id, lut_rules)
 
+        # <mappertype>PANASONIC</mappertype> inside any device element overrides
+        # the LUT classification to PM (Panasonic Mapper).  This is needed for
+        # e.g. <ROM id="Firmware"> in Panasonic turboR machines, where the ROM
+        # element wraps a banked firmware area controlled by the Panasonic mapper.
+        mappertype_el = child.find("mappertype")
+        if mappertype_el is not None:
+            mt = (mappertype_el.text or "").strip().upper()
+            if mt == "PANASONIC":
+                abbr = "PM"
+
         if abbr is None:
             print(
                 f"[WARN] Unmatched device: {tag} id={element_id!r} in {filename}",

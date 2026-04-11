@@ -975,3 +975,65 @@ class TestSubslotCartridge:
         for p in range(4):
             assert sm[f"slotmap_0_0_{p}"] == "CS1!"
         assert sm["slotmap_0_1_0"] == "MM"
+
+
+# ---------------------------------------------------------------------------
+# mappertype override
+# ---------------------------------------------------------------------------
+
+class TestMapptertypeOverride:
+    """<mappertype>PANASONIC</mappertype> inside any device must yield PM."""
+
+    def test_rom_with_panasonic_mappertype_is_pm(self):
+        """<ROM id="Firmware"> with <mappertype>PANASONIC</mappertype> → PM."""
+        xml = """\
+<msxconfig><devices>
+  <primary slot="3">
+    <secondary slot="3">
+      <ROM id="Firmware">
+        <mem base="0x0000" size="0x10000"/>
+        <mappertype>PANASONIC</mappertype>
+        <rom><firstblock>0</firstblock><lastblock>511</lastblock></rom>
+      </ROM>
+    </secondary>
+  </primary>
+</devices></msxconfig>"""
+        root = _root(xml)
+        sm = extract_slotmap(root, LUT_RULES)
+        for p in range(4):
+            assert sm[f"slotmap_3_3_{p}"] == "PM", (
+                f"slotmap_3_3_{p} should be PM, got {sm[f'slotmap_3_3_{p}']!r}"
+            )
+
+    def test_rom_without_panasonic_mappertype_stays_fw(self):
+        """<ROM id="Firmware"> without <mappertype>PANASONIC</mappertype> → FW."""
+        xml = """\
+<msxconfig><devices>
+  <primary slot="3">
+    <secondary slot="3">
+      <ROM id="Firmware">
+        <mem base="0x0000" size="0x10000"/>
+        <rom><firstblock>0</firstblock><lastblock>511</lastblock></rom>
+      </ROM>
+    </secondary>
+  </primary>
+</devices></msxconfig>"""
+        root = _root(xml)
+        sm = extract_slotmap(root, LUT_RULES)
+        for p in range(4):
+            assert sm[f"slotmap_3_3_{p}"] == "FW"
+
+    def test_panasonic_mappertype_case_insensitive(self):
+        """<mappertype>panasonic</mappertype> (lowercase) also yields PM."""
+        xml = """\
+<msxconfig><devices>
+  <primary slot="0">
+    <ROM id="Firmware">
+      <mem base="0x4000" size="0x4000"/>
+      <mappertype>panasonic</mappertype>
+    </ROM>
+  </primary>
+</devices></msxconfig>"""
+        root = _root(xml)
+        sm = extract_slotmap(root, LUT_RULES)
+        assert sm["slotmap_0_0_1"] == "PM"
