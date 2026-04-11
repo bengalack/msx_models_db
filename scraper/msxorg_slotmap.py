@@ -212,7 +212,7 @@ def _load_text_patterns() -> list[tuple[re.Pattern[str], str]]:
         # LUT "Main ROM" pattern won't match "Main-ROM" (hyphen); cover it here.
         (re.compile(r"main[\s\-]rom",                         re.IGNORECASE), "MAIN"),
         (re.compile(r"disk\s+rom|floppy",                     re.IGNORECASE), "DSK"),
-        (re.compile(r"msx[\s\-]?music|fmpac|fm\s+(?:voicing|music)", re.IGNORECASE), "MUS"),
+        (re.compile(r"msx[\s\-]*music|fmpac|fm\s+(?:voicing|music)", re.IGNORECASE), "MUS"),
         (re.compile(r"\brs[\s\-]?232\b",                      re.IGNORECASE), "RS"),
         (re.compile(r"\bmodem\b",                             re.IGNORECASE), "MOD"),
         (re.compile(r"bunsetsu",                              re.IGNORECASE), "BUN"),
