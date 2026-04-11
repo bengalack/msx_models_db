@@ -175,6 +175,8 @@ class TestClassifyCellText:
 
     def test_expansion_bus(self):
         assert _classify_cell_text("Expansion Bus") == "EXP"
+        assert _classify_cell_text("Expansion") == "EXP"
+        assert _classify_cell_text("Expansion ") == "EXP"   # trailing space
 
     def test_96_pin_bus(self):
         # Victor HC-90/HC-95 pattern: msx.org uses "96-pin Bus" label

@@ -170,8 +170,8 @@ def _flatten_table(table: Tag) -> list[list[str]]:
 _CS_RE = re.compile(r"\bcartridge\b",        re.IGNORECASE)
 _ES_RE = re.compile(r"\bslot\b|\bES\b", re.IGNORECASE)
 
-# Expansion bus ("Expansion Bus", "96-pin Bus", …)
-_EXP_RE = re.compile(r"expansion\s+bus|\d+-pin\s+bus", re.IGNORECASE)
+# Expansion bus: "Expansion Bus", bare "Expansion", "96-pin Bus", etc.
+_EXP_RE = re.compile(r"\bexpansion\b|\d+-pin\s+bus", re.IGNORECASE)
 
 # Patterns loaded from data/slotmap-lut.json.  ``element`` is ignored here
 # (it encodes openMSX XML element names, not HTML cell text).  Only entries
