@@ -354,13 +354,13 @@ thead .gutter {
 
 /* Active — any cell in this row is selected */
 .grid tbody td.gutter--cell-active {
-  background: var(--color-gutter-text);
-  color: var(--color-gutter-bg);
+  background: var(--color-text-heading);
+  color: var(--color-header-bg);
 }
 
 .grid tbody tr:nth-child(even) td.gutter--cell-active {
-  background: var(--color-gutter-text);
-  color: var(--color-gutter-bg);
+  background: var(--color-text-heading);
+  color: var(--color-header-bg);
 }
 
 /* Null / empty cell value */
