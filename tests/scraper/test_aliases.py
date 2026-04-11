@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from scraper.aliases import apply_aliases, load_aliases
+from scraper.aliases import AliasLUT, apply_aliases, load_aliases
 
 
 # ---------------------------------------------------------------------------
@@ -21,9 +21,9 @@ def test_load_aliases_returns_inverted_lut(tmp_path):
         "model": {"Expert Turbo": ["Expert 2+ Turbo"]},
     }), encoding="utf-8")
     lut = load_aliases(lut_file)
-    # Inverted: {column: {alias_lower: canonical}}
-    assert lut["manufacturer"]["al alamiah"] == "Sakhr"
-    assert lut["model"]["expert 2+ turbo"] == "Expert Turbo"
+    assert lut.single["manufacturer"]["al alamiah"] == "Sakhr"
+    assert lut.single["model"]["expert 2+ turbo"] == "Expert Turbo"
+    assert lut.composite == []
 
 
 def test_load_aliases_multiple_aliases(tmp_path):
@@ -32,8 +32,8 @@ def test_load_aliases_multiple_aliases(tmp_path):
         "manufacturer": {"CIEL": ["CIEL (Ademir Carchano)", "ciel computers"]},
     }), encoding="utf-8")
     lut = load_aliases(lut_file)
-    assert lut["manufacturer"]["ciel (ademir carchano)"] == "CIEL"
-    assert lut["manufacturer"]["ciel computers"] == "CIEL"
+    assert lut.single["manufacturer"]["ciel (ademir carchano)"] == "CIEL"
+    assert lut.single["manufacturer"]["ciel computers"] == "CIEL"
 
 
 # ---------------------------------------------------------------------------
@@ -146,6 +146,153 @@ def test_duplicate_alias_raises_value_error(tmp_path):
     }), encoding="utf-8")
     with pytest.raises(ValueError, match="duplicate alias.*Al Alamiah"):
         load_aliases(lut_file)
+
+
+# ---------------------------------------------------------------------------
+# load_aliases — composite rules
+# ---------------------------------------------------------------------------
+
+def test_load_aliases_composite_happy_path(tmp_path):
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({
+        "composite": [
+            {
+                "match":     {"manufacturer": "Sakhr",  "model": "AX-350IIF"},
+                "canonical": {"manufacturer": "Yamaha", "model": "AX350IIF"},
+            }
+        ]
+    }), encoding="utf-8")
+    lut = load_aliases(lut_file)
+    assert len(lut.composite) == 1
+    match_lower, canonical = lut.composite[0]
+    assert match_lower == {"manufacturer": "sakhr", "model": "ax-350iif"}
+    assert canonical   == {"manufacturer": "Yamaha", "model": "AX350IIF"}
+
+
+def test_load_aliases_composite_not_a_list_raises(tmp_path):
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({"composite": {"bad": "value"}}), encoding="utf-8")
+    with pytest.raises(ValueError, match="'composite' must be a list"):
+        load_aliases(lut_file)
+
+
+def test_load_aliases_composite_missing_match_key_raises(tmp_path):
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({
+        "composite": [{"canonical": {"manufacturer": "Yamaha"}}]
+    }), encoding="utf-8")
+    with pytest.raises(ValueError, match="composite rule #0"):
+        load_aliases(lut_file)
+
+
+def test_load_aliases_composite_non_string_value_raises(tmp_path):
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({
+        "composite": [{
+            "match":     {"manufacturer": "Sakhr", "model": 123},
+            "canonical": {"manufacturer": "Yamaha", "model": "AX350IIF"},
+        }]
+    }), encoding="utf-8")
+    with pytest.raises(ValueError, match="must be a string"):
+        load_aliases(lut_file)
+
+
+def test_load_aliases_composite_empty_match_raises(tmp_path):
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({
+        "composite": [{"match": {}, "canonical": {"manufacturer": "Yamaha"}}]
+    }), encoding="utf-8")
+    with pytest.raises(ValueError, match="non-empty"):
+        load_aliases(lut_file)
+
+
+# ---------------------------------------------------------------------------
+# apply_aliases — composite rules
+# ---------------------------------------------------------------------------
+
+def test_apply_aliases_composite_all_columns_match(tmp_path):
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({
+        "composite": [{
+            "match":     {"manufacturer": "Sakhr",  "model": "AX-350IIF"},
+            "canonical": {"manufacturer": "Yamaha", "model": "AX350IIF"},
+        }]
+    }), encoding="utf-8")
+    lut = load_aliases(lut_file)
+    record = {"manufacturer": "Sakhr", "model": "AX-350IIF", "generation": "MSX2"}
+    apply_aliases(record, lut)
+    assert record["manufacturer"] == "Yamaha"
+    assert record["model"]        == "AX350IIF"
+    assert record["generation"]   == "MSX2"  # untouched
+
+
+def test_apply_aliases_composite_partial_match_noop(tmp_path):
+    """Only one of the required columns matches — record must be unchanged."""
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({
+        "composite": [{
+            "match":     {"manufacturer": "Sakhr",  "model": "AX-350IIF"},
+            "canonical": {"manufacturer": "Yamaha", "model": "AX350IIF"},
+        }]
+    }), encoding="utf-8")
+    lut = load_aliases(lut_file)
+    record = {"manufacturer": "Sakhr", "model": "AX-350II"}  # model differs
+    apply_aliases(record, lut)
+    assert record == {"manufacturer": "Sakhr", "model": "AX-350II"}
+
+
+def test_apply_aliases_composite_case_insensitive(tmp_path):
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({
+        "composite": [{
+            "match":     {"manufacturer": "Sakhr",  "model": "AX-350IIF"},
+            "canonical": {"manufacturer": "Yamaha", "model": "AX350IIF"},
+        }]
+    }), encoding="utf-8")
+    lut = load_aliases(lut_file)
+    record = {"manufacturer": "SAKHR", "model": "ax-350iif"}
+    apply_aliases(record, lut)
+    assert record["manufacturer"] == "Yamaha"
+    assert record["model"]        == "AX350IIF"
+
+
+def test_apply_aliases_composite_fires_after_single(tmp_path):
+    """Single-column pass normalizes Al Alamiah → Sakhr; composite then fires."""
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({
+        "manufacturer": {"Sakhr": ["Al Alamiah"]},
+        "composite": [{
+            "match":     {"manufacturer": "Sakhr",  "model": "AX-350IIF"},
+            "canonical": {"manufacturer": "Yamaha", "model": "AX350IIF"},
+        }]
+    }), encoding="utf-8")
+    lut = load_aliases(lut_file)
+    record = {"manufacturer": "Al Alamiah", "model": "AX-350IIF"}
+    apply_aliases(record, lut)
+    assert record["manufacturer"] == "Yamaha"
+    assert record["model"]        == "AX350IIF"
+
+
+def test_apply_aliases_composite_first_match_wins(tmp_path):
+    """When two composite rules could match, only the first is applied."""
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({
+        "composite": [
+            {
+                "match":     {"manufacturer": "Sakhr", "model": "AX-350IIF"},
+                "canonical": {"manufacturer": "Yamaha", "model": "AX350IIF"},
+            },
+            {
+                "match":     {"manufacturer": "Sakhr", "model": "AX-350IIF"},
+                "canonical": {"manufacturer": "Sony",  "model": "SHOULD_NOT"},
+            },
+        ]
+    }), encoding="utf-8")
+    lut = load_aliases(lut_file)
+    record = {"manufacturer": "Sakhr", "model": "AX-350IIF"}
+    apply_aliases(record, lut)
+    assert record["manufacturer"] == "Yamaha"
+    assert record["model"]        == "AX350IIF"
 
 
 # ---------------------------------------------------------------------------

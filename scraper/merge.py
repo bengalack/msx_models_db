@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from scraper.aliases import apply_aliases, load_aliases
+from scraper.aliases import AliasLUT, apply_aliases, load_aliases
 
 log = logging.getLogger(__name__)
 
@@ -148,7 +148,7 @@ def merge_models(
     if local is None:
         local = []
 
-    alias_lut: dict = {}
+    alias_lut: AliasLUT = AliasLUT()
     if alias_path is not None:
         alias_lut = load_aliases(alias_path)
     for record in [*openmsx, *(msxorg or []), *(local or [])]:

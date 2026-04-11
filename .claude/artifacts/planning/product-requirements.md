@@ -1,7 +1,7 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.9
+- Version: 0.10
 - Date: 2026-04-11
 - Owner: bengalack
 
@@ -122,6 +122,15 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Clicking outside the grid table on non-interactive space (not buttons, toolbar, headers, or gutter) clears all cell and row selection.
     - Selection state is reflected in the URL.
 
+- Selection column and row header highlight
+  - Description: When any cell in a column is selected, that column's header cell displays inverted colors (text color becomes background color, background color becomes text color). The same inversion applies to the row number cell of any row that contains a selected cell.
+  - Priority: Must
+  - Acceptance Criteria:
+    - While one or more cells in a column are selected, the column header for that column shows inverted colors.
+    - While one or more cells in a row are selected, the row number cell for that row shows inverted colors.
+    - When the selection is cleared, all column headers and row number cells revert to their normal colors immediately.
+    - The inversion applies to all selected columns/rows simultaneously (multi-selection is supported).
+
 - Clipboard copy
   - Description: The standard OS copy shortcut copies the content of selected cells to the clipboard as tab-separated values (suitable for pasting into spreadsheets).
   - Priority: Must
@@ -238,13 +247,16 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
 
 
 - Alias LUT
-  - Description: A maintainer-curated JSON file (`data/aliases.json`) normalizes known name variants to their canonical forms before merge, enabling cross-source records that differ only in name spelling to match correctly.
+  - Description: A maintainer-curated JSON file (`data/aliases.json`) normalizes known name variants to their canonical forms before merge, enabling cross-source records that differ only in name spelling to match correctly. Two rule types are supported: single-column rules (normalize one field independently) and composite rules (normalize multiple fields only when all specified fields match simultaneously).
   - Priority: Must
   - Acceptance Criteria:
-    - `data/aliases.json` maps canonical names to arrays of alias strings, organized by field name (e.g. `manufacturer`, `model`).
-    - Before computing the merge natural key, every record from all sources is passed through the alias LUT: any alias value found in a named field is replaced with the canonical name.
-    - Matching is case-insensitive.
+    - `data/aliases.json` supports two rule types at the top level:
+      - **Single-column rules** (existing): a field name key maps to `{ canonical: [alias, ...] }` objects. Any record whose named field matches an alias is rewritten to the canonical value.
+      - **Composite rules**: a `"composite"` key holds an array of `{ "match": {col: val, ...}, "canonical": {col: val, ...} }` objects. A rule fires only when **all** `match` fields match simultaneously; all `canonical` fields are then written into the record. Rules are evaluated in list order; the first matching rule wins.
+    - Before computing the merge natural key, every record from all sources is passed through the alias LUT: single-column rules first, then composite rules.
+    - Matching is case-insensitive for both rule types.
     - An alias string mapped to two different canonical names in the same field is rejected at load time with a `ValueError`.
+    - A composite rule with a missing or non-dict `match`/`canonical` key, an empty `match` dict, or a non-string field value is rejected at load time with a `ValueError`.
     - If `data/aliases.json` is absent, no aliasing occurs and the build proceeds normally.
 
 - Build timing

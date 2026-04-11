@@ -100,6 +100,15 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Depends On: -
   - Data Stores: `data/id-registry.json`
 
+- Alias LUT
+  - Type: File artifact (JSON), maintainer-controlled; module `scraper/aliases.py`
+  - Responsibilities: Normalize known name variants to canonical forms before merge so that cross-source records differing only in spelling share the same natural key and are deduplicated. Two rule types:
+    - **Single-column** — top-level field-name key → `{ canonical: [alias, ...] }`. Applied field-by-field, case-insensitively.
+    - **Composite** — top-level `"composite"` array of `{ "match": {col: val, ...}, "canonical": {col: val, ...} }` objects. Fires only when *all* match fields agree simultaneously (AND semantics); first matching rule wins. Evaluated after single-column rules so single-column canonicalization can feed composite matching.
+  - Runtime type: `AliasLUT` dataclass (`scraper/aliases.py`) with `single: dict[str, dict[str, str]]` and `composite: list[CompositeRule]` fields.
+  - Depends On: -
+  - Data Stores: `data/aliases.json` (read-only)
+
 - Link-Shares LUT
   - Type: File artifact (JSON), maintainer-controlled
   - Responsibilities: Allow models with no msx.org page of their own to inherit the `links` entry from a donor model. Keys and values are natural keys (`"manufacturer|model"`, lowercase). Applied in the build step after per-model `links` are computed and before the models list is sorted.

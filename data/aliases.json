@@ -17,5 +17,19 @@
   },
   "region": {
     "Korea": ["South Korea (original version)"]
-  }
+  },
+  "composite": [
+    {
+      "match":     {"manufacturer": "Sakhr",  "model": "AX-350IIF"},
+      "canonical": {"manufacturer": "Yamaha", "model": "AX350IIF"}
+    },
+    {
+      "match":     {"manufacturer": "Sakhr",  "model": "AX-350II"},
+      "canonical": {"manufacturer": "Yamaha", "model": "AX350II"}
+    },
+    {
+      "match":     {"manufacturer": "Sakhr",  "model": "AX-500"},
+      "canonical": {"manufacturer": "Yamaha", "model": "AX500"}
+    }
+  ]
 }

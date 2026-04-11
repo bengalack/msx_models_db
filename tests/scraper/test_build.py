@@ -772,7 +772,7 @@ class TestBuildOpenMSXMirrorWiring:
 # ---------------------------------------------------------------------------
 
 def test_aliases_json_loads_without_error():
-    from scraper.aliases import load_aliases
+    from scraper.aliases import AliasLUT, load_aliases
     lut = load_aliases(Path("data/aliases.json"))
-    assert isinstance(lut, dict)
-    assert "manufacturer" in lut or "model" in lut
+    assert isinstance(lut, AliasLUT)
+    assert "manufacturer" in lut.single or "model" in lut.single
