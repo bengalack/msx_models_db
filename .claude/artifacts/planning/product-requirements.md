@@ -289,6 +289,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Non-expanded primary slots (devices as direct children of `<primary>`, no `<secondary>` elements) are classified and written to sub-slot 0 columns; sub-slots 1–3 receive `~`.
     - Expanded primary slots (containing `<secondary slot="N">` children) are walked per sub-slot; missing sub-slot elements receive `~` for all 4 pages.
     - Cartridge/expansion slots (`<primary external="true" slot="N"/>`) produce `CS{N}` in all 4 pages of sub-slot 0, where `{N}` is a sequential 1-based counter incremented for each cartridge slot found (not the slot index); sub-slots 1–3 receive `~` for unoccupied sub-slots.
+    - Cartridge slots placed inside an expanded primary slot (`<secondary external="true" slot="N">`) produce `CS{N}!` on all 4 pages of that sub-slot. The `!` suffix signals non-standard placement (a cartridge inside a secondary expansion rather than a primary slot).
     - Multiple devices in the same sub-slot with non-overlapping `<mem>` ranges are each assigned to their respective page(s); the cell value is the abbreviation of the device covering that page's address range.
     - If multiple devices overlap the same page, the scraper emits a warning and uses the first device encountered.
     - Mirror detection applies three methods (in order of precedence):
@@ -296,6 +297,16 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
       2. ROM file smaller than `<mem>` range: ROM file size is looked up via SHA1 in `all_sha1s.txt` then measured on disk; pages beyond the ROM's byte coverage are mirrors (`<abbr>*`).
       3. `<rom_visibility>` narrower than `<mem>` range: pages within `<mem>` but outside `<rom_visibility>` are mirrors (`<abbr>*`).
     - If a SHA1 from the XML cannot be resolved to a file on disk (for method 2), the scraper skips mirror detection for that ROM and emits a warning.
+
+- Slot map HTML extraction
+  - Description: The scraper extracts slot map data from msx.org wiki pages by parsing the HTML Slot Map table section and classifying cell text into the same abbreviations as the XML extraction path.
+  - Priority: Must
+  - Acceptance Criteria:
+    - The parser finds the first `<h2><span id="Slot_Map" …>` heading on the page; if multiple Slot Map headings exist (e.g. 1chipMSX with default and upgraded configurations), only the first is used.
+    - A cell is treated as a cartridge slot if its text contains the word `slot` (case-insensitive, word-boundary match). This covers "Cartridge Slot N", "Module Slot", "Mini Cartridge Slot", "Slot CN…", and positional naming variants such as "Lowest back slot", "Middle back slot", and "Top back slot".
+    - Cartridge slots in a non-expanded main slot (single column) produce `CS{N}` on all 4 pages of sub-slot 0. Cartridge slots in an expanded main slot (multiple sub-slot columns) produce `CS{N}!`, following the same `!` convention as the XML extraction path.
+    - Cell text is matched against the `id_pattern` fields in `data/slotmap-lut.json` in order (first match wins). LUT entries with a null `id_pattern` (element-name-only entries) are covered by a supplemental list that matches their typical msx.org free-text descriptions.
+    - All other slot map conventions (64-key output, `⌧`/`•` sentinels, CS sequential numbering) are identical to those of the XML extraction path.
 
 ## Non-Functional Requirements
 

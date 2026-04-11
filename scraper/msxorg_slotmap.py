@@ -164,14 +164,12 @@ def _flatten_table(table: Tag) -> list[list[str]]:
 
 # ── Cell text → abbreviation ──────────────────────────────────────────────
 
-# Cartridge-like slots (produce CS{N} with sequential numbering)
-_CART_RE = re.compile(
-    r"cartridge\s+slot"
-    r"|mini[\s\-]cartridge"
-    r"|module\s+slot"
-    r"|slot\s+cn\d+",          # National FS-5000x internal connector slots
-    re.IGNORECASE,
-)
+# Cartridge-like slots (produce CS{N} with sequential numbering).
+# Any cell whose text contains the word "slot" is treated as a cartridge/expansion
+# slot.  This matches "Cartridge Slot N", "Module Slot", "Mini Cartridge Slot",
+# "Slot CN…", and positional variants such as "Lowest back slot",
+# "Middle back slot", and "Top back slot".
+_CART_RE = re.compile(r"\bslot\b", re.IGNORECASE)
 
 # Expansion bus
 _EXP_RE = re.compile(r"expansion\s+bus", re.IGNORECASE)
@@ -325,7 +323,11 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
     for c in sorted(col_to_slot.keys()):
         if _CART_RE.search(grid[first_data][c].strip()):
             cs_counter += 1
-            cart_col_cs[c] = f"CS{cs_counter}"
+            ms, _ = col_to_slot[c]
+            # Cartridge inside an expanded (secondary) slot gets the "!" suffix
+            # to signal non-standard placement — same convention as slotmap.py.
+            suffix = "!" if ms_expanded.get(ms, False) else ""
+            cart_col_cs[c] = f"CS{cs_counter}{suffix}"
 
     # ── Initialise all 64 cells to ⌧ ─────────────────────────────────────
     result: dict[str, str] = {k: _ABSENT for k in _ALL_KEYS}

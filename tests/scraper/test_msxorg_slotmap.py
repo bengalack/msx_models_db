@@ -167,6 +167,10 @@ class TestClassifyCellText:
         assert _classify_cell_text("Mini Cartridge Slot") == _CART_SENTINEL
         assert _classify_cell_text("Module Slot") == _CART_SENTINEL
         assert _classify_cell_text("Slot CN904") == _CART_SENTINEL
+        # Positional/model-specific slot names (e.g. Hitachi MB-H70)
+        assert _classify_cell_text("Lowest back slot") == _CART_SENTINEL
+        assert _classify_cell_text("Middle back slot") == _CART_SENTINEL
+        assert _classify_cell_text("Top back slot") == _CART_SENTINEL
 
     def test_expansion_bus(self):
         assert _classify_cell_text("Expansion Bus") == "EXP"
@@ -401,6 +405,74 @@ class TestParseSlotmapFromSoup:
         from_soup = parse_slotmap_from_soup(BeautifulSoup(html, "lxml"))
         from_bytes = parse_msxorg_slotmap(html)
         assert from_soup == from_bytes
+
+
+# ── Cartridge in subslot → ! suffix ─────────────────────────────────────
+
+# Slot 0: non-expanded, cartridge → CS1 (no !)
+# Slot 1: expanded (4 sub-slots), sub-slot 1 has a cartridge → CS2!
+_SUBSLOT_CART_TABLE = """
+<table>
+<tr>
+  <td></td>
+  <th>Slot 0</th>
+  <th>1-0</th><th>1-1</th><th>1-2</th><th>1-3</th>
+</tr>
+<tr>
+  <th>Page C000h~FFFFh</th>
+  <td rowspan="4">Cartridge Slot 1</td>
+  <td></td>
+  <td rowspan="4">Middle back slot</td>
+  <td></td>
+  <td></td>
+</tr>
+<tr><th>Page 8000h~BFFFh</th><td></td><td></td><td></td></tr>
+<tr><th>Page 4000h~7FFFh</th><td></td><td></td><td></td></tr>
+<tr><th>Page 0000h~3FFFh</th><td></td><td></td><td></td></tr>
+</table>
+"""
+
+
+class TestCartridgeInSubslot:
+
+    def test_primary_cartridge_no_bang(self):
+        html = _make_page(_SUBSLOT_CART_TABLE)
+        result = parse_msxorg_slotmap(html)
+        assert result is not None
+        for p in range(4):
+            assert result[f"slotmap_0_0_{p}"] == "CS1"
+
+    def test_subslot_cartridge_gets_bang(self):
+        html = _make_page(_SUBSLOT_CART_TABLE)
+        result = parse_msxorg_slotmap(html)
+        assert result is not None
+        for p in range(4):
+            assert result[f"slotmap_1_1_{p}"] == "CS2!"
+
+    def test_numbering_is_sequential_across_both(self):
+        """CS counter increments across primary and subslot cartridges."""
+        html = _make_page(_SUBSLOT_CART_TABLE)
+        result = parse_msxorg_slotmap(html)
+        assert result is not None
+        assert result["slotmap_0_0_0"] == "CS1"
+        assert result["slotmap_1_1_0"] == "CS2!"
+
+    def test_primary_nonexpanded_absent_subslots(self):
+        html = _make_page(_SUBSLOT_CART_TABLE)
+        result = parse_msxorg_slotmap(html)
+        assert result is not None
+        for ss in (1, 2, 3):
+            for p in range(4):
+                assert result[f"slotmap_0_{ss}_{p}"] == _ABSENT
+
+    def test_expanded_slot_empty_subslots_are_bullet(self):
+        html = _make_page(_SUBSLOT_CART_TABLE)
+        result = parse_msxorg_slotmap(html)
+        assert result is not None
+        # Sub-slots 0, 2, 3 of slot 1 have no content → •
+        for ss in (0, 2, 3):
+            for p in range(4):
+                assert result[f"slotmap_1_{ss}_{p}"] == _EMPTY_PAGE
 
 
 # ── 6-row table (expanded slot 0) ────────────────────────────────────────
