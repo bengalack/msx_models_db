@@ -197,3 +197,53 @@ class TestMergeSlotMapCsEsPreference:
         for p in range(4):
             assert result[f"slotmap_2_0_{p}"] == "EXP"
             assert result[f"slotmap_1_0_{p}"] == "CS1"
+
+    def test_msxorg_cs_overrides_openmsx_empty_primary(self):
+        """openMSX emits • for an empty non-external primary it can't classify;
+        msx.org wins when it knows the slot is a cartridge slot.
+
+        Covers: <primary slot="X"/> (no external="true", no devices) → openMSX: •
+        msx.org has CS → merged result: CS.
+        """
+        openmsx = [_base_model(extra={**_fill_slot(2, 0, "•")})]
+        msxorg  = [_base_model(extra={**_fill_slot(2, 0, "CS1")})]
+        result = merge_models(openmsx, msxorg)
+        assert len(result) == 1
+        for p in range(4):
+            assert result[0][f"slotmap_2_0_{p}"].startswith("CS")
+
+    def test_msxorg_exp_overrides_openmsx_empty_primary(self):
+        """openMSX emits • for an empty non-external primary; msx.org EXP wins.
+
+        Covers: <primary slot="X"/> → openMSX: •; msx.org: EXP → merged: EXP.
+        """
+        openmsx = [_base_model(extra={**_fill_slot(3, 0, "•")})]
+        msxorg  = [_base_model(extra={**_fill_slot(3, 0, "EXP")})]
+        result = merge_models(openmsx, msxorg)
+        assert len(result) == 1
+        for p in range(4):
+            assert result[0][f"slotmap_3_0_{p}"] == "EXP"
+
+    def test_msxorg_es_overrides_openmsx_empty_secondary(self):
+        """openMSX emits • for an empty <secondary slot="N"/>; msx.org ES wins.
+
+        Covers: National FS-5000F2 pattern — empty secondaries are expansion
+        connectors labelled ES{N}! by msx.org.
+        """
+        openmsx = [_base_model(extra={
+            **_fill_slot(0, 1, "•"),
+            **_fill_slot(0, 2, "•"),
+            **_fill_slot(0, 3, "•"),
+        })]
+        msxorg = [_base_model(extra={
+            **_fill_slot(0, 1, "ES1!"),
+            **_fill_slot(0, 2, "ES2!"),
+            **_fill_slot(0, 3, "ES3!"),
+        })]
+        result = merge_models(openmsx, msxorg)
+        assert len(result) == 1
+        m = result[0]
+        for p in range(4):
+            assert m[f"slotmap_0_1_{p}"] == "ES1!"
+            assert m[f"slotmap_0_2_{p}"] == "ES2!"
+            assert m[f"slotmap_0_3_{p}"] == "ES3!"

@@ -38,10 +38,6 @@ _ABSENT = "\u2327"  # ⌧
 # • U+2022: sub-slot is real but the page has no device mapped there.
 _EMPTY_PAGE = "\u2022"  # •
 
-# EXP: secondary slot explicitly declared in XML but carrying no device —
-# represents a physical expansion connector (e.g. internal bus on the PCB).
-_EXPANSION_BUS = "EXP"
-
 # Pages 0-3 correspond to address ranges 0x0000-0x3FFF, 0x4000-0x7FFF, etc.
 _PAGE_SIZE = 0x4000
 
@@ -364,14 +360,12 @@ def extract_slotmap(
                 for p, abbr in page_map.items():
                     result[f"slotmap_{ms}_{ss}_{p}"] = abbr
                     slot_abbrs[ms][ss][p] = abbr
-                # Explicitly-empty secondary (no device children) → expansion
-                # connector; a non-empty secondary's unmapped pages → •.
-                fill = _EXPANSION_BUS if not page_map else _EMPTY_PAGE
+                # Unmapped pages within a secondary (including empty secondaries) → •.
+                # openMSX XML cannot express whether an empty secondary is a
+                # cartridge slot, expansion bus, etc. — leave that to msx.org.
                 for p in range(4):
                     if result[f"slotmap_{ms}_{ss}_{p}"] == _ABSENT:
-                        result[f"slotmap_{ms}_{ss}_{p}"] = fill
-                        if fill == _EXPANSION_BUS:
-                            slot_abbrs[ms][ss][p] = fill
+                        result[f"slotmap_{ms}_{ss}_{p}"] = _EMPTY_PAGE
 
             # If any subslot is present, all subslots 0-3 must be considered present (never ⌧)
             if present_subslots:

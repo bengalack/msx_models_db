@@ -326,6 +326,13 @@ def _merge_single(
             result[field] = mv  # msx.org knows the slot type
             continue
 
+        # openMSX emits • for secondary pages it has no device for; it cannot
+        # determine the connector type.  If msx.org has a slot-type value for
+        # the same cell, prefer msx.org.
+        if field.startswith("slotmap_") and ov == "\u2022" and _is_slot_type(mv):
+            result[field] = mv
+            continue
+
         # Genuine unresolved conflict.
         # Default to openMSX (more authoritative for hardware specs), but record the conflict.
         result[field] = ov

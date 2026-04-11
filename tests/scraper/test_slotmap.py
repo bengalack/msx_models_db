@@ -236,14 +236,15 @@ class TestExtractSlotmapHBF1XV:
         assert self.result["slotmap_0_0_2"] == "\u2022"
         assert self.result["slotmap_0_0_3"] == "\u2022"
 
-    # Slot 0-1, 0-2: explicitly empty secondaries → EXP (physical expansion connector)
-    def test_slot_0_1_all_exp(self):
+    # Slot 0-1, 0-2: explicitly empty secondaries → • (openMSX knows only
+    # that nothing is mapped; msx.org determines the connector type at merge).
+    def test_slot_0_1_all_empty(self):
         for p in range(4):
-            assert self.result[f"slotmap_0_1_{p}"] == "EXP"
+            assert self.result[f"slotmap_0_1_{p}"] == "\u2022"
 
-    def test_slot_0_2_all_exp(self):
+    def test_slot_0_2_all_empty(self):
         for p in range(4):
-            assert self.result[f"slotmap_0_2_{p}"] == "EXP"
+            assert self.result[f"slotmap_0_2_{p}"] == "\u2022"
 
     # Slot 0-3: JE covers all 4 pages (0x0000, 0x10000)
     def test_slot_0_3_je_all_pages(self):
@@ -316,9 +317,10 @@ class TestExtractSlotmapEdgeCases:
             for p in range(4):
                 assert result[f"slotmap_0_{ss}_{p}"] == "\u2327"
 
-    def test_empty_secondary_slot_is_exp(self):
-        # Explicitly-empty secondary (no children) → EXP (expansion connector).
-        # Secondaries 2 and 3 are absent from XML → filled implicitly → •.
+    def test_empty_secondary_slot_is_empty_page(self):
+        # Explicitly-empty secondary (no children) → • (openMSX cannot determine
+        # connector type; msx.org overrides at merge if it knows the type).
+        # Secondaries 2 and 3 are absent from XML → also •.
         xml = """
         <msxconfig><devices>
           <primary slot="0">
@@ -330,13 +332,13 @@ class TestExtractSlotmapEdgeCases:
         </devices></msxconfig>
         """
         result = extract_slotmap(_root(xml), LUT_RULES)
-        # Explicitly-empty secondary 0 → EXP
+        # Explicitly-empty secondary 0 → •
         for p in range(4):
-            assert result[f"slotmap_0_0_{p}"] == "EXP"
+            assert result[f"slotmap_0_0_{p}"] == "\u2022"
         # Secondary 1 has a device → MM
         for p in range(4):
             assert result[f"slotmap_0_1_{p}"] == "MM"
-        # Secondaries 2 and 3 absent from XML → implicitly filled → •
+        # Secondaries 2 and 3 absent from XML → also •
         for ss in (2, 3):
             for p in range(4):
                 assert result[f"slotmap_0_{ss}_{p}"] == "\u2022"
@@ -407,16 +409,17 @@ class TestExtractSlotmapEdgeCases:
         # Primary skipped entirely — all 64 cells remain ⌧
         assert all(v == "\u2327" for v in result.values())
 
-    def test_explicit_empty_secondary_is_exp_not_empty_page(self):
-        """Regression: Pioneer UC-V102 pattern — explicitly-listed empty secondary
-        slots represent physical expansion connectors, not merely 'nothing mapped'.
-        They must emit EXP rather than •.
+    def test_explicit_empty_secondary_is_empty_page(self):
+        """openMSX cannot classify empty secondaries — they emit •.
+
+        The connector type (EXP, ES, CS, …) is resolved at merge time if msx.org
+        provides a value.  This test verifies the scraper output before merge.
 
         Pattern:
           <secondary slot="0"> <WD2793...> </secondary>   ← device present → DSK
-          <secondary slot="1"/>  <!-- Only available internally... -->   → EXP
-          <secondary slot="2"/>  <!-- Only available internally... -->   → EXP
-          <secondary slot="3"/>  <!-- Only available internally... -->   → EXP
+          <secondary slot="1"/>   → •  (type unknown to openMSX alone)
+          <secondary slot="2"/>   → •
+          <secondary slot="3"/>   → •
         """
         xml = """
         <msxconfig><devices>
@@ -435,11 +438,37 @@ class TestExtractSlotmapEdgeCases:
         result = extract_slotmap(_root(xml), LUT_RULES)
         # Secondary 0 has a device
         assert result["slotmap_3_0_1"] == "DSK"
-        # Explicitly-empty secondaries → EXP
+        # Explicitly-empty secondaries → •
         for ss in (1, 2, 3):
             for p in range(4):
-                assert result[f"slotmap_3_{ss}_{p}"] == "EXP", \
-                    f"slotmap_3_{ss}_{p}: expected EXP, got {result[f'slotmap_3_{ss}_{p}']!r}"
+                assert result[f"slotmap_3_{ss}_{p}"] == "\u2022", \
+                    f"slotmap_3_{ss}_{p}: expected •, got {result[f'slotmap_3_{ss}_{p}']!r}"
+
+    def test_empty_non_external_primary_is_empty_page(self):
+        """<primary slot="X"/> with no external="true" and no devices → • in sub-slot 0.
+
+        openMSX cannot determine whether the connector is a cartridge slot, an
+        expansion bus, etc.  The scraper emits • and the merge can override with
+        the msx.org classification.
+        """
+        xml = """
+        <msxconfig><devices>
+          <primary slot="0">
+            <ROM id="MSX BIOS with BASIC ROM">
+              <mem base="0x0000" size="0x8000"/>
+            </ROM>
+          </primary>
+          <primary slot="2"/>
+        </devices></msxconfig>
+        """
+        result = extract_slotmap(_root(xml), LUT_RULES)
+        # Empty non-external primary 2: sub-slot 0 → • (not CS, not EXP)
+        for p in range(4):
+            assert result[f"slotmap_2_0_{p}"] == "\u2022"
+        # Sub-slots 1-3: ⌧ (no secondary expansion)
+        for ss in range(1, 4):
+            for p in range(4):
+                assert result[f"slotmap_2_{ss}_{p}"] == "\u2327"
 
     def test_cartridge_numbering_is_sequential_not_slot_index(self):
         """CS numbering starts at 1 and increments per cartridge found, regardless of slot index."""
