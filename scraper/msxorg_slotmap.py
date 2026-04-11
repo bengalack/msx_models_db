@@ -187,7 +187,7 @@ def _load_text_patterns() -> list[tuple[re.Pattern[str], str]]:
     Supplemental patterns for element-only entries are inserted just before
     the broad FW firmware catch-all.
     """
-    _SKIP = {"__cartridge__", "__expansion__", "__sentinel__", "secondary"}
+    _SKIP = {"__cartridge__", "__expansion__", "__sentinel__", "secondary", "__expansion_bus__"}
 
     lut_path = pathlib.Path(__file__).parent.parent / "data" / "slotmap-lut.json"
     with lut_path.open(encoding="utf-8") as fh:

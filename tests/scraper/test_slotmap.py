@@ -34,7 +34,7 @@ LUT_RULES: list[dict] = [
     {"element": "MemoryMapper", "id_pattern": None, "abbr": "MM", "tooltip": "Memory Mapper"},
     {"element": "PanasonicRAM", "id_pattern": None, "abbr": "PM", "tooltip": "Panasonic Mapper"},
     {"element": "RAM", "id_pattern": None, "abbr": "RAM", "tooltip": "RAM (no memory mapper)"},
-    {"element": "secondary", "id_pattern": None, "abbr": "EXP", "tooltip": "Expansion Bus"},
+    {"element": "__expansion_bus__", "id_pattern": None, "abbr": "EXP", "tooltip": "Expansion Bus"},
     {"element": "__cartridge__", "id_pattern": None, "abbr": "CS1",  "tooltip": "Cartridge slot 1"},
     {"element": "__cartridge__", "id_pattern": None, "abbr": "CS2",  "tooltip": "Cartridge slot 2"},
     {"element": "__cartridge__", "id_pattern": None, "abbr": "CS3",  "tooltip": "Cartridge slot 3"},

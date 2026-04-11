@@ -55,7 +55,7 @@
   },
   {
     "element": "ROM",
-    "id_pattern": "BASIC|Cockpit|Designer|Desk Pac|Firmware|Memovision|MSX JUSHO|NIA-2001|Painter|Program|ROM|Sakhr|Set-Up|Super Impose|Utility|Word|Word Font|wordpro|Write",
+    "id_pattern": "JWPLogo|Plan|Accessories|Hot Paper|Network*|BASIC|Cockpit|Designer|Desk Pac|DESKPAC|Firmware|Memovision|MSX JUSHO|NIA-2001|Painter|Program|ROM|Sakhr|Set-Up|Super Impose|Utility|Word|Word Font|wordpro|Write",
     "abbr": "FW",
     "tooltip": "Firmware"
   },
@@ -243,40 +243,40 @@
     "element": "__expansion__",
     "id_pattern": null,
     "abbr": "ES1!",
-    "tooltip": "Expansion slot 1 (in subslot — non-standard)"
+    "tooltip": "Expansion slot 1 (in subslot, limitations apply)"
   },
   {
     "element": "__expansion__",
     "id_pattern": null,
     "abbr": "ES2!",
-    "tooltip": "Expansion slot 2 (in subslot — non-standard)"
+    "tooltip": "Expansion slot 2 (in subslot, limitations apply)"
   },
   {
     "element": "__expansion__",
     "id_pattern": null,
     "abbr": "ES3!",
-    "tooltip": "Expansion slot 3 (in subslot — non-standard)"
+    "tooltip": "Expansion slot 3 (in subslot, limitations apply)"
   },
   {
     "element": "__expansion__",
     "id_pattern": null,
     "abbr": "ES4!",
-    "tooltip": "Expansion slot 4 (in subslot — non-standard)"
+    "tooltip": "Expansion slot 4 (in subslot, limitations apply)"
   },
   {
     "element": "__expansion__",
     "id_pattern": null,
     "abbr": "ES5!",
-    "tooltip": "Expansion slot 5 (in subslot — non-standard)"
+    "tooltip": "Expansion slot 5 (in subslot, limitations apply)"
   },
   {
     "element": "__expansion__",
     "id_pattern": null,
     "abbr": "ES6!",
-    "tooltip": "Expansion slot 6 (in subslot — non-standard)"
+    "tooltip": "Expansion slot 6 (in subslot, limitations apply)"
   },
   {
-    "element": "secondary",
+    "element": "__expansion_bus__",
     "id_pattern": null,
     "abbr": "EXP",
     "tooltip": "Expansion Bus"

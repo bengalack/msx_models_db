@@ -76,7 +76,7 @@ def match_lut(element_tag: str, element_id: str | None, rules: list[dict]) -> st
     for rule in rules:
         rule_element = rule.get("element", "")
         # Skip structural/sentinel entries
-        if rule_element in ("__sentinel__", "__cartridge__", "secondary"):
+        if rule_element in ("__sentinel__", "__cartridge__", "secondary", "__expansion_bus__"):
             continue
         alternatives = [e.strip() for e in rule_element.split("|")]
         if element_tag not in alternatives:
