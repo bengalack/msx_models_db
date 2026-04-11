@@ -11,6 +11,11 @@
     "Super Free Kick": ["Spinkick"],
     "ML-G1": ["ML-G1 (ES)"],
     "ML-G3": ["ML-G3 (ES)"],
+    "VG 8230": ["VG-8230"],
+    "AX-370": ["AX370"],
     "CPC-61 Zemmix Super V": ["CPC-61"]
+  },
+  "region": {
+    "Korea": ["South Korea (original version)"]
   }
 }
