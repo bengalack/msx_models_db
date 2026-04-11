@@ -5,10 +5,11 @@ produces the same 64-cell ``dict[str, str]`` output format as
 ``scraper.slotmap.extract_slotmap()``.
 
 Cell value conventions (identical to scraper.slotmap):
-  "⌧"      — sub-slot physically absent (non-expanded SS 1-3, cartridge SS 1-3)
-  "•"      — sub-slot present but no device mapped on this page
-  "CS{N}"  — cartridge slot N (1-based sequential counter per table, L→R)
-  "<abbr>" — short abbreviation (e.g. "MAIN", "MM", "DSK")
+  "⌧"       — sub-slot physically absent (non-expanded SS 1-3, cartridge SS 1-3)
+  "•"       — sub-slot present but no device mapped on this page
+  "CS{N}"   — cartridge slot N (1-based sequential counter per table, L→R)
+  "<abbr>"  — short abbreviation (e.g. "MAIN", "MM", "DSK")
+  "<abbr>*" — mirror page (origin abbreviation + asterisk, e.g. "DSK*")
 
 The HTML Slot Map table uses a compact visual layout:
   - Non-expanded main slots appear as a single data column.
@@ -17,8 +18,15 @@ The HTML Slot Map table uses a compact visual layout:
   - Cells with rowspan=4 span all four page rows (e.g. cartridge slots).
   - Divider columns between slot groups contain blank text.
 
+Mirror detection:
+  msx.org tables sometimes label cells with the word "Mirror" to indicate that
+  a device is mirrored at that address.  When such a cell is found, the parser
+  resolves the origin abbreviation by examining other pages in the same
+  sub-slot column first; if that yields nothing, it falls back to searching
+  all other columns across the table.  The resolved cell is written as
+  "<origin_abbr>*" (e.g. "DSK*"), matching the openMSX convention.
+
 Limitations vs. the openMSX XML extractor:
-  - No mirror/alias detection (msx.org HTML does not encode mirror info).
   - Cell content is free text → abbreviation matching is heuristic.
   - Multiple Slot_Map sections on one page (e.g. 1chipMSX default/upgraded):
     only the FIRST section is used.
@@ -225,9 +233,13 @@ def _load_text_patterns() -> list[tuple[re.Pattern[str], str]]:
 
 _TEXT_PATTERNS = _load_text_patterns()
 
-# Sentinels returned by _classify_cell_text — caller replaces with CS{N} / ES{N}.
-_CART_SENTINEL = "__CART__"
-_ES_SENTINEL   = "__ES__"
+# Sentinels returned by _classify_cell_text — caller replaces with CS{N} / ES{N} / abbr*.
+_CART_SENTINEL   = "__CART__"
+_ES_SENTINEL     = "__ES__"
+_MIRROR_SENTINEL = "__MIRROR__"
+
+# Matches bare "Mirror" (as the entire cell text, case-insensitive).
+_MIRROR_RE = re.compile(r"^mirror$", re.IGNORECASE)
 
 
 def _classify_cell_text(text: str) -> str | None:
@@ -250,6 +262,9 @@ def _classify_cell_text(text: str) -> str | None:
 
     if _EXP_RE.search(t):
         return "EXP"
+
+    if _MIRROR_RE.match(t):
+        return _MIRROR_SENTINEL
 
     for pattern, abbr in _TEXT_PATTERNS:
         if pattern.search(t):
@@ -360,6 +375,9 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
                         file=sys.stderr,
                     )
                     result[key] = raw[:10]
+                elif abbr == _MIRROR_SENTINEL:
+                    # Defer mirror resolution to the post-processing pass below.
+                    result[key] = _MIRROR_SENTINEL
                 elif abbr in (_CART_SENTINEL, _ES_SENTINEL):
                     # Should not reach here (pre-computed above), but be safe.
                     # Treat as expansion slot (conservative).
@@ -371,6 +389,49 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
                     result[key] = abbr_out
                 else:
                     result[key] = abbr
+
+    # ── Resolve mirror sentinels → <origin_abbr>* ───────────────────────
+    # Build a lookup: (ms, ss) → list of real abbreviations across all 4 pages.
+    # "Real" means not a sentinel, not empty-page, not absent.
+    def _real_abbrs_in_subslot(ms: int, ss: int) -> list[str]:
+        out = []
+        for p in range(4):
+            v = result.get(f"slotmap_{ms}_{ss}_{p}", _ABSENT)
+            if v not in (_ABSENT, _EMPTY_PAGE, _MIRROR_SENTINEL) and not v.endswith("*"):
+                out.append(v)
+        return out
+
+    # For each mirror cell, find the most common origin abbreviation.
+    for ms, ss in col_to_slot.values():
+        mirrors = [
+            p for p in range(4)
+            if result.get(f"slotmap_{ms}_{ss}_{p}") == _MIRROR_SENTINEL
+        ]
+        if not mirrors:
+            continue
+
+        # Strategy 1: look within the same sub-slot column.
+        candidates = _real_abbrs_in_subslot(ms, ss)
+
+        # Strategy 2: look across all other columns in the table.
+        if not candidates:
+            for (other_ms, other_ss) in col_to_slot.values():
+                if (other_ms, other_ss) == (ms, ss):
+                    continue
+                candidates.extend(_real_abbrs_in_subslot(other_ms, other_ss))
+
+        if candidates:
+            origin_abbr = max(set(candidates), key=candidates.count)
+            for p in mirrors:
+                result[f"slotmap_{ms}_{ss}_{p}"] = f"{origin_abbr}*"
+        else:
+            # Cannot determine origin — leave a warning and use a generic marker.
+            log.warning(
+                "msxorg slotmap: cannot resolve Mirror origin at slot %d-%d in %s",
+                ms, ss, page_title,
+            )
+            for p in mirrors:
+                result[f"slotmap_{ms}_{ss}_{p}"] = "?*"
 
     # ── Fill sentinel / empty-page for slots based on expansion status ────
     for ms, subs in ms_subslots.items():

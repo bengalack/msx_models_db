@@ -12,6 +12,7 @@ from scraper.msxorg_slotmap import (
     _classify_cell_text,
     _CART_SENTINEL,
     _ES_SENTINEL,
+    _MIRROR_SENTINEL,
     _flatten_table,
     _page_from_label,
     _parse_col_label,
@@ -606,3 +607,129 @@ class TestSixRowTable:
         for ss in range(4):
             for p in range(4):
                 assert result[f"slotmap_3_{ss}_{p}"] != _ABSENT
+
+
+# ── Mirror detection ─────────────────────────────────────────────────────
+
+class TestClassifyCellTextMirror:
+    """_classify_cell_text must return _MIRROR_SENTINEL for "Mirror" cells."""
+
+    def test_bare_mirror(self):
+        assert _classify_cell_text("Mirror") == _MIRROR_SENTINEL
+
+    def test_mirror_case_insensitive(self):
+        assert _classify_cell_text("mirror") == _MIRROR_SENTINEL
+        assert _classify_cell_text("MIRROR") == _MIRROR_SENTINEL
+        assert _classify_cell_text("  Mirror  ") == _MIRROR_SENTINEL
+
+    def test_mirror_substring_is_not_a_mirror(self):
+        # "Mirror" must be the *entire* cell content (after stripping).
+        assert _classify_cell_text("Mirror ROM") != _MIRROR_SENTINEL
+        assert _classify_cell_text("Disk Mirror") != _MIRROR_SENTINEL
+
+
+# Non-expanded slot 3, with DSK on pages 0-1 and Mirror on pages 2-3.
+_MIRROR_SAME_SUBSLOT_TABLE = """
+<table>
+<tr>
+  <td></td>
+  <th>Slot 0</th><th rowspan="5"></th>
+  <th>Slot 1</th><th rowspan="5"></th>
+  <th>Slot 2</th><th rowspan="5"></th>
+  <th>Slot 3</th>
+</tr>
+<tr>
+  <th>Page C000h~FFFFh</th>
+  <td rowspan="4">Main-ROM</td>
+  <td rowspan="4">Cartridge Slot 1</td>
+  <td rowspan="4">256kB Memory Mapper</td>
+  <td>Mirror</td>
+</tr>
+<tr>
+  <th>Page 8000h~BFFFh</th>
+  <td>Mirror</td>
+</tr>
+<tr>
+  <th>Page 4000h~7FFFh</th>
+  <td>Disk ROM</td>
+</tr>
+<tr>
+  <th>Page 0000h~3FFFh</th>
+  <td>Disk ROM</td>
+</tr>
+</table>
+"""
+
+# Expanded slot 3, sub-slot 1 has DSK on pages 0-1 and Mirror on pages 2-3.
+_MIRROR_SUBSLOT_TABLE = """
+<table>
+<tr>
+  <td></td>
+  <th>Slot 0</th><th rowspan="5"></th>
+  <th>Slot 1</th><th rowspan="5"></th>
+  <th>Slot 2</th><th rowspan="5"></th>
+  <th>3-0</th><th>3-1</th><th>3-2</th><th>3-3</th>
+</tr>
+<tr>
+  <th>Page C000h~FFFFh</th>
+  <td rowspan="4">Main-ROM</td>
+  <td rowspan="4">Cartridge Slot 1</td>
+  <td rowspan="4">256kB Memory Mapper</td>
+  <td></td><td>Mirror</td><td></td><td>Sub-ROM</td>
+</tr>
+<tr>
+  <th>Page 8000h~BFFFh</th>
+  <td></td><td>Mirror</td><td></td><td></td>
+</tr>
+<tr>
+  <th>Page 4000h~7FFFh</th>
+  <td></td><td>Disk ROM</td><td></td><td></td>
+</tr>
+<tr>
+  <th>Page 0000h~3FFFh</th>
+  <td></td><td>Disk ROM</td><td></td><td></td>
+</tr>
+</table>
+"""
+
+
+class TestMirrorDetection:
+
+    def test_mirror_in_same_subslot_resolves_to_origin_star(self):
+        """Mirror cells in the same sub-slot column resolve to the origin abbr + '*'."""
+        html = _make_page(_MIRROR_SAME_SUBSLOT_TABLE)
+        result = parse_msxorg_slotmap(html)
+        assert result is not None
+        # Pages 0 and 1 have DSK; pages 2 and 3 have Mirror → DSK*
+        assert result["slotmap_3_0_1"] == "DSK"
+        assert result["slotmap_3_0_0"] == "DSK"
+        assert result["slotmap_3_0_2"] == "DSK*"
+        assert result["slotmap_3_0_3"] == "DSK*"
+
+    def test_mirror_in_subslot_resolves_via_column(self):
+        """Mirror cells detect origin from within the same expanded sub-slot."""
+        html = _make_page(_MIRROR_SUBSLOT_TABLE)
+        result = parse_msxorg_slotmap(html)
+        assert result is not None
+        # Sub-slot 1: pages 0-1 = DSK, pages 2-3 = mirror of DSK
+        assert result["slotmap_3_1_0"] == "DSK"
+        assert result["slotmap_3_1_1"] == "DSK"
+        assert result["slotmap_3_1_2"] == "DSK*"
+        assert result["slotmap_3_1_3"] == "DSK*"
+
+    def test_non_mirror_cells_unaffected(self):
+        """Inserting Mirror cells must not disturb other slot values."""
+        html = _make_page(_MIRROR_SAME_SUBSLOT_TABLE)
+        result = parse_msxorg_slotmap(html)
+        assert result is not None
+        for p in range(4):
+            assert result[f"slotmap_0_0_{p}"] == "MAIN"
+            assert result[f"slotmap_1_0_{p}"] == "CS1"
+            assert result[f"slotmap_2_0_{p}"] == "MM"
+
+    def test_mirror_sentinel_not_left_in_output(self):
+        """No cell should contain the raw _MIRROR_SENTINEL string."""
+        html = _make_page(_MIRROR_SAME_SUBSLOT_TABLE)
+        result = parse_msxorg_slotmap(html)
+        assert result is not None
+        assert _MIRROR_SENTINEL not in result.values()
