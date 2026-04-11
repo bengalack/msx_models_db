@@ -229,6 +229,10 @@
   color: var(--color-header-bg);
 }
 
+.col-header--active:hover {
+  color: var(--color-text-heading);
+}
+
 /* Sort arrow — absolute in the bottom-right corner of the th, never clips or
    pushes text. Safe because .col-header has no overflow:hidden. */
 .col-header--sort-asc::after,
