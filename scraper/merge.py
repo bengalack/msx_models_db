@@ -79,6 +79,14 @@ _PREFER_MSXORG: set[str] = {"keyboard_layout", "region"}
 # Fields where openMSX is more reliable (hardware-level).
 _PREFER_OPENMSX: set[str] = {"cartridge_slots", "vdp", "vram_kb", "main_ram_kb", "psg"}
 
+# Matches CS/ES slot abbreviations (with optional ! suffix): CS1, ES3!, …
+_CS_ES_RE = re.compile(r"^(CS|ES)(\d+)(!?)$")
+
+
+def _is_cs_or_es(value: Any) -> bool:
+    """Return True if *value* is a cartridge/expansion slot abbreviation."""
+    return isinstance(value, str) and bool(_CS_ES_RE.match(value))
+
 # Normalisation functions per-field.
 _FIELD_NORMALISERS: dict[str, Any] = {
     "region": _normalise_region,
@@ -175,9 +183,9 @@ def merge_models(
             for field, val in l_model.items():
                 if val is not None:
                     result[field] = val
-            merged.append(result)
+            merged.append(_renumber_cs_es(result))
         else:
-            merged.append(base)
+            merged.append(_renumber_cs_es(base))
 
     local_only = set(l_by_key.keys()) - set(o_by_key.keys()) - set(m_by_key.keys())
     log.info(
@@ -197,6 +205,55 @@ def merge_models(
 
 # Fields that are source-specific metadata (not merged as data fields).
 _META_FIELDS = {"openmsx_id", "msxorg_title"}
+
+
+def _renumber_cs_es(model: dict[str, Any]) -> dict[str, Any]:
+    """Re-assign sequential CS and ES numbers across all slotmap keys.
+
+    Both scrapers emit provisional numbers (CS1, CS2, ES1, …).  After merge
+    the CS/ES type for some slots may have been upgraded (openMSX CS →
+    msx.org ES).  This function re-walks the 64 slotmap keys in slot order
+    (ms 0→3, ss 0→3) and assigns fresh, independent counters:
+
+    - cs_counter: increments for each CS slot encountered
+    - es_counter: increments for each ES slot encountered
+
+    The ``!`` suffix (non-standard subslot placement) is preserved.
+
+    Models that contain no CS or ES values are returned unchanged.
+    """
+    # Collect (ms, ss) pairs that carry a CS or ES value (type from first page).
+    cs_es_slots: dict[tuple[int, int], str] = {}  # (ms,ss) → type+bang e.g. "CS", "ES!"
+    for ms in range(4):
+        for ss in range(4):
+            val = model.get(f"slotmap_{ms}_{ss}_0")
+            if val and _is_cs_or_es(val):
+                m = _CS_ES_RE.match(val)
+                if m:
+                    cs_es_slots[(ms, ss)] = m.group(1) + m.group(3)  # e.g. "CS" or "ES!"
+
+    if not cs_es_slots:
+        return model
+
+    result = dict(model)
+    cs_counter = 0
+    es_counter = 0
+    for ms in range(4):
+        for ss in range(4):
+            type_bang = cs_es_slots.get((ms, ss))
+            if type_bang is None:
+                continue
+            kind  = type_bang.rstrip("!")   # "CS" or "ES"
+            bang  = "!" if type_bang.endswith("!") else ""
+            if kind == "CS":
+                cs_counter += 1
+                new_abbr = f"CS{cs_counter}{bang}"
+            else:
+                es_counter += 1
+                new_abbr = f"ES{es_counter}{bang}"
+            for p in range(4):
+                result[f"slotmap_{ms}_{ss}_{p}"] = new_abbr
+    return result
 
 
 def _merge_single(
@@ -249,6 +306,13 @@ def _merge_single(
             continue
         if field in _PREFER_MSXORG:
             result[field] = mv
+            continue
+
+        # CS/ES type: msx.org wins when the only disagreement is cartridge vs
+        # expansion slot.  The numbers are provisional and will be reassigned
+        # by _renumber_cs_es() after the full merge.
+        if field.startswith("slotmap_") and _is_cs_or_es(ov) and _is_cs_or_es(mv):
+            result[field] = mv  # msx.org knows whether it's a cartridge or expansion slot
             continue
 
         # Genuine unresolved conflict.

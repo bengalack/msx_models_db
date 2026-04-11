@@ -11,6 +11,7 @@ from scraper.msxorg_slotmap import (
     _ALL_KEYS,
     _classify_cell_text,
     _CART_SENTINEL,
+    _ES_SENTINEL,
     _flatten_table,
     _page_from_label,
     _parse_col_label,
@@ -165,12 +166,12 @@ class TestClassifyCellText:
         assert _classify_cell_text("Cartridge Slot 1") == _CART_SENTINEL
         assert _classify_cell_text("Cartridge Slot 2") == _CART_SENTINEL
         assert _classify_cell_text("Mini Cartridge Slot") == _CART_SENTINEL
-        assert _classify_cell_text("Module Slot") == _CART_SENTINEL
-        assert _classify_cell_text("Slot CN904") == _CART_SENTINEL
-        # Positional/model-specific slot names (e.g. Hitachi MB-H70)
-        assert _classify_cell_text("Lowest back slot") == _CART_SENTINEL
-        assert _classify_cell_text("Middle back slot") == _CART_SENTINEL
-        assert _classify_cell_text("Top back slot") == _CART_SENTINEL
+        # Module slot and positional back slots are expansion slots, not CS
+        assert _classify_cell_text("Module Slot") == _ES_SENTINEL
+        assert _classify_cell_text("Slot CN904") == _ES_SENTINEL
+        assert _classify_cell_text("Lowest back slot") == _ES_SENTINEL
+        assert _classify_cell_text("Middle back slot") == _ES_SENTINEL
+        assert _classify_cell_text("Top back slot") == _ES_SENTINEL
 
     def test_expansion_bus(self):
         assert _classify_cell_text("Expansion Bus") == "EXP"
@@ -446,16 +447,17 @@ class TestCartridgeInSubslot:
         html = _make_page(_SUBSLOT_CART_TABLE)
         result = parse_msxorg_slotmap(html)
         assert result is not None
+        # "Middle back slot" in an expanded slot → ES1! (expansion slot, non-standard)
         for p in range(4):
-            assert result[f"slotmap_1_1_{p}"] == "CS2!"
+            assert result[f"slotmap_1_1_{p}"] == "ES1!"
 
     def test_numbering_is_sequential_across_both(self):
-        """CS counter increments across primary and subslot cartridges."""
+        """CS counter and ES counter are independent."""
         html = _make_page(_SUBSLOT_CART_TABLE)
         result = parse_msxorg_slotmap(html)
         assert result is not None
-        assert result["slotmap_0_0_0"] == "CS1"
-        assert result["slotmap_1_1_0"] == "CS2!"
+        assert result["slotmap_0_0_0"] == "CS1"   # first cartridge slot
+        assert result["slotmap_1_1_0"] == "ES1!"  # first expansion slot (in subslot)
 
     def test_primary_nonexpanded_absent_subslots(self):
         html = _make_page(_SUBSLOT_CART_TABLE)

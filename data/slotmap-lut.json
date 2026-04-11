@@ -66,7 +66,7 @@
     "tooltip": "Disk ROM"
   },
   {
-    "element": "MSX-MUSIC|FMPAC|MSX-MUSIC-WX",
+    "element": "MSX-MUSIC|FMPAC|MSX-MUSIC-WX|MSX- MUSIC",
     "id_pattern": null,
     "abbr": "MUS",
     "tooltip": "MSX Music"
@@ -79,7 +79,7 @@
   },
   {
     "element": "ROM",
-    "id_pattern": "rs232",
+    "id_pattern": "rs232|RS-232C",
     "abbr": "RS",
     "tooltip": "RS-232C Interface"
   },
@@ -158,6 +158,18 @@
   {
     "element": "__cartridge__",
     "id_pattern": null,
+    "abbr": "CS5",
+    "tooltip": "Cartridge slot 5"
+  },
+  {
+    "element": "__cartridge__",
+    "id_pattern": null,
+    "abbr": "CS6",
+    "tooltip": "Cartridge slot 6"
+  },
+  {
+    "element": "__cartridge__",
+    "id_pattern": null,
     "abbr": "CS1!",
     "tooltip": "Cartridge slot 1 (in subslot — non-standard)"
   },
@@ -178,6 +190,90 @@
     "id_pattern": null,
     "abbr": "CS4!",
     "tooltip": "Cartridge slot 4 (in subslot — non-standard)"
+  },
+  {
+    "element": "__cartridge__",
+    "id_pattern": null,
+    "abbr": "CS5!",
+    "tooltip": "Cartridge slot 5 (in subslot — non-standard)"
+  },
+  {
+    "element": "__cartridge__",
+    "id_pattern": null,
+    "abbr": "CS6!",
+    "tooltip": "Cartridge slot 6 (in subslot — non-standard)"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES1",
+    "tooltip": "Expansion slot 1"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES2",
+    "tooltip": "Expansion slot 2"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES3",
+    "tooltip": "Expansion slot 3"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES4",
+    "tooltip": "Expansion slot 4"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES5",
+    "tooltip": "Expansion slot 5"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES6",
+    "tooltip": "Expansion slot 6"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES1!",
+    "tooltip": "Expansion slot 1 (in subslot — non-standard)"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES2!",
+    "tooltip": "Expansion slot 2 (in subslot — non-standard)"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES3!",
+    "tooltip": "Expansion slot 3 (in subslot — non-standard)"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES4!",
+    "tooltip": "Expansion slot 4 (in subslot — non-standard)"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES5!",
+    "tooltip": "Expansion slot 5 (in subslot — non-standard)"
+  },
+  {
+    "element": "__expansion__",
+    "id_pattern": null,
+    "abbr": "ES6!",
+    "tooltip": "Expansion slot 6 (in subslot — non-standard)"
   },
   {
     "element": "secondary",

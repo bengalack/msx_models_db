@@ -119,8 +119,10 @@ class TestBuildSlotmapLUT:
         "MAIN", "SUB", "KAN", "HAN", "JE", "MOD", "DOS2", "CP/M",
         "FW", "DSK", "MUS", "RS", "RSFW", "MM", "PM",
         "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2327", "\u2022",
-        "CS1", "CS2", "CS3", "CS4",
-        "CS1!", "CS2!", "CS3!", "CS4!",
+        "CS1", "CS2", "CS3", "CS4", "CS5", "CS6",
+        "CS1!", "CS2!", "CS3!", "CS4!", "CS5!", "CS6!",
+        "ES1", "ES2", "ES3", "ES4", "ES5", "ES6",
+        "ES1!", "ES2!", "ES3!", "ES4!", "ES5!", "ES6!",
     }
 
     def _run_build(self, tmp_path):

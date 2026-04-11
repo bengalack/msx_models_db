@@ -164,12 +164,11 @@ def _flatten_table(table: Tag) -> list[list[str]]:
 
 # ── Cell text → abbreviation ──────────────────────────────────────────────
 
-# Cartridge-like slots (produce CS{N} with sequential numbering).
-# Any cell whose text contains the word "slot" is treated as a cartridge/expansion
-# slot.  This matches "Cartridge Slot N", "Module Slot", "Mini Cartridge Slot",
-# "Slot CN…", and positional variants such as "Lowest back slot",
-# "Middle back slot", and "Top back slot".
-_CART_RE = re.compile(r"\bslot\b", re.IGNORECASE)
+# Cartridge slot: cell text explicitly mentions "cartridge" (or "mini cartridge").
+# Everything else containing the word "slot" is an expansion slot (module slot,
+# back slots, internal connectors such as "Slot CN…").
+_CS_RE = re.compile(r"\bcartridge\b", re.IGNORECASE)
+_ES_RE = re.compile(r"\bslot\b",      re.IGNORECASE)
 
 # Expansion bus
 _EXP_RE = re.compile(r"expansion\s+bus", re.IGNORECASE)
@@ -188,7 +187,7 @@ def _load_text_patterns() -> list[tuple[re.Pattern[str], str]]:
     Supplemental patterns for element-only entries are inserted just before
     the broad FW firmware catch-all.
     """
-    _SKIP = {"__cartridge__", "__sentinel__", "secondary"}
+    _SKIP = {"__cartridge__", "__expansion__", "__sentinel__", "secondary"}
 
     lut_path = pathlib.Path(__file__).parent.parent / "data" / "slotmap-lut.json"
     with lut_path.open(encoding="utf-8") as fh:
@@ -226,9 +225,9 @@ def _load_text_patterns() -> list[tuple[re.Pattern[str], str]]:
 
 _TEXT_PATTERNS = _load_text_patterns()
 
-# Sentinel returned when the cell text looks like a cartridge slot.
-# The caller replaces this with "CS{N}".
+# Sentinels returned by _classify_cell_text — caller replaces with CS{N} / ES{N}.
 _CART_SENTINEL = "__CART__"
+_ES_SENTINEL   = "__ES__"
 
 
 def _classify_cell_text(text: str) -> str | None:
@@ -243,8 +242,11 @@ def _classify_cell_text(text: str) -> str | None:
     if not t:
         return None
 
-    if _CART_RE.search(t):
+    if _CS_RE.search(t):
         return _CART_SENTINEL
+
+    if _ES_RE.search(t):
+        return _ES_SENTINEL
 
     if _EXP_RE.search(t):
         return "EXP"
@@ -316,18 +318,23 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
         for ms, subs in ms_subslots.items()
     }
 
-    # ── Pre-compute cartridge column → CS number (left-to-right order) ───
+    # ── Pre-compute external-slot columns → CS{N} or ES{N} (left-to-right) ─
+    # Cartridge slots (text contains "cartridge") → CS{N}[!]
+    # Expansion slots (text has "slot" but not "cartridge") → ES{N}[!]
     first_data = data_row_indices[0]
-    cart_col_cs: dict[int, str] = {}
+    cart_col_abbr: dict[int, str] = {}  # col → "CS1", "ES2!", …
     cs_counter = 0
+    es_counter = 0
     for c in sorted(col_to_slot.keys()):
-        if _CART_RE.search(grid[first_data][c].strip()):
+        cell_text = grid[first_data][c].strip()
+        ms, _ = col_to_slot[c]
+        suffix = "!" if ms_expanded.get(ms, False) else ""
+        if _CS_RE.search(cell_text):
             cs_counter += 1
-            ms, _ = col_to_slot[c]
-            # Cartridge inside an expanded (secondary) slot gets the "!" suffix
-            # to signal non-standard placement — same convention as slotmap.py.
-            suffix = "!" if ms_expanded.get(ms, False) else ""
-            cart_col_cs[c] = f"CS{cs_counter}{suffix}"
+            cart_col_abbr[c] = f"CS{cs_counter}{suffix}"
+        elif _ES_RE.search(cell_text):
+            es_counter += 1
+            cart_col_abbr[c] = f"ES{es_counter}{suffix}"
 
     # ── Initialise all 64 cells to ⌧ ─────────────────────────────────────
     result: dict[str, str] = {k: _ABSENT for k in _ALL_KEYS}
@@ -339,8 +346,8 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
             raw = grid[r_idx][c].strip()
             key = f"slotmap_{ms}_{ss}_{page}"
 
-            if c in cart_col_cs:
-                result[key] = cart_col_cs[c]
+            if c in cart_col_abbr:
+                result[key] = cart_col_abbr[c]
             elif not raw:
                 result[key] = _EMPTY_PAGE
             else:
@@ -353,11 +360,15 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
                         file=sys.stderr,
                     )
                     result[key] = raw[:10]
-                elif abbr == _CART_SENTINEL:
-                    # Should not reach here (pre-computed above), but be safe
-                    cs_counter += 1
-                    cart_col_cs[c] = f"CS{cs_counter}"
-                    result[key] = cart_col_cs[c]
+                elif abbr in (_CART_SENTINEL, _ES_SENTINEL):
+                    # Should not reach here (pre-computed above), but be safe.
+                    # Treat as expansion slot (conservative).
+                    es_counter += 1
+                    ms, _ = col_to_slot[c]
+                    suffix = "!" if ms_expanded.get(ms, False) else ""
+                    abbr_out = f"CS{cs_counter}{suffix}" if abbr == _CART_SENTINEL else f"ES{es_counter}{suffix}"
+                    cart_col_abbr[c] = abbr_out
+                    result[key] = abbr_out
                 else:
                     result[key] = abbr
 

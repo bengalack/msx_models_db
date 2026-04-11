@@ -279,8 +279,8 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - At scrape/build time, each device is classified by testing LUT rules in order; the first match wins.
     - If no LUT rule matches a device, the scraper emits a warning to stdout, writes the raw device string as the cell value (unabbreviated), and continues — it does not abort.
     - The maintainer can extend the LUT to handle newly encountered device strings without changing scraper code.
-    - The starter LUT covers at minimum: `MAIN`, `SUB`, `KNJ`, `JE`, `FW`, `DSK`, `MUS`, `RS2`, `MM`, `PM`, `RAM`, `CS1`–`CS4` (explicit entries), `EXP`.
-    - Cartridge slot abbreviations (`CS1`–`CS4`) are explicit LUT entries with their own tooltip text (e.g. "Cartridge slot 1"). They are not parameterised — each has its own entry so the browser can resolve their tooltip via the standard `{abbr: tooltip}` map.
+    - The starter LUT covers at minimum: `MAIN`, `SUB`, `KNJ`, `JE`, `FW`, `DSK`, `MUS`, `RS2`, `MM`, `PM`, `RAM`, `CS1`–`CS6`, `ES1`–`ES6` (explicit entries), `EXP`.
+    - Cartridge slot abbreviations (`CS1`–`CS6`) and expansion slot abbreviations (`ES1`–`ES6`) are explicit LUT entries with their own tooltip text. Non-standard subslot variants (`CS1!`–`CS6!`, `ES1!`–`ES6!`) are also explicit entries. They are not parameterised — each has its own entry so the browser can resolve their tooltip via the standard `{abbr: tooltip}` map.
 
 - Slot map XML extraction
   - Description: The scraper extracts slot map data from openMSX machine XML files by walking the `<primary>` and `<secondary>` element hierarchy and classifying each device against the LUT.
@@ -288,8 +288,9 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Acceptance Criteria:
     - Non-expanded primary slots (devices as direct children of `<primary>`, no `<secondary>` elements) are classified and written to sub-slot 0 columns; sub-slots 1–3 receive `~`.
     - Expanded primary slots (containing `<secondary slot="N">` children) are walked per sub-slot; missing sub-slot elements receive `~` for all 4 pages.
-    - Cartridge/expansion slots (`<primary external="true" slot="N"/>`) produce `CS{N}` in all 4 pages of sub-slot 0, where `{N}` is a sequential 1-based counter incremented for each cartridge slot found (not the slot index); sub-slots 1–3 receive `~` for unoccupied sub-slots.
-    - Cartridge slots placed inside an expanded primary slot (`<secondary external="true" slot="N">`) produce `CS{N}!` on all 4 pages of that sub-slot. The `!` suffix signals non-standard placement (a cartridge inside a secondary expansion rather than a primary slot).
+    - External primary slots (`<primary external="true" slot="N"/>`) and external secondary slots (`<secondary external="true" slot="N"/>`) produce `CS{N}[!]` in the openMSX extraction path, because the XML does not distinguish cartridge slots from expansion slots. The merge step (see "Slot map CS/ES resolution") upgrades `CS` to `ES` where msx.org data is available.
+    - Cartridge/expansion slots at the primary level produce `CS{N}` in all 4 pages of sub-slot 0; sub-slots 1–3 receive `~` for unoccupied sub-slots.
+    - External slots placed inside an expanded primary slot (`<secondary external="true" slot="N">`) produce `CS{N}!` on all 4 pages of that sub-slot. The `!` suffix signals non-standard placement.
     - Multiple devices in the same sub-slot with non-overlapping `<mem>` ranges are each assigned to their respective page(s); the cell value is the abbreviation of the device covering that page's address range.
     - If multiple devices overlap the same page, the scraper emits a warning and uses the first device encountered.
     - Mirror detection applies three methods (in order of precedence):
@@ -303,10 +304,21 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Priority: Must
   - Acceptance Criteria:
     - The parser finds the first `<h2><span id="Slot_Map" …>` heading on the page; if multiple Slot Map headings exist (e.g. 1chipMSX with default and upgraded configurations), only the first is used.
-    - A cell is treated as a cartridge slot if its text contains the word `slot` (case-insensitive, word-boundary match). This covers "Cartridge Slot N", "Module Slot", "Mini Cartridge Slot", "Slot CN…", and positional naming variants such as "Lowest back slot", "Middle back slot", and "Top back slot".
-    - Cartridge slots in a non-expanded main slot (single column) produce `CS{N}` on all 4 pages of sub-slot 0. Cartridge slots in an expanded main slot (multiple sub-slot columns) produce `CS{N}!`, following the same `!` convention as the XML extraction path.
+    - A cell is treated as a **cartridge slot** (CS) if its text contains the word `cartridge` (case-insensitive, e.g. "Cartridge Slot 1", "Mini Cartridge Slot").
+    - A cell is treated as an **expansion slot** (ES) if its text contains the word `slot` but not `cartridge`. This covers "Module Slot", "Slot CN…" (internal connectors), and positional names such as "Lowest back slot", "Middle back slot", "Top back slot".
+    - Cartridge slots (CS) in a non-expanded main slot produce `CS{N}` on all 4 pages of sub-slot 0. Expansion slots (ES) produce `ES{N}`. Slots in an expanded main slot (multiple sub-slot columns) receive the `!` suffix: `CS{N}!` or `ES{N}!`, following the same convention as the XML extraction path.
+    - CS and ES use independent sequential counters, each starting at 1, incremented left-to-right across the table.
     - Cell text is matched against the `id_pattern` fields in `data/slotmap-lut.json` in order (first match wins). LUT entries with a null `id_pattern` (element-name-only entries) are covered by a supplemental list that matches their typical msx.org free-text descriptions.
-    - All other slot map conventions (64-key output, `⌧`/`•` sentinels, CS sequential numbering) are identical to those of the XML extraction path.
+    - All other slot map conventions (64-key output, `⌧`/`•` sentinels, sequential numbering) are identical to those of the XML extraction path.
+
+- Slot map CS/ES resolution
+  - Description: openMSX XML cannot distinguish a cartridge slot from an expansion slot; both are encoded as `<primary external="true">`. The msx.org HTML scraper can tell them apart from the cell text. The merge step uses this to upgrade provisional `CS{N}` values from openMSX to `ES{N}` where msx.org data is available, then renumbers all CS and ES slots with fresh, independent counters.
+  - Priority: Must
+  - Acceptance Criteria:
+    - For any slotmap cell where openMSX emits `CS{N}` and msx.org emits `ES{M}`, the merged result uses `ES` (msx.org wins for the CS/ES type distinction only).
+    - For any slotmap cell where both sources emit `CS`, or where only one source has data, the existing merge precedence rules apply.
+    - After type resolution, all slotmap keys in the merged model are renumbered: the model's slots are walked in order (main slot 0→3, sub-slot 0→3), and independent counters assign `CS1`, `CS2`, … and `ES1`, `ES2`, … fresh from 1. The `!` suffix is preserved during renumbering.
+    - Renumbering runs for every merged model that contains at least one CS or ES value (including models present only in openMSX or only in msx.org, to normalise stale provisional numbers).
 
 ## Non-Functional Requirements
 
