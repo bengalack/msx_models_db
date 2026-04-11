@@ -379,6 +379,22 @@ export function buildGrid(data: MSXData, opts?: {
         selectedCells.has(selKey(Number(tr.dataset.modelId), Number(td.dataset.colIndex)))
       );
     });
+
+    const activeColIdxs = new Set<number>();
+    const activeModelIds = new Set<number>();
+    for (const key of selectedCells) {
+      const colon = key.indexOf(':');
+      activeModelIds.add(Number(key.slice(0, colon)));
+      activeColIdxs.add(Number(key.slice(colon + 1)));
+    }
+
+    thead.querySelectorAll<HTMLTableCellElement>('th.col-header[data-col-index]').forEach(th => {
+      th.classList.toggle('col-header--active', activeColIdxs.has(Number(th.dataset.colIndex)));
+    });
+
+    tbody.querySelectorAll<HTMLTableCellElement>('td.gutter[data-model-id]').forEach(td => {
+      td.classList.toggle('gutter--cell-active', activeModelIds.has(Number(td.dataset.modelId)));
+    });
   }
 
   function clearSelection(): void {

@@ -223,6 +223,12 @@
   background: var(--color-header-hover);
 }
 
+/* Active — any cell in this column is selected */
+.col-header--active {
+  background: var(--color-text-heading);
+  color: var(--color-header-bg);
+}
+
 /* Sort arrow — absolute in the bottom-right corner of the th, never clips or
    pushes text. Safe because .col-header has no overflow:hidden. */
 .col-header--sort-asc::after,
@@ -338,6 +344,17 @@ thead .gutter {
 
 /* Row selection must beat the even-row stripe above (same specificity, later wins) */
 .grid tbody tr:nth-child(even) td.gutter--row-selected {
+  background: var(--color-gutter-text);
+  color: var(--color-gutter-bg);
+}
+
+/* Active — any cell in this row is selected */
+.grid tbody td.gutter--cell-active {
+  background: var(--color-gutter-text);
+  color: var(--color-gutter-bg);
+}
+
+.grid tbody tr:nth-child(even) td.gutter--cell-active {
   background: var(--color-gutter-text);
   color: var(--color-gutter-bg);
 }
