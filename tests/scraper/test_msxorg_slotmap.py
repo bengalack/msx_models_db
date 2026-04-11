@@ -176,6 +176,20 @@ class TestClassifyCellText:
     def test_expansion_bus(self):
         assert _classify_cell_text("Expansion Bus") == "EXP"
 
+    def test_96_pin_bus(self):
+        # Victor HC-90/HC-95 pattern: msx.org uses "96-pin Bus" label
+        assert _classify_cell_text("96-pin Bus") == "EXP"
+        assert _classify_cell_text("64-pin Bus") == "EXP"
+
+    def test_bare_es_abbreviation(self):
+        # msx.org abbreviates some sub-slots as plain "ES" (e.g. Pioneer UC-V102)
+        assert _classify_cell_text("ES") == _ES_SENTINEL
+
+    def test_es_abbreviation_not_substring(self):
+        # "ES" match must be a whole word — should not fire inside other tokens
+        assert _classify_cell_text("BIOS") != _ES_SENTINEL
+        assert _classify_cell_text("MSX") != _ES_SENTINEL
+
     def test_panasonic_mapper(self):
         assert _classify_cell_text("Panasonic mapper") == "PM"
         assert _classify_cell_text("Panasonic RAM") == "PM"

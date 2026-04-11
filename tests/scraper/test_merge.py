@@ -30,9 +30,13 @@ class TestIsSlotType:
     def test_cs_is_slot_type(self):
         assert _is_slot_type("CS1")
         assert _is_slot_type("CS6!")
+    def test_bare_cs_is_slot_type(self):
+        assert _is_slot_type("CS")   # stale raw value from msx.org scraper fallback
     def test_es_is_slot_type(self):
         assert _is_slot_type("ES1")
         assert _is_slot_type("ES3!")
+    def test_bare_es_is_slot_type(self):
+        assert _is_slot_type("ES")   # stale raw value (e.g. pioneer|uc-v102)
     def test_exp_is_slot_type(self):
         assert _is_slot_type("EXP")
     def test_device_abbrs_not_slot_type(self):
@@ -59,6 +63,20 @@ class TestRenumberCsEs:
         result = _renumber_cs_es(model)
         for p in range(4):
             assert result[f"slotmap_2_0_{p}"] == "ES1"
+
+    def test_bare_es_renumbered_to_es1(self):
+        """Bare 'ES' (msx.org scraper fallback) is treated as unnumbered ES and assigned ES1."""
+        model = _slotmap(**_fill_slot(2, 0, "ES"))
+        result = _renumber_cs_es(model)
+        for p in range(4):
+            assert result[f"slotmap_2_0_{p}"] == "ES1"
+
+    def test_bare_cs_renumbered_to_cs1(self):
+        """Bare 'CS' (msx.org scraper fallback) is treated as unnumbered CS and assigned CS1."""
+        model = _slotmap(**_fill_slot(1, 0, "CS"))
+        result = _renumber_cs_es(model)
+        for p in range(4):
+            assert result[f"slotmap_1_0_{p}"] == "CS1"
 
     def test_cs_and_es_independent_counters(self):
         model = _slotmap(
@@ -247,3 +265,28 @@ class TestMergeSlotMapCsEsPreference:
             assert m[f"slotmap_0_1_{p}"] == "ES1!"
             assert m[f"slotmap_0_2_{p}"] == "ES2!"
             assert m[f"slotmap_0_3_{p}"] == "ES3!"
+
+    def test_msxorg_bare_es_overrides_openmsx_empty_secondary(self):
+        """Bare 'ES' from msx.org (scraper raw-text fallback) overrides openMSX •.
+
+        Regression for: pioneer|uc-v102: openMSX='•' vs msx.org='ES' [using openmsx]
+        After merge and renumber, bare 'ES' is assigned ES1/ES2/ES3.
+        """
+        openmsx = [_base_model(extra={
+            **_fill_slot(2, 1, "•"),
+            **_fill_slot(2, 2, "•"),
+            **_fill_slot(2, 3, "•"),
+        })]
+        msxorg = [_base_model(extra={
+            **_fill_slot(2, 1, "ES"),
+            **_fill_slot(2, 2, "ES"),
+            **_fill_slot(2, 3, "ES"),
+        })]
+        result = merge_models(openmsx, msxorg)
+        assert len(result) == 1
+        m = result[0]
+        # After renumber: each bare "ES" gets a sequential number
+        for p in range(4):
+            assert m[f"slotmap_2_1_{p}"].startswith("ES")
+            assert m[f"slotmap_2_2_{p}"].startswith("ES")
+            assert m[f"slotmap_2_3_{p}"].startswith("ES")

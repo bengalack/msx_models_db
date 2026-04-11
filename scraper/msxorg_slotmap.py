@@ -165,13 +165,13 @@ def _flatten_table(table: Tag) -> list[list[str]]:
 # ── Cell text → abbreviation ──────────────────────────────────────────────
 
 # Cartridge slot: cell text explicitly mentions "cartridge" (or "mini cartridge").
-# Everything else containing the word "slot" is an expansion slot (module slot,
-# back slots, internal connectors such as "Slot CN…").
-_CS_RE = re.compile(r"\bcartridge\b", re.IGNORECASE)
-_ES_RE = re.compile(r"\bslot\b",      re.IGNORECASE)
+# Everything else containing the word "slot" or the bare abbreviation "ES" is an
+# expansion slot (module slot, back slots, internal connectors such as "Slot CN…").
+_CS_RE = re.compile(r"\bcartridge\b",        re.IGNORECASE)
+_ES_RE = re.compile(r"\bslot\b|\bES\b", re.IGNORECASE)
 
-# Expansion bus
-_EXP_RE = re.compile(r"expansion\s+bus", re.IGNORECASE)
+# Expansion bus ("Expansion Bus", "96-pin Bus", …)
+_EXP_RE = re.compile(r"expansion\s+bus|\d+-pin\s+bus", re.IGNORECASE)
 
 # Patterns loaded from data/slotmap-lut.json.  ``element`` is ignored here
 # (it encodes openMSX XML element names, not HTML cell text).  Only entries

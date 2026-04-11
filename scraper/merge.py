@@ -79,12 +79,15 @@ _PREFER_MSXORG: set[str] = {"keyboard_layout", "region"}
 # Fields where openMSX is more reliable (hardware-level).
 _PREFER_OPENMSX: set[str] = {"cartridge_slots", "vdp", "vram_kb", "main_ram_kb", "psg"}
 
-# Matches CS/ES slot abbreviations (with optional ! suffix): CS1, ES3!, …
-_CS_ES_RE = re.compile(r"^(CS|ES)(\d+)(!?)$")
+# Matches CS/ES slot abbreviations with optional number and ! suffix.
+# The number is optional to tolerate bare "CS"/"ES" that can appear in stale
+# msx.org raw data when the scraper fell back to raw cell text.
+# _renumber_cs_es will assign proper sequential numbers in all cases.
+_CS_ES_RE = re.compile(r"^(CS|ES)(\d*)(!?)$")
 
 
 def _is_cs_or_es(value: Any) -> bool:
-    """Return True if *value* is a CS/ES numbered slot abbreviation (used by _renumber_cs_es)."""
+    """Return True if *value* is a CS/ES slot abbreviation (with or without number)."""
     return isinstance(value, str) and bool(_CS_ES_RE.match(value))
 
 
