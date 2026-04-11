@@ -184,11 +184,11 @@ function applySelectionToDOM(): void {
 - Rebase onto trunk and merge (fast-forward only).
 
 ## Definition of Done
-- [ ] Gherkin specification is complete and current in this plan artifact.
+- [x] Gherkin specification is complete and current in this plan artifact.
 - [ ] All smoke path steps pass in both light and dark mode.
-- [ ] No hardcoded hex colors added to CSS.
-- [ ] Cleanup gate satisfied.
-- [ ] Backlog updated (item added and moved to "In product (shipped)").
+- [x] No hardcoded hex colors added to CSS.
+- [x] Cleanup gate satisfied.
+- [x] Backlog updated (item added and moved to "In product (shipped)").
 
 ## Chunks
 
@@ -207,16 +207,16 @@ function applySelectionToDOM(): void {
 - `--color-text-heading` provides sufficient contrast against `--color-header-bg` when used as background in both themes (to be verified in smoke path step 10).
 
 ## Tasks
-- [ ] T-001 Create and checkout a local branch: `git checkout -b feature/selection-header-highlight`
+- [x] T-001 Create and checkout a local branch: `git checkout -b feature/selection-header-highlight`
 
 - [ ] Implement: Chunk 1 — extend applySelectionToDOM + CSS
   - [x] T-010 In `src/grid.ts`, extend `applySelectionToDOM()`: after the existing `cell--selected` loop, derive `activeColIdxs` and `activeModelIds` from `selectedCells`; toggle `col-header--active` on `thead th.col-header[data-col-index]`; toggle `gutter--cell-active` on `tbody td.gutter[data-model-id]`
   - [x] T-011 In `src/styles/grid.css`, add `.col-header--active` (background: `--color-text-heading`, color: `--color-header-bg`) and `.grid tbody td.gutter--cell-active` + even-row override (same inverted pattern as `gutter--row-selected`)
 
 - [ ] Quality gate
-  - [ ] T-900 Run formatters
-  - [ ] T-901 Run linters
-  - [ ] T-902 Run tests
+  - [x] T-900 Run formatters
+  - [x] T-901 Run linters
+  - [x] T-902 Run tests
 
 - [ ] Merge to trunk
   - [ ] T-950 Squash intermediate commits into logical commits

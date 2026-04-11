@@ -79,6 +79,10 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Selection column and row header highlight
+    - Column header inverts colors when any cell in that column is selected
+    - Row number (gutter) cell inverts colors when any cell in that row is selected
+    - Driven entirely by applySelectionToDOM(); no new state, no URL encoding
   - Scraper — exclude list
     - data/exclude.json: maintainer-edited, committed to repo
     - Match by manufacturer+model (both scrapers, post-parse); "" = empty field; "*" = wildcard
