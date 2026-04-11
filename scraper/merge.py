@@ -404,10 +404,8 @@ def print_conflict_summary(conflicts: list[dict[str, Any]]) -> None:
     log.warning("%d unresolved conflicts across %d fields:", len(conflicts), len(by_field))
     for field, items in sorted(by_field.items()):
         log.warning("  %s: %d conflicts", field, len(items))
-        for item in items[:5]:
+        for item in items:
             log.warning(
                 "    %s: openMSX=%r vs msx.org=%r [using %s]",
                 item["natural_key"], item["openmsx_value"], item["msxorg_value"], item["used"],
             )
-        if len(items) > 5:
-            log.warning("    ... and %d more", len(items) - 5)
