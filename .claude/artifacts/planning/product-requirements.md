@@ -1,8 +1,8 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.8
-- Date: 2026-04-10
+- Version: 0.9
+- Date: 2026-04-11
 - Owner: bengalack
 
 ## Problem Statement
@@ -256,18 +256,18 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Times are reported to one decimal place in seconds (e.g. `42.3s`).
 
 - Slot map columns
-  - Description: Each model row exposes 64 fixed slot map columns across 4 column groups ("Slotmap, slot 0–3"), showing what occupies each page of each sub-slot. All models carry all 64 columns. Cells outside a model's physical slot configuration show `~`.
+  - Description: Each model row exposes 64 fixed slot map columns across 4 column groups ("Slotmap, slot 0–3"), showing what occupies each page of each sub-slot. All models carry all 64 columns. Cells outside a model's physical slot configuration show `⌧`.
   - Priority: Must
   - Acceptance Criteria:
     - Four column groups are present: "Slotmap, slot 0", "Slotmap, slot 1", "Slotmap, slot 2", "Slotmap, slot 3".
     - Each group has exactly 16 columns named by the convention `SS / Pp` (sub-slot and page, with non-breaking spaces; e.g. `0 / P0`, `1 / P3`), covering 4 sub-slots × 4 pages. The main slot is shown in the group header.
     - Page numbers 0–3 correspond to Z80 address ranges 0x0000–0x3FFF, 0x4000–0x7FFF, 0x8000–0xBFFF, 0xC000–0xFFFF respectively.
     - All 64 columns are present for every model (uniform schema — no per-model column variation).
-    - Cells outside a model's physically supported slot configuration display `~`.
+    - Cells outside a model's physically supported slot configuration display `⌧`.
     - Cells that contain valid content display a short abbreviation (e.g. `MAIN`, `CS1`, `DSK`).
     - Hovering a cell with an abbreviation shows a tooltip with the full human-readable description (e.g. "MSX BIOS with BASIC ROM").
     - Mirror cells display the origin abbreviation with `*` appended (e.g. `SUB*`, `DSK*`).
-    - The `~` sentinel and mirror `*` notation are visually distinct from normal cell content.
+    - The `⌧` sentinel and mirror `*` notation are visually distinct from normal cell content.
 
 - Slot map LUT
   - Description: A maintainer-controlled lookup table JSON file maps XML device types and `id` patterns to short abbreviations and tooltip strings. It is the single source of truth for slot map vocabulary. At build time it is used with regex matching; at runtime in the browser it is used for fast key-based tooltip lookup.
@@ -286,10 +286,10 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Description: The scraper extracts slot map data from openMSX machine XML files by walking the `<primary>` and `<secondary>` element hierarchy and classifying each device against the LUT.
   - Priority: Must
   - Acceptance Criteria:
-    - Non-expanded primary slots (devices as direct children of `<primary>`, no `<secondary>` elements) are classified and written to sub-slot 0 columns; sub-slots 1–3 receive `~`.
-    - Expanded primary slots (containing `<secondary slot="N">` children) are walked per sub-slot; missing sub-slot elements receive `~` for all 4 pages.
+    - Non-expanded primary slots (devices as direct children of `<primary>`, no `<secondary>` elements) are classified and written to sub-slot 0 columns; sub-slots 1–3 receive `⌧`.
+    - Expanded primary slots (containing `<secondary slot="N">` children) are walked per sub-slot; missing sub-slot elements receive `⌧` for all 4 pages.
     - External primary slots (`<primary external="true" slot="N"/>`) and external secondary slots (`<secondary external="true" slot="N"/>`) produce `CS{N}[!]` in the openMSX extraction path, because the XML does not distinguish cartridge slots from expansion slots. The merge step (see "Slot map CS/ES resolution") upgrades `CS` to `ES` where msx.org data is available.
-    - Cartridge/expansion slots at the primary level produce `CS{N}` in all 4 pages of sub-slot 0; sub-slots 1–3 receive `~` for unoccupied sub-slots.
+    - Cartridge/expansion slots at the primary level produce `CS{N}` in all 4 pages of sub-slot 0; sub-slots 1–3 receive `⌧` for unoccupied sub-slots.
     - External slots placed inside an expanded primary slot (`<secondary external="true" slot="N">`) produce `CS{N}!` on all 4 pages of that sub-slot. The `!` suffix signals non-standard placement.
     - Multiple devices in the same sub-slot with non-overlapping `<mem>` ranges are each assigned to their respective page(s); the cell value is the abbreviation of the device covering that page's address range.
     - If multiple devices overlap the same page, the scraper emits a warning and uses the first device encountered.
@@ -326,3 +326,77 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Target: Page loads and renders fully with no network requests at runtime (data file is local).
   - Priority: Must
 
+- Static deployment compatibility
+  - Target: Page renders correctly via file://, HTTP static host, and embedded in Blogger/Blogspot — no build step or server required.
+  - Priority: Must
+
+- URL backwards-compatibility
+  - Target: Every URL ever shared remains valid forever; unknown IDs are silently ignored, never cause errors.
+  - Priority: Must
+
+- Performance
+  - Target: Initial render of the full grid completes in under 2 seconds on a modern desktop browser with a local file:// load.
+  - Priority: Should
+
+## Workflows
+
+- Browsing and comparing models
+  - Trigger: User opens the page (locally or via hosted URL).
+  - Steps:
+    1. Page loads `data.js` and renders the full grid.
+    2. User sorts by a column to rank models.
+    3. User enters filter values to narrow the row set.
+    4. User collapses irrelevant column groups to reduce visual noise.
+    5. User hides individual rows or columns as needed.
+    6. User clicks or drags to select cells of interest.
+    7. User presses CTRL+C to copy selected cell values to the clipboard.
+  - Success End State: User has the comparative data they need and can paste it into a spreadsheet or document.
+  - Failure States:
+    - Data file is missing or malformed — page renders no rows.
+    - A filter produces zero results — user sees an empty grid with no indication of why.
+
+- Sharing a view
+  - Trigger: User wants to share their current grid view with someone else.
+  - Steps:
+    1. User configures the view (sort, filters, collapsed groups, hidden columns/rows, cell selection).
+    2. User copies the current URL (hash updates live — no extra action needed).
+    3. Recipient opens the URL in a browser.
+    4. Recipient's page loads and reproduces the exact same view.
+  - Success End State: Recipient sees an identical grid view.
+  - Failure States:
+    - URL is too long for the sharing medium (e.g. SMS). Mitigation: compact binary encoding minimises URL length.
+    - Recipient's browser is too old to support required JS features — page may not render.
+
+- Refreshing the data
+  - Trigger: Maintainer wants to update the model database.
+  - Steps:
+    1. Maintainer optionally updates `data/local-raw.json` with new or corrected values.
+    2. Maintainer runs the scraper in build mode (`python scraper/build.py`) to regenerate from cached raw data, or with `--fetch` to also pull fresh data from msx.org and openMSX GitHub.
+    3. Scraper merges all sources, applies alias normalisation, computes derived columns, and writes `docs/data.js`.
+    4. Maintainer reviews the conflict log (if any) and optionally edits a resolutions file, then re-runs.
+    5. Maintainer commits and deploys the updated `docs/data.js`.
+  - Success End State: `docs/data.js` reflects current known data; the web page shows updated models on next load.
+  - Failure States:
+    - msx.org page structure has changed — scraper emits parse warnings and may produce incomplete data.
+    - openMSX XML schema has evolved — scraper may misclassify devices; maintainer reviews warnings.
+    - Conflicting data between sources — conflict log is written; maintainer resolves manually.
+
+## Success Criteria
+
+- A user can open the page and immediately see all MSX2, MSX2+, and MSX turbo R models in a sortable, filterable grid.
+- Sort, filter, column/row visibility, and group collapse all work without page reload.
+- Any view state can be shared via a URL that exactly reproduces the view in a new tab.
+- The maintainer can refresh the data with a single command and no manual JSON editing (beyond `local-raw.json` for fields that cannot be scraped).
+- The page works correctly as a local `index.html`, as a GitHub Pages site, and embedded in Blogger/Blogspot.
+- All previously shared URLs remain valid after data updates.
+
+## Assumptions
+
+- msx.org wiki article pages are scrapable (robots.txt permits general crawlers on article paths).
+- The msx.org Slot Map HTML table structure is sufficiently consistent across model pages for a single parser to handle all variants.
+- openMSX GitHub XML schema remains stable enough that the existing parser handles new machine files without code changes.
+- Users are on modern desktop browsers (Chrome, Firefox, Edge, Safari current − 1). Mobile is not a supported target.
+- Data updates are infrequent; the maintainer triggers them on demand rather than on a schedule.
+- 1chipMSX and Omega MSX have dedicated msx.org wiki pages and are treated as first-class models.
+- The MiSTer MSX core is not a distinct MSX model and is excluded from the dataset.
+- `data/local-raw.json` is the only mechanism for supplying fields that cannot be scraped; no other manual override path is needed.
