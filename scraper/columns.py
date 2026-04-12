@@ -133,7 +133,8 @@ COLUMNS: list[Column] = [
     # Video
     Column(id=11, key="vdp",              label="VDP",                  group="video",    type="string"),
     Column(id=8,  key="vram_kb",           label="VRAM (KB)",           group="video",    type="number", short_label="VRAM",         tooltip="VRAM (KB)"),
-    Column(id=96, key="wait_cycles",       label="Wait Cycles",         group="video",    type="string"),
+    Column(id=96, key="wait_cycles",       label="Wait Cycles",         group="video",    type="string",
+           derive=lambda m: "1" if "T976" in (m.get("engine") or "") else None),
     # Audio
     Column(id=15, key="psg",              label="PSG",                  group="audio",    type="string"),
     Column(id=16, key="fm_chip",          label="MSX-MUSIC",            group="audio",    type="string"),
