@@ -395,9 +395,13 @@ class TestBuildSlotmapExtractor:
         openmsx_path.write_text(json.dumps(openmsx))
         msxorg_path.write_text(json.dumps(msxorg))
 
+        local_path = tmp_path / "local.json"
+        local_path.write_text("[]")
+
         build(
             openmsx_path=openmsx_path,
             msxorg_path=msxorg_path,
+            local_path=local_path,
             registry_path=tmp_path / "registry.json",
             output_path=output_path,
         )
@@ -412,12 +416,17 @@ class TestBuildSlotmapExtractor:
         assert "slotmap_0_0_0" in col_keys
         assert "slotmap_1_0_0" in col_keys
 
-        model = data["models"][0]
+        # Locate the Sony model by name (sort order may vary with other data)
+        model_idx_col = col_keys.index("model")
+        sony_model = next(
+            m for m in data["models"]
+            if m["values"][model_idx_col] == "HB-F1XV"
+        )
         idx_main = col_keys.index("slotmap_0_0_0")
         idx_cs1 = col_keys.index("slotmap_1_0_0")
 
-        assert model["values"][idx_main] == "MAIN"
-        assert model["values"][idx_cs1] == "CS1"
+        assert sony_model["values"][idx_main] == "MAIN"
+        assert sony_model["values"][idx_cs1] == "CS1"
 
 
 class TestBuildTruncateLimit:

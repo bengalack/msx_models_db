@@ -257,7 +257,9 @@ def build(
     derive_cols = [c for c in COLUMNS if c.derive is not None]
     for model in merged:
         for col in derive_cols:
-            model[col.key] = col.derive(model)
+            # Only derive if no explicit value already present (local overrides take priority).
+            if model.get(col.key) is None:
+                model[col.key] = col.derive(model)
 
     # Step 5: Assign model IDs
     registry = IDRegistry.load(registry_path)

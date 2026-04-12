@@ -183,6 +183,9 @@ def merge_models(
             base = o_model
         elif m_model and not o_model:
             base = m_model
+        elif o_model is None and m_model is None:
+            # Local-only model — no base from scraped sources.
+            base = {}
         else:
             # Both sources — merge field by field.
             assert o_model is not None and m_model is not None
