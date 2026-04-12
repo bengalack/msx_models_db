@@ -290,3 +290,41 @@ class TestMergeSlotMapCsEsPreference:
             assert m[f"slotmap_2_1_{p}"].startswith("ES")
             assert m[f"slotmap_2_2_{p}"].startswith("ES")
             assert m[f"slotmap_2_3_{p}"].startswith("ES")
+
+
+# ── merge_models: openMSX absence wins ────────────────────────────────────
+
+class TestOpenMSXAbsenceWins:
+    """Fields in _OPENMSX_ABSENCE_WINS: if openMSX has the machine but not
+    the field, msx.org's value is ignored (absence is the authoritative value).
+    """
+
+    def test_tape_absent_in_openmsx_overrides_msxorg_yes(self):
+        """Core regression: Panasonic FS-A1GT — no <CassettePort> in XML,
+        but msx.org wiki incorrectly lists Cassette in connectivity."""
+        openmsx = [{"manufacturer": "Panasonic", "model": "FS-A1GT"}]
+        msxorg  = [{"manufacturer": "Panasonic", "model": "FS-A1GT", "tape_interface": "Yes"}]
+        result = merge_models(openmsx, msxorg)
+        assert len(result) == 1
+        assert "tape_interface" not in result[0]
+
+    def test_tape_present_in_both_sources_kept(self):
+        """When openMSX also sets tape_interface, it is kept normally."""
+        openmsx = [{"manufacturer": "Sony", "model": "HB-F1", "tape_interface": "Yes"}]
+        msxorg  = [{"manufacturer": "Sony", "model": "HB-F1", "tape_interface": "Yes"}]
+        result = merge_models(openmsx, msxorg)
+        assert result[0].get("tape_interface") == "Yes"
+
+    def test_tape_openmsx_only_kept(self):
+        """When only openMSX has tape_interface, it is kept."""
+        openmsx = [{"manufacturer": "Sony", "model": "HB-F1", "tape_interface": "Yes"}]
+        msxorg  = [{"manufacturer": "Sony", "model": "HB-F1"}]
+        result = merge_models(openmsx, msxorg)
+        assert result[0].get("tape_interface") == "Yes"
+
+    def test_tape_msxorg_only_model_not_in_openmsx(self):
+        """If openMSX has no record at all for the model, msx.org value is kept
+        (the rule only applies when openMSX has the machine but omits the field)."""
+        msxorg = [{"manufacturer": "Acme", "model": "X-1", "tape_interface": "Yes"}]
+        result = merge_models([], msxorg)
+        assert result[0].get("tape_interface") == "Yes"

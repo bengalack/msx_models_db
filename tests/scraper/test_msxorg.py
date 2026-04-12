@@ -5,7 +5,8 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 from scraper.mirror import MirrorPageSource
-from scraper.msxorg import _parse_vdp, fetch_all, list_model_pages, parse_model_page
+from scraper.msxorg import _parse_vdp, _parse_connections, fetch_all, list_model_pages, parse_model_page
+from bs4 import BeautifulSoup
 
 
 _GOOD_CATEGORY_HTML = (
@@ -252,3 +253,75 @@ class TestFetchAllWithMirror:
         monkeypatch.setattr(requests.Session, "get", should_not_be_called)
         source = MirrorPageSource(tmp_path)
         fetch_all(source=source, delay=0)  # no exception = no HTTP calls
+
+
+# ---------------------------------------------------------------------------
+# _parse_connections — per-bullet granularity and negation detection
+# ---------------------------------------------------------------------------
+
+def _connections_soup(bullets: list[str], *, note: str | None = None) -> BeautifulSoup:
+    """Build a minimal soup with a Connections <h3> and a <ul> of bullets."""
+    items = "".join(f"<li>{b}</li>" for b in bullets)
+    note_html = f"<p>{note}</p>" if note else ""
+    html = f"<html><body><h3>Connections</h3><ul>{items}</ul>{note_html}</body></html>"
+    return BeautifulSoup(html, "lxml")
+
+
+class TestParseConnections:
+
+    def test_cassette_bullet_sets_tape_interface(self):
+        soup = _connections_soup(["Cassette port"])
+        result = _parse_connections(soup)
+        assert result.get("tape_interface") == "Yes"
+        assert "Cassette" in result.get("connectivity", "")
+
+    def test_data_recorder_bullet_sets_tape_interface(self):
+        soup = _connections_soup(["Data Recorder port"])
+        result = _parse_connections(soup)
+        assert result.get("tape_interface") == "Yes"
+
+    def test_printer_bullet_sets_printer(self):
+        soup = _connections_soup(["Centronics printer port"])
+        result = _parse_connections(soup)
+        assert "Printer" in result.get("connectivity", "")
+
+    def test_no_printer_port_note_suppresses_printer(self):
+        """Regression: 1chipMSX — 'Note: No printer port!' must not set Printer."""
+        soup = _connections_soup(
+            ["Data Recorder (RCA)", "2 cartridge slots"],
+            note="Note: No printer port!",
+        )
+        result = _parse_connections(soup)
+        assert "Printer" not in result.get("connectivity", "")
+
+    def test_no_printer_bullet_suppresses_printer(self):
+        """A bullet explicitly saying 'no printer' must not set Printer."""
+        soup = _connections_soup(["No printer port", "Cassette port"])
+        result = _parse_connections(soup)
+        assert "Printer" not in result.get("connectivity", "")
+        assert result.get("tape_interface") == "Yes"
+
+    def test_negation_in_one_bullet_does_not_suppress_other_ports(self):
+        """Negation in the printer bullet must not suppress the tape detection."""
+        soup = _connections_soup(["Cassette port", "No printer interface"])
+        result = _parse_connections(soup)
+        assert result.get("tape_interface") == "Yes"
+        assert "Printer" not in result.get("connectivity", "")
+
+    def test_no_cassette_bullet_suppresses_tape(self):
+        soup = _connections_soup(["No cassette port", "Printer port"])
+        result = _parse_connections(soup)
+        assert "tape_interface" not in result
+        assert "Printer" in result.get("connectivity", "")
+
+    def test_without_printer_suppresses_printer(self):
+        soup = _connections_soup(["RGB video output", "Without printer"])
+        result = _parse_connections(soup)
+        assert "Printer" not in result.get("connectivity", "")
+
+    def test_both_cassette_and_printer_present(self):
+        soup = _connections_soup(["Cassette connector", "Parallel printer port"])
+        result = _parse_connections(soup)
+        assert result.get("tape_interface") == "Yes"
+        assert "Printer" in result.get("connectivity", "")
+        assert "Cassette" in result.get("connectivity", "")

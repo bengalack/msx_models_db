@@ -45,6 +45,7 @@ _RE_VDP = re.compile(r"(V9958|V9938|TMS99[12][89]A?)", re.IGNORECASE)
 _RE_RAM_MAIN = re.compile(
     r"(\d+)\s*kB(?:\s+(?:in|mapped|main|slot))", re.IGNORECASE
 )
+_RE_SRAM = re.compile(r"(\d+)\s*kB\s+SRAM", re.IGNORECASE)
 _RE_FLOPPY = re.compile(
     r"(\d+)\s*(?:×|x)\s*(?:\d+kB\s+)?(?:3[,.]5|5[,.]25)[\"\u201D\u2033]?\s*"
     r"(?:floppy|disk|FDD)",
@@ -160,6 +161,12 @@ def _parse_ram_kb(raw: str) -> int | None:
     return int(m.group(1)) if m else None
 
 
+def _parse_sram_kb(raw: str) -> str | None:
+    """Extract SRAM size in KB from strings like '64kB in slot 3-0 + 16kB SRAM'."""
+    m = _RE_SRAM.search(raw)
+    return str(int(m.group(1))) if m else None
+
+
 def _parse_vram_kb(raw: str) -> int | None:
     """Extract VRAM in KB from strings like '128kB'."""
     m = _RE_KB.search(raw)
@@ -221,6 +228,23 @@ def _parse_media(raw: str) -> dict[str, Any]:
     return result
 
 
+def _connection_items(sibling: Any) -> list[str]:
+    """Return individual text strings from a connections-section sibling.
+
+    ``<ul>`` elements are decomposed into their ``<li>`` children so that a
+    negation in one bullet (e.g. "Note: No printer port!") does not bleed into
+    sibling bullets that genuinely describe a port.
+    """
+    if getattr(sibling, "name", None) == "ul":
+        return [_text_content(li) for li in sibling.find_all("li", recursive=False)]
+    return [_text_content(sibling)]
+
+
+# Negation words that, when present in the same bullet as a port keyword,
+# indicate the port is absent rather than present.
+_NEGATION_RE = re.compile(r"\b(no|not|without|none)\b", re.IGNORECASE)
+
+
 def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
     """Look for connectivity info in the Connections section."""
     result: dict[str, Any] = {}
@@ -232,21 +256,25 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
             # Get the list after this heading.
             sibling = heading.find_next_sibling()
             while sibling and sibling.name not in ("h2", "h3"):
-                text = _text_content(sibling).lower()
-                if "data recorder" in text or "cassette" in text:
-                    if "Cassette" not in ports:
-                        ports.append("Cassette")
-                    if "tape_interface" not in result:
-                        result["tape_interface"] = "Yes"
-                if "printer" in text or "parallel" in text or "centronics" in text:
-                    if "Printer" not in ports:
-                        ports.append("Printer")
-                if "cartridge slot" in text:
-                    m = re.search(r"(\d+)\s*(?:×|x)?\s*cartridge", text)
-                    if m:
-                        result["cartridge_slots"] = int(m.group(1))
-                    elif "cartridge_slots" not in result:
-                        result["cartridge_slots"] = 2  # common default
+                for item_text in _connection_items(sibling):
+                    text = item_text.lower()
+                    negated = bool(_NEGATION_RE.search(text))
+                    if not negated:
+                        if "data recorder" in text or "cassette" in text:
+                            if "Cassette" not in ports:
+                                ports.append("Cassette")
+                            if "tape_interface" not in result:
+                                result["tape_interface"] = "Yes"
+                        if "printer" in text or "parallel" in text or "centronics" in text:
+                            if "Printer" not in ports:
+                                ports.append("Printer")
+                    # Cartridge slot count is structural — not negation-sensitive.
+                    if "cartridge slot" in text:
+                        m = re.search(r"(\d+)\s*(?:×|x)?\s*cartridge", text)
+                        if m:
+                            result["cartridge_slots"] = int(m.group(1))
+                        elif "cartridge_slots" not in result:
+                            result["cartridge_slots"] = 2  # common default
                 sibling = sibling.find_next_sibling()
             break
 
@@ -306,6 +334,9 @@ def parse_model_page(
         ram = _parse_ram_kb(ram_raw)
         if ram:
             result["main_ram_kb"] = ram
+        sram = _parse_sram_kb(ram_raw)
+        if sram:
+            result["sram_kb"] = sram
 
     # VRAM
     vram_raw = specs.get("VRAM", "")

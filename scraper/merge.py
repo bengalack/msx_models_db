@@ -79,6 +79,13 @@ _PREFER_MSXORG: set[str] = {"keyboard_layout", "region"}
 # Fields where openMSX is more reliable (hardware-level).
 _PREFER_OPENMSX: set[str] = {"cartridge_slots", "vdp", "vram_kb", "main_ram_kb", "psg"}
 
+# Fields where openMSX's *absence* is authoritative.
+# If openMSX has the machine but does not emit this field, the hardware does not
+# have the feature — msx.org's value (often scraped from inaccurate wiki text)
+# is discarded.  Add fields here when presence/absence is determined by explicit
+# hardware elements in the openMSX XML (e.g. <CassettePort>).
+_OPENMSX_ABSENCE_WINS: set[str] = {"tape_interface"}
+
 # Matches CS/ES slot abbreviations with optional number and ! suffix.
 # The number is optional to tolerate bare "CS"/"ES" that can appear in stale
 # msx.org raw data when the scraper fell back to raw cell text.
@@ -300,6 +307,11 @@ def _merge_single(
             result[field] = ov
             continue
         if mv is not None and ov is None:
+            # For fields where openMSX absence is authoritative: if openMSX has
+            # the machine but emitted no value, the feature is absent — drop
+            # msx.org's value rather than blindly filling it in.
+            if field in _OPENMSX_ABSENCE_WINS:
+                continue
             result[field] = mv
             continue
         if ov is None and mv is None:
@@ -332,10 +344,10 @@ def _merge_single(
             result[field] = mv  # msx.org knows the slot type
             continue
 
-        # openMSX emits • for secondary pages it has no device for; it cannot
-        # determine the connector type.  If msx.org has a slot-type value for
-        # the same cell, prefer msx.org.
-        if field.startswith("slotmap_") and ov == "\u2022" and _is_slot_type(mv):
+        # openMSX emits • (empty page) or ⌧ (not present/unknown) for slots it
+        # cannot characterise.  If msx.org has a slot-type value for the same
+        # cell, prefer msx.org.
+        if field.startswith("slotmap_") and ov in ("\u2022", "\u2327") and _is_slot_type(mv):
             result[field] = mv
             continue
 
