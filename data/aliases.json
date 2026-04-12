@@ -20,16 +20,16 @@
   },
   "composite": [
     {
-      "match":     {"manufacturer": "Sakhr",  "model": "AX-350IIF"},
-      "canonical": {"manufacturer": "Yamaha", "model": "AX350IIF"}
+      "match":     {"manufacturer": "Yamaha", "model": "AX350IIF"},
+      "canonical": {"manufacturer": "Sakhr",  "model": "AX-350IIF"}
     },
     {
-      "match":     {"manufacturer": "Sakhr",  "model": "AX-350II"},
-      "canonical": {"manufacturer": "Yamaha", "model": "AX350II"}
+      "match":     {"manufacturer": "Yamaha", "model": "AX350II"},
+      "canonical": {"manufacturer": "Sakhr",  "model": "AX-350II"}
     },
     {
-      "match":     {"manufacturer": "Sakhr",  "model": "AX-500"},
-      "canonical": {"manufacturer": "Yamaha", "model": "AX500"}
+      "match":     {"manufacturer": "Yamaha", "model": "AX500"},
+      "canonical": {"manufacturer": "Sakhr",  "model": "AX-500"}
     }
   ]
 }

@@ -1,0 +1,245 @@
+Al Alamiah AX170 - 0xF380
+Al Alamiah AX230 - 0xF380
+Al Alamiah AX370 - 0xF380
+Aucnet NIA-2001 - 0xF1C4
+AVT DPC-200 - 0xF380
+Bawareth Ent. for Trade/Daewoo Perfect MSX1 - 0xF380
+C-BIOS MSX1 - 0xF380
+C-BIOS MSX1 BR - 0xF380
+C-BIOS MSX1 EU - 0xF380
+C-BIOS MSX1 JP - 0xF380
+C-BIOS MSX2 - 0xF380
+C-BIOS MSX2 BR - 0xF380
+C-BIOS MSX2 EU - 0xF380
+C-BIOS MSX2 JP - 0xF380
+C-BIOS MSX2+ - 0xF380
+C-BIOS MSX2+ BR - 0xF380
+C-BIOS MSX2+ EU - 0xF380
+C-BIOS MSX2+ JP - 0xF380
+Canon V-10 - 0xF380
+Canon V-20
+Canon V-25 - 0xF380
+Canon V-30F - 0xDE7A
+Canon V-8 - 0xF380
+Casio MX-10/MX-101 - 0xF380
+Casio MX-15 - 0xF380
+Casio PV-16 - 0xF380
+Casio PV-7 - 0xF380
+CIEL
+Coleco ColecoVision - 0xFFFF
+Coleco ColecoVision with SGM - 0xFFFF
+Daewoo CPC-300 - 0xF380
+Daewoo CPC-300E - 0xF380
+Daewoo CPC-400S - 0xF380
+Daewoo CPC-51 Zemmix V - 0xF380
+Daewoo CPC-61 Zemmix Super V - 0xF380
+Daewoo DPC-100 - 0xF380
+Daewoo DPC-180 - 0xF380
+Daewoo DPC-200
+Daewoo DPC-200 - 0xF380
+Eurohard/Radofin Dragon MSX - 0xF380
+Fenner SPC-800 - 0xF380
+Frael BRUC 100
+FRS Acid1Test-slots - 0xDF83
+FRS Acid2Test-hardware - 0xE7E3
+FRS Acid3Test-mapper - 0xE7B3
+Fujitsu FM-X - 0xF380
+General Paxon PCT-55 - 0xF380
+Goldstar FC-200 - 0xF380
+Goldstar FC-80U - 0xF380
+Gradiente Expert DD Plus - 0xDF93
+Gradiente Expert GPC-1 - 0xF380
+Gradiente Expert Plus - 0xF380
+Gradiente Expert XP-800 - 0xF380
+Hitachi MB-H1 - 0xF380
+Hitachi MB-H2 - 0xF380
+Hitachi MB-H21 - 0xF380
+Hitachi MB-H3 - 0xF380
+Hitachi MB-H50 - 0xF380
+Hitachi MB-H70 - 0xDE79
+JVC HC-7GB - 0xF380
+Mitsubishi ML-8000 - 0xF380
+Mitsubishi ML-F110 - 0xF380
+Mitsubishi ML-F120 - 0xF380
+Mitsubishi ML-F80 - 0xF380
+Mitsubishi ML-FX1 - 0xF380
+Mitsubishi ML-G1
+Mitsubishi ML-G10 - 0xF380
+Mitsubishi ML-G3
+Mitsubishi ML-G30/model 1 - 0xF380
+Mitsubishi ML-G30/model 2 - 0xDE79
+Mitsubishi ML-TS2 - 0xF380
+National CF-1200 - 0xF380
+National CF-2000 - 0xF380
+National CF-2700 - 0xF380
+National CF-3000 - 0xF380
+National CF-3300 - 0xDF93
+National FS-1300 - 0xF380
+National FS-4000 - 0xF380
+National FS-4500 - 0xF380
+National FS-4600F - 0xF380
+National FS-4700F - 0xF380
+National FS-5000F2 - 0xDE77
+National FS-5500F1 - 0xDF93
+National FS-5500F2 - 0xDE77
+Nikko PC-70100 - 0xF380
+Olympia PHC-2 - 0xF380
+openMSX Team Boosted MSX2 EN - 0xDE79
+openMSX Team Boosted MSX2+ JP - 0xDF83
+openMSX Team Boosted MSXturboR - 0xE889
+Panasonic CF-2700
+Panasonic FS-A1 - 0xF380
+Panasonic FS-A1F - 0xDE67
+Panasonic FS-A1FM - 0xDE67
+Panasonic FS-A1FX - 0xDF83
+Panasonic FS-A1GT - 0xE7B5
+Panasonic FS-A1GT slow - 0xE7B5
+Panasonic FS-A1MK2 - 0xF380
+Panasonic FS-A1ST - 0xE7BB
+Panasonic FS-A1WSX - 0xDE67
+Panasonic FS-A1WSX - 0xDF83
+Panasonic FS-A1WX - 0xDF83
+Philips NMS 801 - 0xF380
+Philips NMS 8220 - 0xF380
+Philips NMS 8245 - 0xDE79
+Philips NMS 8245 - 0xDF95
+Philips NMS 8245/16 - 0xDE79
+Philips NMS 8245/19 - 0xDE79
+Philips NMS 8250 - 0xDF95
+Philips NMS 8250/16 - 0xDF95
+Philips NMS 8250/19 - 0xDF95
+Philips NMS 8255 - 0xDE79
+Philips NMS 8255 256 kB + T9769C - 0xDE79
+Philips VG 8000/00 - 0xF380
+Philips VG 8010/00 - 0xF380
+Philips VG 8010/19 - 0xF380
+Philips VG 8020/00 - 0xF380
+Philips VG 8020/19 - 0xF380
+Philips VG 8020/20 - 0xF380
+Philips VG 8230 - 0xF380
+Philips VG 8235/00 - 0xDF95
+Philips VG 8235/02 - 0xDF95
+Philips VG 8235/19 - 0xDF95
+Philips VG 8235/20 - 0xDF95
+Philips VG 8235/39 - 0xDF95
+Pioneer PX-7 - 0xF380
+Pioneer PX-7(UK) - 0xF380
+Pioneer PX-V60 - 0xF380
+Pioneer UC-V102 - 0xDE79
+Sanyo MPC-1/Wavy1 - 0xF380
+Sanyo MPC-10/Wavy10 - 0xF380
+Sanyo MPC-10/Wavy10mkII - 0xF380
+Sanyo MPC-100 - 0xF380
+Sanyo MPC-11/Wavy11 - 0xF380
+Sanyo MPC-2/Wavy2 - 0xF380
+Sanyo MPC-2300 - 0xF380
+Sanyo MPC-25FD - 0xDF94
+Sanyo MPC-25FS - 0xE394
+Sanyo MPC-3/Wavy3 - 0xF380
+Sanyo MPC-6/Wavy6 - 0xF380
+Sanyo MPC-64 - 0xF380
+Sanyo PHC-23 - 0xF380
+Sanyo PHC-23J - 0xF380
+Sanyo PHC-23J(B) - 0xF380
+Sanyo PHC-28L - 0xF380
+Sanyo PHC-28P - 0xF380
+Sanyo PHC-28S - 0xF380
+Sanyo PHC-30N - 0xF380
+Sanyo PHC-33 - 0xF380
+Sanyo PHC-35J - 0xF380
+Sanyo PHC-70FD - 0xDF83
+Sanyo PHC-70FD BEEFY - 0xDF83
+Sanyo PHC-70FD2 - 0xDF83
+Sanyo PHC-77 - 0xDE79
+Sanyo PHC-SPC - 0xF380
+Sega SC-3000
+Sega SG-1000 - 0x3900
+Sharp HB-8000 v1.1 - 0xF380
+Sharp HB-8000 v1.2 - 0xF380
+Sony HB-10 - 0xF380
+Sony HB-101 - 0xF380
+Sony HB-101P - 0xF380
+Sony HB-10P - 0xF380
+Sony HB-11 - 0xF380
+Sony HB-201 - 0xF380
+Sony HB-201P - 0xF380
+Sony HB-20P - 0xF380
+Sony HB-501P - 0xF380
+Sony HB-55P - 0xF380
+Sony HB-701 - 0xF380
+Sony HB-701FD - 0xE394
+Sony HB-75 - 0xF380
+Sony HB-75D - 0xF380
+Sony HB-75P - 0xF380
+Sony HB-F1 - 0xF380
+Sony HB-F1II - 0xF380
+Sony HB-F1XD - 0xDF94
+Sony HB-F1XDJ - 0xDF94
+Sony HB-F1XDmk2 - 0xDF94
+Sony HB-F1XV - 0xDF94
+Sony HB-F5 - 0xF380
+Sony HB-F500
+Sony HB-F500 - 0xDF94
+Sony HB-F500P - 0xDF94
+Sony HB-F700D - 0xDF94
+Sony HB-F700F - 0xDF94
+Sony HB-F700P - 0xDF94
+Sony HB-F700S - 0xDF94
+Sony HB-F900 - 0xDE78
+Sony HB-F9P - 0xF380
+Sony HB-F9P Russian - 0xF380
+Sony HB-F9S - 0xF380
+Sony HB-G900AP - 0xDF94
+Sony HB-G900D - 0xDF94
+Sony HB-G900P - 0xDF94
+Sony HB-T600 - 0xDF94
+Spectravideo SVI-318 - 0x0
+Spectravideo SVI-328 - 0x0
+Spectravideo SVI-328 Superexpanded - 0x0
+Spectravideo SVI-728
+Spectravideo SVI-728 - 0xF380
+Spectravideo SVI-738 X'PRESS
+Spectravideo SVI-738 X'PRESS - 0xE395
+Talent DPC-200 - 0xF380
+Talent TPC-310 - 0xF380
+Toshiba FS-TM1 - 0xF380
+Toshiba HX-10 - 0xF380
+Toshiba HX-10D - 0xF380
+Toshiba HX-20E - 0xF380
+Toshiba HX-21 - 0xF380
+Toshiba HX-22 - 0xF380
+Toshiba HX-22I - 0xF380
+Toshiba HX-23 - 0xF380
+Toshiba HX-23F - 0xF380
+Toshiba HX-32 - 0xF380
+Toshiba HX-33 - 0xF380
+Toshiba HX-34 - 0xDE77
+Toshiba HX-51I - 0xF380
+Victor HC-7 - 0xF380
+Victor HC-80 - 0xF380
+Victor HC-90A - 0xDF95
+Victor HC-95A - 0xDE79
+Victor/JVC HC-30 - 0xF380
+Yamaha AX150 - 0xF380
+Yamaha AX200 - 0xF380
+Yamaha AX350II - 0xF380
+Yamaha AX350IIF - 0xF380
+Yamaha AX500 - 0xF380
+Yamaha CX11 - 0xF380
+Yamaha CX5F - 0xF380
+Yamaha CX5M - 0xF380
+Yamaha CX5MII - 0xF380
+Yamaha CX5MII/128 - 0xF380
+Yamaha CX5MU - 0xF380
+Yamaha CX7/128 - 0xF380
+Yamaha CX7M/128 - 0xF380
+Yamaha SX-100 - 0xF380
+Yamaha YIS-503 - 0xF380
+Yamaha YIS-503F - 0xF380
+Yamaha YIS-503II - 0xF380
+Yamaha YIS-503IIIR - 0xF380
+Yamaha YIS-503IIR - 0xF380
+Yamaha YIS-604/128 - 0xF380
+Yamaha YIS-805/128R2 - 0xDE77
+Yashica YC-64 - 0xF380
+Yeno DPC-64 - 0xF380
