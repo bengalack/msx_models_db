@@ -6,6 +6,12 @@
     "tooltip": "MSX BIOS with BASIC ROM"
   },
   {
+    "element": "__freetext_from_msxorg_only__",
+    "id_pattern": "SRAM",
+    "abbr": "SRAM",
+    "tooltip": "SRAM"
+  },
+  {
     "element": "ROM",
     "id_pattern": "Sub.ROM",
     "abbr": "SUB",
