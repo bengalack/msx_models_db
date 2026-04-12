@@ -50,7 +50,7 @@ Column order in the grid = order in the `COLUMNS` list. To reorder, move entries
 
 ### Derived columns
 
-A derived column has a `derive` callable that receives the full merged row dict (including hidden fields) and returns the computed value. Derivation runs during the build step; the result is stored in `data.js`.
+A derived column has a `derive` callable that receives the full merged row dict (including hidden fields) and returns the computed value. Derivation runs during the build step; the result is stored in `data.js`. The derive function acts as a **fallback**: if the field already has a value (from scraping or a local override), the derive result is ignored. This ensures local overrides always take precedence.
 
 ```python
 def derive_nmos_cmos(row: dict[str, Any]) -> str | None:

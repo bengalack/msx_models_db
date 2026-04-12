@@ -180,7 +180,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     4. If `--fetch`: fetch fresh data from msx.org and openMSX GitHub first, overwriting cached files
     5. Merge msx.org and openMSX data per model (openMSX wins on conflict); then apply local overrides on top (local wins for any field it provides)
     5a. After all per-model `links` are computed (keyed model URLs from `msxorg_title`), apply `data/link-shares.json`: for each entry whose recipient has no `links`, copy the donor's `links` (if present). Absent file is silently skipped.
-    6. Compute derived columns: for each model row, run every `Column.derive` callable; store results under the column's key
+    6. Compute derived columns: for each model row, run every `Column.derive` callable; derived value is written only if the field is not already set (local overrides and scraped values take priority over derived defaults)
     7. Load `data/id-registry.json`; match models by natural key (manufacturer + model name); assign new IDs for unmatched entries
     8. Build output: generate `docs/data.js` with groups (from config), active columns (excluding hidden/retired), and model values[] positionally aligned to active columns
     9. Atomic write `docs/data.js` and `data/id-registry.json`
