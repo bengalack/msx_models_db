@@ -550,7 +550,12 @@ def _apply_mirror_elements(
         mirror_pages = _pages_for_mem(base, size)
         for p in mirror_pages:
             key = f"slotmap_{host_ms}_{host_ss}_{p}"
-            result[key] = f"{origin_abbr}*"
+            # Only overwrite if the page is not already classified by a full
+            # device.  A tiny Mirror overlay (e.g. 5-byte FDC register window)
+            # must not replace a dominant ROM that fills the whole page.
+            existing = result.get(key, _EMPTY_PAGE)
+            if existing in (_EMPTY_PAGE, _ABSENT):
+                result[key] = f"{origin_abbr}*"
 
 
 def _find_mirror_host(

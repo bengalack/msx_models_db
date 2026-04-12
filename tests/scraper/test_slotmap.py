@@ -756,7 +756,10 @@ class TestMirrorMethod3Element:
             assert result[f"slotmap_3_0_{p}"] == "RAM"
 
     def test_mirror_in_secondary_annotates_correct_host(self):
-        # Victor HC-95A-like: Mirror in slot 0-1 pointing to ps=3
+        # Victor HC-90A-like: Mirror in slot 0-1 pointing to ps=3.
+        # The Mirror covers only 8 bytes (0x7FF8-0x7FFF) inside page 1.
+        # Page 1 is already fully occupied by MSX-RS232 from the first pass,
+        # so the tiny mirror must NOT overwrite it.
         xml = """
         <msxconfig><devices>
           <primary slot="0">
@@ -783,9 +786,9 @@ class TestMirrorMethod3Element:
         </devices></msxconfig>
         """
         result = extract_slotmap(_root(xml), LUT_RULES)
-        # Mirror is at 0x7FF8 in slot 0-1 (page 1 range), origin is DSK from slot 3
-        assert result["slotmap_0_1_1"] == "DSK*"
-        # RS-232 also in page 1
+        # RS-232 fills page 1; the 8-byte FDC mirror must NOT overwrite it.
+        assert result["slotmap_0_1_1"] == "RS2"
+        # Origin DSK in slot 3 is intact.
         assert result["slotmap_3_0_1"] == "DSK"
 
     def test_mirror_with_unknown_origin_warns_and_skips(self, capsys):
