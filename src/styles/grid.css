@@ -322,10 +322,6 @@ thead .gutter {
 
 /* ── Data rows ───────────────────────────────────────────────────────────── */
 
-.grid tbody tr:nth-child(even) td {
-  background: var(--color-surface-alt);
-}
-
 .grid tbody td {
   height: 24px;
   font-size: 12px;
@@ -339,6 +335,19 @@ thead .gutter {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.grid tbody tr:nth-child(even) td {
+  background: var(--color-surface-alt);
+}
+
+.grid tbody td.col-shaded {
+  background: var(--color-surface-shaded);
+  font-weight: bold;
+}
+
+.grid tbody tr:nth-child(even) td.col-shaded {
+  background: var(--color-surface-shaded-alt);
 }
 
 /* Alternating rows must also override the sticky gutter background */

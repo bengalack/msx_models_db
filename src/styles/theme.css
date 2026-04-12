@@ -5,6 +5,8 @@
   --color-bg:            #0a0a0a;
   --color-surface:       #111111;
   --color-surface-alt:   #161616;
+  --color-surface-shaded:     #142614;
+  --color-surface-shaded-alt: #192c19;
   --color-border:        #1c3a1c;
   --color-border-strong: #2a5a2a;
 
@@ -38,6 +40,8 @@
   --color-bg:            #f0f0e4;
   --color-surface:       #ffffff;
   --color-surface-alt:   #f7f7ed;
+  --color-surface-shaded:     #ecece0;
+  --color-surface-shaded-alt: #e6e6d8;
   --color-border:        #c4d4c4;
   --color-border-strong: #8aaa8a;
 

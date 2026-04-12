@@ -138,3 +138,39 @@ def test_slotmap_columns_belong_to_slotmap_groups():
 def test_validate_config_passes():
     """validate_config should not raise with the full GROUPS + COLUMNS."""
     validate_config(GROUPS, COLUMNS)
+
+
+# ---------------------------------------------------------------------------
+# Shaded columns
+# ---------------------------------------------------------------------------
+
+SHADED_SLOTMAP_COLS = [c for c in SLOTMAP_COLS if c.shaded]
+_SHADED_SUBSLOT_PATTERN = re.compile(r"^slotmap_[0-3]_[13]_[0-3]$")
+_UNSHADED_SUBSLOT_PATTERN = re.compile(r"^slotmap_[0-3]_[02]_[0-3]$")
+
+
+def test_shaded_slotmap_columns_exist():
+    """At least one slotmap column must have shaded=True."""
+    assert SHADED_SLOTMAP_COLS, "No shaded slotmap columns found"
+
+
+def test_shaded_slotmap_columns_are_only_subslots_1_and_3():
+    """Every shaded slotmap column key must match slotmap_*_1_* or slotmap_*_3_*."""
+    for col in SHADED_SLOTMAP_COLS:
+        assert _SHADED_SUBSLOT_PATTERN.match(col.key), (
+            f"Shaded column {col.key!r} does not match slotmap_*_[13]_* pattern"
+        )
+
+
+def test_subslots_0_and_2_are_not_shaded():
+    """Columns with sub-slot 0 or 2 must not have shaded=True."""
+    for col in SLOTMAP_COLS:
+        if _UNSHADED_SUBSLOT_PATTERN.match(col.key):
+            assert not col.shaded, f"Column {col.key!r} has shaded=True but must not"
+
+
+def test_non_slotmap_columns_are_not_shaded():
+    """No column outside the slotmap groups must have shaded=True."""
+    non_slotmap = [c for c in COLUMNS if not c.key.startswith("slotmap_")]
+    for col in non_slotmap:
+        assert not col.shaded, f"Non-slotmap column {col.key!r} has shaded=True"

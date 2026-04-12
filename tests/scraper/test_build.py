@@ -469,6 +469,57 @@ class TestBuildTruncateLimit:
 
 
 # ---------------------------------------------------------------------------
+# shaded serialisation
+# ---------------------------------------------------------------------------
+
+class TestBuildShaded:
+    """Tests for shaded serialisation in ColumnDef output."""
+
+    def _build_and_parse(self, tmp_path) -> dict:
+        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        openmsx_path = tmp_path / "openmsx.json"
+        msxorg_path = tmp_path / "msxorg.json"
+        output_path = tmp_path / "data.js"
+        openmsx_path.write_text(json.dumps(raw))
+        msxorg_path.write_text(json.dumps([]))
+        from scraper.build import build
+        build(
+            openmsx_path=openmsx_path,
+            msxorg_path=msxorg_path,
+            registry_path=tmp_path / "registry.json",
+            output_path=output_path,
+        )
+        content = output_path.read_text(encoding="utf-8")
+        json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
+        json_end = content.rindex(";")
+        return json.loads(content[json_start:json_end])
+
+    def test_shaded_columns_emit_shaded_true(self, tmp_path):
+        """Every column with shaded=True in active_columns() must emit "shaded": true."""
+        from scraper.columns import active_columns
+        expected_shaded_keys = {c.key for c in active_columns() if c.shaded}
+        assert expected_shaded_keys, "No shaded columns found — test precondition failed"
+        data = self._build_and_parse(tmp_path)
+        for col_js in data["columns"]:
+            if col_js["key"] in expected_shaded_keys:
+                assert col_js.get("shaded") is True, (
+                    f"Column {col_js['key']!r} has shaded=True in columns.py "
+                    f"but 'shaded' is absent or not True in serialised output"
+                )
+
+    def test_non_shaded_columns_omit_shaded_key(self, tmp_path):
+        """Columns with shaded=False must NOT emit a 'shaded' key."""
+        from scraper.columns import active_columns
+        expected_shaded_keys = {c.key for c in active_columns() if c.shaded}
+        data = self._build_and_parse(tmp_path)
+        for col_js in data["columns"]:
+            if col_js["key"] not in expected_shaded_keys:
+                assert "shaded" not in col_js, (
+                    f"Column {col_js['key']!r} has shaded=False but emitted a 'shaded' key"
+                )
+
+
+# ---------------------------------------------------------------------------
 # load_scraper_config
 # ---------------------------------------------------------------------------
 

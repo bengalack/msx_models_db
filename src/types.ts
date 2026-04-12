@@ -18,6 +18,8 @@ export interface ColumnDef {
   linkable?: boolean;
   /** When set (> 0), cell values longer than this limit are clipped to (limit-1) chars + '…'. */
   truncateLimit?: number;
+  /** When true, cells in this column render with a tinted background and bold font weight. */
+  shaded?: boolean;
 }
 
 /** A collapsible group of columns. */

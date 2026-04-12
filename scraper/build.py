@@ -293,6 +293,8 @@ def build(
             entry["linkable"] = True
         if col.truncate_limit > 0:
             entry["truncateLimit"] = col.truncate_limit
+        if col.shaded:
+            entry["shaded"] = True
         js_columns.append(entry)
 
     js_models = []
