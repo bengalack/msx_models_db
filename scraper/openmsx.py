@@ -242,6 +242,17 @@ def _extract_memory(devices: etree._Element, out: dict[str, Any]) -> None:
             out["main_ram_kb"] = total_ram
             out["mapper"] = "None"
 
+    # SRAM: only the PANASONIC mapper type exposes <sramsize> (decimal KB).
+    # NATIONAL and FSA1FM1/FSA1FM2 mapper types have SRAM too but no size
+    # element in the XML — size is hardcoded in the emulator, so we skip them.
+    for rom in devices.iter("ROM"):
+        mappertype = _text(rom.find("mappertype"))
+        if mappertype == "PANASONIC":
+            sram_size = _int(rom.find("sramsize"))
+            if sram_size:
+                out["sram_kb"] = str(sram_size)
+            break
+
 
 def _extract_video(devices: etree._Element, out: dict[str, Any]) -> None:
     """Extract VDP version and VRAM."""

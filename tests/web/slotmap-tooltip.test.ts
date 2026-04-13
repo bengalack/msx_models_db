@@ -4,6 +4,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { resolveSlotmapTooltip } from '../../src/grid.js';
+import { SLOTMAP_ABSENT, SLOTMAP_EMPTY_PAGE } from '../../src/symbols.js';
 
 const STARTER_LUT: Record<string, string> = {
   MAIN: 'MSX BIOS with BASIC ROM',
@@ -22,8 +23,8 @@ const STARTER_LUT: Record<string, string> = {
   CS2: 'Cartridge slot 2',
   CS3: 'Cartridge slot 3',
   CS4: 'Cartridge slot 4',
-  '\u2327': 'Sub-slot absent (not expanded)',
-  '\u2022': 'Empty page — no device mapped',
+  [SLOTMAP_ABSENT]: 'Sub-slot absent (not expanded)',
+  [SLOTMAP_EMPTY_PAGE]: 'Empty page — no device mapped',
 };
 
 describe('resolveSlotmapTooltip', () => {
@@ -47,15 +48,15 @@ describe('resolveSlotmapTooltip', () => {
     });
   });
 
-  describe('⌧ absent sentinel (U+2327)', () => {
-    it('returns tooltip for ⌧', () => {
-      expect(resolveSlotmapTooltip('\u2327', STARTER_LUT)).toBe('Sub-slot absent (not expanded)');
+  describe(`${SLOTMAP_ABSENT} absent sentinel (U+2327)`, () => {
+    it(`returns tooltip for ${SLOTMAP_ABSENT}`, () => {
+      expect(resolveSlotmapTooltip(SLOTMAP_ABSENT, STARTER_LUT)).toBe('Sub-slot absent (not expanded)');
     });
   });
 
-  describe('• empty sentinel (U+2022)', () => {
-    it('returns tooltip for •', () => {
-      expect(resolveSlotmapTooltip('\u2022', STARTER_LUT)).toBe('Empty page — no device mapped');
+  describe(`${SLOTMAP_EMPTY_PAGE} empty sentinel (U+2334)`, () => {
+    it(`returns tooltip for ${SLOTMAP_EMPTY_PAGE}`, () => {
+      expect(resolveSlotmapTooltip(SLOTMAP_EMPTY_PAGE, STARTER_LUT)).toBe('Empty page \u2014 no device mapped');
     });
   });
 
@@ -94,8 +95,8 @@ describe('resolveSlotmapTooltip', () => {
   describe('empty LUT', () => {
     it('returns null for any value when LUT is empty', () => {
       expect(resolveSlotmapTooltip('MAIN', {})).toBeNull();
-      expect(resolveSlotmapTooltip('\u2327', {})).toBeNull();
-      expect(resolveSlotmapTooltip('\u2022', {})).toBeNull();
+      expect(resolveSlotmapTooltip(SLOTMAP_ABSENT, {})).toBeNull();
+      expect(resolveSlotmapTooltip(SLOTMAP_EMPTY_PAGE, {})).toBeNull();
       expect(resolveSlotmapTooltip('SUB*', {})).toBeNull();
     });
   });

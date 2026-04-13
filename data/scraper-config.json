@@ -1,4 +1,10 @@
 {
     "msxorg_mirror": "C:\\Users\\palha\\Google Drive\\msx\\msx_org_wiki_dumps",
-    "openmsx_mirror": "C:\\tools\\openmsx21x\\share\\machines"
+    "openmsx_mirror": "C:\\tools\\openmsx21x\\share\\machines",
+    "slotmap_symbols": {
+        "absent":         "·",
+        "empty_page":     "⏺",
+        "mirror_suffix":  "*",
+        "subslot_suffix": "!"
+    }
 }

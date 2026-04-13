@@ -321,7 +321,16 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Cartridge slots (CS) in a non-expanded main slot produce `CS{N}` on all 4 pages of sub-slot 0. Expansion slots (ES) produce `ES{N}`. Slots in an expanded main slot (multiple sub-slot columns) receive the `!` suffix: `CS{N}!` or `ES{N}!`, following the same convention as the XML extraction path.
     - CS and ES use independent sequential counters, each starting at 1, incremented left-to-right across the table.
     - Cell text is matched against the `id_pattern` fields in `data/slotmap-lut.json` in order (first match wins). LUT entries with a null `id_pattern` (element-name-only entries) are covered by a supplemental list that matches their typical msx.org free-text descriptions.
-    - All other slot map conventions (64-key output, `⌧`/`•` sentinels, sequential numbering) are identical to those of the XML extraction path.
+    - All other slot map conventions (64-key output, `⌧`/`⌴` sentinels, sequential numbering) are identical to those of the XML extraction path.
+
+- Configurable slot display symbols
+  - Description: The four display symbols used in slot map cells — the absent-sub-slot sentinel (`⌧`), the empty-page sentinel (`⌴`), the mirror suffix (`*`), and the subslot suffix (`!`) — are configurable via `data/scraper-config.json` under the `slotmap_symbols` key. Code must never embed these characters as hardcoded literals; all usage goes through the config-loaded constants.
+  - Priority: Should
+  - Acceptance Criteria:
+    - `data/scraper-config.json` accepts a `slotmap_symbols` object with keys `absent`, `empty_page`, `mirror_suffix`, and `subslot_suffix`.
+    - The Python scraper reads these at import time via `scraper/symbols.py`; the TypeScript layer reads them via `src/symbols.ts`.
+    - If `slotmap_symbols` is absent from the config, the system falls back to defaults: `absent = "⌧"` (U+2327), `empty_page = "⌴"` (U+2334), `mirror_suffix = "*"`, `subslot_suffix = "!"`.
+    - No Python or TypeScript source file outside of `scraper/symbols.py` contains U+2327 or U+2334 as hardcoded string literals.
 
 - Slot map CS/ES resolution
   - Description: openMSX XML cannot distinguish a cartridge slot from an expansion slot; both are encoded as `<primary external="true">`. The msx.org HTML scraper can tell them apart from the cell text. The merge step uses this to upgrade provisional `CS{N}` values from openMSX to `ES{N}` where msx.org data is available, then renumbers all CS and ES slots with fresh, independent counters.

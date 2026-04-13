@@ -64,7 +64,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Type: Job (offline Python script)
   - Responsibilities: Scrape msx.org, parse openMSX XML, load local supplemental data, merge all three sources, compute derived columns, prompt on conflicts, assign/reuse stable model IDs, write data.js
   - Depends On: `scraper/columns.py` (column config), id-registry.json (model IDs), msx.org HTTP or local mirror (`PageSource`), GitHub API/raw HTTP or local mirror (`XMLSource`)
-  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional), `data/local-raw.json` (read-only, optional), `data/aliases.json` (read-only, optional), `data/link-shares.json` (read-only, optional)
+  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional — mirror paths + `slotmap_symbols`), `data/local-raw.json` (read-only, optional), `data/aliases.json` (read-only, optional), `data/link-shares.json` (read-only, optional)
 
 - msx.org Page Source
   - Type: Library (module `scraper/mirror.py`)
@@ -120,6 +120,13 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Responsibilities: Define the vocabulary for slot map cell classification. Each entry maps an XML element type + case-insensitive `id` regex pattern to a short abbreviation and tooltip string. Rules are tested in order; first match wins. Embedded in `data.js` at build time as a compact `{ abbr: tooltip }` map for browser-side tooltip rendering.
   - Depends On: -
   - Data Stores: `data/slotmap-lut.json`
+
+- Slot Map Symbols Module
+  - Type: Module pair (`scraper/symbols.py` + `src/symbols.ts`)
+  - Responsibilities: Provide the four configurable slot map display constants — `ABSENT` (`⌧` U+2327), `EMPTY_PAGE` (`⌴` U+2334), `MIRROR_SUFFIX` (`*`), `SUBSLOT_SUFFIX` (`!`) — loaded from `data/scraper-config.json` at module import time. All Python and TypeScript code that needs these characters imports from these modules; no hardcoded Unicode codepoints for these symbols appear elsewhere in source code (the sole exception is the `_DEFAULTS` fallback dict inside `scraper/symbols.py` itself).
+  - Defaults: Applied when `slotmap_symbols` is absent from the config file.
+  - Depends On: `data/scraper-config.json` (optional; graceful fallback to defaults)
+  - Data Stores: (reader only)
 
 - Slot Map Extractor
   - Type: Library (module within Scraper CLI)
@@ -429,10 +436,11 @@ msx_models_db/
 
 ### Environment Model
 
-- Configuration sources: None at runtime. Scraper reads `data/scraper-config.json` (optional JSON object) for persistent local paths:
+- Configuration sources: None at runtime. Scraper reads `data/scraper-config.json` (optional JSON object) for persistent settings:
   - `msxorg_mirror` — path to local msx.org mirror directory (browser-saved HTML files)
   - `openmsx_mirror` — path to local openMSX mirror directory (XML files, e.g. `share/machines`)
-  CLI flags `--msxorg-mirror`, `--local-msxorg-only`, `--openmsx-mirror`, `--local-openmsx-only` override config values.
+  - `slotmap_symbols` — object overriding the four slot display symbols (`absent`, `empty_page`, `mirror_suffix`, `subslot_suffix`); absent key uses built-in defaults
+  CLI flags `--msxorg-mirror`, `--local-msxorg-only`, `--openmsx-mirror`, `--local-openmsx-only` override the mirror path config values. `slotmap_symbols` has no CLI override; edit the config file directly.
 - Optional scraper env vars:
   - `SCRAPER_DELAY_MS`: delay between HTTP requests (default: 500)
   - `GITHUB_TOKEN`: GitHub API token to avoid rate limits when fetching XML file listings

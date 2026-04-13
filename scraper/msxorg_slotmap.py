@@ -6,7 +6,7 @@ produces the same 64-cell ``dict[str, str]`` output format as
 
 Cell value conventions (identical to scraper.slotmap):
   "⌧"       — sub-slot physically absent (non-expanded SS 1-3, cartridge SS 1-3)
-  "•"       — sub-slot present but no device mapped on this page
+  "⌴"       — sub-slot present but no device mapped on this page
   "CS{N}"   — cartridge slot N (1-based sequential counter per table, L→R)
   "<abbr>"  — short abbreviation (e.g. "MAIN", "MM", "DSK")
   "<abbr>*" — mirror page (origin abbreviation + asterisk, e.g. "DSK*")
@@ -43,11 +43,13 @@ from typing import Any
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
+from scraper.symbols import ABSENT as _ABSENT, EMPTY_PAGE as _EMPTY_PAGE
+from scraper.symbols import MIRROR_SUFFIX as _MIRROR_SUFFIX, SUBSLOT_SUFFIX as _SUBSLOT_SUFFIX
+
 log = logging.getLogger(__name__)
 
-# ── Cell sentinels — identical to scraper.slotmap ────────────────────────
-_ABSENT = "\u2327"     # ⌧  sub-slot physically absent
-_EMPTY_PAGE = "\u2022" # •  sub-slot real, no device on this page
+# ── Cell sentinels — re-exported for backward compatibility with tests ────
+# (tests import _ABSENT and _EMPTY_PAGE directly from this module).
 
 # All 64 column keys, pre-computed.
 _ALL_KEYS: list[str] = [
@@ -343,7 +345,7 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
     for c in sorted(col_to_slot.keys()):
         cell_text = grid[first_data][c].strip()
         ms, _ = col_to_slot[c]
-        suffix = "!" if ms_expanded.get(ms, False) else ""
+        suffix = _SUBSLOT_SUFFIX if ms_expanded.get(ms, False) else ""
         if _CS_RE.search(cell_text):
             cs_counter += 1
             cart_col_abbr[c] = f"CS{cs_counter}{suffix}"
@@ -383,7 +385,7 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
                     # Treat as expansion slot (conservative).
                     es_counter += 1
                     ms, _ = col_to_slot[c]
-                    suffix = "!" if ms_expanded.get(ms, False) else ""
+                    suffix = _SUBSLOT_SUFFIX if ms_expanded.get(ms, False) else ""
                     abbr_out = f"CS{cs_counter}{suffix}" if abbr == _CART_SENTINEL else f"ES{es_counter}{suffix}"
                     cart_col_abbr[c] = abbr_out
                     result[key] = abbr_out
@@ -397,7 +399,7 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
         out = []
         for p in range(4):
             v = result.get(f"slotmap_{ms}_{ss}_{p}", _ABSENT)
-            if v not in (_ABSENT, _EMPTY_PAGE, _MIRROR_SENTINEL) and not v.endswith("*"):
+            if v not in (_ABSENT, _EMPTY_PAGE, _MIRROR_SENTINEL) and not v.endswith(_MIRROR_SUFFIX):
                 out.append(v)
         return out
 
@@ -423,7 +425,7 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
         if candidates:
             origin_abbr = max(set(candidates), key=candidates.count)
             for p in mirrors:
-                result[f"slotmap_{ms}_{ss}_{p}"] = f"{origin_abbr}*"
+                result[f"slotmap_{ms}_{ss}_{p}"] = f"{origin_abbr}{_MIRROR_SUFFIX}"
         else:
             # Cannot determine origin — leave a warning and use a generic marker.
             log.warning(
@@ -437,14 +439,14 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
     for ms, subs in ms_subslots.items():
         if ms_expanded[ms]:
             # Expanded: all 4 sub-slots are physically present.
-            # Any sub-slot not seen in col_to_slot, or any page still ⌧ → •
+            # Any sub-slot not seen in col_to_slot, or any page still ⌧ → ⌴
             for ss in range(4):
                 for p in range(4):
                     if result[f"slotmap_{ms}_{ss}_{p}"] == _ABSENT:
                         result[f"slotmap_{ms}_{ss}_{p}"] = _EMPTY_PAGE
         else:
             # Non-expanded: sub-slot 0 is real, 1-3 are absent (stay ⌧).
-            # Sub-slot 0 pages still ⌧ had an empty cell in the HTML → •
+            # Sub-slot 0 pages still ⌧ had an empty cell in the HTML → ⌴
             for p in range(4):
                 if result[f"slotmap_{ms}_0_{p}"] == _ABSENT:
                     result[f"slotmap_{ms}_0_{p}"] = _EMPTY_PAGE

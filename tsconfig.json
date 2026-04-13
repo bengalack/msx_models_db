@@ -8,6 +8,7 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "lib": ["ES2020", "DOM"],
     "outDir": "dist-types"
   },

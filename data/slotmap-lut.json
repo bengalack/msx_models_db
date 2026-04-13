@@ -81,13 +81,13 @@
     "element": "MSX-RS232",
     "id_pattern": null,
     "abbr": "RS",
-    "tooltip": "RS-232C Interface"
+    "tooltip": "RS-232C Interface ROM"
   },
   {
     "element": "ROM",
     "id_pattern": "rs232|RS-232C",
     "abbr": "RS",
-    "tooltip": "RS-232C Interface"
+    "tooltip": "RS-232C Interface ROM"
   },
   {
     "element": "ROM",
@@ -296,7 +296,7 @@
   {
     "element": "__sentinel__",
     "id_pattern": null,
-    "abbr": "•",
+    "abbr": "⌴",
     "tooltip": "Empty page — no device mapped"
   }
 ]

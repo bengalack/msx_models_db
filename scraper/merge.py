@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from scraper.aliases import AliasLUT, apply_aliases, load_aliases
+from scraper.symbols import ABSENT, EMPTY_PAGE, SUBSLOT_SUFFIX
 
 log = logging.getLogger(__name__)
 
@@ -86,11 +87,11 @@ _PREFER_OPENMSX: set[str] = {"cartridge_slots", "vdp", "vram_kb", "main_ram_kb",
 # hardware elements in the openMSX XML (e.g. <CassettePort>).
 _OPENMSX_ABSENCE_WINS: set[str] = {"tape_interface"}
 
-# Matches CS/ES slot abbreviations with optional number and ! suffix.
+# Matches CS/ES slot abbreviations with optional number and subslot suffix.
 # The number is optional to tolerate bare "CS"/"ES" that can appear in stale
 # msx.org raw data when the scraper fell back to raw cell text.
 # _renumber_cs_es will assign proper sequential numbers in all cases.
-_CS_ES_RE = re.compile(r"^(CS|ES)(\d*)(!?)$")
+_CS_ES_RE = re.compile(r"^(CS|ES)(\d*)(" + re.escape(SUBSLOT_SUFFIX) + r"?)$")
 
 
 def _is_cs_or_es(value: Any) -> bool:
@@ -266,8 +267,8 @@ def _renumber_cs_es(model: dict[str, Any]) -> dict[str, Any]:
             type_bang = cs_es_slots.get((ms, ss))
             if type_bang is None:
                 continue
-            kind  = type_bang.rstrip("!")   # "CS" or "ES"
-            bang  = "!" if type_bang.endswith("!") else ""
+            kind  = type_bang.rstrip(SUBSLOT_SUFFIX)   # "CS" or "ES"
+            bang  = SUBSLOT_SUFFIX if type_bang.endswith(SUBSLOT_SUFFIX) else ""
             if kind == "CS":
                 cs_counter += 1
                 new_abbr = f"CS{cs_counter}{bang}"
@@ -344,10 +345,10 @@ def _merge_single(
             result[field] = mv  # msx.org knows the slot type
             continue
 
-        # openMSX emits • (empty page) or ⌧ (not present/unknown) for slots it
+        # openMSX emits ⌴ (empty page) or ⌧ (not present/unknown) for slots it
         # cannot characterise.  If msx.org has a slot-type value for the same
         # cell, prefer msx.org.
-        if field.startswith("slotmap_") and ov in ("\u2022", "\u2327") and _is_slot_type(mv):
+        if field.startswith("slotmap_") and ov in (EMPTY_PAGE, ABSENT) and _is_slot_type(mv):
             result[field] = mv
             continue
 

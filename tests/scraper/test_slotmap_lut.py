@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from scraper.slotmap_lut import compact_lut, load_slotmap_lut
+from scraper.symbols import ABSENT, EMPTY_PAGE
 
 # Path to the committed starter LUT
 STARTER_LUT = Path("data/slotmap-lut.json")
@@ -14,7 +15,7 @@ STARTER_LUT = Path("data/slotmap-lut.json")
 EXPECTED_ABBRS = {
     "MAIN", "SUB", "KAN", "HAN", "JE", "MOD", "DOS2", "CP/M",
     "FW", "DSK", "MUS", "RS", "RSFW", "MM", "PM",
-    "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2327", "\u2022",
+    "RAM", "BUN", "SFG5", "SFG1", "EXP", ABSENT, EMPTY_PAGE,
     "CS1", "CS2", "CS3", "CS4", "CS5", "CS6",
     "CS1!", "CS2!", "CS3!", "CS4!", "CS5!", "CS6!",
     "ES1", "ES2", "ES3", "ES4", "ES5", "ES6",
@@ -80,8 +81,8 @@ def test_compact_lut_known_entries():
     rules = load_slotmap_lut(STARTER_LUT)
     lut = compact_lut(rules)
     assert lut["MAIN"] == "MSX BIOS with BASIC ROM"
-    assert lut["\u2327"] == "Sub-slot absent (not expanded)"
-    assert lut["\u2022"] == "Empty page \u2014 no device mapped"
+    assert lut[ABSENT] == "Sub-slot absent (not expanded)"
+    assert lut[EMPTY_PAGE] == "Empty page \u2014 no device mapped"
     assert lut["DSK"] == "Disk ROM"
 
 
