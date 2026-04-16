@@ -170,6 +170,7 @@ def parse_machine_xml(
     _extract_keyboard(devices, result)
     _extract_connectivity(devices, result)
     _extract_rtc(devices, result)
+    _extract_z80_turbo(devices, result)
 
     # Slot map extraction (only when LUT rules are provided)
     if lut_rules is not None:
@@ -324,10 +325,9 @@ def _extract_media(devices: etree._Element, out: dict[str, Any]) -> None:
 def _extract_cpu(
     devices: etree._Element, out: dict[str, Any], msx_type: str | None
 ) -> None:
-    """Set CPU and speed based on MSX type defaults + turbo detection."""
-    cpu, speed = CPU_DEFAULTS.get(msx_type or "", ("Z80A", 3.58))
+    """Set CPU based on MSX type defaults."""
+    cpu = CPU_DEFAULTS.get(msx_type or "", ("Z80A", 3.58))[0]
     out["cpu"] = cpu
-    out["cpu_speed_mhz"] = speed
 
     # turbo R has both Z80 and R800; check for R800 element.
     if msx_type == "MSXturboR":
@@ -362,6 +362,14 @@ def _extract_keyboard(devices: etree._Element, out: dict[str, Any]) -> None:
 def _extract_rtc(devices: etree._Element, out: dict[str, Any]) -> None:
     """Detect RTC hardware by presence of <RTC> element under <devices>."""
     out["rtc"] = "Yes" if devices.find("RTC") is not None else "No"
+
+
+def _extract_z80_turbo(devices: etree._Element, out: dict[str, Any]) -> None:
+    """Detect Z80 turbo support from <Matsushita><hasturbo> under <devices>."""
+    matsushita = devices.find("Matsushita")
+    if matsushita is None:
+        return
+    out["z80_turbo"] = "Yes" if _text(matsushita.find("hasturbo")) == "true" else "No"
 
 
 def _extract_connectivity(devices: etree._Element, out: dict[str, Any]) -> None:

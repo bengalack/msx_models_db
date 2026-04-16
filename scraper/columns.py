@@ -145,12 +145,13 @@ COLUMNS: list[Column] = [
     Column(id=20, key="tape_interface",   label="Tape Interface",       group="media",    type="string", short_label="Tape I/F",     tooltip="Tape Interface"),
     # CPU/Chipsets
     Column(id=22, key="cpu",              label="CPU",                  group="cpu",      type="string"),
-    Column(id=23, key="cpu_speed_mhz",    label="CPU Speed (MHz)",      group="cpu",      type="number", short_label="CPU MHz",      tooltip="CPU Speed (MHz)"),
+    Column(id=23, key="cpu_speed_mhz",    label="CPU Speed (MHz)",      group="cpu",      type="number", retired=True),
     Column(id=24, key="sub_cpu",          label="Sub-CPU",              group="cpu",      type="string"),
     Column(id=97, key="nmos_cmos",        label="NMOS/CMOS",            group="cpu",      type="string", short_label="NMOS/\u200bCMOS",
            derive=lambda m: "CMOS" if "T976" in (m.get("engine") or "") else "NMOS"),
     Column(id=98, key="rtc",              label="RTC",                  group="cpu",      type="string"),
-    Column(id=99, key="engine",           label="Engine",               group="cpu",      type="string"),
+    Column(id=99,  key="engine",           label="Engine",               group="cpu",      type="string"),
+    Column(id=100, key="z80_turbo",        label="Z80 Turbo",            group="cpu",      type="string", short_label="Z80 Turbo", tooltip="Z80 turbo mode supported (from openMSX XML)"),
     # Other
     Column(id=25, key="keyboard_layout",  label="Keyboard Layout",      group="other",    type="string", short_label="KB Layout",    tooltip="Keyboard Layout"),
     Column(id=27, key="connectivity",     label="Connectivity/Ports",   group="other",    type="string", short_label="Conn/ Ports",  tooltip="Connectivity/Ports"),

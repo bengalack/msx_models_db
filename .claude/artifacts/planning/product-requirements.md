@@ -1,7 +1,7 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.12
+- Version: 0.13
 - Date: 2026-04-16
 - Owner: bengalack
 
@@ -255,6 +255,8 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - External sources (msx.org, openMSX GitHub) change infrequently; the maintainer fetches fresh data only when needed.
     - When fetching a URL that is expected to exist and the server responds with HTTP 502 or 503, the scraper waits 2 seconds and retries the request. A warning is logged for each retry attempt. The maximum number of retries is 5; if all retries fail the error is propagated normally.
     - For each machine XML, the scraper detects the presence of an `<RTC>` element anywhere under the `<devices>` section and populates the `rtc` field with `"Yes"` if found or `"No"` if the XML was parsed but no `<RTC>` element is present. Models with no openMSX XML file receive an empty/null `rtc` value. msx.org does not supply RTC data; only openMSX XML is used for this field.
+    - For each machine XML, the scraper reads `<devices><Matsushita><hasturbo>` and populates the `z80_turbo` field with `"Yes"` if the element text is `"true"`, or `"No"` if the `<Matsushita>` element is present but `<hasturbo>` is absent or not `"true"`. Models with no openMSX XML file receive an empty/null `z80_turbo` value. The `z80_turbo` column is in the CPU/Chipsets group. msx.org does not supply this data; only openMSX XML is used for this field.
+    - The `cpu_speed_mhz` column (CPU Speed (MHz)) is removed. Its ID (23) is retired and must not be reused.
 
 
 - Alias LUT

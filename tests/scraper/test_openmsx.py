@@ -274,25 +274,22 @@ class TestParseXMLMedia:
 
 
 class TestParseXMLCPU:
-    """T-016: CPU and speed extraction."""
+    """T-016: CPU extraction."""
 
     def test_msx2_cpu_z80a(self):
         xml = _xml(_info(msx_type="MSX2"))
         result = parse_machine_xml(xml, "test.xml")
         assert result["cpu"] == "Z80A"
-        assert result["cpu_speed_mhz"] == 3.58
 
     def test_msx2plus_cpu_z80a(self):
         xml = _xml(_info(msx_type="MSX2+"))
         result = parse_machine_xml(xml, "test.xml")
         assert result["cpu"] == "Z80A"
-        assert result["cpu_speed_mhz"] == 3.58
 
     def test_turbor_cpu_r800_with_sub_cpu(self):
         xml = _xml(_info(msx_type="MSXturboR"))
         result = parse_machine_xml(xml, "test.xml")
         assert result["cpu"] == "R800"
-        assert result["cpu_speed_mhz"] == 7.16
         assert result["sub_cpu"] == "Z80"
 
     def test_msx2_has_no_sub_cpu(self):
@@ -347,6 +344,34 @@ class TestParseXMLRTC:
         result = parse_machine_xml(xml, "test.xml")
         assert result is not None
         assert "rtc" not in result
+
+
+class TestParseXMLZ80Turbo:
+    """T-020: Z80 turbo field extraction."""
+
+    def test_hasturbo_true_yields_yes(self):
+        xml = _xml(_info(), '<Matsushita id="Matsushita"><hasturbo>true</hasturbo></Matsushita>')
+        result = parse_machine_xml(xml, "test.xml")
+        assert result is not None
+        assert result["z80_turbo"] == "Yes"
+
+    def test_hasturbo_false_yields_no(self):
+        xml = _xml(_info(), '<Matsushita id="Matsushita"><hasturbo>false</hasturbo></Matsushita>')
+        result = parse_machine_xml(xml, "test.xml")
+        assert result is not None
+        assert result["z80_turbo"] == "No"
+
+    def test_matsushita_without_hasturbo_yields_no(self):
+        xml = _xml(_info(), '<Matsushita id="Matsushita"><sramname>foo.sram</sramname></Matsushita>')
+        result = parse_machine_xml(xml, "test.xml")
+        assert result is not None
+        assert result["z80_turbo"] == "No"
+
+    def test_no_matsushita_key_absent(self):
+        xml = _xml(_info(), '<PSG id="PSG"/>')
+        result = parse_machine_xml(xml, "test.xml")
+        assert result is not None
+        assert "z80_turbo" not in result
 
 
 class TestParseXMLMalformed:
