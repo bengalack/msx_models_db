@@ -1,66 +1,13 @@
-- In product (shipped)
-  - Scraper — openMSX local mirror
-    - XMLSource abstraction (LiveXMLSource, MirrorXMLSource, FallbackXMLSource) in scraper/openmsx_source.py
-    - --openmsx-mirror DIR: try GitHub, fall back to mirror on failure
-    - --local-openmsx-only: skip GitHub entirely, read local XML files only
-    - data/scraper-config.json key openmsx_mirror for persistent default path
-    - No delay in local-only mode; mirror directory scanned with glob (sorted, skip-prefixes applied)
-  - Scraper — msx.org local mirror
-    - PageSource abstraction (LivePageSource, MirrorPageSource, FallbackPageSource)
-    - --msxorg-mirror DIR: try live, fall back to mirror on failure
-    - --local-msxorg-only: skip live entirely, read mirror files only
-    - data/scraper-config.json key msxorg_mirror for persistent default path
-  - Column group collapse / expand
-    - Click group header to collapse all child columns
-    - Click again to expand; chevron indicator (▶ / ▼)
-    - Hidden column indicator in group header strip when any column in group is individually hidden
-  - Column sorting
-    - Click column header: sort ascending; again: descending; again: clear
-    - ↑ / ↓ indicator appended to active sort column header
-  - Column filtering
-    - Toolbar toggle shows/hides filter row
-    - Text input per visible column; filters rows immediately on input
-    - Active filter: accent border on input, clear (×) button
-    - Gutter indicator in column header strip when any rows are filtered out
-  - Column show / hide
-    - Toolbar "⊞ Columns" button opens column picker panel
-    - Checkbox per column grouped by group; toggle visibility individually
-    - Panel closes on outside click
-  - Row show / hide
-    - Right-click row number → context menu: Hide Row
-    - Hidden rows removed from grid
-    - Amber ▼▲ indicator in gutter at each gap; click to unhide
-  - Cell selection
-    - Click: select single cell, clear previous selection
-    - CTRL/CMD+click: toggle cell in/out of selection
-    - SHIFT+click: extend selection rectangle from anchor to clicked cell
-    - Click+drag: select cells covered by drag (snap to cell on mouseenter)
-    - Selected cells: accent-dim fill + solid accent border; dark mode adds glow
-  - Clipboard copy
-    - CTRL+C / CMD+C copies selected cells as TSV (columns tab-separated, rows newline-separated)
-    - Fallback to execCommand('copy') if clipboard API unavailable
-    - Status bar (bottom, 24px) shows "Copied N cell(s)"
-
 - Now / Next
-  - Scraper — openMSX XML source
-    - Fetch machine XML file listing via GitHub API (/repos/openMSX/openMSX/contents/share/machines)
-    - Fetch and parse each XML file with lxml recover=True (lenient — files are non-strict)
-    - Extract fields: CPU, clock, RAM, VRAM, VDP, PSG, mapper, openMSX machine ID
-    - Log unrecoverable elements; continue on parse failure
-  - Scraper — msx.org HTML source
-    - Enumerate MSX2, MSX2+, turboR model pages from msx.org category pages
-    - Scrape each model page with beautifulsoup4 + lxml
-    - Extract fields matching column schema
-    - Log parse failures per field; do not abort on partial failure
-    - Abort if >20% of models fail to parse
-    - Use custom User-Agent: msxmodelsdb-scraper/1.0; 500ms delay between requests
-  - Scraper — merge + conflict resolution
-    - Match models from both sources by natural key (manufacturer + model name)
-    - For conflicting field values: print summary, prompt maintainer to choose per conflict
-    - For fields present in only one source: use that value without prompting
+  - Slotmap — remaining work
+    - Slot map HTML extraction (msx.org parser: CS/ES detection, sequential numbering, LUT matching)
+    - Slot map CS/ES resolution (merge step: upgrade CS→ES where msx.org says ES, renumber all CS/ES)
+    - Slot map tooltip rendering (browser-side: abbreviation display, LUT tooltip lookup, ⌧/• sentinels, mirror * notation)
+  - Scraper — RTC column extraction
+    - Detect `<RTC>` element under `<devices>` in each openMSX machine XML
+    - "Yes" if found, "No" if XML parsed and absent, null/empty if no XML file for model
 
 - Later
-  - Scraper — write output (replaced by column-config-and-registry feature)
   - CI (GitHub Actions)
     - On push to main: npm run lint, npm run typecheck, npm test --run, npm run build
     - On push to main: pip install -r requirements.txt && pytest tests/scraper/
@@ -74,36 +21,99 @@
   - Multi-column sort
   - Per-model detail panel / expanded view
   - Column width resizing
-  - Freeze / pin columns (e.g. keep Identity group always visible while scrolling)
   - Export visible data as CSV file download
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Sticky grid UI
+    - Four sticky header rows (page header, toolbar, group header, column header + filter row)
+    - Sticky left gutter (row numbers, hide/unhide controls, gap indicators)
+    - Identity group columns (Manufacturer, Model) frozen during horizontal scroll
+    - Gap indicator rows include frozen cells so dashed line stays visible
+  - Cell value truncation
+    - truncate_limit field on ColumnDef; Model=16, Manufacturer=12
+    - Clip to (limit−1) chars + …; full value in data-full-value DOM attribute
+    - Native title tooltip; combined "<full value> — <url>" tooltip for link cells
+    - Sort and clipboard copy unaffected (read model.values[] directly)
+  - Column cell shading
+    - shaded boolean flag on ColumnDef; serialised only when true
+    - col-shaded CSS class on <td>; odd/even row CSS variables per theme
+    - Slot map sub-slots 1 and 3 shaded by default (pattern-derived, not hard-coded IDs)
+  - Local supplemental data source
+    - data/local-raw.json: maintainer-curated, optional; absent = no-op
+    - Overwrites openMSX+msx.org merged value for any field it provides
+    - Models present only in local-raw.json included in output
+  - Alias LUT
+    - data/aliases.json: single-column rules (field → canonical: [aliases]) + composite rules
+    - Composite: match all fields simultaneously (AND); first matching rule wins
+    - Applied before natural-key computation; case-insensitive; absent = no-op
+  - Link-shares LUT
+    - data/link-shares.json: recipient natural key → donor natural key
+    - Recipient inherits donor's links value if recipient has none; absent = no-op
+  - Scraper — openMSX XML source
+    - Fetch machine XML file listing via GitHub API
+    - Fetch and parse each XML file with lxml recover=True
+    - Extract fields: CPU, clock, RAM, VRAM, VDP, PSG, mapper, openMSX machine ID
+    - XMLSource abstraction (Live, Mirror, Fallback) — see openMSX local mirror
+  - Scraper — msx.org HTML source
+    - Enumerate MSX2, MSX2+, turboR model pages from msx.org category pages
+    - Scrape each model page with beautifulsoup4 + lxml
+    - Extract fields matching column schema; log parse failures; abort if >20% fail
+    - Custom User-Agent; 500ms delay between requests
+    - PageSource abstraction (Live, Mirror, Fallback) — see msx.org local mirror
+  - Scraper — merge + conflict resolution
+    - Match models from both sources by natural key (manufacturer + model name)
+    - openMSX wins on conflict; all conflicts logged for maintainer review
+    - local-raw.json overrides applied on top (local always wins)
+  - Scraper — openMSX local mirror
+    - XMLSource abstraction (LiveXMLSource, MirrorXMLSource, FallbackXMLSource)
+    - --openmsx-mirror DIR and --local-openmsx-only flags
+    - data/scraper-config.json key openmsx_mirror for persistent default path
+  - Scraper — msx.org local mirror
+    - PageSource abstraction (LivePageSource, MirrorPageSource, FallbackPageSource)
+    - --msxorg-mirror DIR and --local-msxorg-only flags
+    - data/scraper-config.json key msxorg_mirror for persistent default path
+  - Scraper — exclude list
+    - data/exclude.json: manufacturer+model rules (both scrapers) and filename rules (openMSX only)
+    - Wildcard "*" and empty-string "" matching; case-sensitive; fail-fast on malformed input
+    - Dead-rule WARN after each run; excluded count in per-scraper summary
   - Selection column and row header highlight
     - Column header inverts colors when any cell in that column is selected
     - Row number (gutter) cell inverts colors when any cell in that row is selected
-    - Driven entirely by applySelectionToDOM(); no new state, no URL encoding
-  - Scraper — exclude list
-    - data/exclude.json: maintainer-edited, committed to repo
-    - Match by manufacturer+model (both scrapers, post-parse); "" = empty field; "*" = wildcard
-    - Match by filename (openMSX only, pre-fetch); exact match
-    - Missing file = no exclusions; malformed file = fail fast at startup
-    - Dead-rule WARN after each build run; per-scraper excluded count in summary log
-    - 34 unit tests (ExcludeList, load/validate, openMSX/msx.org wiring) + 2 build integration tests
   - URL state codec + sync
-    - ViewState binary codec (versioned format v1, URL-safe base64)
+    - ViewState binary codec (versioned format v1, URL-safe base64 in hash fragment)
     - Encode/decode: sort, filters, hidden cols/rows, collapsed groups, selected cells
-    - Debounced URL sync (300 ms idle) via history.replaceState
-    - Restore on page load; fall back to show-all if hash empty or unreadable
-    - 29 Vitest codec unit tests (round-trip, boundary, version/compat, resilience, URL-layer)
-  - Project scaffold (Vite + TypeScript, Python scraper stub, docs/ on main)
+    - Debounced sync via history.replaceState; restore on page load
+  - Column group collapse / expand
+    - Click group header to collapse/expand all child columns; chevron indicator
+    - Hidden column indicator in group header when any column individually hidden
+    - Group filter indicator (FontAwesome filter icon) when any column in group has active filter
+  - Column sorting
+    - Click header: ascending → descending → clear; ↑/↓ indicator
+  - Column filtering
+    - Toolbar toggle shows/hides filter row; text input per visible column
+    - Active filter: accent border + clear (×) button; gutter indicator when rows filtered out
+  - Column show / hide
+    - Toolbar "⊞ Columns" panel with per-column checkboxes grouped by group
+  - Row show / hide
+    - Right-click row number → Hide Row context menu
+    - Amber ▼▲ gap indicator in gutter; click to unhide
+  - Cell selection
+    - Click, CTRL+click, SHIFT+click, click+drag; accent-dim fill + solid accent border
+  - Clipboard copy
+    - CTRL+C / CMD+C copies selected cells as TSV; status bar shows "Copied N cell(s)"
   - Column configuration + ID registry
-    - Single-source column config (scraper/columns.py): Group/Column dataclasses, validation, GROUPS/COLUMNS definitions
-    - IDRegistry (scraper/registry.py): stable integer IDs, load/save, assign, retire
-    - Build pipeline (scraper/build.py): merge → derive → assign IDs → write data.js
-    - `python -m scraper build [--fetch] [--resolutions]` CLI command
-    - 41 Python tests (columns, registry, build integration)
-    - Removed src/columns.ts (column config is now Python-only)
-  - Data schema + seed data (TypeScript types, schema.md, 10-model seed, id-registry.json)
-  - Theme system (CSS custom properties, dark/light toggle, localStorage persistence)
-  - Grid rendering (display only — header rows, toolbar, data rows, gutter, null/em-dash, overflow tooltip)
+    - scraper/columns.py: single source of truth for groups/columns with validation
+    - scraper/registry.py: stable integer model IDs, assign/retire
+    - scraper/build.py: merge → derive → assign IDs → write data.js
+    - python -m scraper build [--fetch] CLI command
+  - Data schema + seed data
+    - TypeScript types (MSXData, ColumnDef, GroupDef, ModelRecord, ViewState)
+    - schema.md documentation; 10-model seed; id-registry.json
+  - Theme system
+    - CSS custom properties; dark (CRT phosphor green) and light (warm cream) themes
+    - Toolbar toggle; localStorage persistence
+  - Grid rendering
+    - Header rows, toolbar, data rows, gutter, null/em-dash cells, overflow tooltip
+  - Project scaffold
+    - Vite + TypeScript SPA; Python scraper package; docs/ committed to main
