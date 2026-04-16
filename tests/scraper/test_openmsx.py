@@ -367,11 +367,11 @@ class TestParseXMLZ80Turbo:
         assert result is not None
         assert result["z80_turbo"] == "No"
 
-    def test_no_matsushita_key_absent(self):
+    def test_no_matsushita_yields_no(self):
         xml = _xml(_info(), '<PSG id="PSG"/>')
         result = parse_machine_xml(xml, "test.xml")
         assert result is not None
-        assert "z80_turbo" not in result
+        assert result["z80_turbo"] == "No"
 
 
 class TestParseXMLMalformed:

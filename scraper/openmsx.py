@@ -365,9 +365,14 @@ def _extract_rtc(devices: etree._Element, out: dict[str, Any]) -> None:
 
 
 def _extract_z80_turbo(devices: etree._Element, out: dict[str, Any]) -> None:
-    """Detect Z80 turbo support from <Matsushita><hasturbo> under <devices>."""
+    """Detect Z80 turbo support from <Matsushita><hasturbo> under <devices>.
+
+    Any model whose XML was parsed gets an explicit "Yes" or "No".
+    Models with no XML file never call this function and keep a null value.
+    """
     matsushita = devices.find("Matsushita")
     if matsushita is None:
+        out["z80_turbo"] = "No"
         return
     out["z80_turbo"] = "Yes" if _text(matsushita.find("hasturbo")) == "true" else "No"
 
