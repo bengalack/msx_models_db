@@ -1,7 +1,7 @@
 # Technical Design: MSX Models DB
 
 ## Metadata
-- Date: 2026-04-01
+- Date: 2026-04-16
 - Related:
   - PRD: .claude/artifacts/planning/product-requirements.md
   - Risk review: .claude/artifacts/planning/risk-assumption-review.md
@@ -64,7 +64,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Type: Job (offline Python script)
   - Responsibilities: Scrape msx.org, parse openMSX XML, load local supplemental data, merge all three sources, compute derived columns, prompt on conflicts, assign/reuse stable model IDs, write data.js
   - Depends On: `scraper/columns.py` (column config), id-registry.json (model IDs), msx.org HTTP or local mirror (`PageSource`), GitHub API/raw HTTP or local mirror (`XMLSource`)
-  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional — mirror paths + `slotmap_symbols`), `data/local-raw.json` (read-only, optional), `data/aliases.json` (read-only, optional), `data/link-shares.json` (read-only, optional)
+  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional), `data/local-raw.json` (read-only, optional), `data/aliases.json` (read-only, optional), `data/link-shares.json` (read-only, optional), `data/exclude.json` (read-only, optional)
 
 - msx.org Page Source
   - Type: Library (module `scraper/mirror.py`)
@@ -121,11 +121,11 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Depends On: -
   - Data Stores: `data/slotmap-lut.json`
 
-- Slot Map Symbols Module
-  - Type: Module pair (`scraper/symbols.py` + `src/symbols.ts`)
-  - Responsibilities: Provide the four configurable slot map display constants — `ABSENT` (`⌧` U+2327), `EMPTY_PAGE` (`⌴` U+2334), `MIRROR_SUFFIX` (`*`), `SUBSLOT_SUFFIX` (`!`) — loaded from `data/scraper-config.json` at module import time. All Python and TypeScript code that needs these characters imports from these modules; no hardcoded Unicode codepoints for these symbols appear elsewhere in source code (the sole exception is the `_DEFAULTS` fallback dict inside `scraper/symbols.py` itself).
-  - Defaults: Applied when `slotmap_symbols` is absent from the config file.
-  - Depends On: `data/scraper-config.json` (optional; graceful fallback to defaults)
+- Exclude List
+  - Type: Module (`scraper/exclude.py`)
+  - Responsibilities: Load `data/exclude.json` at scraper startup; expose `is_excluded(manufacturer, model)` and `is_excluded_by_filename(filename)` checks; track per-rule match counts for dead-rule detection; fail fast with `ValueError` on malformed input.
+  - Rule modes: `{"manufacturer": "...", "model": "..."}` (applies to both scrapers; supports `"*"` wildcard and `""` for empty-field match) or `{"filename": "..."}` (openMSX scraper only; exact match).
+  - Depends On: `data/exclude.json` (optional; absent = empty list)
   - Data Stores: (reader only)
 
 - Slot Map Extractor
@@ -182,16 +182,17 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Trigger: Maintainer runs `python -m scraper build` (or `build --fetch` for fresh data)
   - Steps:
     1. Load column configuration from `scraper/columns.py` (groups, columns, derive functions); validate (no duplicate IDs, no ID 0, group refs valid, etc.)
-    2. Load cached raw data from `data/openmsx-raw.json` and `data/msxorg-raw.json`; rename `"standard"` → `"generation"` in cached dicts for backward compatibility
-    3. Load local supplemental data from `data/local-raw.json` (optional; absent file is not an error)
-    4. If `--fetch`: fetch fresh data from msx.org and openMSX GitHub first, overwriting cached files
-    5. Merge msx.org and openMSX data per model (openMSX wins on conflict); then apply local overrides on top (local wins for any field it provides)
-    5a. After all per-model `links` are computed (keyed model URLs from `msxorg_title`), apply `data/link-shares.json`: for each entry whose recipient has no `links`, copy the donor's `links` (if present). Absent file is silently skipped.
-    6. Compute derived columns: for each model row, run every `Column.derive` callable; derived value is written only if the field is not already set (local overrides and scraped values take priority over derived defaults)
-    7. Load `data/id-registry.json`; match models by natural key (manufacturer + model name); assign new IDs for unmatched entries
-    8. Build output: generate `docs/data.js` with groups (from config), active columns (excluding hidden/retired), and model values[] positionally aligned to active columns
-    9. Atomic write `docs/data.js` and `data/id-registry.json`
-    10. Print summary: N models written, M conflicts resolved, K parse failures
+    2. Load `data/exclude.json` via `ExcludeList`; fail fast with `ValueError` on malformed input; absent file = empty list (no-op)
+    3. Load cached raw data from `data/openmsx-raw.json` and `data/msxorg-raw.json`; rename `"standard"` → `"generation"` in cached dicts for backward compatibility; apply exclude rules to cached data
+    4. Load local supplemental data from `data/local-raw.json` (optional; absent file is not an error)
+    5. If `--fetch`: fetch fresh data from msx.org and openMSX GitHub first, overwriting cached files; exclude rules applied post-parse in each scraper
+    6. Merge msx.org and openMSX data per model (openMSX wins on conflict); then apply local overrides on top (local wins for any field it provides)
+    6a. After all per-model `links` are computed (keyed model URLs from `msxorg_title`), apply `data/link-shares.json`: for each entry whose recipient has no `links`, copy the donor's `links` (if present). Absent file is silently skipped.
+    7. Compute derived columns: for each model row, run every `Column.derive` callable; store results under the column's key
+    8. Load `data/id-registry.json`; match models by natural key (manufacturer + model name); assign new IDs for unmatched entries
+    9. Build output: generate `docs/data.js` with groups (from config), active columns (excluding hidden/retired), and model values[] positionally aligned to active columns
+    10. Atomic write `docs/data.js` and `data/id-registry.json`
+    11. Emit dead-rule warnings for any exclude rules that matched zero models; print summary: N models written, M excluded, K conflicts resolved, J parse failures
   - Data touched: id-registry.json (read+write), docs/data.js (write), cached raw JSON (read, or write if --fetch)
   - Failure handling: HTTP errors → retry once, then log and skip model. Parse failures → log field name and raw value, continue. If >20% of models fail to parse, abort before writing output. Missing cached files without --fetch → error with clear message.
 
@@ -436,11 +437,10 @@ msx_models_db/
 
 ### Environment Model
 
-- Configuration sources: None at runtime. Scraper reads `data/scraper-config.json` (optional JSON object) for persistent settings:
+- Configuration sources: None at runtime. Scraper reads `data/scraper-config.json` (optional JSON object) for persistent local paths:
   - `msxorg_mirror` — path to local msx.org mirror directory (browser-saved HTML files)
   - `openmsx_mirror` — path to local openMSX mirror directory (XML files, e.g. `share/machines`)
-  - `slotmap_symbols` — object overriding the four slot display symbols (`absent`, `empty_page`, `mirror_suffix`, `subslot_suffix`); absent key uses built-in defaults
-  CLI flags `--msxorg-mirror`, `--local-msxorg-only`, `--openmsx-mirror`, `--local-openmsx-only` override the mirror path config values. `slotmap_symbols` has no CLI override; edit the config file directly.
+  CLI flags `--msxorg-mirror`, `--local-msxorg-only`, `--openmsx-mirror`, `--local-openmsx-only` override config values.
 - Optional scraper env vars:
   - `SCRAPER_DELAY_MS`: delay between HTTP requests (default: 500)
   - `GITHUB_TOKEN`: GitHub API token to avoid rate limits when fetching XML file listings
@@ -576,3 +576,134 @@ else → removeAttribute('title')
 | Sort | No change |
 | URL codec | No change |
 | Filter | No change |
+
+---
+
+## Feature Design: Scraper Exclude List
+
+### Overview
+
+A maintainer-curated `data/exclude.json` file lets the maintainer permanently drop known-unwanted models from the scraper output without modifying scraper code. The list is loaded once at startup; matching is applied after parsing in each scraper (post-parse, before merge). Filename-based rules allow pre-fetch exclusion in the openMSX path.
+
+### Module — `scraper/exclude.py`
+
+```python
+@dataclass
+class ExcludeList:
+    rules: list[dict]
+    _match_counts: list[int]   # internal; len == len(rules)
+
+    def is_excluded(self, manufacturer: str | None, model: str | None) -> bool: ...
+    def is_excluded_by_filename(self, filename: str) -> bool: ...
+    def dead_rules(self) -> list[int]: ...  # indices of rules with match_count == 0
+
+def load_excludes(path: Path) -> ExcludeList:
+    # absent file → empty list (no error)
+    # malformed JSON or unknown keys → ValueError before any network I/O
+```
+
+### Matching rules
+
+| Field | Behaviour |
+|---|---|
+| `""` | matches an empty or None field value |
+| `"*"` | matches any value including empty |
+| exact string | case-sensitive exact match |
+| `filename` key | openMSX only; exact match; ignored by msx.org scraper |
+
+### Data flows affected
+
+| Path | Change |
+|---|---|
+| `scraper/exclude.py` | New module |
+| `data/exclude.json` | New file (committed as `[]`) |
+| `scraper/openmsx.py` | `list_machine_files()` checks filename rules; `fetch_all()` checks model rules post-parse |
+| `scraper/msxorg.py` | `fetch_all()` checks model rules post-parse |
+| `scraper/build.py` | Loads `ExcludeList` at startup; passes to both scrapers; emits dead-rule WARNs at end |
+
+---
+
+## Feature Design: RTC Column Extraction from openMSX XML
+
+### Overview
+
+The `rtc` column is populated exclusively from openMSX machine XML files by detecting the presence of an `<RTC>` element anywhere under `<devices>`. msx.org does not supply RTC data. `data/local-raw.json` can still override the XML-derived value for any model via the standard local-source precedence rule.
+
+### Detection logic
+
+```python
+# In the openMSX XML parser, after parsing each machine XML:
+devices = xml_root.find('devices')
+rtc_present = devices is not None and devices.find('RTC') is not None
+record['rtc'] = 'Yes' if rtc_present else 'No'
+```
+
+Models with no openMSX XML file receive `rtc = None` (empty cell in the grid). This is distinct from `"No"` — `"No"` means the XML was parsed and no `<RTC>` element was found; `None` means no XML data was available for that model.
+
+### Precedence
+
+1. `data/local-raw.json` value (if present) — highest authority
+2. openMSX XML detection — `"Yes"` / `"No"`
+3. msx.org — no data; never sets `rtc`
+4. No XML file — `None` (empty)
+
+### Data flows affected
+
+| Path | Change |
+|---|---|
+| `scraper/openmsx.py` (or XML parser module) | After parsing each XML, detect `<RTC>` under `<devices>`; set `record['rtc']` |
+| `scraper/columns.py` | `rtc` column source documented as XML-derived (not local-raw-only) |
+| `data/local-raw.json` | RTC entries remain valid as overrides; no schema change |
+
+---
+
+## Feature Design: Column Cell Shading
+
+### Overview
+
+Column definitions may declare `shaded: bool = True`. When true, data cells (`<td>`) in that column receive a CSS class that renders a subtle tinted background with bold text. This is a pure display concern — no data, sort, filter, or URL codec changes are needed.
+
+### Schema change — `ColumnDef` / `Column`
+
+```ts
+// src/types.ts
+export interface ColumnDef {
+  shaded?: boolean;   // absent or false = no shading
+}
+```
+
+```python
+# scraper/columns.py
+@dataclass
+class Column:
+    shaded: bool = False
+```
+
+Serialised into `data.js` only when `True` (same convention as `linkable`).
+
+### Default shaded columns
+
+Slot map sub-slots 1 and 3 (every other group in the 4-group slot map block) are shaded. This alternation aids visual separation across the 64-column block without requiring borders. The set is derived programmatically from the column key pattern `slotmap_*_1_*` and `slotmap_*_3_*` — never hard-coded as a list of IDs.
+
+### CSS
+
+```css
+/* src/styles/theme.css */
+[data-theme="dark"]  { --color-surface-shaded: ...; --color-surface-shaded-alt: ...; }
+[data-theme="light"] { --color-surface-shaded: ...; --color-surface-shaded-alt: ...; }
+
+/* src/styles/grid.css */
+.grid tbody td.col-shaded             { background: var(--color-surface-shaded);     font-weight: bold; }
+.grid tbody tr:nth-child(even) td.col-shaded { background: var(--color-surface-shaded-alt); font-weight: bold; }
+```
+
+### Data flows affected
+
+| Path | Change |
+|---|---|
+| `scraper/columns.py` | Add `shaded: bool = False`; set `True` on sub-slot 1 and 3 columns |
+| `scraper/build.py` | Serialise `"shaded": true` when `col.shaded` |
+| `src/types.ts` | Add `shaded?: boolean` to `ColumnDef` |
+| `src/grid.ts` — `buildDataRow` | Add `col-shaded` class to `<td>` when `col.shaded` |
+| `src/styles/theme.css` | Add `--color-surface-shaded` and `--color-surface-shaded-alt` per theme |
+| `src/styles/grid.css` | Add `.col-shaded` rules (odd + even row variants) |

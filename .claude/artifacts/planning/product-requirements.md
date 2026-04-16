@@ -1,7 +1,7 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.11
+- Version: 0.12
 - Date: 2026-04-16
 - Owner: bengalack
 
@@ -197,7 +197,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - The web page requires no column configuration of its own; it reads all column and group definitions from data.js at load time.
 
 - Local supplemental data source
-  - Description: A maintainer-curated JSON file (`data/local-raw.json`) serves as a third data source alongside openMSX XML and msx.org. It supplies data for fields that cannot be scraped automatically (e.g. SRAM, HIMEM Addr, Wait Cycles, NMOS/CMOS, RTC, Engine). Values in the local file take precedence over both openMSX and msx.org for any field they provide.
+  - Description: A maintainer-curated JSON file (`data/local-raw.json`) serves as a third data source alongside openMSX XML and msx.org. It supplies data for fields that cannot be scraped automatically (e.g. SRAM, HIMEM Addr, Wait Cycles, NMOS/CMOS, Engine). Values in the local file take precedence over both openMSX and msx.org for any field they provide.
   - Priority: Must
   - Acceptance Criteria:
     - `data/local-raw.json` is a JSON array of model objects with the same schema as `msxorg-raw.json`.
@@ -254,6 +254,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - The scraper supports a build mode that skips fetching from external sources and instead uses previously cached raw data files on disk. This is the default mode; fetching is opt-in (e.g. via a `--fetch` flag).
     - External sources (msx.org, openMSX GitHub) change infrequently; the maintainer fetches fresh data only when needed.
     - When fetching a URL that is expected to exist and the server responds with HTTP 502 or 503, the scraper waits 2 seconds and retries the request. A warning is logged for each retry attempt. The maximum number of retries is 5; if all retries fail the error is propagated normally.
+    - For each machine XML, the scraper detects the presence of an `<RTC>` element anywhere under the `<devices>` section and populates the `rtc` field with `"Yes"` if found or `"No"` if the XML was parsed but no `<RTC>` element is present. Models with no openMSX XML file receive an empty/null `rtc` value. msx.org does not supply RTC data; only openMSX XML is used for this field.
 
 
 - Alias LUT

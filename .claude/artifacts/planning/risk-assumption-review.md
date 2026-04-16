@@ -148,3 +148,49 @@
 - Apply truncation purely in the render path (`buildDataRow`): write truncated text as `textContent`/`a.textContent`, set `data-full-value` on `td`, and update the mouseenter handler to set `td.title` from `data-full-value` for both plain and link cells.
   - Tradeoff: `data-full-value` adds a small per-cell DOM attribute for truncated columns.
   - Why acceptable: Keeps all truncation knowledge in one place; no changes to sort, filter, or URL codec paths.
+
+---
+
+# Risk & Assumption Review: RTC Column Extraction
+
+## Metadata
+- Date: 2026-04-16
+- Reviewed Artifacts:
+  - .claude/artifacts/planning/product-requirements.md (Scraper process — RTC criterion, v0.12)
+- Open Questions:
+  - .claude/artifacts/decisions/open-questions.md
+
+## Confirmed Truths
+- `<RTC id="Real time clock">` is a direct child of `<devices>` in all examined XML files.
+  - Evidence: Daewoo CPC-400S.xml and Panasonic FS-A1GT.xml both confirmed; element always named `<RTC>`.
+- msx.org wiki pages carry no RTC information.
+  - Evidence: User confirmed; no RTC field present in msx.org scraper output.
+- Models with no openMSX XML file should have an empty/null `rtc` value, not `"No"`.
+  - Evidence: User decision — "No" implies absent hardware; empty means unknown.
+
+## Key Risks
+- `local-raw.json` RTC values now conflict with XML-derived values
+  - Category: Data
+  - Likelihood: Low
+  - Impact: Low
+  - Mitigation: The existing merge rule (local-raw.json takes precedence) handles this correctly. If a maintainer previously set `rtc` in local-raw.json, it will override the XML-derived value — which is the intended behaviour.
+  - Owner: bengalack
+
+## Dangerous Assumptions
+- Every `<RTC>` element in any openMSX XML represents real RTC hardware in the physical machine
+  - Why dangerous: A "Boosted" or test config might include a synthetic `<RTC>` device not present in the real hardware. These are excluded from the dataset via `data/exclude.json`, but a non-excluded config could still introduce a false positive.
+  - How to validate: Cross-check "Yes" results against known MSX2/2+/turboR hardware lists; turboR models universally have RTC, MSX2/2+ rarely do.
+  - If false, what breaks: A model shows "Yes" when the real machine has no RTC — misleading for collectors.
+
+## Scope Creep Watchlist
+- Adding a "battery-backed" or "RTC type" sub-field — not requested; `"Yes"`/`"No"`/empty is sufficient.
+- Sourcing RTC data from msx.org in the future — explicitly out of scope; only XML is used.
+
+## Over-Engineering Traps
+- Parsing `<RTC>` children (e.g. `<sramname>`, `<io>`) for additional metadata
+  - Simplest safe alternative: Presence/absence detection only — one XPath/tag search, no child parsing.
+
+## Recommended Simplifications
+- Detect `<RTC>` with a single tag-name search in the parsed XML tree; no attribute inspection needed.
+  - Tradeoff: Ignores `id` attribute value — acceptable since tag name alone is the signal.
+  - Why acceptable: All observed `<RTC>` elements use `id="Real time clock"`; tag name is unambiguous.
