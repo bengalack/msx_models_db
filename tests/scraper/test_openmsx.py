@@ -156,6 +156,16 @@ class TestParseXMLMemory:
                    '<PanasonicRAM id="Main RAM"><size>256</size></PanasonicRAM>')
         result = parse_machine_xml(xml, "test.xml")
         assert result["main_ram_kb"] == 256
+        assert result["mapper"] == "Yes"
+
+    def test_panasonic_ram_with_memory_mapper_does_not_duplicate(self):
+        xml = _xml(
+            _info(msx_type="MSXturboR"),
+            '<MemoryMapper id="Main RAM"><size>64</size></MemoryMapper>'
+            '<PanasonicRAM id="Extra RAM"><size>256</size></PanasonicRAM>',
+        )
+        result = parse_machine_xml(xml, "test.xml")
+        assert result["mapper"] == "Yes"
 
     def test_plain_ram_with_size_element(self):
         xml = _xml(_info(), '<RAM id="RAM"><size>8</size></RAM>')
