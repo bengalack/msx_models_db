@@ -284,13 +284,13 @@
   {
     "element": "__sentinel__",
     "id_pattern": null,
-    "abbr": "⌧",
+    "abbr": "·",
     "tooltip": "Sub-slot absent (not expanded)"
   },
   {
     "element": "__sentinel__",
     "id_pattern": null,
-    "abbr": "•",
+    "abbr": "⏺",
     "tooltip": "Empty page — no device mapped"
   }
 ]
