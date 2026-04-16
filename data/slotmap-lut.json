@@ -6,12 +6,6 @@
     "tooltip": "MSX BIOS with BASIC ROM"
   },
   {
-    "element": "__freetext_from_msxorg_only__",
-    "id_pattern": "SRAM",
-    "abbr": "SRAM",
-    "tooltip": "SRAM"
-  },
-  {
     "element": "ROM",
     "id_pattern": "Sub.ROM",
     "abbr": "SUB",
@@ -81,13 +75,13 @@
     "element": "MSX-RS232",
     "id_pattern": null,
     "abbr": "RS",
-    "tooltip": "RS-232C Interface ROM"
+    "tooltip": "RS-232C Interface"
   },
   {
     "element": "ROM",
     "id_pattern": "rs232|RS-232C",
     "abbr": "RS",
-    "tooltip": "RS-232C Interface ROM"
+    "tooltip": "RS-232C Interface"
   },
   {
     "element": "ROM",
@@ -296,7 +290,7 @@
   {
     "element": "__sentinel__",
     "id_pattern": null,
-    "abbr": "⌴",
+    "abbr": "•",
     "tooltip": "Empty page — no device mapped"
   }
 ]

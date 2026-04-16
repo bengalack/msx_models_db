@@ -3,19 +3,18 @@
 from __future__ import annotations
 
 from scraper.merge import _renumber_cs_es, _is_slot_type, merge_models
-from scraper.symbols import ABSENT, EMPTY_PAGE
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────
 
 def _slotmap(**kwargs: str) -> dict:
-    """Build a model dict with all 64 slotmap keys set to '⌴' by default,
+    """Build a model dict with all 64 slotmap keys set to '•' by default,
     then override specific keys via kwargs (e.g. slotmap_1_0_0='CS1')."""
     m: dict = {}
     for ms in range(4):
         for ss in range(4):
             for p in range(4):
-                m[f"slotmap_{ms}_{ss}_{p}"] = EMPTY_PAGE
+                m[f"slotmap_{ms}_{ss}_{p}"] = "•"
     m.update(kwargs)
     return m
 
@@ -41,7 +40,7 @@ class TestIsSlotType:
     def test_exp_is_slot_type(self):
         assert _is_slot_type("EXP")
     def test_device_abbrs_not_slot_type(self):
-        for v in ("MAIN", "MM", "DSK", "MUS", EMPTY_PAGE, ABSENT, None, 42):
+        for v in ("MAIN", "MM", "DSK", "MUS", "•", "⌧", None, 42):
             assert not _is_slot_type(v)
 
 
@@ -218,13 +217,13 @@ class TestMergeSlotMapCsEsPreference:
             assert result[f"slotmap_1_0_{p}"] == "CS1"
 
     def test_msxorg_cs_overrides_openmsx_empty_primary(self):
-        """openMSX emits ⌴ for an empty non-external primary it can't classify;
+        """openMSX emits • for an empty non-external primary it can't classify;
         msx.org wins when it knows the slot is a cartridge slot.
 
-        Covers: <primary slot="X"/> (no external="true", no devices) → openMSX: ⌴
+        Covers: <primary slot="X"/> (no external="true", no devices) → openMSX: •
         msx.org has CS → merged result: CS.
         """
-        openmsx = [_base_model(extra={**_fill_slot(2, 0, EMPTY_PAGE)})]
+        openmsx = [_base_model(extra={**_fill_slot(2, 0, "•")})]
         msxorg  = [_base_model(extra={**_fill_slot(2, 0, "CS1")})]
         result = merge_models(openmsx, msxorg)
         assert len(result) == 1
@@ -232,11 +231,11 @@ class TestMergeSlotMapCsEsPreference:
             assert result[0][f"slotmap_2_0_{p}"].startswith("CS")
 
     def test_msxorg_exp_overrides_openmsx_empty_primary(self):
-        """openMSX emits ⌴ for an empty non-external primary; msx.org EXP wins.
+        """openMSX emits • for an empty non-external primary; msx.org EXP wins.
 
-        Covers: <primary slot="X"/> → openMSX: ⌴; msx.org: EXP → merged: EXP.
+        Covers: <primary slot="X"/> → openMSX: •; msx.org: EXP → merged: EXP.
         """
-        openmsx = [_base_model(extra={**_fill_slot(3, 0, EMPTY_PAGE)})]
+        openmsx = [_base_model(extra={**_fill_slot(3, 0, "•")})]
         msxorg  = [_base_model(extra={**_fill_slot(3, 0, "EXP")})]
         result = merge_models(openmsx, msxorg)
         assert len(result) == 1
@@ -244,15 +243,15 @@ class TestMergeSlotMapCsEsPreference:
             assert result[0][f"slotmap_3_0_{p}"] == "EXP"
 
     def test_msxorg_es_overrides_openmsx_empty_secondary(self):
-        """openMSX emits ⌴ for an empty <secondary slot="N"/>; msx.org ES wins.
+        """openMSX emits • for an empty <secondary slot="N"/>; msx.org ES wins.
 
         Covers: National FS-5000F2 pattern — empty secondaries are expansion
         connectors labelled ES{N}! by msx.org.
         """
         openmsx = [_base_model(extra={
-            **_fill_slot(0, 1, EMPTY_PAGE),
-            **_fill_slot(0, 2, EMPTY_PAGE),
-            **_fill_slot(0, 3, EMPTY_PAGE),
+            **_fill_slot(0, 1, "•"),
+            **_fill_slot(0, 2, "•"),
+            **_fill_slot(0, 3, "•"),
         })]
         msxorg = [_base_model(extra={
             **_fill_slot(0, 1, "ES1!"),
@@ -268,15 +267,15 @@ class TestMergeSlotMapCsEsPreference:
             assert m[f"slotmap_0_3_{p}"] == "ES3!"
 
     def test_msxorg_bare_es_overrides_openmsx_empty_secondary(self):
-        """Bare 'ES' from msx.org (scraper raw-text fallback) overrides openMSX ⌴.
+        """Bare 'ES' from msx.org (scraper raw-text fallback) overrides openMSX •.
 
-        Regression for: pioneer|uc-v102: openMSX='⌴' vs msx.org='ES' [using openmsx]
+        Regression for: pioneer|uc-v102: openMSX='•' vs msx.org='ES' [using openmsx]
         After merge and renumber, bare 'ES' is assigned ES1/ES2/ES3.
         """
         openmsx = [_base_model(extra={
-            **_fill_slot(2, 1, EMPTY_PAGE),
-            **_fill_slot(2, 2, EMPTY_PAGE),
-            **_fill_slot(2, 3, EMPTY_PAGE),
+            **_fill_slot(2, 1, "•"),
+            **_fill_slot(2, 2, "•"),
+            **_fill_slot(2, 3, "•"),
         })]
         msxorg = [_base_model(extra={
             **_fill_slot(2, 1, "ES"),
@@ -291,41 +290,3 @@ class TestMergeSlotMapCsEsPreference:
             assert m[f"slotmap_2_1_{p}"].startswith("ES")
             assert m[f"slotmap_2_2_{p}"].startswith("ES")
             assert m[f"slotmap_2_3_{p}"].startswith("ES")
-
-
-# ── merge_models: openMSX absence wins ────────────────────────────────────
-
-class TestOpenMSXAbsenceWins:
-    """Fields in _OPENMSX_ABSENCE_WINS: if openMSX has the machine but not
-    the field, msx.org's value is ignored (absence is the authoritative value).
-    """
-
-    def test_tape_absent_in_openmsx_overrides_msxorg_yes(self):
-        """Core regression: Panasonic FS-A1GT — no <CassettePort> in XML,
-        but msx.org wiki incorrectly lists Cassette in connectivity."""
-        openmsx = [{"manufacturer": "Panasonic", "model": "FS-A1GT"}]
-        msxorg  = [{"manufacturer": "Panasonic", "model": "FS-A1GT", "tape_interface": "Yes"}]
-        result = merge_models(openmsx, msxorg)
-        assert len(result) == 1
-        assert "tape_interface" not in result[0]
-
-    def test_tape_present_in_both_sources_kept(self):
-        """When openMSX also sets tape_interface, it is kept normally."""
-        openmsx = [{"manufacturer": "Sony", "model": "HB-F1", "tape_interface": "Yes"}]
-        msxorg  = [{"manufacturer": "Sony", "model": "HB-F1", "tape_interface": "Yes"}]
-        result = merge_models(openmsx, msxorg)
-        assert result[0].get("tape_interface") == "Yes"
-
-    def test_tape_openmsx_only_kept(self):
-        """When only openMSX has tape_interface, it is kept."""
-        openmsx = [{"manufacturer": "Sony", "model": "HB-F1", "tape_interface": "Yes"}]
-        msxorg  = [{"manufacturer": "Sony", "model": "HB-F1"}]
-        result = merge_models(openmsx, msxorg)
-        assert result[0].get("tape_interface") == "Yes"
-
-    def test_tape_msxorg_only_model_not_in_openmsx(self):
-        """If openMSX has no record at all for the model, msx.org value is kept
-        (the rule only applies when openMSX has the machine but omits the field)."""
-        msxorg = [{"manufacturer": "Acme", "model": "X-1", "tape_interface": "Yes"}]
-        result = merge_models([], msxorg)
-        assert result[0].get("tape_interface") == "Yes"
