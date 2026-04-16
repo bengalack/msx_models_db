@@ -623,6 +623,26 @@ def load_excludes(path: Path) -> ExcludeList:
 
 ---
 
+## Feature Design: RAM and Mapper Extraction from openMSX XML
+
+### Overview
+
+The `ram` (RAM size in KB) and `mapper` columns are populated from openMSX machine XML files by inspecting memory-typed device elements under `<devices>`. Three XML element types are relevant, and the rules below define how each affects `ram` and `mapper`:
+
+- `<MemoryMapper>` present → `mapper = "Yes"`; its `<mem size>` contributes to `ram`
+- `<PanasonicRAM>` present → `mapper = "Yes"` (proprietary implementation of the standard MSX memory mapper interface; takes precedence over plain `<RAM>`)
+- `<RAM>` present → `mapper = "No"` (unless a `<MemoryMapper>` or `<PanasonicRAM>` element is also present, in which case mapper is already "Yes")
+
+When multiple RAM-typed elements are present, their sizes are summed for `ram`. The `mapper` field is set to "Yes" if any `<MemoryMapper>` or `<PanasonicRAM>` element is found; otherwise "No".
+
+### Data flows affected
+
+| Path | Change |
+|---|---|
+| `scraper/openmsx.py` — `_extract_memory` | Detect `<PanasonicRAM>` and set `mapper = "Yes"` in addition to accumulating RAM size |
+
+---
+
 ## Feature Design: RTC Column Extraction from openMSX XML
 
 ### Overview
