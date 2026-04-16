@@ -165,14 +165,14 @@ Feature: RTC column extraction from openMSX XML
     - `test_rtc_no_devices` — no `<devices>` element → `"rtc" not in result`
   - [x] T-013 Commit: `feat(openmsx): extract rtc field from <RTC> element under <devices>`
 
-- [ ] **Quality gate**
-  - [ ] T-900 `python -m pytest tests/ -q` — all green
-  - [ ] T-901 `python -m scraper build` — rebuilds cleanly; "Yes" values present in data.js
+- [x] **Quality gate**
+  - [x] T-900 `python -m pytest tests/ -q` — all green
+  - [x] T-901 `python -m scraper build` — rebuilds cleanly; "Yes" values present in data.js
 
-- [ ] **Merge to trunk**
-  - [ ] T-950 Commits follow Conventional Commits (single logical commit)
-  - [ ] T-951 Rebase onto trunk; fast-forward merge
-  - [ ] T-952 Update backlog: move "Scraper — RTC column extraction" to "In product (shipped)"
+- [x] **Merge to trunk**
+  - [x] T-950 Commits follow Conventional Commits (single logical commit)
+  - [x] T-951 Rebase onto trunk; fast-forward merge
+  - [x] T-952 Update backlog: move "Scraper — RTC column extraction" to "In product (shipped)"
 
 ## Open Questions
 - None blocking.

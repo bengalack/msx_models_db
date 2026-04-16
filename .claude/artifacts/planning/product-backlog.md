@@ -3,9 +3,6 @@
     - Slot map HTML extraction (msx.org parser: CS/ES detection, sequential numbering, LUT matching)
     - Slot map CS/ES resolution (merge step: upgrade CS→ES where msx.org says ES, renumber all CS/ES)
     - Slot map tooltip rendering (browser-side: abbreviation display, LUT tooltip lookup, ⌧/• sentinels, mirror * notation)
-  - Scraper — RTC column extraction
-    - Detect `<RTC>` element under `<devices>` in each openMSX machine XML
-    - "Yes" if found, "No" if XML parsed and absent, null/empty if no XML file for model
 
 - Later
   - CI (GitHub Actions)
@@ -77,6 +74,9 @@
     - data/exclude.json: manufacturer+model rules (both scrapers) and filename rules (openMSX only)
     - Wildcard "*" and empty-string "" matching; case-sensitive; fail-fast on malformed input
     - Dead-rule WARN after each run; excluded count in per-scraper summary
+  - Scraper — RTC column extraction
+    - Detect `<RTC>` element under `<devices>` in each openMSX machine XML
+    - "Yes" if found, "No" if XML parsed and absent, null/empty if no XML file for model
   - Selection column and row header highlight
     - Column header inverts colors when any cell in that column is selected
     - Row number (gutter) cell inverts colors when any cell in that row is selected
