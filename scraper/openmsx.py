@@ -224,10 +224,15 @@ def _extract_memory(devices: etree._Element, out: dict[str, Any]) -> None:
         out["mapper"] = ", ".join(mappers) if len(mappers) > 1 else "Yes"
 
     # PanasonicRAM is used by turbo R and some MSX2+ machines.
+    # It is a proprietary implementation of the standard MSX memory mapper interface.
+    panasonic_ram_found = False
     for pram in devices.iter("PanasonicRAM"):
         size = _int(pram.find("size"))
         if size:
             total_ram += size
+        panasonic_ram_found = True
+    if panasonic_ram_found and "mapper" not in out:
+        out["mapper"] = "Yes"
     if total_ram:
         out["main_ram_kb"] = total_ram
 
