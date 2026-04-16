@@ -153,17 +153,17 @@ Feature: RTC column extraction from openMSX XML
 
 ## Tasks
 
-- [ ] T-001 Create and checkout branch `feature/rtc-extraction`
+- [x] T-001 Create and checkout branch `feature/rtc-extraction`
 
-- [ ] **Chunk 1: Extract + test**
-  - [ ] T-010 In `scraper/openmsx.py`, add `_extract_rtc(devices, out)` after `_extract_connectivity`:
+- [x] **Chunk 1: Extract + test**
+  - [x] T-010 In `scraper/openmsx.py`, add `_extract_rtc(devices, out)` after `_extract_connectivity`:
     - `out["rtc"] = "Yes" if devices.find("RTC") is not None else "No"`
-  - [ ] T-011 In `parse_machine_xml`, add `_extract_rtc(devices, result)` call after `_extract_connectivity(devices, result)`
-  - [ ] T-012 In `tests/scraper/test_openmsx.py`, add 3 tests:
+  - [x] T-011 In `parse_machine_xml`, add `_extract_rtc(devices, result)` call after `_extract_connectivity(devices, result)`
+  - [x] T-012 In `tests/scraper/test_openmsx.py`, add 3 tests:
     - `test_rtc_present` — `<devices><RTC id="Real time clock"/></devices>` → `result["rtc"] == "Yes"`
     - `test_rtc_absent` — `<devices><PSG id="PSG"/></devices>` → `result["rtc"] == "No"`
     - `test_rtc_no_devices` — no `<devices>` element → `"rtc" not in result`
-  - [ ] T-013 Commit: `feat(openmsx): extract rtc field from <RTC> element under <devices>`
+  - [x] T-013 Commit: `feat(openmsx): extract rtc field from <RTC> element under <devices>`
 
 - [ ] **Quality gate**
   - [ ] T-900 `python -m pytest tests/ -q` — all green

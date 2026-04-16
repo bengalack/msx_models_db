@@ -169,6 +169,7 @@ def parse_machine_xml(
     _extract_cpu(devices, result, msx_type)
     _extract_keyboard(devices, result)
     _extract_connectivity(devices, result)
+    _extract_rtc(devices, result)
 
     # Slot map extraction (only when LUT rules are provided)
     if lut_rules is not None:
@@ -356,6 +357,11 @@ def _extract_keyboard(devices: etree._Element, out: dict[str, Any]) -> None:
             "se": "Swedish",
         }
         out["keyboard_layout"] = kb_map.get(kb, kb)
+
+
+def _extract_rtc(devices: etree._Element, out: dict[str, Any]) -> None:
+    """Detect RTC hardware by presence of <RTC> element under <devices>."""
+    out["rtc"] = "Yes" if devices.find("RTC") is not None else "No"
 
 
 def _extract_connectivity(devices: etree._Element, out: dict[str, Any]) -> None:

@@ -321,6 +321,34 @@ class TestParseXMLKeyboard:
         assert "keyboard_layout" not in result
 
 
+class TestParseXMLRTC:
+    """T-019: RTC field extraction."""
+
+    def test_rtc_present(self):
+        xml = _xml(_info(), '<RTC id="Real time clock"/>')
+        result = parse_machine_xml(xml, "test.xml")
+        assert result is not None
+        assert result["rtc"] == "Yes"
+
+    def test_rtc_absent(self):
+        xml = _xml(_info(), '<PSG id="PSG"/>')
+        result = parse_machine_xml(xml, "test.xml")
+        assert result is not None
+        assert result["rtc"] == "No"
+
+    def test_rtc_no_devices_key_absent(self):
+        xml = b"""<msxconfig>
+  <info>
+    <manufacturer>Sony</manufacturer>
+    <code>HB-F1</code>
+    <type>MSX2</type>
+  </info>
+</msxconfig>"""
+        result = parse_machine_xml(xml, "test.xml")
+        assert result is not None
+        assert "rtc" not in result
+
+
 class TestParseXMLMalformed:
     """T-018: malformed XML does not abort."""
 
