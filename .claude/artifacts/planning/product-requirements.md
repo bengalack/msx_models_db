@@ -1,8 +1,8 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.10
-- Date: 2026-04-11
+- Version: 0.11
+- Date: 2026-04-16
 - Owner: bengalack
 
 ## Problem Statement
@@ -230,6 +230,16 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - When a truncated cell also carries a URL link, the tooltip is `"<full value> — <url>"` on a single line.
     - Sorting by a column with `truncate_limit` uses the full original value from the data record, not the truncated display string.
 
+- Column cell shading
+  - Description: Column definitions may include a `shaded` boolean flag. When true, data cells in that column render with a subtle tinted background and bold text, providing a visual separator between alternating column groups.
+  - Priority: Should
+  - Acceptance Criteria:
+    - `ColumnDef` accepts an optional `shaded?: boolean` field (absent or `false` = no shading).
+    - Data cells (`<td>`) in a shaded column receive the `col-shaded` CSS class; header cells are not affected.
+    - Two CSS custom properties per theme (`--color-surface-shaded` and `--color-surface-shaded-alt`) control the background for odd and even rows respectively, preserving row alternation.
+    - Slot map columns for sub-slots 1 and 3 are shaded by default (every other sub-slot group) to aid visual separation across the 64-column block.
+    - A column's `shaded` value is omitted from `data.js` when `false` (same convention as `linkable`).
+
 - Scraper process
   - Description: A runnable script (not part of the web page) fetches model data from msx.org wiki pages and openMSX GitHub XML files, merges them, computes derived columns, and writes the output to the JSON data file.
   - Priority: Must
@@ -266,6 +276,19 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - At the end of every build, total elapsed time is logged.
     - When `--fetch` is used, each data source (openMSX, msx.org) additionally logs its individual fetch duration.
     - Times are reported to one decimal place in seconds (e.g. `42.3s`).
+
+- Scraper exclude list
+  - Description: A maintainer-curated JSON file (`data/exclude.json`) prevents unwanted models from appearing in the output. Models matching an exclusion rule are dropped after parsing, before being added to the merged dataset.
+  - Priority: Should
+  - Acceptance Criteria:
+    - `data/exclude.json` is a JSON array of rule objects. Each rule uses exactly one mode: `{"manufacturer": "...", "model": "..."}` or `{"filename": "..."}` (not both).
+    - Manufacturer/model matching supports `"*"` as a wildcard (matches any value including empty) and `""` to match an empty field. Matching is case-sensitive.
+    - Filename rules apply only to the openMSX scraper (exact match against XML filename); they are silently ignored by the msx.org scraper.
+    - A model excluded by any matching rule does not appear in `docs/data.js` after a build.
+    - If `data/exclude.json` is absent or empty, the build output is identical to one without the file (no-op).
+    - A malformed `exclude.json` (invalid JSON, unknown keys in an entry) raises a `ValueError` at startup before any network requests are made.
+    - After each build run, any rule that matched zero models produces a WARN log line.
+    - The per-scraper build summary includes an `excluded` count alongside the existing `skipped`/`errors` counts.
 
 - Slot map columns
   - Description: Each model row exposes 64 fixed slot map columns across 4 column groups ("Slotmap, slot 0–3"), showing what occupies each page of each sub-slot. All models carry all 64 columns. Cells outside a model's physical slot configuration show `⌧`.
@@ -321,16 +344,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Cartridge slots (CS) in a non-expanded main slot produce `CS{N}` on all 4 pages of sub-slot 0. Expansion slots (ES) produce `ES{N}`. Slots in an expanded main slot (multiple sub-slot columns) receive the `!` suffix: `CS{N}!` or `ES{N}!`, following the same convention as the XML extraction path.
     - CS and ES use independent sequential counters, each starting at 1, incremented left-to-right across the table.
     - Cell text is matched against the `id_pattern` fields in `data/slotmap-lut.json` in order (first match wins). LUT entries with a null `id_pattern` (element-name-only entries) are covered by a supplemental list that matches their typical msx.org free-text descriptions.
-    - All other slot map conventions (64-key output, `⌧`/`⌴` sentinels, sequential numbering) are identical to those of the XML extraction path.
-
-- Configurable slot display symbols
-  - Description: The four display symbols used in slot map cells — the absent-sub-slot sentinel (`⌧`), the empty-page sentinel (`⌴`), the mirror suffix (`*`), and the subslot suffix (`!`) — are configurable via `data/scraper-config.json` under the `slotmap_symbols` key. Code must never embed these characters as hardcoded literals; all usage goes through the config-loaded constants.
-  - Priority: Should
-  - Acceptance Criteria:
-    - `data/scraper-config.json` accepts a `slotmap_symbols` object with keys `absent`, `empty_page`, `mirror_suffix`, and `subslot_suffix`.
-    - The Python scraper reads these at import time via `scraper/symbols.py`; the TypeScript layer reads them via `src/symbols.ts`.
-    - If `slotmap_symbols` is absent from the config, the system falls back to defaults: `absent = "⌧"` (U+2327), `empty_page = "⌴"` (U+2334), `mirror_suffix = "*"`, `subslot_suffix = "!"`.
-    - No Python or TypeScript source file outside of `scraper/symbols.py` contains U+2327 or U+2334 as hardcoded string literals.
+    - All other slot map conventions (64-key output, `⌧`/`•` sentinels, sequential numbering) are identical to those of the XML extraction path.
 
 - Slot map CS/ES resolution
   - Description: openMSX XML cannot distinguish a cartridge slot from an expansion slot; both are encoded as `<primary external="true">`. The msx.org HTML scraper can tell them apart from the cell text. The merge step uses this to upgrade provisional `CS{N}` values from openMSX to `ES{N}` where msx.org data is available, then renumbers all CS and ES slots with fresh, independent counters.
