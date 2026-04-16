@@ -286,15 +286,15 @@ class TestParseXMLMedia:
 class TestParseXMLCPU:
     """T-016: CPU extraction."""
 
-    def test_msx2_cpu_z80a(self):
+    def test_msx2_cpu_z80(self):
         xml = _xml(_info(msx_type="MSX2"))
         result = parse_machine_xml(xml, "test.xml")
-        assert result["cpu"] == "Z80A"
+        assert result["cpu"] == "Z80"
 
-    def test_msx2plus_cpu_z80a(self):
+    def test_msx2plus_cpu_z80(self):
         xml = _xml(_info(msx_type="MSX2+"))
         result = parse_machine_xml(xml, "test.xml")
-        assert result["cpu"] == "Z80A"
+        assert result["cpu"] == "Z80"
 
     def test_turbor_cpu_r800_with_sub_cpu(self):
         xml = _xml(_info(msx_type="MSXturboR"))

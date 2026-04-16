@@ -64,9 +64,9 @@ VDP_SPECS: dict[str, dict[str, Any]] = {
 
 # Default CPU for each MSX type.
 CPU_DEFAULTS: dict[str, tuple[str, float]] = {
-    "MSX":        ("Z80A", 3.58),
-    "MSX2":       ("Z80A", 3.58),
-    "MSX2+":      ("Z80A", 3.58),
+    "MSX":        ("Z80", 3.58),
+    "MSX2":       ("Z80", 3.58),
+    "MSX2+":      ("Z80", 3.58),
     "MSXturboR":  ("R800", 7.16),
 }
 
@@ -331,7 +331,7 @@ def _extract_cpu(
     devices: etree._Element, out: dict[str, Any], msx_type: str | None
 ) -> None:
     """Set CPU based on MSX type defaults."""
-    cpu = CPU_DEFAULTS.get(msx_type or "", ("Z80A", 3.58))[0]
+    cpu = CPU_DEFAULTS.get(msx_type or "", ("Z80", 3.58))[0]
     out["cpu"] = cpu
 
     # turbo R has both Z80 and R800; check for R800 element.
