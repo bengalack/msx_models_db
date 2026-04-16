@@ -240,7 +240,7 @@ def _extract_memory(devices: etree._Element, out: dict[str, Any]) -> None:
                 total_ram += _mem_size_kb(ram)
         if total_ram:
             out["main_ram_kb"] = total_ram
-            out["mapper"] = "None"
+            out["mapper"] = "No"
 
     # SRAM: only the PANASONIC mapper type exposes <sramsize> (decimal KB).
     # NATIONAL and FSA1FM1/FSA1FM2 mapper types have SRAM too but no size

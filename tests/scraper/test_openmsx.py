@@ -161,14 +161,14 @@ class TestParseXMLMemory:
         xml = _xml(_info(), '<RAM id="RAM"><size>8</size></RAM>')
         result = parse_machine_xml(xml, "test.xml")
         assert result["main_ram_kb"] == 8
-        assert result["mapper"] == "None"
+        assert result["mapper"] == "No"
 
     def test_plain_ram_with_hex_mem_attribute(self):
         xml = _xml(_info(), '<RAM id="RAM"><mem size="0x4000"/></RAM>')
         result = parse_machine_xml(xml, "test.xml")
         # 0x4000 bytes = 16 KB
         assert result["main_ram_kb"] == 16
-        assert result["mapper"] == "None"
+        assert result["mapper"] == "No"
 
     def test_no_ram_keys_absent(self):
         xml = _xml(_info())
