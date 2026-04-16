@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import Any
 
 from scraper.aliases import AliasLUT, apply_aliases, load_aliases
-from scraper.symbols import ABSENT, EMPTY_PAGE, SUBSLOT_SUFFIX
 
 log = logging.getLogger(__name__)
 
@@ -80,18 +79,11 @@ _PREFER_MSXORG: set[str] = {"keyboard_layout", "region"}
 # Fields where openMSX is more reliable (hardware-level).
 _PREFER_OPENMSX: set[str] = {"cartridge_slots", "vdp", "vram_kb", "main_ram_kb", "psg"}
 
-# Fields where openMSX's *absence* is authoritative.
-# If openMSX has the machine but does not emit this field, the hardware does not
-# have the feature — msx.org's value (often scraped from inaccurate wiki text)
-# is discarded.  Add fields here when presence/absence is determined by explicit
-# hardware elements in the openMSX XML (e.g. <CassettePort>).
-_OPENMSX_ABSENCE_WINS: set[str] = {"tape_interface"}
-
-# Matches CS/ES slot abbreviations with optional number and subslot suffix.
+# Matches CS/ES slot abbreviations with optional number and ! suffix.
 # The number is optional to tolerate bare "CS"/"ES" that can appear in stale
 # msx.org raw data when the scraper fell back to raw cell text.
 # _renumber_cs_es will assign proper sequential numbers in all cases.
-_CS_ES_RE = re.compile(r"^(CS|ES)(\d*)(" + re.escape(SUBSLOT_SUFFIX) + r"?)$")
+_CS_ES_RE = re.compile(r"^(CS|ES)(\d*)(!?)$")
 
 
 def _is_cs_or_es(value: Any) -> bool:
@@ -267,8 +259,8 @@ def _renumber_cs_es(model: dict[str, Any]) -> dict[str, Any]:
             type_bang = cs_es_slots.get((ms, ss))
             if type_bang is None:
                 continue
-            kind  = type_bang.rstrip(SUBSLOT_SUFFIX)   # "CS" or "ES"
-            bang  = SUBSLOT_SUFFIX if type_bang.endswith(SUBSLOT_SUFFIX) else ""
+            kind  = type_bang.rstrip("!")   # "CS" or "ES"
+            bang  = "!" if type_bang.endswith("!") else ""
             if kind == "CS":
                 cs_counter += 1
                 new_abbr = f"CS{cs_counter}{bang}"
@@ -308,11 +300,6 @@ def _merge_single(
             result[field] = ov
             continue
         if mv is not None and ov is None:
-            # For fields where openMSX absence is authoritative: if openMSX has
-            # the machine but emitted no value, the feature is absent — drop
-            # msx.org's value rather than blindly filling it in.
-            if field in _OPENMSX_ABSENCE_WINS:
-                continue
             result[field] = mv
             continue
         if ov is None and mv is None:
@@ -345,10 +332,10 @@ def _merge_single(
             result[field] = mv  # msx.org knows the slot type
             continue
 
-        # openMSX emits ⌴ (empty page) or ⌧ (not present/unknown) for slots it
-        # cannot characterise.  If msx.org has a slot-type value for the same
-        # cell, prefer msx.org.
-        if field.startswith("slotmap_") and ov in (EMPTY_PAGE, ABSENT) and _is_slot_type(mv):
+        # openMSX emits • for secondary pages it has no device for; it cannot
+        # determine the connector type.  If msx.org has a slot-type value for
+        # the same cell, prefer msx.org.
+        if field.startswith("slotmap_") and ov == "\u2022" and _is_slot_type(mv):
             result[field] = mv
             continue
 

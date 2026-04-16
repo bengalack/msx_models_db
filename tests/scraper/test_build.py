@@ -8,7 +8,6 @@ from unittest.mock import MagicMock, patch
 
 from scraper.build import build, load_scraper_config
 from scraper.registry import IDRegistry
-from scraper.symbols import ABSENT, EMPTY_PAGE
 
 
 class TestBuildPipeline:
@@ -119,7 +118,7 @@ class TestBuildSlotmapLUT:
     STARTER_ABBRS = {
         "MAIN", "SUB", "KAN", "HAN", "JE", "MOD", "DOS2", "CP/M",
         "FW", "DSK", "MUS", "RS", "RSFW", "MM", "PM",
-        "RAM", "BUN", "SFG5", "SFG1", "EXP", ABSENT, EMPTY_PAGE,
+        "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2327", "\u2022",
         "CS1", "CS2", "CS3", "CS4", "CS5", "CS6",
         "CS1!", "CS2!", "CS3!", "CS4!", "CS5!", "CS6!",
         "ES1", "ES2", "ES3", "ES4", "ES5", "ES6",
@@ -396,13 +395,9 @@ class TestBuildSlotmapExtractor:
         openmsx_path.write_text(json.dumps(openmsx))
         msxorg_path.write_text(json.dumps(msxorg))
 
-        local_path = tmp_path / "local.json"
-        local_path.write_text("[]")
-
         build(
             openmsx_path=openmsx_path,
             msxorg_path=msxorg_path,
-            local_path=local_path,
             registry_path=tmp_path / "registry.json",
             output_path=output_path,
         )
@@ -419,15 +414,15 @@ class TestBuildSlotmapExtractor:
 
         # Locate the Sony model by name (sort order may vary with other data)
         model_idx_col = col_keys.index("model")
-        sony_model = next(
+        model = next(
             m for m in data["models"]
             if m["values"][model_idx_col] == "HB-F1XV"
         )
         idx_main = col_keys.index("slotmap_0_0_0")
         idx_cs1 = col_keys.index("slotmap_1_0_0")
 
-        assert sony_model["values"][idx_main] == "MAIN"
-        assert sony_model["values"][idx_cs1] == "CS1"
+        assert model["values"][idx_main] == "MAIN"
+        assert model["values"][idx_cs1] == "CS1"
 
 
 class TestBuildTruncateLimit:
@@ -467,57 +462,6 @@ class TestBuildTruncateLimit:
         data = self._build_and_parse(tmp_path)
         year_col = next(c for c in data["columns"] if c["key"] == "year")
         assert "truncateLimit" not in year_col
-
-
-# ---------------------------------------------------------------------------
-# shaded serialisation
-# ---------------------------------------------------------------------------
-
-class TestBuildShaded:
-    """Tests for shaded serialisation in ColumnDef output."""
-
-    def _build_and_parse(self, tmp_path) -> dict:
-        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
-        openmsx_path = tmp_path / "openmsx.json"
-        msxorg_path = tmp_path / "msxorg.json"
-        output_path = tmp_path / "data.js"
-        openmsx_path.write_text(json.dumps(raw))
-        msxorg_path.write_text(json.dumps([]))
-        from scraper.build import build
-        build(
-            openmsx_path=openmsx_path,
-            msxorg_path=msxorg_path,
-            registry_path=tmp_path / "registry.json",
-            output_path=output_path,
-        )
-        content = output_path.read_text(encoding="utf-8")
-        json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
-        json_end = content.rindex(";")
-        return json.loads(content[json_start:json_end])
-
-    def test_shaded_columns_emit_shaded_true(self, tmp_path):
-        """Every column with shaded=True in active_columns() must emit "shaded": true."""
-        from scraper.columns import active_columns
-        expected_shaded_keys = {c.key for c in active_columns() if c.shaded}
-        assert expected_shaded_keys, "No shaded columns found — test precondition failed"
-        data = self._build_and_parse(tmp_path)
-        for col_js in data["columns"]:
-            if col_js["key"] in expected_shaded_keys:
-                assert col_js.get("shaded") is True, (
-                    f"Column {col_js['key']!r} has shaded=True in columns.py "
-                    f"but 'shaded' is absent or not True in serialised output"
-                )
-
-    def test_non_shaded_columns_omit_shaded_key(self, tmp_path):
-        """Columns with shaded=False must NOT emit a 'shaded' key."""
-        from scraper.columns import active_columns
-        expected_shaded_keys = {c.key for c in active_columns() if c.shaded}
-        data = self._build_and_parse(tmp_path)
-        for col_js in data["columns"]:
-            if col_js["key"] not in expected_shaded_keys:
-                assert "shaded" not in col_js, (
-                    f"Column {col_js['key']!r} has shaded=False but emitted a 'shaded' key"
-                )
 
 
 # ---------------------------------------------------------------------------

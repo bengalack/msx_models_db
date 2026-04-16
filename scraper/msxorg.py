@@ -45,7 +45,6 @@ _RE_VDP = re.compile(r"(V9958|V9938|TMS99[12][89]A?)", re.IGNORECASE)
 _RE_RAM_MAIN = re.compile(
     r"(\d+)\s*kB(?:\s+(?:in|mapped|main|slot))", re.IGNORECASE
 )
-_RE_SRAM = re.compile(r"(\d+)\s*kB\s+SRAM", re.IGNORECASE)
 _RE_FLOPPY = re.compile(
     r"(\d+)\s*(?:×|x)\s*(?:\d+kB\s+)?(?:3[,.]5|5[,.]25)[\"\u201D\u2033]?\s*"
     r"(?:floppy|disk|FDD)",
@@ -159,12 +158,6 @@ def _parse_ram_kb(raw: str) -> int | None:
     # Fallback: first kB number.
     m = _RE_KB.search(raw)
     return int(m.group(1)) if m else None
-
-
-def _parse_sram_kb(raw: str) -> str | None:
-    """Extract SRAM size in KB from strings like '64kB in slot 3-0 + 16kB SRAM'."""
-    m = _RE_SRAM.search(raw)
-    return str(int(m.group(1))) if m else None
 
 
 def _parse_vram_kb(raw: str) -> int | None:
@@ -334,9 +327,6 @@ def parse_model_page(
         ram = _parse_ram_kb(ram_raw)
         if ram:
             result["main_ram_kb"] = ram
-        sram = _parse_sram_kb(ram_raw)
-        if sram:
-            result["sram_kb"] = sram
 
     # VRAM
     vram_raw = specs.get("VRAM", "")
