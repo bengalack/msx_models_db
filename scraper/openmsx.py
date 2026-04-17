@@ -320,7 +320,7 @@ def _extract_media(devices: etree._Element, out: dict[str, Any]) -> None:
                     if secondary.get("external") == "true":
                         cart_count += 1
     if cart_count:
-        out["cartridge_slots"] = cart_count
+        out["scraped_cart_slots"] = cart_count
 
     # Tape interface
     if root is not None and root.find("CassettePort") is not None:

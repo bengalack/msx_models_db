@@ -269,7 +269,8 @@ class TestParseXMLMedia:
         )
         xml = _xml(_info(), extra_root=extra)
         result = parse_machine_xml(xml, "test.xml")
-        assert result["cartridge_slots"] == 2
+        assert result["scraped_cart_slots"] == 2
+        assert "cartridge_slots" not in result
 
     def test_tape_interface_present(self):
         xml = _xml(_info(), extra_root="<CassettePort/>")
