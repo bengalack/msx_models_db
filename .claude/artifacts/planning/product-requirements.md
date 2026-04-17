@@ -1,7 +1,7 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.16
+- Version: 0.18
 - Date: 2026-04-17
 - Owner: bengalack
 
@@ -263,6 +263,21 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - For memory extraction, the scraper treats `<PanasonicRAM>` (a proprietary implementation of the standard MSX memory mapper interface) as implying `mapper = "Yes"`. The rule applied is: `<MemoryMapper>` present → `mapper = "Yes"`; `<PanasonicRAM>` present → `mapper = "Yes"` (takes precedence over a plain `<RAM>` in the same XML); `<RAM>` alone → `mapper = "No"`. When multiple RAM-typed elements are present, their sizes are summed for the `ram` field; `mapper` is "Yes" if any `<MemoryMapper>` or `<PanasonicRAM>` element is found, otherwise "No".
     - The `cpu_speed_mhz` column (CPU Speed (MHz)) is removed. Its ID (23) is retired and must not be reused.
 
+- Character set and keyboard type columns
+  - Description: Two new columns in the **Other** group — **Character Set** and **Keyboard Type** — are populated by reading specific bytes from each model's main BIOS ROM file on disk. The ROM file is located using the SHA1 hash recorded in the openMSX machine XML. msx.org does not supply this data; the source is openMSX XML + the local ROM library only.
+  - Priority: Must
+  - Acceptance Criteria:
+    - The **Character Set** column reads byte 0x002B of the main BIOS ROM and maps the lower nibble (`byte & 0x0F`) using: `0` → `"Japanese"`, `1` → `"International"`, `2` → `"Korean"`.
+    - The **Keyboard Type** column reads byte 0x002C of the main BIOS ROM and maps the lower nibble (`byte & 0x0F`) using: `0` → `"Japanese"`, `1` → `"International"`, `2` → `"French"`, `3` → `"UK"`, `4` → `"German"`.
+    - The BIOS ROM element is identified by the XML element with `id="MSX BIOS with BASIC ROM"` anywhere in the machine XML.
+    - **Direct SHA1 path**: when the BIOS ROM element contains a `<sha1>` child, that SHA1 is used to resolve the ROM file via `all_sha1s.txt` (the same index used for slotmap mirror detection). If the element also has a `<window base="...">` child, the window base offset is added to the byte addresses (i.e. byte 0x002B is read at file position `window_base + 0x002B`).
+    - **Block-based path** (turbo R / PanasonicRom machines): when the BIOS ROM element uses `<firstblock>`/`<lastblock>` instead of a direct SHA1, the SHA1 of the enclosing `<PanasonicRom>` element is used to resolve the firmware file. The byte offset within the firmware file is `firstblock × 8192 + rom_offset` (e.g. byte 0x002B of the BIOS = firmware file offset `firstblock × 8192 + 0x002B`).
+    - When the `all_sha1s.txt` index contains multiple SHA1 entries for the same ROM element (e.g. multiple `<sha1>` children or `<PanasonicRom>` with multiple `<sha1>`), each SHA1 is tried in order; the first one whose file is present on disk is used.
+    - Models with no openMSX XML file receive `null` for both columns.
+    - If no SHA1 can be resolved to a file on disk, the scraper emits a warning and records `null` for that model — the build continues.
+    - If the ROM file is shorter than the required byte offset, the scraper emits a warning and records `null`.
+    - If the nibble value is not in the known mapping table, the scraper emits a warning and records `null` (raw numeric values are not stored).
+
 - Alias LUT
   - Description: A maintainer-curated JSON file (`data/aliases.json`) normalizes known name variants to their canonical forms before merge, enabling cross-source records that differ only in name spelling to match correctly. Two rule types are supported: single-column rules (normalize one field independently) and composite rules (normalize multiple fields only when all specified fields match simultaneously).
   - Priority: Must
@@ -275,6 +290,18 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - An alias string mapped to two different canonical names in the same field is rejected at load time with a `ValueError`.
     - A composite rule with a missing or non-dict `match`/`canonical` key, an empty `match` dict, or a non-string field value is rejected at load time with a `ValueError`.
     - If `data/aliases.json` is absent, no aliasing occurs and the build proceeds normally.
+
+- Value substitutions
+  - Description: A maintainer-curated JSON file (`data/substitutions.json`) applies declarative cell-value replacements as the final step of the merge process — after merging all sources, before derived columns are computed. This lets maintainers clean up semantically empty but non-null scraped values (e.g. `"none"` → `null`) without touching scraper code.
+  - Priority: Must
+  - Acceptance Criteria:
+    - `data/substitutions.json` is a JSON object whose keys are model field names. Each value is an array of `{"match": "<regex>", "replace": <string or null>}` rule objects.
+    - The `match` value is a regex pattern evaluated via `re.search` (substring match against the string form of the field value).
+    - The `replace` value is either `null` (clears the field) or a string (sets the new value).
+    - Rules are evaluated in list order; the first matching rule wins and no further rules for that field are checked.
+    - Fields whose current value is `null`/`None` are skipped (not passed to `re.search`).
+    - If `data/substitutions.json` is absent, the substitutions step is silently skipped and the build completes normally.
+    - An invalid regex in any rule raises `re.error` at load time before any processing begins.
 
 - Build timing
   - Description: The scraper logs elapsed time so the maintainer can see how long each phase took.

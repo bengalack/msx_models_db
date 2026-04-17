@@ -64,7 +64,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Type: Job (offline Python script)
   - Responsibilities: Scrape msx.org, parse openMSX XML, load local supplemental data, merge all three sources, compute derived columns, prompt on conflicts, assign/reuse stable model IDs, write data.js
   - Depends On: `scraper/columns.py` (column config), id-registry.json (model IDs), msx.org HTTP or local mirror (`PageSource`), GitHub API/raw HTTP or local mirror (`XMLSource`)
-  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional), `data/local-raw.json` (read-only, optional), `data/aliases.json` (read-only, optional), `data/link-shares.json` (read-only, optional), `data/exclude.json` (read-only, optional)
+  - Data Stores: `data/id-registry.json` (read+write), `docs/data.js` (write), `data/scraper-config.json` (read, optional), `data/local-raw.json` (read-only, optional), `data/aliases.json` (read-only, optional), `data/link-shares.json` (read-only, optional), `data/exclude.json` (read-only, optional), `systemroms/machines/all_sha1s.txt` + ROM files (read-only, optional; for BIOS ROM field extraction)
 
 - msx.org Page Source
   - Type: Library (module `scraper/mirror.py`)
@@ -213,6 +213,18 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     6. Write all 64 slot map values to the model record (keyed by column key, e.g. `slotmap_0_0_0` … `slotmap_3_3_3`)
   - Data touched: XML file, `data/slotmap-lut.json`, `systemroms/machines/all_sha1s.txt` + ROM files (optional)
   - Failure handling: Unknown device → warn + raw string. SHA1 not found → warn + skip mirror detection for that ROM. Overlapping `<mem>` ranges → warn + first device wins. Scraper never aborts on slot map issues.
+
+- BIOS ROM field extraction (per machine XML)
+  - Trigger: Scraper processes an openMSX machine XML file during the build flow (called from `parse_machine_xml` in `scraper/openmsx.py`)
+  - Steps:
+    1. Find the XML element with `id="MSX BIOS with BASIC ROM"` anywhere in the tree
+    2. Locate the inner `<rom>` child of that element
+    3. **Direct SHA1 path** (most MSX2 / MSX2+ machines): read `<sha1>` child(ren); read optional `<window base="...">` offset (default 0); try each SHA1 against `all_sha1s.txt`; use first SHA1 whose file exists on disk
+    4. **Block-based path** (turbo R / PanasonicRom machines): read `<firstblock>`; find `<PanasonicRom>` element in the XML root; try its SHA1(s) against `all_sha1s.txt`; byte offset = `firstblock × 8192`
+    5. Read the resolved file; compute `file_pos = bios_offset + byte_offset`; read `data[file_pos] & 0x0F` (lower nibble)
+    6. Map nibble value to string via lookup table (`_CHARSET_MAP` for 0x002B, `_KBTYPE_MAP` for 0x002C); store under field key
+  - Data touched: XML file, `systemroms/machines/all_sha1s.txt` (optional), ROM file (optional)
+  - Failure handling: No BIOS ROM element → skip (no keys set). SHA1 not in index or file absent → warn + skip. File too short → warn + skip. Unknown nibble value → warn + skip. All failures are per-field: the other field is still extracted if possible. Scraper never aborts.
 
 ## Data Model
 

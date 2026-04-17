@@ -174,8 +174,10 @@ COLUMNS: list[Column] = [
     Column(id=99,  key="engine",           label="Engine",               group="cpu",      type="string"),
     Column(id=100, key="z80_turbo",        label="Z80 Turbo",            group="cpu",      type="string", short_label="Z80 Turbo", tooltip="Z80 turbo mode supported (from openMSX XML)"),
     # Other
-    Column(id=25, key="keyboard_layout",  label="Keyboard Layout",      group="other",    type="string", short_label="KB Layout",    tooltip="Keyboard Layout"),
-    Column(id=27, key="connectivity",     label="Connectivity/Ports",   group="other",    type="string", short_label="Conn/ Ports",  tooltip="Connectivity/Ports"),
+    Column(id=25,  key="keyboard_layout",  label="Keyboard Layout",      group="other",    type="string", short_label="KB Layout",  tooltip="Keyboard Layout"),
+    Column(id=103, key="character_set",   label="Character Set",        group="other",    type="string", short_label="Char Set",    tooltip="Character set encoded in the main BIOS ROM (byte 0x002B, lower nibble)"),
+    Column(id=104, key="keyboard_type",   label="Keyboard Type",        group="other",    type="string", short_label="KB Type",     tooltip="Keyboard type encoded in the main BIOS ROM (byte 0x002C, lower nibble)"),
+    Column(id=27,  key="connectivity",    label="Connectivity/Ports",   group="other",    type="string", short_label="Conn/ Ports", tooltip="Connectivity/Ports"),
     # Emulation
     Column(id=28, key="openmsx_id",       label="openMSX Machine ID",   group="emulation", type="string", short_label="openMSX ID",  tooltip="openMSX Machine ID"),
     Column(id=29, key="fpga_support",     label="FPGA",                 group="emulation", type="string",

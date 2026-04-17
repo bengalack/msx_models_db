@@ -62,6 +62,12 @@ VDP_SPECS: dict[str, dict[str, Any]] = {
     "V9958":     {"max_resolution": "512x424", "max_colors": 19268, "max_sprites": 32},
 }
 
+# BIOS ROM byte maps (MSX System Variables — https://map.grauw.nl/resources/msxsystemvars.php)
+# Both fields are encoded in the lower nibble (bits 0–3) of their respective byte.
+_CHARSET_MAP: dict[int, str] = {0: "Japanese", 1: "International", 2: "Korean"}
+_KBTYPE_MAP: dict[int, str] = {0: "Japanese", 1: "International", 2: "French", 3: "UK", 4: "German"}
+_BIOS_BLOCK_SIZE = 8192  # openMSX PanasonicRom block size in bytes
+
 # Default CPU for each MSX type.
 CPU_DEFAULTS: dict[str, tuple[str, float]] = {
     "MSX":        ("Z80", 3.58),
@@ -171,6 +177,7 @@ def parse_machine_xml(
     _extract_connectivity(devices, result)
     _extract_rtc(devices, result)
     _extract_z80_turbo(devices, result)
+    _extract_bios_rom_info(root, result, sha1_index, systemroms_root, filename)
 
     # Slot map extraction (only when LUT rules are provided)
     if lut_rules is not None:
@@ -380,6 +387,130 @@ def _extract_z80_turbo(devices: etree._Element, out: dict[str, Any]) -> None:
         out["z80_turbo"] = "No"
         return
     out["z80_turbo"] = "Yes" if _text(matsushita.find("hasturbo")) == "true" else "No"
+
+
+def _resolve_bios_file(
+    bios_rom_el: etree._Element,
+    root: etree._Element,
+    sha1_index: dict[str, Path],
+    systemroms_root: Path,
+    filename: str,
+) -> tuple[Path | None, int]:
+    """Return (rom_file_path, bios_start_offset) or (None, 0) on failure.
+
+    Two resolution paths:
+    - Direct SHA1: the BIOS ROM element has a <sha1> child; a <window base>
+      offset is applied if present.
+    - Block-based: the BIOS ROM element uses <firstblock>/<lastblock> (turbo R /
+      PanasonicRom machines); the firmware file is located via <PanasonicRom>'s
+      SHA1 and the byte offset is firstblock * 8192.
+    """
+    rom_child = bios_rom_el.find("rom")
+    if rom_child is None:
+        return None, 0
+
+    # --- Direct SHA1 path ---
+    sha1_els = rom_child.findall("sha1")
+    if sha1_els:
+        window_el = rom_child.find("window")
+        window_base = int(window_el.get("base", "0"), 0) if window_el is not None else 0
+        for sha1_el in sha1_els:
+            sha1 = (sha1_el.text or "").strip().lower()
+            if not sha1:
+                continue
+            file_rel = sha1_index.get(sha1)
+            if file_rel is None:
+                continue
+            file_path = systemroms_root / file_rel
+            if file_path.exists():
+                return file_path, window_base
+        log.warning("BIOS ROM SHA1 not resolved to a file on disk for %s", filename)
+        return None, 0
+
+    # --- Block-based path (PanasonicRom / turbo R) ---
+    firstblock_el = rom_child.find("firstblock")
+    if firstblock_el is not None:
+        try:
+            firstblock = int((firstblock_el.text or "").strip())
+        except ValueError:
+            log.warning("Invalid <firstblock> in BIOS ROM for %s", filename)
+            return None, 0
+
+        panasonic_rom = root.find(".//PanasonicRom")
+        if panasonic_rom is None:
+            log.warning("No <PanasonicRom> for block-based BIOS in %s", filename)
+            return None, 0
+
+        pan_rom_child = panasonic_rom.find("rom")
+        if pan_rom_child is None:
+            return None, 0
+
+        for sha1_el in pan_rom_child.findall("sha1"):
+            sha1 = (sha1_el.text or "").strip().lower()
+            if not sha1:
+                continue
+            file_rel = sha1_index.get(sha1)
+            if file_rel is None:
+                continue
+            file_path = systemroms_root / file_rel
+            if file_path.exists():
+                return file_path, firstblock * _BIOS_BLOCK_SIZE
+
+        log.warning("PanasonicRom SHA1 not resolved to a file on disk for %s", filename)
+        return None, 0
+
+    return None, 0
+
+
+def _extract_bios_rom_info(
+    root: etree._Element,
+    out: dict[str, Any],
+    sha1_index: dict[str, Path] | None,
+    systemroms_root: Path | None,
+    filename: str,
+) -> None:
+    """Extract character_set and keyboard_type from the main BIOS ROM.
+
+    Reads byte 0x002B (character set) and 0x002C (keyboard type), masks the
+    lower nibble of each, and maps the value to a human-readable string.
+    Sets no keys when the ROM file cannot be located or a value is unknown.
+    """
+    if sha1_index is None or systemroms_root is None:
+        return
+
+    bios_rom = root.find('.//*[@id="MSX BIOS with BASIC ROM"]')
+    if bios_rom is None:
+        return
+
+    rom_path, bios_offset = _resolve_bios_file(
+        bios_rom, root, sha1_index, systemroms_root, filename
+    )
+    if rom_path is None:
+        return
+
+    try:
+        data = rom_path.read_bytes()
+    except OSError as exc:
+        log.warning("Cannot read BIOS ROM %s for %s: %s", rom_path, filename, exc)
+        return
+
+    for field, offset, value_map in (
+        ("character_set", 0x002B, _CHARSET_MAP),
+        ("keyboard_type", 0x002C, _KBTYPE_MAP),
+    ):
+        file_pos = bios_offset + offset
+        if file_pos >= len(data):
+            log.warning(
+                "BIOS ROM too short for %s in %s (need %d bytes, have %d)",
+                field, filename, file_pos + 1, len(data),
+            )
+            continue
+        nibble = data[file_pos] & 0x0F
+        mapped = value_map.get(nibble)
+        if mapped is None:
+            log.warning("Unknown %s value %d in BIOS ROM for %s", field, nibble, filename)
+            continue
+        out[field] = mapped
 
 
 def _extract_connectivity(devices: etree._Element, out: dict[str, Any]) -> None:
