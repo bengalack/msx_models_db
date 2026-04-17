@@ -7,8 +7,26 @@ these definitions so they can never drift out of sync.
 
 from __future__ import annotations
 
+import re as _re
 from dataclasses import dataclass
 from typing import Any, Callable
+
+_SLOTMAP_ABBR_RE = _re.compile(r"^(CS|ES)\d+!?$")
+
+
+def _count_slotmap(model: dict, kind: str) -> int | None:
+    """Count distinct sub-slots whose page-0 cell is ``kind`` + N[!].
+
+    ``kind`` is ``"CS"`` (cartridge) or ``"ES"`` (expansion).
+    Returns the count, or ``None`` when none found.
+    """
+    count = 0
+    for ms in range(4):
+        for ss in range(4):
+            v = model.get(f"slotmap_{ms}_{ss}_0") or ""
+            if _SLOTMAP_ABBR_RE.match(v) and v.startswith(kind):
+                count += 1
+    return count if count else None
 
 
 # ---------------------------------------------------------------------------
@@ -141,7 +159,10 @@ COLUMNS: list[Column] = [
     Column(id=16, key="fm_chip",          label="MSX-MUSIC",            group="audio",    type="string"),
     # Media
     Column(id=18, key="floppy_drives",    label="Floppy Drive(s)",      group="media",    type="string", short_label="Floppy Drv",   tooltip="Floppy Drive(s)"),
-    Column(id=19, key="cartridge_slots",  label="Cartridge Slots",      group="media",    type="number", short_label="Cart Slots",   tooltip="Cartridge Slots"),
+    Column(id=19, key="cartridge_slots",  label="Cartridge Slots",      group="media",    type="number", short_label="Cart Slots",   tooltip="Cartridge Slots",
+           derive=lambda m: _count_slotmap(m, "CS") or m.get("scraped_cart_slots")),
+    Column(id=101, key="expansion_slots", label="Expansion Slots",      group="media",    type="number", short_label="Exp Slots",    tooltip="Expansion Slots",
+           derive=lambda m: _count_slotmap(m, "ES")),
     Column(id=20, key="tape_interface",   label="Tape Interface",       group="media",    type="string", short_label="Tape I/F",     tooltip="Tape Interface"),
     # CPU/Chipsets
     Column(id=22, key="cpu",              label="CPU",                  group="cpu",      type="string"),
@@ -159,6 +180,9 @@ COLUMNS: list[Column] = [
     Column(id=28, key="openmsx_id",       label="openMSX Machine ID",   group="emulation", type="string", short_label="openMSX ID",  tooltip="openMSX Machine ID"),
     Column(id=29, key="fpga_support",     label="FPGA",                 group="emulation", type="string",
            derive=lambda m: "Yes" if "Altera" in (m.get("engine") or "") else None),
+
+    # Hidden scraper inputs — not shipped to browser; available to derive functions
+    Column(id=102, key="scraped_cart_slots", label="Scraped Cart Slots", group="media", type="number", hidden=True),
 
     # Slotmap, slot 0  (IDs 30–45)  — ms=0, ss=0..3, p=0..3
     Column(id=30, key="slotmap_0_0_0", label="0 / P0", group="slotmap_0", type="string"),

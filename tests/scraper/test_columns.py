@@ -178,3 +178,99 @@ class TestProductionConfig:
     def test_model_has_truncate_limit(self) -> None:
         model = next(c for c in COLUMNS if c.key == "model")
         assert model.truncate_limit == 16
+
+
+# ---------------------------------------------------------------------------
+# _count_slotmap helper
+# ---------------------------------------------------------------------------
+
+class TestCountSlotmap:
+    """Tests for the _count_slotmap helper."""
+
+    def _model(self, mapping: dict) -> dict:
+        m: dict = {}
+        for ms in range(4):
+            for ss in range(4):
+                m[f"slotmap_{ms}_{ss}_0"] = None
+        m.update(mapping)
+        return m
+
+    def test_counts_cs_slots(self):
+        from scraper.columns import _count_slotmap
+        model = self._model({"slotmap_1_0_0": "CS1", "slotmap_2_0_0": "CS2"})
+        assert _count_slotmap(model, "CS") == 2
+
+    def test_counts_es_slots(self):
+        from scraper.columns import _count_slotmap
+        model = self._model({"slotmap_0_1_0": "ES1", "slotmap_0_2_0": "ES2"})
+        assert _count_slotmap(model, "ES") == 2
+
+    def test_bang_suffix_counted(self):
+        from scraper.columns import _count_slotmap
+        model = self._model({"slotmap_1_1_0": "CS1!", "slotmap_1_2_0": "ES1!"})
+        assert _count_slotmap(model, "CS") == 1
+        assert _count_slotmap(model, "ES") == 1
+
+    def test_empty_slotmap_returns_none(self):
+        from scraper.columns import _count_slotmap
+        model = self._model({})
+        assert _count_slotmap(model, "CS") is None
+        assert _count_slotmap(model, "ES") is None
+
+    def test_cs_does_not_count_es(self):
+        from scraper.columns import _count_slotmap
+        model = self._model({"slotmap_0_0_0": "ES1"})
+        assert _count_slotmap(model, "CS") is None
+
+    def test_non_slot_values_ignored(self):
+        from scraper.columns import _count_slotmap
+        model = self._model({"slotmap_0_0_0": "MAIN", "slotmap_0_1_0": "MM"})
+        assert _count_slotmap(model, "CS") is None
+
+
+class TestDerivedSlotColumns:
+    """Tests for cartridge_slots and expansion_slots derive functions."""
+
+    def _col(self, key):
+        from scraper.columns import COLUMNS
+        return next(c for c in COLUMNS if c.key == key)
+
+    def test_cartridge_slots_derive_uses_slotmap(self):
+        col = self._col("cartridge_slots")
+        model = {f"slotmap_{ms}_{ss}_0": None for ms in range(4) for ss in range(4)}
+        model["slotmap_1_0_0"] = "CS1"
+        model["slotmap_2_0_0"] = "CS2"
+        assert col.derive(model) == 2
+
+    def test_cartridge_slots_fallback_to_scraped(self):
+        col = self._col("cartridge_slots")
+        model = {f"slotmap_{ms}_{ss}_0": None for ms in range(4) for ss in range(4)}
+        model["scraped_cart_slots"] = 2
+        assert col.derive(model) == 2
+
+    def test_cartridge_slots_slotmap_beats_scraped(self):
+        col = self._col("cartridge_slots")
+        model = {f"slotmap_{ms}_{ss}_0": None for ms in range(4) for ss in range(4)}
+        model["slotmap_1_0_0"] = "CS1"
+        model["scraped_cart_slots"] = 3  # should be ignored
+        assert col.derive(model) == 1
+
+    def test_expansion_slots_derive(self):
+        col = self._col("expansion_slots")
+        model = {f"slotmap_{ms}_{ss}_0": None for ms in range(4) for ss in range(4)}
+        model["slotmap_0_1_0"] = "ES1"
+        assert col.derive(model) == 1
+
+    def test_expansion_slots_no_fallback(self):
+        col = self._col("expansion_slots")
+        model = {f"slotmap_{ms}_{ss}_0": None for ms in range(4) for ss in range(4)}
+        assert col.derive(model) is None
+
+    def test_scraped_cart_slots_is_hidden(self):
+        col = self._col("scraped_cart_slots")
+        assert col.hidden is True
+
+    def test_expansion_slots_in_media_group(self):
+        col = self._col("expansion_slots")
+        assert col.group == "media"
+        assert col.id == 101
