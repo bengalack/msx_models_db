@@ -6,7 +6,7 @@ import json
 import re
 from pathlib import Path
 
-from scraper.merge import _renumber_cs_es, _is_slot_type, merge_models, load_substitutions, apply_substitutions
+from scraper.merge import _renumber_cs_es, _is_slot_type, merge_models, load_substitutions, apply_substitutions, natural_key
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────
@@ -358,6 +358,16 @@ class TestLoadSubstitutions:
         result = load_substitutions(path)
         assert len(result["manufacturer"]) == 2
 
+    def test_production_rule_matches_case_insensitively(self):
+        path = Path("data/substitutions.json")
+        result = load_substitutions(path)
+        pattern = result["manufacturer"][0]["pattern"]
+        assert pattern.search("none")
+        assert pattern.search("None")
+        assert pattern.search("NONE")
+        assert not pattern.search("someone")
+        assert not pattern.search("nonesense")
+
 
 class TestApplySubstitutions:
     def _subs(self, column: str, match: str, replace) -> dict:
@@ -418,3 +428,23 @@ class TestApplySubstitutions:
         models = [{"scraped_cart_slots": 2}]
         apply_substitutions(models, self._subs("scraped_cart_slots", "^2$", None))
         assert models[0]["scraped_cart_slots"] is None
+
+
+# ── natural_key ───────────────────────────────────────────────────────────
+
+
+class TestNaturalKey:
+    def test_normal_case(self):
+        assert natural_key({"manufacturer": "Yamaha", "model": "HB-10"}) == "yamaha|hb-10"
+
+    def test_none_manufacturer_does_not_crash(self):
+        assert natural_key({"manufacturer": None, "model": "X"}) == "|x"
+
+    def test_none_model_does_not_crash(self):
+        assert natural_key({"manufacturer": "Acme", "model": None}) == "acme|"
+
+    def test_both_none_does_not_crash(self):
+        assert natural_key({"manufacturer": None, "model": None}) == "|"
+
+    def test_absent_keys_do_not_crash(self):
+        assert natural_key({}) == "|"
