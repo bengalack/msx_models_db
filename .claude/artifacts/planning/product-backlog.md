@@ -1,8 +1,5 @@
 - Now / Next
-  - Slotmap — remaining work
-    - Slot map HTML extraction (msx.org parser: CS/ES detection, sequential numbering, LUT matching)
-    - Slot map CS/ES resolution (merge step: upgrade CS→ES where msx.org says ES, renumber all CS/ES)
-    - Slot map tooltip rendering (browser-side: abbreviation display, LUT tooltip lookup, ⌧/• sentinels, mirror * notation)
+  - Z80 turbo column (id=100, CPU/Chipsets): scraper extraction + data rebuild ✓ (shipped 2026-04-16)
 
 - Later
   - CI (GitHub Actions)
@@ -117,3 +114,14 @@
     - Header rows, toolbar, data rows, gutter, null/em-dash cells, overflow tooltip
   - Project scaffold
     - Vite + TypeScript SPA; Python scraper package; docs/ committed to main
+  - Slot map HTML extraction
+    - msx.org parser: CS/ES detection, sequential numbering, LUT matching
+    - Handles non-expanded and expanded slots; rowspan flattening; mirror detection
+  - Slot map CS/ES resolution
+    - Merge step: upgrade openMSX CS→ES where msx.org says ES; renumber all CS/ES
+  - Slot map tooltip rendering
+    - Browser-side: abbreviation display, LUT tooltip lookup, ⌧/• sentinels, mirror * notation
+  - Z80 turbo column (id=100, CPU/Chipsets)
+    - "Yes" if `<hasturbo>true</hasturbo>`, "No" if XML parsed and absent, null for msx.org-only
+    - cpu_speed_mhz (id=23) retired; ID preserved
+  - Scraper — Z80 turbo column extraction

@@ -1,8 +1,8 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.13
-- Date: 2026-04-16
+- Version: 0.15
+- Date: 2026-04-17
 - Owner: bengalack
 
 ## Problem Statement
@@ -253,11 +253,13 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - The scraper reads and updates a persistent ID registry to ensure stable IDs across runs.
     - The scraper supports a build mode that skips fetching from external sources and instead uses previously cached raw data files on disk. This is the default mode; fetching is opt-in (e.g. via a `--fetch` flag).
     - External sources (msx.org, openMSX GitHub) change infrequently; the maintainer fetches fresh data only when needed.
+    - The msx.org scraper supports a local-mirror mode: `--msxorg-mirror DIR` reads category and model pages from a local directory of browser-saved HTML files (Save-As, HTML Only) instead of fetching live. `--local-msxorg-only` forces local-only mode. The default mirror path can be stored in `data/scraper-config.json` under the key `msxorg_mirror`; the CLI flag always takes precedence. File names follow browser Save-As output: `https://www.msx.org/wiki/<Title>` → `<Title>.html`. If a model file is absent from the mirror, the scraper warns and skips that model; the rest of the build continues. If the mirror directory does not exist, the scraper aborts the msx.org portion with a clear error. The same HTML parsers are used as for live pages — no divergent code path.
+    - The openMSX scraper supports a local-mirror mode: `--openmsx-mirror DIR` reads machine XML files from a local directory (e.g. a local clone of the openMSX repository) instead of fetching from GitHub. `--local-openmsx-only` forces local-only mode. The default mirror path can be stored in `data/scraper-config.json` under the key `openmsx_mirror`; the CLI flag always takes precedence.
     - When fetching a URL that is expected to exist and the server responds with HTTP 502 or 503, the scraper waits 2 seconds and retries the request. A warning is logged for each retry attempt. The maximum number of retries is 5; if all retries fail the error is propagated normally.
     - For each machine XML, the scraper detects the presence of an `<RTC>` element anywhere under the `<devices>` section and populates the `rtc` field with `"Yes"` if found or `"No"` if the XML was parsed but no `<RTC>` element is present. Models with no openMSX XML file receive an empty/null `rtc` value. msx.org does not supply RTC data; only openMSX XML is used for this field.
     - For each machine XML, the scraper reads `<devices><Matsushita><hasturbo>` and populates the `z80_turbo` field with `"Yes"` if the element text is `"true"`, or `"No"` in all other cases (including when `<Matsushita>` is absent or `<hasturbo>` is absent or not `"true"`). Models with no openMSX XML file receive an empty/null `z80_turbo` value. The `z80_turbo` column is in the CPU/Chipsets group. msx.org does not supply this data; only openMSX XML is used for this field.
+    - For memory extraction, the scraper treats `<PanasonicRAM>` (a proprietary implementation of the standard MSX memory mapper interface) as implying `mapper = "Yes"`. The rule applied is: `<MemoryMapper>` present → `mapper = "Yes"`; `<PanasonicRAM>` present → `mapper = "Yes"` (takes precedence over a plain `<RAM>` in the same XML); `<RAM>` alone → `mapper = "No"`. When multiple RAM-typed elements are present, their sizes are summed for the `ram` field; `mapper` is "Yes" if any `<MemoryMapper>` or `<PanasonicRAM>` element is found, otherwise "No".
     - The `cpu_speed_mhz` column (CPU Speed (MHz)) is removed. Its ID (23) is retired and must not be reused.
-
 
 - Alias LUT
   - Description: A maintainer-curated JSON file (`data/aliases.json`) normalizes known name variants to their canonical forms before merge, enabling cross-source records that differ only in name spelling to match correctly. Two rule types are supported: single-column rules (normalize one field independently) and composite rules (normalize multiple fields only when all specified fields match simultaneously).
