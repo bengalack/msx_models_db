@@ -139,7 +139,7 @@ def build(
     systemroms_root: Path = SYSTEMROMS_ROOT,
     output_path: Path = DATA_JS_PATH,
     resolutions_path: Path | None = None,
-    substitutions_path: Path = SUBSTITUTIONS_PATH,
+    substitutions_path: Path | None = None,
     openmsx_mirror_path: Path | None = None,
     local_openmsx_only: bool = False,
     mirror_path: Path | None = None,
@@ -263,7 +263,8 @@ def build(
     )
 
     # Step 3b: Apply substitutions
-    subs = merge.load_substitutions(substitutions_path)
+    subs_path = substitutions_path if substitutions_path is not None else SUBSTITUTIONS_PATH
+    subs = merge.load_substitutions(subs_path)
     if subs:
         merge.apply_substitutions(merged, subs)
 
