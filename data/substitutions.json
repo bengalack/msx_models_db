@@ -1,0 +1,5 @@
+{
+  "manufacturer": [
+    {"match": "(?i)^none$", "replace": null}
+  ]
+}

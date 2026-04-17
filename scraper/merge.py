@@ -17,8 +17,8 @@ log = logging.getLogger(__name__)
 
 def natural_key(model: dict[str, Any]) -> str:
     """Build a stable natural key: 'manufacturer|model' (lowercased, trimmed)."""
-    mfr = model.get("manufacturer", "").lower().strip()
-    mdl = model.get("model", "").lower().strip()
+    mfr = (model.get("manufacturer") or "").lower().strip()
+    mdl = (model.get("model") or "").lower().strip()
     return f"{mfr}|{mdl}"
 
 
