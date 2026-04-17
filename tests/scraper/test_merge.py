@@ -6,6 +6,8 @@ import json
 import re
 from pathlib import Path
 
+import pytest
+
 from scraper.merge import _renumber_cs_es, _is_slot_type, merge_models, load_substitutions, apply_substitutions, natural_key
 
 
@@ -367,6 +369,11 @@ class TestLoadSubstitutions:
         assert pattern.search("NONE")
         assert not pattern.search("someone")
         assert not pattern.search("nonesense")
+
+    def test_invalid_regex_raises(self, tmp_path):
+        path = self._write(tmp_path, {"manufacturer": [{"match": "[invalid", "replace": None}]})
+        with pytest.raises(re.error):
+            load_substitutions(path)
 
 
 class TestApplySubstitutions:

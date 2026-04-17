@@ -57,7 +57,7 @@ SUBSTITUTIONS_PATH = Path("data/substitutions.json")
 
 New parameter on `build()`:
 ```python
-substitutions_path: Path = SUBSTITUTIONS_PATH
+substitutions_path: Path | None = None,
 ```
 
 Pipeline insertion — between step 3 (merge) and step 4 (derive):
