@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../tools/openmsx21x/share/machines"
+		}
+	],
+	"settings": {}
+}
