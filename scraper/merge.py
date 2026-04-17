@@ -77,7 +77,7 @@ def _normalise_keyboard(val: str) -> str:
 _PREFER_MSXORG: set[str] = {"keyboard_layout", "region"}
 
 # Fields where openMSX is more reliable (hardware-level).
-_PREFER_OPENMSX: set[str] = {"cartridge_slots", "vdp", "vram_kb", "main_ram_kb", "psg"}
+_PREFER_OPENMSX: set[str] = {"scraped_cart_slots", "vdp", "vram_kb", "main_ram_kb", "psg"}
 
 # Matches CS/ES slot abbreviations with optional number and ! suffix.
 # The number is optional to tolerate bare "CS"/"ES" that can appear in stale

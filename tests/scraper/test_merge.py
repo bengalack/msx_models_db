@@ -290,3 +290,13 @@ class TestMergeSlotMapCsEsPreference:
             assert m[f"slotmap_2_1_{p}"].startswith("ES")
             assert m[f"slotmap_2_2_{p}"].startswith("ES")
             assert m[f"slotmap_2_3_{p}"].startswith("ES")
+
+
+# ── merge_models: _PREFER_OPENMSX fields ─────────────────────────────────
+
+def test_scraped_cart_slots_prefers_openmsx():
+    """scraped_cart_slots conflict: openMSX value wins."""
+    o = [{"manufacturer": "Acme", "model": "X", "scraped_cart_slots": 2}]
+    m = [{"manufacturer": "Acme", "model": "X", "scraped_cart_slots": 1}]
+    merged = merge_models(o, m)
+    assert merged[0]["scraped_cart_slots"] == 2
