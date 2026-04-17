@@ -1,5 +1,4 @@
 - Now / Next
-  - Z80 turbo column (id=100, CPU/Chipsets): scraper extraction + data rebuild ✓ (shipped 2026-04-16)
 
 - Later
   - CI (GitHub Actions)
@@ -19,6 +18,10 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Expansion Slots column (id=101, Media group)
+    - Derived from final slotmap ES* count; no scraped fallback
+  - Cart Slots (id=19) now derived from final slotmap CS* count
+    - Fallback to scraped_cart_slots (hidden id=102, from msx.org/openMSX parsers) when no slotmap
   - Sticky grid UI
     - Four sticky header rows (page header, toolbar, group header, column header + filter row)
     - Sticky left gutter (row numbers, hide/unhide controls, gap indicators)
