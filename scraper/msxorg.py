@@ -217,7 +217,7 @@ def _parse_media(raw: str) -> dict[str, Any]:
     if "cartridge" in raw_lower:
         m = _RE_CART_SLOTS.search(raw)
         if m:
-            result["cartridge_slots"] = int(m.group(1))
+            result["scraped_cart_slots"] = int(m.group(1))
     return result
 
 
@@ -265,9 +265,9 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
                     if "cartridge slot" in text:
                         m = re.search(r"(\d+)\s*(?:×|x)?\s*cartridge", text)
                         if m:
-                            result["cartridge_slots"] = int(m.group(1))
-                        elif "cartridge_slots" not in result:
-                            result["cartridge_slots"] = 2  # common default
+                            result["scraped_cart_slots"] = int(m.group(1))
+                        elif "scraped_cart_slots" not in result:
+                            result["scraped_cart_slots"] = 2  # common default
                 sibling = sibling.find_next_sibling()
             break
 

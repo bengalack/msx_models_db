@@ -325,3 +325,10 @@ class TestParseConnections:
         assert result.get("tape_interface") == "Yes"
         assert "Printer" in result.get("connectivity", "")
         assert "Cassette" in result.get("connectivity", "")
+
+    def test_cartridge_slots_stored_as_scraped_cart_slots(self):
+        """msxorg parser stores raw slot count under scraped_cart_slots, not cartridge_slots."""
+        soup = _connections_soup(["2 cartridge slots"])
+        result = _parse_connections(soup)
+        assert result.get("scraped_cart_slots") == 2
+        assert "cartridge_slots" not in result
