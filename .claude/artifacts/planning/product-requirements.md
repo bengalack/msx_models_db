@@ -1,7 +1,7 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.15
+- Version: 0.16
 - Date: 2026-04-17
 - Owner: bengalack
 
@@ -194,6 +194,8 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Defined derived column rules:
       - `nmos_cmos`: "CMOS" if the `engine` field matches `*T976*` (i.e. contains the substring "T976", e.g. T9769, T9769B, T9769C); "NMOS" otherwise.
       - `fpga_support`: "Yes" if the `engine` field matches `*Altera*` (i.e. contains the substring "Altera", e.g. Altera Cyclone IV); `null` (empty) otherwise.
+      - `cartridge_slots`: count of distinct sub-slots in the final merged slotmap whose page-0 abbreviation matches `CS{N}` or `CS{N}!` (non-standard placement). Falls back to the hidden `scraped_cart_slots` field (set by the msx.org and openMSX scrapers) for models that have msx.org page text with a slot count but no HTML slot map table. Returns `null` if neither source has data.
+      - `expansion_slots`: count of distinct sub-slots whose page-0 abbreviation matches `ES{N}` or `ES{N}!`. Returns `null` if no expansion slots are found. No fallback (no existing scraped source for expansion slot counts).
     - The web page requires no column configuration of its own; it reads all column and group definitions from data.js at load time.
 
 - Local supplemental data source
