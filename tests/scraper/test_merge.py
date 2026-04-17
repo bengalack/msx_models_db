@@ -413,3 +413,8 @@ class TestApplySubstitutions:
         models = [{"manufacturer": "none"}]
         apply_substitutions(models, {})
         assert models[0]["manufacturer"] == "none"
+
+    def test_integer_value_coerced_to_str(self):
+        models = [{"scraped_cart_slots": 2}]
+        apply_substitutions(models, self._subs("scraped_cart_slots", "^2$", None))
+        assert models[0]["scraped_cart_slots"] is None
