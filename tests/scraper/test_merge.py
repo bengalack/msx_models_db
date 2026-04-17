@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import json
-import os
 import re
-import tempfile
 from pathlib import Path
 
 from scraper.merge import _renumber_cs_es, _is_slot_type, merge_models, load_substitutions
@@ -312,18 +310,17 @@ def test_scraped_cart_slots_prefers_openmsx():
 
 
 class TestLoadSubstitutions:
-    def _write(self, data: dict) -> Path:
-        fd, path = tempfile.mkstemp(suffix=".json")
-        os.write(fd, json.dumps(data).encode())
-        os.close(fd)
-        return Path(path)
+    def _write(self, tmp_path: Path, data: dict) -> Path:
+        p = tmp_path / "subs.json"
+        p.write_text(json.dumps(data), encoding="utf-8")
+        return p
 
     def test_absent_file_returns_empty(self):
         result = load_substitutions(Path("/nonexistent/substitutions.json"))
         assert result == {}
 
-    def test_loads_single_rule(self):
-        path = self._write({"manufacturer": [{"match": "none", "replace": None}]})
+    def test_loads_single_rule(self, tmp_path):
+        path = self._write(tmp_path, {"manufacturer": [{"match": "none", "replace": None}]})
         result = load_substitutions(path)
         assert "manufacturer" in result
         assert len(result["manufacturer"]) == 1
@@ -331,28 +328,28 @@ class TestLoadSubstitutions:
         assert isinstance(rule["pattern"], re.Pattern)
         assert rule["replace"] is None
 
-    def test_loads_string_replacement(self):
-        path = self._write({"region": [{"match": "korea", "replace": "Korea"}]})
+    def test_loads_string_replacement(self, tmp_path):
+        path = self._write(tmp_path, {"region": [{"match": "korea", "replace": "Korea"}]})
         result = load_substitutions(path)
         assert result["region"][0]["replace"] == "Korea"
 
-    def test_compiles_regex(self):
-        path = self._write({"manufacturer": [{"match": "^none$", "replace": None}]})
+    def test_compiles_regex(self, tmp_path):
+        path = self._write(tmp_path, {"manufacturer": [{"match": "^none$", "replace": None}]})
         result = load_substitutions(path)
         pattern = result["manufacturer"][0]["pattern"]
         assert pattern.search("none")
         assert not pattern.search("someone")
 
-    def test_multiple_columns(self):
-        path = self._write({
+    def test_multiple_columns(self, tmp_path):
+        path = self._write(tmp_path, {
             "manufacturer": [{"match": "none", "replace": None}],
             "region": [{"match": "unknown", "replace": None}],
         })
         result = load_substitutions(path)
         assert set(result.keys()) == {"manufacturer", "region"}
 
-    def test_multiple_rules_per_column(self):
-        path = self._write({
+    def test_multiple_rules_per_column(self, tmp_path):
+        path = self._write(tmp_path, {
             "manufacturer": [
                 {"match": "none", "replace": None},
                 {"match": "n/a", "replace": None},

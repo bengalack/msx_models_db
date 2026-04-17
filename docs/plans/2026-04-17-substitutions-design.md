@@ -39,7 +39,7 @@ Example: replace `"none"` in `manufacturer` with `null` (renders as empty / em-d
 
 - Returns `{}` if the file does not exist
 - Reads the JSON and compiles each `match` string into a `re.Pattern` (stored as `"pattern"` key)
-- Raises `ValueError` on invalid regex
+- Raises `re.error` on invalid regex
 
 ### `apply_substitutions(models: list[dict], subs: dict) -> None`
 
