@@ -112,6 +112,34 @@ class TestBuildPipeline:
         assert reg.models["sony|hb-75p"] == 42  # preserved
 
 
+    def test_cartridge_slots_key_migrated_to_scraped_cart_slots(self, tmp_path):
+        """Cached raw data with old 'cartridge_slots' key is migrated so derive runs."""
+        openmsx = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+                    "cartridge_slots": 2}]
+        openmsx_path = tmp_path / "openmsx.json"
+        msxorg_path = tmp_path / "msxorg.json"
+        output_path = tmp_path / "data.js"
+        openmsx_path.write_text(json.dumps(openmsx))
+        msxorg_path.write_text(json.dumps([]))
+        build(openmsx_path=openmsx_path, msxorg_path=msxorg_path,
+              registry_path=tmp_path / "reg.json", output_path=output_path)
+        content = output_path.read_text(encoding="utf-8")
+        import re as _re
+        data = json.loads(_re.search(r"window\.MSX_DATA\s*=\s*(\{.*\})\s*;", content, _re.DOTALL).group(1))
+        col_keys = [c["key"] for c in data["columns"]]
+        # cartridge_slots value should come from scraped fallback (2), not be None
+        idx = col_keys.index("cartridge_slots")
+        mfr_idx = col_keys.index("manufacturer")
+        mdl_idx = col_keys.index("model")
+        sony = next(
+            m for m in data["models"]
+            if m["values"][mfr_idx] == "Sony" and m["values"][mdl_idx] == "HB-75P"
+        )
+        assert sony["values"][idx] == 2, f"expected 2, got {sony['values'][idx]}"
+        # scraped_cart_slots must NOT appear in exported columns (it is hidden)
+        assert "scraped_cart_slots" not in col_keys
+
+
 class TestBuildSlotmapLUT:
     """Integration tests for slotmap LUT wired into build pipeline."""
 

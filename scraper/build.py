@@ -212,6 +212,13 @@ def build(
         if "standard" in model:
             model["generation"] = model.pop("standard")
 
+    # Backward-compat migration: rename "cartridge_slots" → "scraped_cart_slots".
+    # Cached raw files written before this rename still use the old key; migrating
+    # here ensures the derive step sees the correct field name.
+    for model in openmsx_data + msxorg_data:
+        if "cartridge_slots" in model and "scraped_cart_slots" not in model:
+            model["scraped_cart_slots"] = model.pop("cartridge_slots")
+
     # Load local supplemental data (optional — absent file is not an error).
     local_data = local_source.load_local(local_path)
 
