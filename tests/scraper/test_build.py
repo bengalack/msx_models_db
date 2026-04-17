@@ -179,7 +179,7 @@ class TestBuildSlotmapLUT:
         json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
         json_end = content.rindex(";")
         data = json.loads(content[json_start:json_end])
-        assert len(data["columns"]) == 91
+        assert len(data["columns"]) == 92
 
     def test_missing_lut_file_aborts_build(self, tmp_path):
         import pytest

@@ -16,7 +16,7 @@ def test_group_count():
 
 
 def test_column_count():
-    assert len(COLUMNS) == 92
+    assert len(COLUMNS) == 94
 
 
 # ---------------------------------------------------------------------------
