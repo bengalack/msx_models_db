@@ -2,7 +2,13 @@
 
 from __future__ import annotations
 
-from scraper.merge import _renumber_cs_es, _is_slot_type, merge_models
+import json
+import os
+import re
+import tempfile
+from pathlib import Path
+
+from scraper.merge import _renumber_cs_es, _is_slot_type, merge_models, load_substitutions
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────
@@ -300,3 +306,57 @@ def test_scraped_cart_slots_prefers_openmsx():
     m = [{"manufacturer": "Acme", "model": "X", "scraped_cart_slots": 1}]
     merged = merge_models(o, m)
     assert merged[0]["scraped_cart_slots"] == 2
+
+
+# ── load_substitutions ────────────────────────────────────────────────────
+
+
+class TestLoadSubstitutions:
+    def _write(self, data: dict) -> Path:
+        fd, path = tempfile.mkstemp(suffix=".json")
+        os.write(fd, json.dumps(data).encode())
+        os.close(fd)
+        return Path(path)
+
+    def test_absent_file_returns_empty(self):
+        result = load_substitutions(Path("/nonexistent/substitutions.json"))
+        assert result == {}
+
+    def test_loads_single_rule(self):
+        path = self._write({"manufacturer": [{"match": "none", "replace": None}]})
+        result = load_substitutions(path)
+        assert "manufacturer" in result
+        assert len(result["manufacturer"]) == 1
+        rule = result["manufacturer"][0]
+        assert isinstance(rule["pattern"], re.Pattern)
+        assert rule["replace"] is None
+
+    def test_loads_string_replacement(self):
+        path = self._write({"region": [{"match": "korea", "replace": "Korea"}]})
+        result = load_substitutions(path)
+        assert result["region"][0]["replace"] == "Korea"
+
+    def test_compiles_regex(self):
+        path = self._write({"manufacturer": [{"match": "^none$", "replace": None}]})
+        result = load_substitutions(path)
+        pattern = result["manufacturer"][0]["pattern"]
+        assert pattern.search("none")
+        assert not pattern.search("someone")
+
+    def test_multiple_columns(self):
+        path = self._write({
+            "manufacturer": [{"match": "none", "replace": None}],
+            "region": [{"match": "unknown", "replace": None}],
+        })
+        result = load_substitutions(path)
+        assert set(result.keys()) == {"manufacturer", "region"}
+
+    def test_multiple_rules_per_column(self):
+        path = self._write({
+            "manufacturer": [
+                {"match": "none", "replace": None},
+                {"match": "n/a", "replace": None},
+            ]
+        })
+        result = load_substitutions(path)
+        assert len(result["manufacturer"]) == 2

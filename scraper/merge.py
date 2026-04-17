@@ -412,3 +412,31 @@ def print_conflict_summary(conflicts: list[dict[str, Any]]) -> None:
                 "    %s: openMSX=%r vs msx.org=%r [using %s]",
                 item["natural_key"], item["openmsx_value"], item["msxorg_value"], item["used"],
             )
+
+
+# ── Substitutions ────────────────────────────────────────────────────
+
+
+def load_substitutions(path: Path) -> dict[str, list[dict]]:
+    """Load substitutions.json and compile regex patterns.
+
+    Format: {"column_key": [{"match": "<regex>", "replace": <str|null>}, ...]}
+
+    Returns {} if the file does not exist.
+    Each rule dict in the returned structure has a compiled "pattern" key
+    (re.Pattern) instead of the raw "match" string.
+    """
+    if not path.exists():
+        return {}
+    with open(path, encoding="utf-8") as f:
+        raw: dict[str, list[dict]] = json.load(f)
+    result: dict[str, list[dict]] = {}
+    for column, rules in raw.items():
+        compiled = []
+        for rule in rules:
+            compiled.append({
+                "pattern": re.compile(rule["match"]),
+                "replace": rule["replace"],
+            })
+        result[column] = compiled
+    return result
