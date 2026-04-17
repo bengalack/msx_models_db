@@ -440,3 +440,23 @@ def load_substitutions(path: Path) -> dict[str, list[dict]]:
             })
         result[column] = compiled
     return result
+
+
+def apply_substitutions(models: list[dict[str, Any]], subs: dict[str, list[dict]]) -> None:
+    """Apply substitution rules to merged models in-place.
+
+    For each model, for each column in subs, for each rule in order:
+    if re.search(pattern, str(value)) matches, replace the field value
+    with rule["replace"] and move on to the next field (first match wins).
+
+    Fields absent from the model or set to None are skipped.
+    """
+    for model in models:
+        for column, rules in subs.items():
+            value = model.get(column)
+            if value is None:
+                continue
+            for rule in rules:
+                if rule["pattern"].search(str(value)):
+                    model[column] = rule["replace"]
+                    break

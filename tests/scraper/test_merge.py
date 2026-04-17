@@ -6,7 +6,7 @@ import json
 import re
 from pathlib import Path
 
-from scraper.merge import _renumber_cs_es, _is_slot_type, merge_models, load_substitutions
+from scraper.merge import _renumber_cs_es, _is_slot_type, merge_models, load_substitutions, apply_substitutions
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────
@@ -357,3 +357,59 @@ class TestLoadSubstitutions:
         })
         result = load_substitutions(path)
         assert len(result["manufacturer"]) == 2
+
+
+class TestApplySubstitutions:
+    def _subs(self, column: str, match: str, replace) -> dict:
+        return {column: [{"pattern": re.compile(match), "replace": replace}]}
+
+    def test_exact_substring_match_replaces_with_null(self):
+        models = [{"manufacturer": "none", "model": "X"}]
+        apply_substitutions(models, self._subs("manufacturer", "none", None))
+        assert models[0]["manufacturer"] is None
+
+    def test_partial_substring_match_replaces(self):
+        models = [{"manufacturer": "Some none value"}]
+        apply_substitutions(models, self._subs("manufacturer", "none", None))
+        assert models[0]["manufacturer"] is None
+
+    def test_no_match_leaves_value_unchanged(self):
+        models = [{"manufacturer": "Yamaha"}]
+        apply_substitutions(models, self._subs("manufacturer", "^none$", None))
+        assert models[0]["manufacturer"] == "Yamaha"
+
+    def test_string_replacement(self):
+        models = [{"region": "south korea"}]
+        apply_substitutions(models, self._subs("region", "south korea", "Korea"))
+        assert models[0]["region"] == "Korea"
+
+    def test_none_value_is_skipped(self):
+        models = [{"manufacturer": None}]
+        apply_substitutions(models, self._subs("manufacturer", "none", "X"))
+        assert models[0]["manufacturer"] is None  # unchanged
+
+    def test_missing_field_is_skipped(self):
+        models = [{"model": "HB-10"}]
+        apply_substitutions(models, self._subs("manufacturer", "none", None))
+        assert "manufacturer" not in models[0]
+
+    def test_first_matching_rule_wins(self):
+        subs = {"manufacturer": [
+            {"pattern": re.compile("none"), "replace": None},
+            {"pattern": re.compile("none"), "replace": "NEVER"},
+        ]}
+        models = [{"manufacturer": "none"}]
+        apply_substitutions(models, subs)
+        assert models[0]["manufacturer"] is None
+
+    def test_multiple_models_all_substituted(self):
+        models = [{"manufacturer": "none"}, {"manufacturer": "none"}, {"manufacturer": "Yamaha"}]
+        apply_substitutions(models, self._subs("manufacturer", "^none$", None))
+        assert models[0]["manufacturer"] is None
+        assert models[1]["manufacturer"] is None
+        assert models[2]["manufacturer"] == "Yamaha"
+
+    def test_empty_subs_is_noop(self):
+        models = [{"manufacturer": "none"}]
+        apply_substitutions(models, {})
+        assert models[0]["manufacturer"] == "none"
