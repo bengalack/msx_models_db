@@ -36,6 +36,7 @@ SLOTMAP_LUT_PATH = Path("data/slotmap-lut.json")
 SHA1_INDEX_PATH = Path("systemroms/machines/all_sha1s.txt")
 SYSTEMROMS_ROOT = Path("systemroms/machines")
 DATA_JS_PATH = Path("docs/data.js")
+SUBSTITUTIONS_PATH = Path("data/substitutions.json")
 SCRAPER_CONFIG_PATH = Path("data/scraper-config.json")
 
 
@@ -138,6 +139,7 @@ def build(
     systemroms_root: Path = SYSTEMROMS_ROOT,
     output_path: Path = DATA_JS_PATH,
     resolutions_path: Path | None = None,
+    substitutions_path: Path = SUBSTITUTIONS_PATH,
     openmsx_mirror_path: Path | None = None,
     local_openmsx_only: bool = False,
     mirror_path: Path | None = None,
@@ -259,6 +261,11 @@ def build(
         resolutions=resolutions,
         alias_path=alias_path,
     )
+
+    # Step 3b: Apply substitutions
+    subs = merge.load_substitutions(substitutions_path)
+    if subs:
+        merge.apply_substitutions(merged, subs)
 
     # Step 4: Derive computed columns
     derive_cols = [c for c in COLUMNS if c.derive is not None]
