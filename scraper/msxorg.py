@@ -22,9 +22,10 @@ WIKI_URL = f"{BASE_URL}/wiki/"
 
 # Category pages that list models by MSX standard.
 CATEGORY_URLS: dict[str, str] = {
-    "MSX2": f"{WIKI_URL}Category:MSX2_Computers",
-    "MSX2+": f"{WIKI_URL}Category:MSX2%2B_Computers",
+    "MSX2":    f"{WIKI_URL}Category:MSX2_Computers",
+    "MSX2+":   f"{WIKI_URL}Category:MSX2%2B_Computers",
     "turbo R": f"{WIKI_URL}Category:MSX_turbo_R_Computers",
+    "MSX1":    f"{WIKI_URL}Category:MSX1_Computers",
 }
 
 # Ranking for "pick the highest" logic when a model appears in multiple categories.
@@ -34,8 +35,20 @@ GENERATION_RANK: dict[str, int] = {"MSX1": 0, "MSX2": 1, "MSX2+": 2, "turbo R": 
 # NOTE: "1chipMSX" is intentionally NOT in this set — it is an FPGA-based
 # unofficial model with a dedicated wiki page and must be scraped as a model.
 SKIP_TITLES = {
-    "MSX2", "MSX2+", "MSX turbo R",
+    "MSX1", "MSX2", "MSX2+", "MSX turbo R",
 }
+
+def _find_next_page_url(soup: BeautifulSoup) -> str | None:
+    """Return the MediaWiki 'next N' pagination URL from a category page, or None."""
+    mw_pages = soup.find(id="mw-pages")
+    if not mw_pages:
+        return None
+    for a in mw_pages.find_all("a"):
+        href = a.get("href", "")
+        if "pagefrom=" in href and "next" in _text_content(a).lower():
+            return urljoin(BASE_URL, href)
+    return None
+
 
 # ── Regex helpers for field extraction ───────────────────────────────
 
@@ -75,41 +88,46 @@ def list_model_pages(
 
     Returns list of {title, url, standard}.
     """
-    # url → entry dict; we update standard when a higher category is seen.
     url_to_entry: dict[str, dict[str, str]] = {}
 
     for standard, cat_url in CATEGORY_URLS.items():
-        log.info("Fetching category page for %s…", standard)
-        content = source.fetch_category(standard, cat_url)
-        if content is None:
-            continue
-        soup = BeautifulSoup(content, "lxml")
+        current_url = cat_url
+        page_num = 1
+        while True:
+            log.info("Fetching category page for %s (page %d)…", standard, page_num)
+            content = source.fetch_category(standard, current_url, page=page_num)
+            if content is None:
+                break
+            soup = BeautifulSoup(content, "lxml")
 
-        # Model links are inside the <div id="mw-pages"> or similar.
-        # They appear as <a> tags inside list items under the category listing.
-        # Look for links that point to /wiki/... pages (not Category: or Special:).
-        for a_tag in soup.select("#mw-pages a, .mw-category a"):
-            href = a_tag.get("href", "")
-            title = a_tag.get("title", "") or _text_content(a_tag)
-            if not href or not title:
-                continue
-            # Skip non-article links.
-            if "/wiki/Category:" in href or "/wiki/Special:" in href:
-                continue
-            if title in SKIP_TITLES:
-                continue
-            full_url = urljoin(BASE_URL, href)
-            if full_url in url_to_entry:
-                # Keep the highest generation for models listed in multiple categories.
-                entry = url_to_entry[full_url]
-                if GENERATION_RANK.get(standard, -1) > GENERATION_RANK.get(entry["standard"], -1):
-                    entry["standard"] = standard
-                continue
-            url_to_entry[full_url] = {
-                "title": title,
-                "url": full_url,
-                "standard": standard,
-            }
+            for a_tag in soup.select("#mw-pages a, .mw-category a"):
+                href = a_tag.get("href", "")
+                title = a_tag.get("title", "") or _text_content(a_tag)
+                if not href or not title:
+                    continue
+                if "/wiki/Category:" in href or "/wiki/Special:" in href:
+                    continue
+                if title in SKIP_TITLES:
+                    continue
+                full_url = urljoin(BASE_URL, href)
+                if full_url in url_to_entry:
+                    entry = url_to_entry[full_url]
+                    if GENERATION_RANK.get(standard, -1) > GENERATION_RANK.get(entry["standard"], -1):
+                        entry["standard"] = standard
+                    continue
+                url_to_entry[full_url] = {
+                    "title": title,
+                    "url": full_url,
+                    "standard": standard,
+                }
+
+            next_url = _find_next_page_url(soup)
+            if next_url is None:
+                break
+            current_url = next_url
+            page_num += 1
+            if delay:
+                time.sleep(delay)
 
         if delay:
             time.sleep(delay)
