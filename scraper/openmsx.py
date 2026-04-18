@@ -27,8 +27,7 @@ RAW_BASE_URL = (
     "https://raw.githubusercontent.com/openMSX/openMSX/master/share/machines"
 )
 
-# MSX standards we care about (MSX1 is out of scope for iteration 1).
-WANTED_TYPES = {"MSX2", "MSX2+", "MSXturboR"}
+WANTED_TYPES = {"MSX", "MSX2", "MSX2+", "MSXturboR"}
 
 # openMSX region codes → human-readable region strings.
 REGION_MAP: dict[str, str] = {
@@ -144,7 +143,7 @@ def parse_machine_xml(
 
     msx_type = _text(info.find("type"))
     if msx_type not in WANTED_TYPES:
-        return None  # silently skip non-MSX2+ machines
+        return None  # silently skip non-MSX machines
 
     manufacturer = _text(info.find("manufacturer"))
     model = _text(info.find("code"))
@@ -196,7 +195,7 @@ def parse_machine_xml(
 def _normalise_type(t: str | None) -> str | None:
     """Normalise openMSX type string to our schema values."""
     mapping = {
-        "MSX": "MSX",
+        "MSX": "MSX1",
         "MSX2": "MSX2",
         "MSX2+": "MSX2+",
         "MSXturboR": "turbo R",

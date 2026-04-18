@@ -48,6 +48,8 @@ _FM_NORM: dict[str, str] = {
 }
 
 _STANDARD_NORM: dict[str, str] = {
+    "msx": "MSX1",
+    "msx1": "MSX1",
     "msx2": "MSX2",
     "msx2+": "MSX2+",
     "turbo r": "turbo R",
