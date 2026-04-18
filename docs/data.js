@@ -37442,6 +37442,7 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_CX5M",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX5M.xml"
       }
     },

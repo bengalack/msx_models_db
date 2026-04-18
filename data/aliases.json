@@ -30,6 +30,10 @@
     {
       "match":     {"manufacturer": "Sakhr",  "model": "AX-500"},
       "canonical": {"manufacturer": "Yamaha", "model": "AX500"}
+    },
+    {
+      "match":     {"manufacturer": "Yamaha", "model": "CX5M (CX5MA, CX5MC, CX5ME, CX5MF, CX5MG, CX5MS or CX5MU)"},
+      "canonical": {"manufacturer": "Yamaha", "model": "CX5M"}
     }
   ]
 }
