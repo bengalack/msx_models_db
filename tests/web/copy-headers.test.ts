@@ -115,4 +115,21 @@ describe('copySelection — includeHeaders', () => {
     expect(lines[2]).toBe('1986');
     expect(lines.length).toBe(3);
   });
+
+  it('header row is union of all selected columns when rows have different columns selected', () => {
+    const init = defaultInit();
+    // Row 1 (modelId=1): model (id=2) + year (id=3) selected
+    // Row 2 (modelId=2): year (id=3) only selected
+    init.selectedCells = new Set(['1:2', '1:3', '2:3']);
+    const { copySelection } = buildGrid(makeData(), { initialState: init });
+    const lines = copySelection(true).split('\n');
+    // Header = union in visible order: Model, Yr
+    expect(lines[0]).toBe('Model\tYr');
+    // Row 1 has both columns
+    expect(lines[1]).toBe('HB-F1XD\t1987');
+    // Row 2 has only year (col idx 2), model (col idx 1) is not selected for row 2
+    // so row 2's data line contains only year value
+    expect(lines[2]).toBe('1986');
+    expect(lines.length).toBe(3);
+  });
 });

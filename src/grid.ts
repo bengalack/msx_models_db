@@ -1186,7 +1186,7 @@ export function buildGrid(data: MSXData, opts?: {
     if (includeHeaders) {
       // Collect all selected column indices in visible order (deduplicated across rows)
       const selectedColSet = new Set<number>();
-      for (const cols of rowMap.values()) cols.forEach(c => selectedColSet.add(c));
+      for (const cols of rowMap.values()) for (const c of cols) selectedColSet.add(c);
       const headerCols = visibleColIdxs.filter(c => selectedColSet.has(c));
       lines.push(headerCols.map(c => data.columns[c].shortLabel ?? data.columns[c].label).join('\t'));
     }
