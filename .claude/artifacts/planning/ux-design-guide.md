@@ -253,6 +253,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - CTRL/CMD + click: toggle cell in/out of selection
 - SHIFT + click: extend selection rectangle from anchor to clicked cell
 - Click + drag: select cells covered during drag (snap to cell boundaries on mouseenter, no pixel math)
+- Click on non-interactive space outside the grid, or on the empty scroll area below the rows (visible when filtered to few results): clears all cell and row selection
 - Selected cells: `var(--color-accent-dim)` fill + 1px solid border in `var(--color-selection-border)`; dark mode adds subtle glow
 
 ### Sort

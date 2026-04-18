@@ -119,7 +119,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - SHIFT+click selects the rectangular range from the last-clicked cell to the current cell.
     - Click+hold and drag selects the visual range covered by the drag.
     - Selected cells are visually distinct from unselected cells (e.g. background color change).
-    - Clicking outside the grid table on non-interactive space (not buttons, toolbar, headers, or gutter) clears all cell and row selection.
+    - Clicking outside the grid on non-interactive space (not buttons, toolbar, headers, or gutter), or clicking the empty scroll area below the rows inside the grid (visible when a filter produces few results), clears all cell and row selection.
     - Selection state is reflected in the URL.
 
 - Selection column and row header highlight
