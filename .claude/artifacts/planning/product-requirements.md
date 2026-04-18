@@ -99,6 +99,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - There is a UI control (e.g. a column picker panel or right-click context menu) to toggle individual column visibility.
     - Hidden columns are excluded from the rendered grid.
     - Column visibility state is reflected in the URL.
+    - The Identity group columns (Manufacturer, Model) are always visible and are not listed in the column picker. The Identity group section does not appear in the picker panel.
 
 - Row show/hide
   - Description: Individual rows can be hidden. A visual indicator appears in the left gutter of the grid whenever one or more rows are hidden.

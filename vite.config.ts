@@ -34,12 +34,14 @@ function fileProtocolCompat(): Plugin {
     name: 'file-protocol-compat',
     transformIndexHtml(html: string): string {
       // Remove the bundle script from <head> (where Vite injects it)
-      const stripped = html.replace(
+      let out = html.replace(
         /<script type="module" crossorigin src="\.\/bundle\.js"><\/script>\s*/g,
         ''
       );
-      // Append it at the end of <body>, after data.js
-      return stripped.replace('</body>', '  <script src="./bundle.js"></script>\n  </body>');
+      // Fix absolute /data.js path → relative ./data.js for file:// compatibility
+      out = out.replace('src="/data.js"', 'src="./data.js"');
+      // Append bundle at the end of <body>, after data.js
+      return out.replace('</body>', '  <script src="./bundle.js"></script>\n  </body>');
     },
   };
 }

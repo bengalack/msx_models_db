@@ -77,9 +77,12 @@ if (!window.MSX_DATA) {
   });
   const { element: gridEl, toggleFilters, resetView, setColumnVisible, getHiddenCols, clearAllSelection, copySelection } = grid;
 
+  const identityGroupId = window.MSX_DATA.groups.find(g => g.key === 'identity')?.id;
+  const pickerGroups = window.MSX_DATA.groups.filter(g => g.id !== identityGroupId);
+  const pickerColumns = window.MSX_DATA.columns.filter(c => c.groupId !== identityGroupId);
   const { element: pickerEl, open: openPicker, close: closePicker } = buildColPicker(
-    window.MSX_DATA.groups,
-    window.MSX_DATA.columns,
+    pickerGroups,
+    pickerColumns,
     getHiddenCols,
     setColumnVisible,
   );

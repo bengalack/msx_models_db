@@ -9,7 +9,10 @@ export function buildToolbar(
 
   const colsBtn = document.createElement('button');
   colsBtn.className = 'toolbar__btn';
-  colsBtn.textContent = '\u229e Columns';
+  const colsIcon = document.createElement('i');
+  colsIcon.className = 'fa fa-table';
+  colsBtn.appendChild(colsIcon);
+  colsBtn.appendChild(document.createTextNode(' Columns'));
   colsBtn.addEventListener('click', onColsToggle);
 
   const filtersBtn = document.createElement('button');
