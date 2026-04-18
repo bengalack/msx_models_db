@@ -330,7 +330,7 @@ export function buildGrid(data: MSXData, opts?: {
   hideRow: (modelId: number) => void;
   getSelectedCells: () => ReadonlySet<string>;
   clearAllSelection: () => void;
-  copySelection: () => string;
+  copySelection: (includeHeaders?: boolean) => string;
   getViewState: () => ViewState;
 } {
   const wrap = document.createElement('div');
@@ -1168,7 +1168,7 @@ export function buildGrid(data: MSXData, opts?: {
   }
 
   // ── Clipboard copy ────────────────────────────────────────────────────
-  function copySelection(): string {
+  function copySelection(includeHeaders?: boolean): string {
     const visibleModelIds = Array.from(tbody.querySelectorAll<HTMLTableRowElement>('tr[data-model-id]'))
       .map(tr => Number(tr.dataset.modelId));
     const visibleColIdxs = data.columns.map((_, i) => i).filter(i => !hiddenCols.has(i));
@@ -1182,6 +1182,15 @@ export function buildGrid(data: MSXData, opts?: {
     if (rowMap.size === 0) return '';
 
     const lines: string[] = [];
+
+    if (includeHeaders) {
+      // Collect all selected column indices in visible order (deduplicated across rows)
+      const selectedColSet = new Set<number>();
+      for (const cols of rowMap.values()) cols.forEach(c => selectedColSet.add(c));
+      const headerCols = visibleColIdxs.filter(c => selectedColSet.has(c));
+      lines.push(headerCols.map(c => data.columns[c].shortLabel ?? data.columns[c].label).join('\t'));
+    }
+
     for (const [modelId, cols] of rowMap) {
       const model = data.models.find(m => m.id === modelId);
       const fields = cols.map(c => {
