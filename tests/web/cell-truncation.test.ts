@@ -196,3 +196,110 @@ describe('mouseenter handler', () => {
     expect(td.title).toBe('');
   });
 });
+
+// ── openMSX ID link cell ─────────────────────────────────────────────────
+
+describe('openmsx_id link cell', () => {
+  const GITHUB_URL =
+    'https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1WSX.xml';
+
+  function makeOpenMSXData(overrides?: {
+    openmsxId?: string;
+    limit?: number;
+    withUrl?: boolean;
+  }): MSXData {
+    const {
+      openmsxId = 'Panasonic_FS-A1WSX',
+      limit = 20,
+      withUrl = true,
+    } = overrides ?? {};
+
+    return {
+      version: 1,
+      generated: '2026-04-18',
+      groups: [{ id: 7, key: 'emulation', label: 'Emulation', order: 7 }],
+      columns: [
+        {
+          id: 28,
+          key: 'openmsx_id',
+          label: 'openMSX Machine ID',
+          shortLabel: 'openMSX ID',
+          groupId: 7,
+          type: 'string',
+          linkable: true,
+          ...(limit > 0 ? { truncateLimit: limit } : {}),
+        },
+      ],
+      models: [
+        {
+          id: 1,
+          values: [openmsxId],
+          ...(withUrl ? { links: { openmsx_id: GITHUB_URL } } : {}),
+        },
+      ],
+      slotmap_lut: {},
+    };
+  }
+
+  it('renders as <a class="cell-link"> with the GitHub URL as href', () => {
+    const wrap = getGrid(makeOpenMSXData());
+    const td = getCell(wrap, 0)!;
+    const a = td.querySelector<HTMLAnchorElement>('a.cell-link')!;
+    expect(a).not.toBeNull();
+    expect(a.href).toBe(GITHUB_URL);
+  });
+
+  it('opens in a new tab (target=_blank)', () => {
+    const wrap = getGrid(makeOpenMSXData());
+    const td = getCell(wrap, 0)!;
+    const a = td.querySelector<HTMLAnchorElement>('a.cell-link')!;
+    expect(a.target).toBe('_blank');
+  });
+
+  it('sets a.title to "fullId \u2014 url" when ID exceeds truncate limit', () => {
+    // 'Panasonic_FS-A1WSX' = 18 chars, limit = 16 → truncated
+    const wrap = getGrid(makeOpenMSXData({ limit: 16 }));
+    const td = getCell(wrap, 0)!;
+    const a = td.querySelector<HTMLAnchorElement>('a.cell-link')!;
+    expect(a.title).toBe(`Panasonic_FS-A1WSX \u2014 ${GITHUB_URL}`);
+  });
+
+  it('clips the link text when ID exceeds truncate limit', () => {
+    // limit=16 → first 15 chars + '…' = 'Panasonic_FS-A1…'
+    const wrap = getGrid(makeOpenMSXData({ limit: 16 }));
+    const td = getCell(wrap, 0)!;
+    const a = td.querySelector<HTMLAnchorElement>('a.cell-link')!;
+    expect(a.textContent).toBe('Panasonic_FS-A1\u2026');
+  });
+
+  it('sets a.title to URL only when ID is at or below truncate limit', () => {
+    // 'Sony_HB-75P' = 11 chars, limit = 20 → no truncation
+    const wrap = getGrid(makeOpenMSXData({ openmsxId: 'Sony_HB-75P' }));
+    const td = getCell(wrap, 0)!;
+    const a = td.querySelector<HTMLAnchorElement>('a.cell-link')!;
+    expect(a.title).toBe(GITHUB_URL);
+  });
+
+  it('shows full ID text (no ellipsis) when at or below the limit', () => {
+    const wrap = getGrid(makeOpenMSXData({ openmsxId: 'Sony_HB-75P' }));
+    const td = getCell(wrap, 0)!;
+    const a = td.querySelector<HTMLAnchorElement>('a.cell-link')!;
+    expect(a.textContent).toBe('Sony_HB-75P');
+  });
+
+  it('mouseenter handler skips the openmsx_id link cell', () => {
+    const wrap = getGrid(makeOpenMSXData());
+    const td = getCell(wrap, 0)!;
+    td.removeAttribute('title');
+    fireMouseEnter(td);
+    // Handler must skip link cells; td.title stays empty
+    expect(td.title).toBe('');
+  });
+
+  it('renders as plain text (no <a>) when no link URL is available', () => {
+    const wrap = getGrid(makeOpenMSXData({ withUrl: false }));
+    const td = getCell(wrap, 0)!;
+    expect(td.querySelector('a.cell-link')).toBeNull();
+    expect(td.textContent).toContain('Panasonic_FS-A1WSX');
+  });
+});
