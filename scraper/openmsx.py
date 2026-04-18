@@ -336,9 +336,9 @@ def _extract_media(devices: etree._Element, out: dict[str, Any]) -> None:
 def _extract_cpu(
     devices: etree._Element, out: dict[str, Any], msx_type: str | None
 ) -> None:
-    """Set CPU based on MSX type defaults."""
-    cpu = CPU_DEFAULTS.get(msx_type or "", ("Z80", 3.58))[0]
-    out["cpu"] = cpu
+    """Set CPU based on MSX type defaults, falling back to Z80."""
+    defaults = CPU_DEFAULTS.get(msx_type or "")
+    out["cpu"] = defaults[0] if defaults else "Z80"
 
     # turbo R has both Z80 and R800; check for R800 element.
     if msx_type == "MSXturboR":

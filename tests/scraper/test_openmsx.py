@@ -311,6 +311,7 @@ class TestParseXMLCPU:
         assert "sub_cpu" not in result
 
 
+
 class TestParseXMLKeyboard:
     """T-017: keyboard layout extraction."""
 
