@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from scraper.aliases import AliasLUT, apply_aliases, load_aliases
+from scraper.symbols import ABSENT as _ABSENT, EMPTY_PAGE as _EMPTY_PAGE
 
 log = logging.getLogger(__name__)
 
@@ -334,10 +335,10 @@ def _merge_single(
             result[field] = mv  # msx.org knows the slot type
             continue
 
-        # openMSX emits • for secondary pages it has no device for; it cannot
-        # determine the connector type.  If msx.org has a slot-type value for
-        # the same cell, prefer msx.org.
-        if field.startswith("slotmap_") and ov == "\u2022" and _is_slot_type(mv):
+        # openMSX emits EMPTY_PAGE or ABSENT for pages it cannot classify; it
+        # cannot determine the connector type.  If msx.org has a slot-type
+        # value for the same cell, prefer msx.org.
+        if field.startswith("slotmap_") and ov in (_EMPTY_PAGE, _ABSENT) and _is_slot_type(mv):
             result[field] = mv
             continue
 
