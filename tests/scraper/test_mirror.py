@@ -173,3 +173,54 @@ class TestFallbackPageSource:
         src = FallbackPageSource(live, mirror)
         assert src.fetch_category("MSX2", self._CAT_URL) is None
         assert src.fetch_page("Sony HB-F9S", self._PAGE_URL) is None
+
+
+# ---------------------------------------------------------------------------
+# MirrorPageSource — pagination
+# ---------------------------------------------------------------------------
+
+class TestMirrorPageSourcePagination:
+    """MirrorPageSource.fetch_category resolves _pageN filenames for page > 1."""
+
+    def test_page1_reads_standard_filename(self, tmp_path):
+        content = b"<html><body></body></html>"
+        (tmp_path / "Category_MSX1 Computers - MSX Wiki.html").write_bytes(content)
+        source = MirrorPageSource(tmp_path)
+        result = source.fetch_category(
+            "MSX1",
+            "https://www.msx.org/wiki/Category:MSX1_Computers",
+            page=1,
+        )
+        assert result == content
+
+    def test_page2_reads_page2_filename(self, tmp_path):
+        content = b"<html><body>page2</body></html>"
+        (tmp_path / "Category_MSX1 Computers_page2 - MSX Wiki.html").write_bytes(content)
+        source = MirrorPageSource(tmp_path)
+        # URL is the live pagefrom URL — mirror strips query string
+        result = source.fetch_category(
+            "MSX1",
+            "https://www.msx.org/wiki/Category:MSX1_Computers?pagefrom=Sony+HX-10",
+            page=2,
+        )
+        assert result == content
+
+    def test_page3_reads_page3_filename(self, tmp_path):
+        content = b"<html><body>page3</body></html>"
+        (tmp_path / "Category_MSX1 Computers_page3 - MSX Wiki.html").write_bytes(content)
+        source = MirrorPageSource(tmp_path)
+        result = source.fetch_category(
+            "MSX1",
+            "https://www.msx.org/wiki/Category:MSX1_Computers?pagefrom=Z",
+            page=3,
+        )
+        assert result == content
+
+    def test_page2_missing_returns_none(self, tmp_path):
+        source = MirrorPageSource(tmp_path)
+        result = source.fetch_category(
+            "MSX1",
+            "https://www.msx.org/wiki/Category:MSX1_Computers?pagefrom=X",
+            page=2,
+        )
+        assert result is None
