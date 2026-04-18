@@ -314,7 +314,9 @@ window.MSX_DATA = {
       "groupId": 7,
       "type": "string",
       "shortLabel": "openMSX ID",
-      "tooltip": "openMSX Machine ID"
+      "tooltip": "openMSX Machine ID",
+      "linkable": true,
+      "truncateLimit": 20
     },
     {
       "id": 29,
@@ -904,7 +906,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1"
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1.xml"
       }
     },
     {
@@ -1006,7 +1009,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1F"
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1F",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1F.xml"
       }
     },
     {
@@ -1108,7 +1112,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-33"
+        "model": "https://www.msx.org/wiki/Toshiba_HX-33",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-33.xml"
       }
     },
     {
@@ -1210,7 +1215,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1XDJ"
+        "model": "https://www.msx.org/wiki/Sony_HB-F1XDJ",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XDJ.xml"
       }
     },
     {
@@ -1312,7 +1318,8 @@ window.MSX_DATA = {
         "PM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1WX"
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1WX",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1WX.xml"
       }
     },
     {
@@ -1414,7 +1421,8 @@ window.MSX_DATA = {
         "PM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1WSX"
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1WSX",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1WSX.xml"
       }
     },
     {
@@ -1516,7 +1524,8 @@ window.MSX_DATA = {
         "PM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1ST"
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1ST",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1ST.xml"
       }
     },
     {
@@ -1618,7 +1627,8 @@ window.MSX_DATA = {
         "PM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1GT"
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1GT",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1GT.xml"
       }
     },
     {
@@ -1720,7 +1730,8 @@ window.MSX_DATA = {
         "PM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Aucnet_NIA-2001"
+        "model": "https://www.msx.org/wiki/Aucnet_NIA-2001",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Aucnet_NIA-2001.xml"
       }
     },
     {
@@ -2026,7 +2037,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Canon_V-25"
+        "model": "https://www.msx.org/wiki/Canon_V-25",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-25.xml"
       }
     },
     {
@@ -2128,7 +2140,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Canon_V-30F"
+        "model": "https://www.msx.org/wiki/Canon_V-30F",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-30F.xml"
       }
     },
     {
@@ -2230,7 +2243,8 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-300"
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-300",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-300.xml"
       }
     },
     {
@@ -2332,7 +2346,8 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-300E"
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-300E",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-300E.xml"
       }
     },
     {
@@ -2638,7 +2653,8 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-400S"
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-400S",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-400S.xml"
       }
     },
     {
@@ -2740,7 +2756,8 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-61"
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-61",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-61_Zemmix_Super_V.xml"
       }
     },
     {
@@ -3148,7 +3165,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H3"
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H3",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H3.xml"
       }
     },
     {
@@ -3250,7 +3268,8 @@ window.MSX_DATA = {
         "ES3!"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H70"
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H70",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H70.xml"
       }
     },
     {
@@ -3658,7 +3677,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G1"
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G1",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G1_ES.xml"
       }
     },
     {
@@ -3760,7 +3780,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G10"
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G10",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G10.xml"
       }
     },
     {
@@ -3862,7 +3883,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G3"
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G3",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G3_ES.xml"
       }
     },
     {
@@ -3964,7 +3986,8 @@ window.MSX_DATA = {
         "ES3!"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G30_Model_1"
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G30_Model_1",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G30_model_1.xml"
       }
     },
     {
@@ -4066,7 +4089,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G30_Model_2"
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G30_Model_2",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G30_model_2.xml"
       }
     },
     {
@@ -4576,7 +4600,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/National_FS-4500"
+        "model": "https://www.msx.org/wiki/National_FS-4500",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4500.xml"
       }
     },
     {
@@ -4678,7 +4703,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/National_FS-4600F"
+        "model": "https://www.msx.org/wiki/National_FS-4600F",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4600F.xml"
       }
     },
     {
@@ -4880,7 +4906,10 @@ window.MSX_DATA = {
         "DSK",
         "DSK*",
         "⏺"
-      ]
+      ],
+      "links": {
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4700F.xml"
+      }
     },
     {
       "id": 52,
@@ -4981,7 +5010,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/National_FS-5000F2"
+        "model": "https://www.msx.org/wiki/National_FS-5000F2",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-5000F2.xml"
       }
     },
     {
@@ -5083,7 +5113,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/National_FS-5500F1"
+        "model": "https://www.msx.org/wiki/National_FS-5500F1",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-5500F1.xml"
       }
     },
     {
@@ -5185,7 +5216,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/National_FS-5500F2"
+        "model": "https://www.msx.org/wiki/National_FS-5500F2",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-5500F2.xml"
       }
     },
     {
@@ -5389,7 +5421,8 @@ window.MSX_DATA = {
         "PM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1FM"
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1FM",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1FM.xml"
       }
     },
     {
@@ -5491,7 +5524,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1FX"
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1FX",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1FX.xml"
       }
     },
     {
@@ -5593,7 +5627,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1mkII"
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1mkII",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1MK2.xml"
       }
     },
     {
@@ -5797,7 +5832,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8220"
+        "model": "https://www.msx.org/wiki/Philips_NMS_8220",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8220.xml"
       }
     },
     {
@@ -5899,7 +5935,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8245"
+        "model": "https://www.msx.org/wiki/Philips_NMS_8245",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8245.xml"
       }
     },
     {
@@ -6103,7 +6140,7 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8245"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8245-16.xml"
       }
     },
     {
@@ -6205,7 +6242,7 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8245"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8245-19.xml"
       }
     },
     {
@@ -6307,7 +6344,8 @@ window.MSX_DATA = {
         "DSK*"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8250"
+        "model": "https://www.msx.org/wiki/Philips_NMS_8250",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8250.xml"
       }
     },
     {
@@ -6409,7 +6447,7 @@ window.MSX_DATA = {
         "DSK*"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8250"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8250-16.xml"
       }
     },
     {
@@ -6511,7 +6549,7 @@ window.MSX_DATA = {
         "DSK*"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8250"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8250-19.xml"
       }
     },
     {
@@ -6613,7 +6651,8 @@ window.MSX_DATA = {
         "DSK*"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8255"
+        "model": "https://www.msx.org/wiki/Philips_NMS_8255",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8255.xml"
       }
     },
     {
@@ -6919,7 +6958,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8230"
+        "model": "https://www.msx.org/wiki/Philips_VG-8230",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8230.xml"
       }
     },
     {
@@ -7021,7 +7061,7 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8235"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-00.xml"
       }
     },
     {
@@ -7123,7 +7163,7 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8235"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-02.xml"
       }
     },
     {
@@ -7225,7 +7265,7 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8235"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-19.xml"
       }
     },
     {
@@ -7327,7 +7367,7 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8235"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-20.xml"
       }
     },
     {
@@ -7429,7 +7469,7 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8235"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-39.xml"
       }
     },
     {
@@ -8041,7 +8081,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Pioneer_UC-V102"
+        "model": "https://www.msx.org/wiki/Pioneer_UC-V102",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Pioneer_UC-V102.xml"
       }
     },
     {
@@ -8347,7 +8388,8 @@ window.MSX_DATA = {
         "MM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-370"
+        "model": "https://www.msx.org/wiki/Sakhr_AX-370",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Al_Alamiah_AX370.xml"
       }
     },
     {
@@ -8755,7 +8797,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-25FD"
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-25FD",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-25FD.xml"
       }
     },
     {
@@ -8959,7 +9002,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-25FS"
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-25FS",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-25FS.xml"
       }
     },
     {
@@ -9265,7 +9309,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-23"
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-23",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-23.xml"
       }
     },
     {
@@ -9367,7 +9412,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-23J"
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-23J",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-23J.xml"
       }
     },
     {
@@ -9469,7 +9515,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-23J"
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-23J",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-23JB.xml"
       }
     },
     {
@@ -9571,7 +9618,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-35J"
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-35J",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-35J.xml"
       }
     },
     {
@@ -9877,7 +9925,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-70FD"
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-70FD",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-70FD.xml"
       }
     },
     {
@@ -9979,7 +10028,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-70FD2"
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-70FD2",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-70FD2.xml"
       }
     },
     {
@@ -10081,7 +10131,8 @@ window.MSX_DATA = {
         "RAM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-77"
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-77",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-77.xml"
       }
     },
     {
@@ -10183,7 +10234,8 @@ window.MSX_DATA = {
         "RAM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1"
+        "model": "https://www.msx.org/wiki/Sony_HB-F1",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1.xml"
       }
     },
     {
@@ -10285,7 +10337,8 @@ window.MSX_DATA = {
         "RAM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1II"
+        "model": "https://www.msx.org/wiki/Sony_HB-F1II",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1II.xml"
       }
     },
     {
@@ -10387,7 +10440,8 @@ window.MSX_DATA = {
         "RAM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1XD"
+        "model": "https://www.msx.org/wiki/Sony_HB-F1XD",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XD.xml"
       }
     },
     {
@@ -10489,7 +10543,8 @@ window.MSX_DATA = {
         "RAM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1XDmk2"
+        "model": "https://www.msx.org/wiki/Sony_HB-F1XDmk2",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XDmk2.xml"
       }
     },
     {
@@ -10591,7 +10646,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1XV"
+        "model": "https://www.msx.org/wiki/Sony_HB-F1XV",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XV.xml"
       }
     },
     {
@@ -10693,7 +10749,8 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F5"
+        "model": "https://www.msx.org/wiki/Sony_HB-F5",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F5.xml"
       }
     },
     {
@@ -10793,7 +10850,10 @@ window.MSX_DATA = {
         "·",
         "·",
         "·"
-      ]
+      ],
+      "links": {
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F500.xml"
+      }
     },
     {
       "id": 117,
@@ -10892,7 +10952,10 @@ window.MSX_DATA = {
         "⏺",
         "⏺",
         "⏺"
-      ]
+      ],
+      "links": {
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F500_v2.xml"
+      }
     },
     {
       "id": 118,
@@ -10991,7 +11054,10 @@ window.MSX_DATA = {
         "·",
         "·",
         "·"
-      ]
+      ],
+      "links": {
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F500P.xml"
+      }
     },
     {
       "id": 119,
@@ -11090,7 +11156,10 @@ window.MSX_DATA = {
         "MM",
         "MM",
         "MM"
-      ]
+      ],
+      "links": {
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700D.xml"
+      }
     },
     {
       "id": 120,
@@ -11189,7 +11258,10 @@ window.MSX_DATA = {
         "MM",
         "MM",
         "MM"
-      ]
+      ],
+      "links": {
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700F.xml"
+      }
     },
     {
       "id": 121,
@@ -11288,7 +11360,10 @@ window.MSX_DATA = {
         "MM",
         "MM",
         "MM"
-      ]
+      ],
+      "links": {
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700P.xml"
+      }
     },
     {
       "id": 122,
@@ -11387,7 +11462,10 @@ window.MSX_DATA = {
         "MM",
         "MM",
         "MM"
-      ]
+      ],
+      "links": {
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700S.xml"
+      }
     },
     {
       "id": 123,
@@ -11590,7 +11668,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F900"
+        "model": "https://www.msx.org/wiki/Sony_HB-F900",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F900.xml"
       }
     },
     {
@@ -11692,7 +11771,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F9P"
+        "model": "https://www.msx.org/wiki/Sony_HB-F9P",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F9P.xml"
       }
     },
     {
@@ -11794,7 +11874,7 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F9P"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F9P_Russian.xml"
       }
     },
     {
@@ -11896,7 +11976,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F9S"
+        "model": "https://www.msx.org/wiki/Sony_HB-F9S",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F9S.xml"
       }
     },
     {
@@ -11998,7 +12079,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-G900AP"
+        "model": "https://www.msx.org/wiki/Sony_HB-G900AP",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-G900AP.xml"
       }
     },
     {
@@ -12100,7 +12182,8 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-G900D"
+        "model": "https://www.msx.org/wiki/Sony_HB-G900D",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-G900D.xml"
       }
     },
     {
@@ -12304,7 +12387,8 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-G900P"
+        "model": "https://www.msx.org/wiki/Sony_HB-G900P",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-G900P.xml"
       }
     },
     {
@@ -12406,7 +12490,8 @@ window.MSX_DATA = {
         "MM"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-T600"
+        "model": "https://www.msx.org/wiki/Sony_HB-T600",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-T600.xml"
       }
     },
     {
@@ -12712,7 +12797,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Talent_TPC-310"
+        "model": "https://www.msx.org/wiki/Talent_TPC-310",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Talent_TPC-310.xml"
       }
     },
     {
@@ -13222,7 +13308,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_FS-TM1"
+        "model": "https://www.msx.org/wiki/Toshiba_FS-TM1",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_FS-TM1.xml"
       }
     },
     {
@@ -13324,7 +13411,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-23"
+        "model": "https://www.msx.org/wiki/Toshiba_HX-23",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-23.xml"
       }
     },
     {
@@ -13426,7 +13514,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-23F"
+        "model": "https://www.msx.org/wiki/Toshiba_HX-23F",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-23F.xml"
       }
     },
     {
@@ -13528,7 +13617,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-34"
+        "model": "https://www.msx.org/wiki/Toshiba_HX-34",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-34.xml"
       }
     },
     {
@@ -13732,7 +13822,8 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Victor_HC-80"
+        "model": "https://www.msx.org/wiki/Victor_HC-80",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-80.xml"
       }
     },
     {
@@ -13936,7 +14027,7 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Victor_HC-90"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-90A.xml"
       }
     },
     {
@@ -14140,7 +14231,7 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Victor_HC-95"
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-95A.xml"
       }
     },
     {
@@ -14344,7 +14435,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-350II"
+        "model": "https://www.msx.org/wiki/Sakhr_AX-350II",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX350II.xml"
       }
     },
     {
@@ -14446,7 +14538,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-350II"
+        "model": "https://www.msx.org/wiki/Sakhr_AX-350II",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX350IIF.xml"
       }
     },
     {
@@ -14548,7 +14641,8 @@ window.MSX_DATA = {
         "ES1!"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-500"
+        "model": "https://www.msx.org/wiki/Sakhr_AX-500",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX500.xml"
       }
     },
     {
@@ -14650,7 +14744,8 @@ window.MSX_DATA = {
         "ES1!"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_CX7/128"
+        "model": "https://www.msx.org/wiki/Yamaha_CX7/128",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX7-128.xml"
       }
     },
     {
@@ -14752,7 +14847,8 @@ window.MSX_DATA = {
         "SFG5*"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_CX7M/128"
+        "model": "https://www.msx.org/wiki/Yamaha_CX7M/128",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX7M-128.xml"
       }
     },
     {
@@ -14854,7 +14950,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-503IIIR"
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-503IIIR",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-503IIIR.xml"
       }
     },
     {
@@ -14956,7 +15053,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-604/128"
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-604/128",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-604-128.xml"
       }
     },
     {
@@ -15160,7 +15258,8 @@ window.MSX_DATA = {
         "⏺"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-805/128R2"
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-805/128R2",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-805-128R2.xml"
       }
     },
     {
@@ -15568,7 +15667,8 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
-        "model": "https://www.msx.org/wiki/CIEL_Expert_2+_Turbo"
+        "model": "https://www.msx.org/wiki/CIEL_Expert_2+_Turbo",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/CIEL_Expert-Turbo.xml"
       }
     },
     {
