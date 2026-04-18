@@ -1204,9 +1204,12 @@ export function buildGrid(data: MSXData, opts?: {
   wrap.appendChild(table);
   wrap.addEventListener('scroll', updateGapVisibility, { passive: true });
 
-  // Deselect when clicking the empty area below the rows (target is wrap itself)
+  // Deselect when clicking the empty area below the rows (target is wrap itself).
+  // Guard against scrollbar clicks: offsetX/Y outside clientWidth/Height = scrollbar area.
   wrap.addEventListener('mousedown', (e: MouseEvent) => {
-    if (e.target === wrap) clearAllSelection();
+    if (e.target === wrap && e.offsetX <= wrap.clientWidth && e.offsetY <= wrap.clientHeight) {
+      clearAllSelection();
+    }
   });
 
   // Recalculate frozen-column left offsets when the table layout changes size
