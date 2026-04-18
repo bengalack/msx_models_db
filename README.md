@@ -30,7 +30,7 @@ By design, this scraper should be re-run from time to time to automatically pick
 Mid-development of this project, msx.org experience huge traffic from general global AI, which results in slowdowns of their site. Their admins were forced to start denying scraping of their wiki. To remedy this, the scraper can use a local mirror instead (see `data/scraper-config.json`). Such a copy is done with "Save as" in your browser. This does not scale well, but is a needed fallback. Developing this tool using local files turned out to be a must anyway, due to development speed. Hopefully the access can be opened up again, as updates on their wiki is not landing in your mirror that easily.
 
 ### Data completeness
-The amount of models are massive. Not all are covered, as the available information is not consistently structured or even available. For example, there are sections on msx.org that we currently do not parse, like [Yamaha_CX5M](https://www.msx.org/wiki/Yamaha_CX5M) having a table listing up 7 regional variants of the model having different VDPs and more.
+First, the the current data needs more massaging. Then, the amount of models are massive. Not all are covered as the available information is not consistently structured or even available. We could need more sources. Furthermore, the more complex parsing has been downprioritized. For example, there are sections on msx.org that currently isnt't parsed, like when [Yamaha_CX5M](https://www.msx.org/wiki/Yamaha_CX5M) has a table listing up 7 regional variants of the model.
 
 
 ## Background story
