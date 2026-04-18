@@ -110,6 +110,19 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Clicking the gutter indicator reveals/unhides the hidden row(s).
     - Hidden row state is reflected in the URL.
 
+- Reset view
+  - Description: A toolbar button resets the grid to its default state — showing all data with no active view modifications.
+  - Priority: Must
+  - Acceptance Criteria:
+    - A "↻ Reset view" button (U+21BB symbol) is placed between the Filters button and the Help button in the toolbar.
+    - Clicking the button clears all active sort (rows revert to original data order).
+    - Clicking the button shows all manually hidden rows (rows hidden via the × gutter button).
+    - Clicking the button expands all collapsed column groups.
+    - Clicking the button shows all individually hidden columns (restores columns hidden via the column picker panel).
+    - Clicking the button clears all active column filters (all filter inputs are emptied) and hides the filter row (the Filters button returns to its inactive state).
+    - Clicking the button deselects all cell and row selections.
+    - The URL updates immediately after the reset (all state is now empty/default).
+
 - Cell selection
   - Description: Users can select one or more cells using mouse interactions. Selected cells are visually highlighted.
   - Priority: Must

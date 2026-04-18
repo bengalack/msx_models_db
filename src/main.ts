@@ -35,7 +35,7 @@ document.body.appendChild(header);
 if (!window.MSX_DATA) {
   // eslint-disable-next-line no-console
   console.error('[MSX Models DB] MSX_DATA not found. Is data.js loaded before bundle.js?');
-  document.body.appendChild(buildToolbar(() => { /* no-op */ }, () => { /* no-op */ }, () => { /* no-op */ }).element);
+  document.body.appendChild(buildToolbar(() => { /* no-op */ }, () => { /* no-op */ }, () => { /* no-op */ }, () => { /* no-op */ }).element);
   const err = document.createElement('p');
   err.style.color = 'var(--color-danger)';
   err.style.padding = '16px';
@@ -75,7 +75,7 @@ if (!window.MSX_DATA) {
     initialState,
     onStateChange: scheduleUrlUpdate,
   });
-  const { element: gridEl, toggleFilters, setColumnVisible, getHiddenCols, clearAllSelection, copySelection } = grid;
+  const { element: gridEl, toggleFilters, resetView, setColumnVisible, getHiddenCols, clearAllSelection, copySelection } = grid;
 
   const { element: pickerEl, open: openPicker, close: closePicker } = buildColPicker(
     window.MSX_DATA.groups,
@@ -124,7 +124,18 @@ if (!window.MSX_DATA) {
     filtersBtnEl.classList.toggle('toolbar__btn--active', filtersOn);
   }
 
-  const { element: toolbarEl, colsBtn: colsBtnEl, filtersBtn: filtersBtnEl, helpBtn: helpBtnEl, helpWrap } = buildToolbar(handleFiltersToggle, togglePicker, toggleHelp);
+  function handleResetView(): void {
+    // Close any open panels
+    if (pickerOpen) { closePicker(); pickerOpen = false; colsBtnEl.classList.remove('toolbar__btn--active'); }
+    if (helpOpen) { helpPanel.hidden = true; helpOpen = false; helpBtnEl.classList.remove('toolbar__btn--active'); }
+    const { filtersWereOn } = resetView();
+    if (filtersWereOn) {
+      filtersOn = false;
+      filtersBtnEl.classList.remove('toolbar__btn--active');
+    }
+  }
+
+  const { element: toolbarEl, colsBtn: colsBtnEl, filtersBtn: filtersBtnEl, helpBtn: helpBtnEl, helpWrap } = buildToolbar(handleFiltersToggle, togglePicker, handleResetView, toggleHelp);
   if (filtersOn) filtersBtnEl.classList.add('toolbar__btn--active');
   toolbarEl.appendChild(pickerEl);
   helpWrap.appendChild(helpPanel);

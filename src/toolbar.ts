@@ -1,8 +1,9 @@
 export function buildToolbar(
   onFiltersToggle: () => void,
   onColsToggle: () => void,
+  onResetView: () => void,
   onHelpToggle: () => void,
-): { element: HTMLElement; colsBtn: HTMLButtonElement; filtersBtn: HTMLButtonElement; helpBtn: HTMLButtonElement; helpWrap: HTMLElement } {
+): { element: HTMLElement; colsBtn: HTMLButtonElement; filtersBtn: HTMLButtonElement; resetBtn: HTMLButtonElement; helpBtn: HTMLButtonElement; helpWrap: HTMLElement } {
   const toolbar = document.createElement('div');
   toolbar.className = 'toolbar';
 
@@ -19,6 +20,11 @@ export function buildToolbar(
   filtersBtn.appendChild(document.createTextNode(' Filters'));
   filtersBtn.addEventListener('click', onFiltersToggle);
 
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'toolbar__btn';
+  resetBtn.textContent = '\u21bb Reset view';
+  resetBtn.addEventListener('click', onResetView);
+
   const helpWrap = document.createElement('div');
   helpWrap.className = 'toolbar__btn-wrap';
   const helpBtn = document.createElement('button');
@@ -29,7 +35,8 @@ export function buildToolbar(
 
   toolbar.appendChild(colsBtn);
   toolbar.appendChild(filtersBtn);
+  toolbar.appendChild(resetBtn);
   toolbar.appendChild(helpWrap);
 
-  return { element: toolbar, colsBtn, filtersBtn, helpBtn, helpWrap };
+  return { element: toolbar, colsBtn, filtersBtn, resetBtn, helpBtn, helpWrap };
 }

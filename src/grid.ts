@@ -323,6 +323,7 @@ export function buildGrid(data: MSXData, opts?: {
 }): {
   element: HTMLElement;
   toggleFilters: () => void;
+  resetView: () => { filtersWereOn: boolean };
   setColumnVisible: (colIdx: number, visible: boolean) => void;
   getHiddenCols: () => ReadonlySet<number>;
   getHiddenRows: () => ReadonlySet<number>;
@@ -1115,6 +1116,57 @@ export function buildGrid(data: MSXData, opts?: {
     }
   }
 
+  // ── Reset view ────────────────────────────────────────────────────────
+  function resetView(): { filtersWereOn: boolean } {
+    // 1. Clear sort
+    sortColIndex = null;
+    colHeaders.forEach(h => h.classList.remove('col-header--sort-asc', 'col-header--sort-desc'));
+
+    // 2. Clear hidden rows
+    hiddenRows.clear();
+
+    // 3. Expand all collapsed groups and show all hidden columns simultaneously.
+    //    Clear both sets first so renderRows() won't re-hide anything.
+    collapsedGroups.clear();
+    hiddenCols.clear();
+    // Restore all cell visibility in thead (tbody is handled by renderRows below)
+    table.querySelectorAll<HTMLElement>('[data-col-index]').forEach(cell => {
+      cell.style.display = '';
+      cell.classList.remove('col-group-stub');
+    });
+    // Reset every group header: un-collapse, restore full colSpan and chevron direction
+    thead.querySelectorAll<HTMLTableCellElement>('th.group-header').forEach(th => {
+      const groupId = Number(th.dataset.groupId);
+      const fullSpan = data.columns.filter(c => c.groupId === groupId).length;
+      th.classList.remove('collapsed', 'group-header--partial', 'group-header--filtered');
+      th.colSpan = fullSpan;
+      th.style.display = '';
+      const chevron = th.querySelector<HTMLElement>('.chevron');
+      if (chevron) { chevron.classList.remove('fa-chevron-right'); chevron.classList.add('fa-chevron-down'); }
+    });
+
+    // 4. Clear filters
+    const filtersWereOn = filterRow.style.display === 'table-row';
+    filters.clear();
+    thead.querySelectorAll<HTMLInputElement>('input.filter-input').forEach(inp => {
+      inp.value = '';
+      inp.classList.remove('filter-input--active');
+      (inp.nextElementSibling as HTMLElement | null)?.classList.add('filter-clear--hidden');
+    });
+    if (filtersWereOn) filterRow.style.display = 'none';
+    updateGutterIndicator();
+
+    // 5. Clear all selections
+    clearSelection();
+    clearRowSelection();
+
+    // 6. Re-render and notify
+    renderRows();
+    opts?.onStateChange?.();
+
+    return { filtersWereOn };
+  }
+
   // ── Clipboard copy ────────────────────────────────────────────────────
   function copySelection(): string {
     const visibleModelIds = Array.from(tbody.querySelectorAll<HTMLTableRowElement>('tr[data-model-id]'))
@@ -1162,5 +1214,5 @@ export function buildGrid(data: MSXData, opts?: {
   const resizeObs = new ResizeObserver(() => updateFrozenOffsets());
   resizeObs.observe(table);
 
-  return { element: wrap, toggleFilters, setColumnVisible, getHiddenCols, getHiddenRows, hideRow, getSelectedCells, clearAllSelection, copySelection, getViewState };
+  return { element: wrap, toggleFilters, resetView, setColumnVisible, getHiddenCols, getHiddenRows, hideRow, getSelectedCells, clearAllSelection, copySelection, getViewState };
 }

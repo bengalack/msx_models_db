@@ -205,7 +205,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 
 ### Toolbar
 - Left: "MSX Models DB" title (H1)
-- Right: `[⊞ Columns]` button (opens column picker panel), `[≡ Filters]` toggle, `[? Help]` button, `[◑]` dark/light mode toggle
+- Right: `[⊞ Columns]` button (opens column picker panel), `[≡ Filters]` toggle, `[↻ Reset view]` button, `[? Help]` button, `[◑]` dark/light mode toggle
 - Column picker panel: a floating panel listing all columns grouped by group, each with a checkbox; positioned directly below the Columns button (left-aligned)
 - Help panel: a floating panel (300×200px) positioned directly below the Help button (left-aligned); opens on `[? Help]` click
 - Both Columns and Help buttons show active state (inverted colors) while their respective panel is open
@@ -281,6 +281,17 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - CTRL+C / CMD+C when cells are selected → writes TSV to clipboard
 - Multi-row, multi-column: rows separated by `\n`, columns by `\t`
 - Status bar confirms: `Copied N cell(s)`
+
+### Reset view
+- Click `↻ Reset view` → immediately resets all view state to defaults:
+  - Sort cleared (rows return to original data order)
+  - All manually hidden rows revealed
+  - All collapsed column groups expanded
+  - All individually hidden columns restored (column picker resets to all checked)
+  - All filter inputs cleared and filter row hidden (Filters button returns to inactive state)
+  - All cell and row selections deselected
+- No confirmation dialog — action is immediately effective and the URL reflects the empty state
+- Button has no active/toggle state — it is always a momentary action button
 
 ### Dark/light toggle
 - Click `◐` → swap theme instantly, persist to localStorage
