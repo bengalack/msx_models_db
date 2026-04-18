@@ -868,7 +868,7 @@ export function buildGrid(data: MSXData, opts?: {
     if (!gutterTd) return;
     const modelId = Number(gutterTd.dataset.modelId);
     if (!modelId) return;
-    if (selectedRows.size > 0) {
+    if (selectedRows.size > 0 && selectedRows.has(modelId)) {
       selectedRows.forEach(id => hiddenRows.add(id));
       selectedRows.clear();
     } else {

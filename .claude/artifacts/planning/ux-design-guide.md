@@ -247,7 +247,8 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 
 ### Row hiding via × button
 - Click × with no rows selected: hides the row of that ×.
-- Click × with one or more rows selected: hides all selected rows, then clears selection.
+- Click × on a **selected** row (one or more rows selected): hides all selected rows, then clears selection.
+- Click × on a **non-selected** row while other rows are selected: hides only the row of that ×; selection is unaffected.
 - No right-click context menu anywhere in the gutter.
 
 ### Cell selection
@@ -274,7 +275,8 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - Collapsed groups reflected in URL state
 
 ### Hidden rows/columns
-- × button in gutter hides a row (or all selected rows if any are selected)
+
+- × button in gutter hides the clicked row; if the clicked row is selected and other rows are also selected, hides all selected rows instead
 - Gap indicator (▲ in gutter only) appears between visible rows wherever rows are hidden; clicking it restores those rows
 - Filter-excluded rows do not produce a gap indicator (they are simply absent from the filtered view)
 - Column hide/show via column picker panel
