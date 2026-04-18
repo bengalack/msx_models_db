@@ -107,7 +107,7 @@
   left: 0;                /* align to button's left edge, directly below */
   z-index: 200;
   width: 300px;
-  height: 200px;
+  /* height: 200px; */
   max-height: calc(100vh - 88px);  /* viewport minus header+toolbar+gap+scrollbar */
   overflow-y: auto;
   background: var(--color-surface);
@@ -119,4 +119,9 @@
   color: var(--color-text);
   line-height: 1.5;
   box-sizing: border-box;
+}
+
+.help-panel ul {
+  padding-left: 1.2em;  /* bullets sit at text left-edge, not 40px browser default */
+  margin: 0;
 }

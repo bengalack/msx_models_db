@@ -100,7 +100,25 @@ if (!window.MSX_DATA) {
   const helpPanel = document.createElement('div');
   helpPanel.className = 'help-panel';
   helpPanel.hidden = true;
-  helpPanel.textContent = 'Help content coming soon.';
+  helpPanel.innerHTML = `
+  <h3>Keyboard Shortcuts</h3>
+  <ul>
+    <li><kbd>Esc</kbd> — Reset view</li>
+    <li><kbd>Ctrl+Click</kbd> — Multi-select</li>
+  </ul>
+  <br>
+  <h3>Filters</h3>
+  <p>Use the filter button to narrow results by column values.</p>
+  <br>
+  <h3>Filters</h3>
+  <p>Use the filter button to narrow results by column values.</p>
+  <br>
+  <h3>Filters</h3>
+  <p>Use the filter button to narrow results by column values.</p>
+  <br>
+  <h3>Filters</h3>
+  <p>Use the filter button to narrow results by column values.</p>
+`;
 
   let helpOpen = false;
   function toggleHelp(): void {
