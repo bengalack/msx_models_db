@@ -809,3 +809,98 @@ def test_aliases_json_loads_without_error():
     lut = load_aliases(Path("data/aliases.json"))
     assert isinstance(lut, AliasLUT)
     assert "manufacturer" in lut.single or "model" in lut.single
+
+
+class TestOpenMSXIdLink:
+    """Build emits correct GitHub link for openmsx_id column."""
+
+    def _run_build(self, tmp_path, openmsx_data, msxorg_data=None):
+        import re as _re
+        openmsx_path = tmp_path / "openmsx.json"
+        msxorg_path  = tmp_path / "msxorg.json"
+        output_path  = tmp_path / "data.js"
+        openmsx_path.write_text(json.dumps(openmsx_data))
+        msxorg_path.write_text(json.dumps(msxorg_data or []))
+        build(
+            openmsx_path=openmsx_path,
+            msxorg_path=msxorg_path,
+            registry_path=tmp_path / "reg.json",
+            output_path=output_path,
+        )
+        content = output_path.read_text(encoding="utf-8")
+        data = json.loads(
+            _re.search(r"window\.MSX_DATA\s*=\s*(\{.*\})\s*;", content, _re.DOTALL).group(1)
+        )
+        return data
+
+    def test_openmsx_id_column_is_linkable(self, tmp_path):
+        """openmsx_id ColumnDef has linkable=true in data.js."""
+        data = self._run_build(tmp_path, [
+            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+             "openmsx_id": "Sony_HB-75P"},
+        ])
+        col = next(c for c in data["columns"] if c["key"] == "openmsx_id")
+        assert col.get("linkable") is True
+
+    def test_openmsx_id_column_has_truncate_limit_20(self, tmp_path):
+        """openmsx_id ColumnDef has truncateLimit=20 in data.js."""
+        data = self._run_build(tmp_path, [
+            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+             "openmsx_id": "Sony_HB-75P"},
+        ])
+        col = next(c for c in data["columns"] if c["key"] == "openmsx_id")
+        assert col.get("truncateLimit") == 20
+
+    def test_openmsx_id_link_emitted_when_id_present(self, tmp_path):
+        """Model record has links.openmsx_id set to the correct GitHub URL."""
+        data = self._run_build(tmp_path, [
+            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+             "openmsx_id": "Sony_HB-75P"},
+        ])
+        col_keys = [c["key"] for c in data["columns"]]
+        mfr_idx = col_keys.index("manufacturer")
+        mdl_idx = col_keys.index("model")
+        sony = next(
+            m for m in data["models"]
+            if m["values"][mfr_idx] == "Sony" and m["values"][mdl_idx] == "HB-75P"
+        )
+        expected = "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-75P.xml"
+        assert sony.get("links", {}).get("openmsx_id") == expected
+
+    def test_openmsx_id_link_absent_when_id_missing(self, tmp_path):
+        """Model record has no links.openmsx_id when openmsx_id is null."""
+        data = self._run_build(tmp_path, [
+            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"},
+        ])
+        col_keys = [c["key"] for c in data["columns"]]
+        mfr_idx = col_keys.index("manufacturer")
+        mdl_idx = col_keys.index("model")
+        sony = next(
+            m for m in data["models"]
+            if m["values"][mfr_idx] == "Sony" and m["values"][mdl_idx] == "HB-75P"
+        )
+        assert "openmsx_id" not in sony.get("links", {})
+
+    def test_both_model_and_openmsx_id_links_coexist(self, tmp_path):
+        """When both msxorg_title and openmsx_id are present, both links are emitted."""
+        data = self._run_build(
+            tmp_path,
+            openmsx_data=[
+                {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+                 "openmsx_id": "Sony_HB-75P"},
+            ],
+            msxorg_data=[
+                {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+                 "msxorg_title": "Sony HB-75P"},
+            ],
+        )
+        col_keys = [c["key"] for c in data["columns"]]
+        mfr_idx = col_keys.index("manufacturer")
+        mdl_idx = col_keys.index("model")
+        sony = next(
+            m for m in data["models"]
+            if m["values"][mfr_idx] == "Sony" and m["values"][mdl_idx] == "HB-75P"
+        )
+        links = sony.get("links", {})
+        assert "model" in links
+        assert "openmsx_id" in links

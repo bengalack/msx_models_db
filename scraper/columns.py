@@ -179,7 +179,8 @@ COLUMNS: list[Column] = [
     Column(id=104, key="keyboard_type",   label="Keyboard Type",        group="other",    type="string", short_label="KB Type",     tooltip="Keyboard type encoded in the main BIOS ROM (byte 0x002C, lower nibble)"),
     Column(id=27,  key="connectivity",    label="Connectivity/Ports",   group="other",    type="string", short_label="Conn/ Ports", tooltip="Connectivity/Ports"),
     # Emulation
-    Column(id=28, key="openmsx_id",       label="openMSX Machine ID",   group="emulation", type="string", short_label="openMSX ID",  tooltip="openMSX Machine ID"),
+    Column(id=28, key="openmsx_id",       label="openMSX Machine ID",   group="emulation", type="string", short_label="openMSX ID",  tooltip="openMSX Machine ID",
+           linkable=True, truncate_limit=20),
     Column(id=29, key="fpga_support",     label="FPGA",                 group="emulation", type="string",
            derive=lambda m: "Yes" if "Altera" in (m.get("engine") or "") else None),
 

@@ -331,6 +331,10 @@ def build(
                 msxorg_title = model.get("msxorg_title")
                 if msxorg_title:
                     links[col.key] = f"https://www.msx.org/wiki/{msxorg_title.replace(' ', '_')}"
+            elif col.linkable and col.key == "openmsx_id":
+                oid = model.get("openmsx_id")
+                if oid:
+                    links[col.key] = f"https://github.com/openMSX/openMSX/blob/master/share/machines/{oid}.xml"
         if links:
             record["links"] = links
 
