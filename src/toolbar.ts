@@ -2,8 +2,17 @@ export function buildToolbar(
   onFiltersToggle: () => void,
   onColsToggle: () => void,
   onResetView: () => void,
+  onHeadersCopyToggle: () => void,
   onHelpToggle: () => void,
-): { element: HTMLElement; colsBtn: HTMLButtonElement; filtersBtn: HTMLButtonElement; resetBtn: HTMLButtonElement; helpBtn: HTMLButtonElement; helpWrap: HTMLElement } {
+): {
+  element: HTMLElement;
+  colsBtn: HTMLButtonElement;
+  filtersBtn: HTMLButtonElement;
+  resetBtn: HTMLButtonElement;
+  headersCopyBtn: HTMLButtonElement;
+  helpBtn: HTMLButtonElement;
+  helpWrap: HTMLElement;
+} {
   const toolbar = document.createElement('div');
   toolbar.className = 'toolbar';
 
@@ -28,6 +37,14 @@ export function buildToolbar(
   resetBtn.textContent = '\u21bb Reset view';
   resetBtn.addEventListener('click', onResetView);
 
+  const headersCopyBtn = document.createElement('button');
+  headersCopyBtn.className = 'toolbar__btn';
+  const headersCopyIcon = document.createElement('i');
+  headersCopyIcon.className = 'fa fa-plus';
+  headersCopyBtn.appendChild(headersCopyIcon);
+  headersCopyBtn.appendChild(document.createTextNode(' Include headers on copy'));
+  headersCopyBtn.addEventListener('click', onHeadersCopyToggle);
+
   const helpWrap = document.createElement('div');
   helpWrap.className = 'toolbar__btn-wrap';
   const helpBtn = document.createElement('button');
@@ -39,7 +56,8 @@ export function buildToolbar(
   toolbar.appendChild(colsBtn);
   toolbar.appendChild(filtersBtn);
   toolbar.appendChild(resetBtn);
+  toolbar.appendChild(headersCopyBtn);
   toolbar.appendChild(helpWrap);
 
-  return { element: toolbar, colsBtn, filtersBtn, resetBtn, helpBtn, helpWrap };
+  return { element: toolbar, colsBtn, filtersBtn, resetBtn, headersCopyBtn, helpBtn, helpWrap };
 }

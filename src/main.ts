@@ -156,7 +156,22 @@ if (!window.MSX_DATA) {
     }
   }
 
-  const { element: toolbarEl, colsBtn: colsBtnEl, filtersBtn: filtersBtnEl, helpBtn: helpBtnEl, helpWrap } = buildToolbar(handleFiltersToggle, togglePicker, handleResetView, toggleHelp);
+  // ── Include headers on copy toggle ────────────────────────────────────────
+  let headersOnCopy = false;
+  let headersCopyBtnEl!: HTMLButtonElement;
+
+  function handleHeadersCopyToggle(): void {
+    headersOnCopy = !headersOnCopy;
+    headersCopyBtnEl.classList.toggle('toolbar__btn--active', headersOnCopy);
+  }
+
+  const toolbarResult = buildToolbar(handleFiltersToggle, togglePicker, handleResetView, handleHeadersCopyToggle, toggleHelp);
+  const toolbarEl = toolbarResult.element;
+  const colsBtnEl = toolbarResult.colsBtn;
+  const filtersBtnEl = toolbarResult.filtersBtn;
+  headersCopyBtnEl = toolbarResult.headersCopyBtn;
+  const helpBtnEl = toolbarResult.helpBtn;
+  const helpWrap = toolbarResult.helpWrap;
   if (filtersOn) filtersBtnEl.classList.add('toolbar__btn--active');
   toolbarEl.appendChild(pickerEl);
   helpWrap.appendChild(helpPanel);
@@ -193,7 +208,7 @@ if (!window.MSX_DATA) {
 
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
-      const tsv = copySelection();
+      const tsv = copySelection(headersOnCopy);
       if (!tsv) return; // nothing selected — let browser handle default copy
       e.preventDefault();
       const cellCount = tsv.split('\n').reduce((n, row) => n + row.split('\t').length, 0);
