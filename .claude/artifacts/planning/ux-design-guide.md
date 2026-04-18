@@ -207,7 +207,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 
 ### Toolbar
 - Left: "MSX Models DB" title (H1)
-- Right: `[⊞ Columns]` button (opens column picker panel), `[≡ Filters]` toggle, `[↻ Reset view]` button, `[? Help]` button, `[◑]` dark/light mode toggle
+- Right: `[⊞ Columns]` button (opens column picker panel), `[≡ Filters]` toggle, `[↻ Reset view]` button, `[+ Include headers on copy]` toggle, `[? Help]` button, `[◑]` dark/light mode toggle
 - Column picker panel: a floating panel listing all toggleable columns grouped by group, each with a checkbox; positioned directly below the Columns button (left-aligned). The Identity group (Manufacturer, Model) is excluded — those columns are always visible and are never listed in the picker.
 - Help panel: a floating panel (300×200px) positioned directly below the Help button (left-aligned); opens on `[? Help]` click
 - Both Columns and Help buttons show active state (inverted colors) while their respective panel is open
@@ -282,7 +282,16 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 ### Clipboard copy
 - CTRL+C / CMD+C when cells are selected → writes TSV to clipboard
 - Multi-row, multi-column: rows separated by `\n`, columns by `\t`
+- When "Include headers on copy" toggle is ON: a header row (column short labels, tab-joined) is prepended as the first row of the TSV output
 - Status bar confirms: `Copied N cell(s)`
+
+### Include headers on copy toggle
+
+- Toggle button in toolbar between "Reset view" and "Help"
+- Icon: `fa fa-plus` (static — does not change with toggle state)
+- Active state: `toolbar__btn--active` class (inverted colors, same as Filters button)
+- Default: OFF; not persisted in URL; not reset by "Reset view"
+- When ON and cells are copied: first TSV row = `shortLabel ?? label` of each selected visible column, in display order
 
 ### Reset view
 - Click `↻ Reset view` → immediately resets all view state to defaults:

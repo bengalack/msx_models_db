@@ -153,6 +153,19 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Multi-cell selections are copied as tab-separated columns and newline-separated rows.
     - No browser extension or plugin is required.
 
+- Include headers on copy
+  - Description: A toolbar toggle button that, when active, prepends a header row (column short labels) to the TSV output of CTRL+C. Default state is OFF. Toggle state is not part of the saved URL state.
+  - Priority: Must
+  - Acceptance Criteria:
+    - A toggle button labelled "Include headers on copy" with a `fa fa-plus` icon is placed between the "Reset view" button and the "Help" button in the toolbar.
+    - Default state is OFF (button not highlighted).
+    - Clicking the button toggles it ON/OFF; the button shows the active visual state (inverted colors, same as the Filters button) when ON.
+    - When OFF, CTRL+C behaviour is unchanged.
+    - When ON, CTRL+C prepends one extra tab-separated row containing the `shortLabel` (or `label` if no `shortLabel`) of each selected visible column, in display order.
+    - The header row contains exactly the columns present in the data rows — no phantom columns.
+    - If no cells are selected, CTRL+C produces no output regardless of toggle state.
+    - The toggle state is NOT encoded in the URL and is NOT reset by "Reset view".
+
 - Live URL state
   - Description: The page URL updates in real time to encode the complete current view state as a compact binary payload (base64-encoded in the URL hash fragment). Opening the URL recreates the exact view. Old URLs must remain valid forever across all future data updates.
   - Priority: Must
