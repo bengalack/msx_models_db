@@ -56,7 +56,7 @@ def _info(
 
 
 class TestParseXMLHappyPath:
-    """T-010: MSX2, MSX2+, turboR happy paths."""
+    """T-010: MSX1, MSX2, MSX2+, turboR happy paths."""
 
     def test_msx2_identity_fields(self):
         xml = _xml(_info(manufacturer="Sony", code="HB-75P", msx_type="MSX2",
@@ -87,15 +87,15 @@ class TestParseXMLHappyPath:
         assert result is not None
         assert result["generation"] == "turbo R"
 
+    def test_msx1_standard_normalised(self):
+        xml = _xml(_info(msx_type="MSX"))
+        result = parse_machine_xml(xml, "Sony_HB-10.xml")
+        assert result is not None
+        assert result["generation"] == "MSX1"
+
 
 class TestParseXMLSkipConditions:
     """T-011: machines that should be skipped."""
-
-    def test_msx1_returns_none_silently(self, caplog):
-        xml = _xml(_info(msx_type="MSX"))
-        result = parse_machine_xml(xml, "Sony_HB-10.xml")
-        assert result is None
-        assert "Sony_HB-10.xml" not in caplog.text
 
     def test_colecovision_returns_none_silently(self, caplog):
         xml = _xml(_info(msx_type="ColecoVision"))
@@ -538,15 +538,26 @@ class TestFetchAll:
         models = fetch_all(session=session, delay=0, exclude_list=exclude)
         assert len(models) == 0
 
-    def test_non_msx2_xml_not_included(self):
-        msx1_xml = _xml(_info(msx_type="MSX"))
+    def test_non_msx_xml_not_included(self):
+        coleco_xml = _xml(_info(msx_type="ColecoVision"))
         session = MagicMock()
         session.get.side_effect = [
-            self._api_response(["MSX1_machine.xml"]),
-            self._xml_response(msx1_xml),
+            self._api_response(["ColecoVision.xml"]),
+            self._xml_response(coleco_xml),
         ]
         models = fetch_all(session=session, delay=0)
         assert len(models) == 0
+
+    def test_msx1_xml_is_included(self):
+        msx1_xml = _xml(_info(msx_type="MSX"))
+        session = MagicMock()
+        session.get.side_effect = [
+            self._api_response(["Sony_HB-10.xml"]),
+            self._xml_response(msx1_xml),
+        ]
+        models = fetch_all(session=session, delay=0)
+        assert len(models) == 1
+        assert models[0]["generation"] == "MSX1"
 
     def test_listing_failure_returns_empty_not_raises(self):
         """A 403/network error on the GitHub API listing returns [] gracefully."""

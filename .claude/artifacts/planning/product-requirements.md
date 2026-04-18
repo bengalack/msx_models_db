@@ -8,7 +8,7 @@
 ## Problem Statement
 MSX computer model specifications are scattered across multiple websites with no unified, structured reference. Enthusiasts and researchers who want to compare models — by RAM, video chip, CPU speed, media, or any other dimension — must open multiple tabs, manually reconcile inconsistent data, and copy information by hand. This is slow, error-prone, and discouraging.
 
-The goal is a single static web page that presents all MSX2, MSX2+, and MSX turbo R models (including unofficial FPGA-based models) in a structured, spreadsheet-like grid. Users can sort, filter, show/hide columns and rows, select cells, copy data to the clipboard, and share their exact view via URL. The data is maintained in a local JSON file, refreshed on demand by a scraper that pulls from msx.org and the openMSX GitHub repository.
+The goal is a single static web page that presents all MSX1, MSX2, MSX2+, and MSX turbo R models (including unofficial FPGA-based models) in a structured, spreadsheet-like grid. Users can sort, filter, show/hide columns and rows, select cells, copy data to the clipboard, and share their exact view via URL. The data is maintained in a local JSON file, refreshed on demand by a scraper that pulls from msx.org and the openMSX GitHub repository.
 
 ## Goals
 - Provide a single, authoritative reference for MSX2/MSX2+/turbo R model specifications.
@@ -17,7 +17,7 @@ The goal is a single static web page that presents all MSX2, MSX2+, and MSX turb
 - Give the maintainer a repeatable, low-effort process to refresh the data.
 
 ## Non-Goals
-- MSX1 models (future iteration).
+
 - Real-time data fetching from external sources at page load.
 - User accounts, authentication, or server-side processing.
 - Community/crowd-sourced data editing via the UI.
@@ -43,7 +43,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Description: The page renders all in-scope MSX models as rows in a spreadsheet-like grid. Each column maps to a model attribute. The grid is the primary and only view.
   - Priority: Must
   - Acceptance Criteria:
-    - All MSX2, MSX2+, and MSX turbo R models present in the JSON file appear as rows.
+    - All MSX1, MSX2, MSX2+, and MSX turbo R models present in the JSON file appear as rows.
     - Each column defined in the JSON schema is rendered as a grid column.
     - The grid is readable and usable without horizontal scrolling for the Identity group at minimum.
     - The Identity group columns (Manufacturer, Model) and their group header are frozen/sticky during horizontal scroll.
@@ -270,7 +270,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Priority: Must
   - Acceptance Criteria:
     - The scraper can be invoked by the maintainer with a single command.
-    - It scrapes MSX2, MSX2+, and MSX turbo R model pages from msx.org.
+    - It scrapes MSX1, MSX2, MSX2+, and MSX turbo R model pages from msx.org.
     - A model that appears in multiple msx.org category pages is assigned the highest generation. The ranking from lowest to highest is: MSX1 < MSX2 < MSX2+ < turbo R.
     - When a model's VDP field lists multiple chips (e.g. "V9938 / V9958"), the highest-ranked chip is used. The ranking from lowest to highest is: TMS99xx < V9938 < V9958.
     - It parses machine XML files from the openMSX GitHub repository's share folder.
@@ -475,7 +475,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
 
 ## Success Criteria
 
-- A user can open the page and immediately see all MSX2, MSX2+, and MSX turbo R models in a sortable, filterable grid.
+- A user can open the page and immediately see all MSX1, MSX2, MSX2+, and MSX turbo R models in a sortable, filterable grid.
 - Sort, filter, column/row visibility, and group collapse all work without page reload.
 - Any view state can be shared via a URL that exactly reproduces the view in a new tab.
 - The maintainer can refresh the data with a single command and no manual JSON editing (beyond `local-raw.json` for fields that cannot be scraped).

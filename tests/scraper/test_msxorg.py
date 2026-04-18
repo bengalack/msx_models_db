@@ -33,8 +33,21 @@ class _StubSource:
     def __init__(self, category_results: list[bytes | None]):
         self._cats = iter(category_results)
 
-    def fetch_category(self, standard: str, url: str) -> bytes | None:
+    def fetch_category(self, standard: str, url: str, page: int = 1) -> bytes | None:
         return next(self._cats, None)
+
+    def fetch_page(self, title: str, url: str) -> bytes | None:  # pragma: no cover
+        return None
+
+
+class _PagedStubSource:
+    """PageSource stub that serves content keyed by (standard, page)."""
+
+    def __init__(self, pages: dict[tuple[str, int], bytes | None]) -> None:
+        self._pages = pages
+
+    def fetch_category(self, standard: str, url: str, page: int = 1) -> bytes | None:
+        return self._pages.get((standard, page))
 
     def fetch_page(self, title: str, url: str) -> bytes | None:  # pragma: no cover
         return None
@@ -218,6 +231,7 @@ class TestFetchAllWithMirror:
         (tmp_path / "Category_MSX2 Computers - MSX Wiki.html").write_bytes(self._CATEGORY_HTML)
         (tmp_path / "Category_MSX2+ Computers - MSX Wiki.html").write_bytes(b"<html><body></body></html>")
         (tmp_path / "Category_MSX turbo R Computers - MSX Wiki.html").write_bytes(b"<html><body></body></html>")
+        (tmp_path / "Category_MSX1 Computers - MSX Wiki.html").write_bytes(b"<html><body></body></html>")
         (tmp_path / "Sony HB-75P - MSX Wiki.html").write_bytes(self._MODEL_HTML)
 
         source = MirrorPageSource(tmp_path)
@@ -236,6 +250,7 @@ class TestFetchAllWithMirror:
         (tmp_path / "Category_MSX2 Computers - MSX Wiki.html").write_bytes(self._CATEGORY_HTML)
         (tmp_path / "Category_MSX2+ Computers - MSX Wiki.html").write_bytes(b"<html><body></body></html>")
         (tmp_path / "Category_MSX turbo R Computers - MSX Wiki.html").write_bytes(b"<html><body></body></html>")
+        (tmp_path / "Category_MSX1 Computers - MSX Wiki.html").write_bytes(b"<html><body></body></html>")
         # Model file deliberately not written
 
         source = MirrorPageSource(tmp_path)
@@ -251,6 +266,10 @@ class TestFetchAllWithMirror:
             raise AssertionError("HTTP request made during mirror mode")
 
         monkeypatch.setattr(requests.Session, "get", should_not_be_called)
+        (tmp_path / "Category_MSX2 Computers - MSX Wiki.html").write_bytes(b"<html><body></body></html>")
+        (tmp_path / "Category_MSX2+ Computers - MSX Wiki.html").write_bytes(b"<html><body></body></html>")
+        (tmp_path / "Category_MSX turbo R Computers - MSX Wiki.html").write_bytes(b"<html><body></body></html>")
+        (tmp_path / "Category_MSX1 Computers - MSX Wiki.html").write_bytes(b"<html><body></body></html>")
         source = MirrorPageSource(tmp_path)
         fetch_all(source=source, delay=0)  # no exception = no HTTP calls
 
@@ -332,3 +351,140 @@ class TestParseConnections:
         result = _parse_connections(soup)
         assert result.get("scraped_cart_slots") == 2
         assert "cartridge_slots" not in result
+
+
+# ---------------------------------------------------------------------------
+# MSX1 generation support
+# ---------------------------------------------------------------------------
+
+_EMPTY_CAT = b"<html><body><div id='mw-pages'></div></body></html>"
+
+_MSX1_CAT_WITH_MODEL = (
+    b"<html><body>"
+    b'<div id="mw-pages">'
+    b'<a href="/wiki/Sony_HB-75P" title="Sony HB-75P">Sony HB-75P</a>'
+    b"</div></body></html>"
+)
+
+_MSX2_CAT_WITH_SAME_MODEL = (
+    b"<html><body>"
+    b'<div id="mw-pages">'
+    b'<a href="/wiki/Sony_HB-75P" title="Sony HB-75P">Sony HB-75P</a>'
+    b"</div></body></html>"
+)
+
+
+class TestMSX1Generation:
+    def test_msx1_model_gets_msx1_generation(self):
+        source = _PagedStubSource({
+            ("MSX2", 1): _EMPTY_CAT,
+            ("MSX2+", 1): _EMPTY_CAT,
+            ("turbo R", 1): _EMPTY_CAT,
+            ("MSX1", 1): _MSX1_CAT_WITH_MODEL,
+        })
+        pages = list_model_pages(source, delay=0)
+        assert len(pages) == 1
+        assert pages[0]["standard"] == "MSX1"
+
+    def test_msx1_model_also_in_msx2_gets_msx2(self):
+        source = _PagedStubSource({
+            ("MSX2", 1): _MSX2_CAT_WITH_SAME_MODEL,
+            ("MSX2+", 1): _EMPTY_CAT,
+            ("turbo R", 1): _EMPTY_CAT,
+            ("MSX1", 1): _MSX1_CAT_WITH_MODEL,
+        })
+        pages = list_model_pages(source, delay=0)
+        assert len(pages) == 1
+        assert pages[0]["standard"] == "MSX2"
+
+    def test_msx1_overview_title_is_skipped(self):
+        """The 'MSX1' overview article must not appear as a model."""
+        cat = (
+            b"<html><body><div id='mw-pages'>"
+            b'<a href="/wiki/MSX1" title="MSX1">MSX1</a>'
+            b'<a href="/wiki/Sony_HB-75P" title="Sony HB-75P">Sony HB-75P</a>'
+            b"</div></body></html>"
+        )
+        source = _PagedStubSource({
+            ("MSX2", 1): _EMPTY_CAT,
+            ("MSX2+", 1): _EMPTY_CAT,
+            ("turbo R", 1): _EMPTY_CAT,
+            ("MSX1", 1): cat,
+        })
+        pages = list_model_pages(source, delay=0)
+        assert all(p["title"] != "MSX1" for p in pages)
+
+
+# ---------------------------------------------------------------------------
+# Pagination — following "next 200" links
+# ---------------------------------------------------------------------------
+
+_PAGE1_WITH_NEXT = (
+    b"<html><body>"
+    b'<div id="mw-pages">'
+    b'<a href="/wiki/Sony_HB-75P" title="Sony HB-75P">Sony HB-75P</a>'
+    b'<a href="/wiki/Category:MSX1_Computers?pagefrom=Sony+HX-10#mw-pages">next 200</a>'
+    b"</div></body></html>"
+)
+
+_PAGE2_NO_NEXT = (
+    b"<html><body>"
+    b'<div id="mw-pages">'
+    b'<a href="/wiki/Sony_HX-10" title="Sony HX-10">Sony HX-10</a>'
+    b"</div></body></html>"
+)
+
+
+class TestListModelPagesPagination:
+    def test_follows_next_page_link_collects_both_pages(self):
+        source = _PagedStubSource({
+            ("MSX2", 1): _EMPTY_CAT,
+            ("MSX2+", 1): _EMPTY_CAT,
+            ("turbo R", 1): _EMPTY_CAT,
+            ("MSX1", 1): _PAGE1_WITH_NEXT,
+            ("MSX1", 2): _PAGE2_NO_NEXT,
+        })
+        pages = list_model_pages(source, delay=0)
+        titles = [p["title"] for p in pages]
+        assert "Sony HB-75P" in titles
+        assert "Sony HX-10" in titles
+
+    def test_pagination_stops_when_page2_returns_none(self):
+        source = _PagedStubSource({
+            ("MSX2", 1): _EMPTY_CAT,
+            ("MSX2+", 1): _EMPTY_CAT,
+            ("turbo R", 1): _EMPTY_CAT,
+            ("MSX1", 1): _PAGE1_WITH_NEXT,
+            # MSX1 page 2 absent → None → stop
+        })
+        pages = list_model_pages(source, delay=0)
+        assert len(pages) == 1
+        assert pages[0]["title"] == "Sony HB-75P"
+
+    def test_pagination_stops_when_no_next_link(self):
+        source = _PagedStubSource({
+            ("MSX2", 1): _EMPTY_CAT,
+            ("MSX2+", 1): _EMPTY_CAT,
+            ("turbo R", 1): _EMPTY_CAT,
+            ("MSX1", 1): _PAGE2_NO_NEXT,  # no next link
+        })
+        pages = list_model_pages(source, delay=0)
+        assert len(pages) == 1
+
+    def test_deduplication_across_pages_keeps_highest_generation(self):
+        """A model on MSX1 page 2 that also appears in MSX2 gets MSX2."""
+        msx2_with_hx10 = (
+            b"<html><body><div id='mw-pages'>"
+            b'<a href="/wiki/Sony_HX-10" title="Sony HX-10">Sony HX-10</a>'
+            b"</div></body></html>"
+        )
+        source = _PagedStubSource({
+            ("MSX2", 1): msx2_with_hx10,
+            ("MSX2+", 1): _EMPTY_CAT,
+            ("turbo R", 1): _EMPTY_CAT,
+            ("MSX1", 1): _PAGE1_WITH_NEXT,
+            ("MSX1", 2): _PAGE2_NO_NEXT,  # Sony HX-10 also here as MSX1
+        })
+        pages = list_model_pages(source, delay=0)
+        hx10 = next(p for p in pages if p["title"] == "Sony HX-10")
+        assert hx10["standard"] == "MSX2"

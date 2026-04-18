@@ -1,6 +1,6 @@
 # MSX Models DB
 
-A single static web page presenting MSX2, MSX2+, and MSX turbo R computer model specifications. The purpose is to easily get the overview of the myriad of models ever released. Compare, review and understand the similarities and exceptions. Hosted at [bengalack.github.io/msx_models_db](https://bengalack.github.io/msx_models_db/)
+A single static web page presenting MSX2, MSX2+, and MSX turbo R computer model specifications. The purpose is to easily get the overview of the myriad of models ever released. Compare, review and understand the similarities. Find outliers and hallmarks. We see that we have opened a pandoras box - the number of ways to improve this thing we've started, is wast. Hosted at [bengalack.github.io/msx_models_db](https://bengalack.github.io/msx_models_db/)
 
 Features:
 * Sortable, filterable, selectable spreadsheet-like grid. 
@@ -12,7 +12,7 @@ The second and most important part of this project is the *scraper*, written in 
 
 Main data sources are:
 1. [openmsx](https://openmsx.org/) and its supported models ([xml files](https://github.com/openMSX/openMSX/tree/master/share/machines)) (publicly accessible)
-2. the ROM files which are referenced in the xml files (copyrighted, obtain separately)
+2. the [ROM files](systemroms/machines/) which are referenced in the xml files (copyrighted, obtain separately)
 3. [msx-org's wiki](https://www.msx.org/wiki/Main_Page) pages (publicly accessible)
 
 In addition there are some local files which is used to compliment the data above.
@@ -27,10 +27,11 @@ When this is done, a merge process takes the results from the two above + a loca
 By design, this scraper should be re-run from time to time to automatically pick up additions and modifications in its datasources.
 
 ### Local/Mirror file support
-Mid-development of this project, msx.org experience huge traffic from general global AI, which results in slowdowns of their site. Their admins were forced to start denying scraping of their wiki. To remedy this, the scraper can use a local mirror instead. Such a copy is done with "Save as" in your browser. Something which does not scale, but is a needed fallback. Developing this tool using local files turned out to be a must anyway, due to development speed. Hopefully the access can be opened up again, as updates on their wiki is not landing in your mirror that easily.
+Mid-development of this project, msx.org experience huge traffic from general global AI, which results in slowdowns of their site. Their admins were forced to start denying scraping of their wiki. To remedy this, the scraper can use a local mirror instead (see `data/scraper-config.json`). Such a copy is done with "Save as" in your browser. This does not scale well, but is a needed fallback. Developing this tool using local files turned out to be a must anyway, due to development speed. Hopefully the access can be opened up again, as updates on their wiki is not landing in your mirror that easily.
 
-## Pandoras box
-Using this project just reveals that there are so many things we want to drill down in and make clearer. We've just started. We will add and improve. At least it is designed for evolution.
+### Data completeness
+First, the the current data needs more massaging. Then, the amount of models are massive. Not all are covered as the available information is not consistently structured or even available. We could need more sources. Furthermore, the more complex parsing has been downprioritized. For example, there are sections on msx.org that currently isnt't parsed, like when [Yamaha_CX5M](https://www.msx.org/wiki/Yamaha_CX5M) has a table listing up 7 regional variants of the model.
+
 
 ## Background story
 This project came to be for two reasons. The author had the need for:

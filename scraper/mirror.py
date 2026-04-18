@@ -37,7 +37,7 @@ log = logging.getLogger(__name__)
 class PageSource(Protocol):
     """Abstract source of msx.org wiki HTML pages."""
 
-    def fetch_category(self, standard: str, url: str) -> bytes | None:
+    def fetch_category(self, standard: str, url: str, page: int = 1) -> bytes | None:
         """Return raw HTML bytes for a category listing page, or None on failure."""
         ...
 
@@ -52,7 +52,7 @@ class LivePageSource:
     def __init__(self, session: requests.Session) -> None:
         self._session = session
 
-    def fetch_category(self, standard: str, url: str) -> bytes | None:
+    def fetch_category(self, standard: str, url: str, page: int = 1) -> bytes | None:
         try:
             resp = self._session.get(url, timeout=30)
             resp.raise_for_status()
@@ -116,9 +116,15 @@ class MirrorPageSource:
             return None
         return path.read_bytes()
 
-    def fetch_category(self, standard: str, url: str) -> bytes | None:
-        filename = slug_to_filename(url)
-        return self._read(filename, f"category {standard!r}")
+    def fetch_category(self, standard: str, url: str, page: int = 1) -> bytes | None:
+        if page == 1:
+            filename = slug_to_filename(url)
+        else:
+            base_url = url.split("?")[0]
+            base_filename = slug_to_filename(base_url)
+            stem = base_filename[: -len(" - MSX Wiki.html")]
+            filename = f"{stem}_page{page} - MSX Wiki.html"
+        return self._read(filename, f"category {standard!r} page {page}")
 
     def fetch_page(self, title: str, url: str) -> bytes | None:
         filename = slug_to_filename(url)
@@ -136,12 +142,12 @@ class FallbackPageSource:
         self._live = live
         self._mirror = mirror
 
-    def fetch_category(self, standard: str, url: str) -> bytes | None:
-        content = self._live.fetch_category(standard, url)
+    def fetch_category(self, standard: str, url: str, page: int = 1) -> bytes | None:
+        content = self._live.fetch_category(standard, url, page=page)
         if content is not None:
             return content
-        log.info("Live fetch failed for category %r — falling back to mirror", standard)
-        return self._mirror.fetch_category(standard, url)
+        log.info("Live fetch failed for category %r page %d — falling back to mirror", standard, page)
+        return self._mirror.fetch_category(standard, url, page=page)
 
     def fetch_page(self, title: str, url: str) -> bytes | None:
         content = self._live.fetch_page(title, url)
