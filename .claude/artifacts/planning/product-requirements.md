@@ -232,6 +232,15 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - A model cannot share links with itself (self-reference is a load-time error).
     - If `data/link-shares.json` is absent, the build completes normally (link-shares is optional).
 
+- Linkable columns
+  - Description: Two columns render their cell values as clickable hyperlinks: `Model` (links to the msx.org wiki page) and `openMSX Machine ID` (links to the corresponding machine XML file on the openMSX GitHub repository). The URL is stored in `ModelRecord.links` keyed by column key and is only emitted when a URL is available for that model. Both columns also carry a `truncate_limit` so the smart tooltip applies.
+  - Priority: Must
+  - Acceptance Criteria:
+    - The `Model` column cell renders as `<a class="cell-link">` linking to `https://www.msx.org/wiki/{msxorg_title}` when a msx.org page title is known; plain text otherwise.
+    - The `openMSX Machine ID` column cell renders as `<a class="cell-link">` linking to `https://github.com/openMSX/openMSX/blob/master/share/machines/{openmsx_id}.xml` when the model has an `openmsx_id`; plain text otherwise.
+    - Clicking a link cell opens the URL in a new tab; cell selection is not triggered by the click.
+    - Both columns use the smart tooltip: when the value is truncated the tooltip is `"<full value> — <url>"`; otherwise the tooltip is the URL only.
+
 - Cell value truncation
   - Description: Column definitions may specify an optional `truncate_limit` (positive integer). When a cell's string value exceeds this limit, the visible text is trimmed: the first `(truncate_limit − 1)` characters are shown, followed by `…`. A tooltip reveals the full value. When the cell also links to a URL, the tooltip shows `"<full value> — <url>"` on a single line. Sorting always uses the full original value from the data record, unaffected by truncation.
   - Priority: Must
@@ -239,6 +248,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - `ColumnDef` accepts an optional integer `truncate_limit` field (absent or `0` = no truncation).
     - The `Model` column has a configurable default `truncate_limit = 16` (adjustable without regression).
     - The `Manufacturer` column has a configurable default `truncate_limit = 12` (adjustable without regression).
+    - The `openMSX Machine ID` column has a configurable default `truncate_limit = 20` (adjustable without regression).
     - A cell whose value length exceeds `truncate_limit` displays the first `(truncate_limit − 1)` characters followed by `…`.
     - A cell whose value length is at or below `truncate_limit` is displayed unchanged.
     - Hovering a truncated cell shows a native tooltip (`title`) containing the full, untruncated value.

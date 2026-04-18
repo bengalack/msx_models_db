@@ -194,6 +194,8 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - Selected: `var(--color-accent-dim)` fill + `1px solid var(--color-selection-border)` outline; in dark mode add `var(--color-accent-glow)`
 - Empty/null value: displayed as `—` (em dash) in `var(--color-text-muted)`
 - Overflow: cell text is clipped with ellipsis; full value shown in browser native tooltip (`title` attribute)
+- **Link cells**: Two columns render as hyperlinks (`<a class="cell-link">`): `Model` (→ msx.org wiki) and `openMSX Machine ID` (→ openMSX GitHub machine XML). Links open in a new tab. Clicking a link cell does not trigger cell selection — the browser follows the href.
+  - **Smart tooltip**: when the cell value is truncated (exceeds the column's `truncateLimit`), the `<a>` element's `title` is `"<full value> — <url>"`; when not truncated, the `title` is the URL only. The mouseenter handler skips link cells because the `<a>` already manages its own tooltip.
 
 ### Grid — left gutter
 - Width: 52px
