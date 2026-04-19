@@ -71,14 +71,16 @@ def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
             mirror_path = Path(raw)
     if mirror_path is not None and args.local_msxorg_only:
         source = MirrorPageSource(mirror_path)
-        models = msxorg.fetch_all(source=source, limit=args.limit)
+        delay = 0.0
     elif mirror_path is not None:
         session = _requests.Session()
         session.headers["User-Agent"] = "msxmodelsdb-scraper/1.0"
         source = FallbackPageSource(LivePageSource(session), MirrorPageSource(mirror_path))
-        models = msxorg.fetch_all(source=source, limit=args.limit)
+        delay = args.delay
     else:
-        models = msxorg.fetch_all(limit=args.limit, delay=args.delay)
+        source = None
+        delay = args.delay
+    models = msxorg.fetch_all(source=source, limit=args.limit, delay=delay)
     output = json.dumps(models, indent=2, ensure_ascii=False)
     if args.output:
         with open(args.output, "w", encoding="utf-8") as f:
