@@ -35,7 +35,7 @@ document.body.appendChild(header);
 if (!window.MSX_DATA) {
   // eslint-disable-next-line no-console
   console.error('[MSX Models DB] MSX_DATA not found. Is data.js loaded before bundle.js?');
-  document.body.appendChild(buildToolbar(() => { /* no-op */ }, () => { /* no-op */ }, () => { /* no-op */ }, () => { /* no-op */ }).element);
+  document.body.appendChild(buildToolbar(() => { /* no-op */ }, () => { /* no-op */ }, () => { /* no-op */ }, () => { /* no-op */ }, () => { /* no-op */ }, () => { /* no-op */ }).element);
   const err = document.createElement('p');
   err.style.color = 'var(--color-danger)';
   err.style.padding = '16px';
@@ -165,7 +165,17 @@ if (!window.MSX_DATA) {
     headersCopyBtnEl.classList.toggle('toolbar__btn--active', headersOnCopy);
   }
 
-  const toolbarResult = buildToolbar(handleFiltersToggle, togglePicker, handleResetView, handleHeadersCopyToggle, toggleHelp);
+  // ── Share button ──────────────────────────────────────────────────────────
+  function handleShare(): void {
+    const url = window.location.href;
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(url).catch(() => execCommandFallback(url));
+    } else {
+      execCommandFallback(url);
+    }
+  }
+
+  const toolbarResult = buildToolbar(handleFiltersToggle, togglePicker, handleResetView, handleHeadersCopyToggle, handleShare, toggleHelp);
   const toolbarEl = toolbarResult.element;
   const colsBtnEl = toolbarResult.colsBtn;
   const filtersBtnEl = toolbarResult.filtersBtn;

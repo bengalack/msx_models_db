@@ -3,6 +3,7 @@ export function buildToolbar(
   onColsToggle: () => void,
   onResetView: () => void,
   onHeadersCopyToggle: () => void,
+  onShare: () => void,
   onHelpToggle: () => void,
 ): {
   element: HTMLElement;
@@ -10,6 +11,8 @@ export function buildToolbar(
   filtersBtn: HTMLButtonElement;
   resetBtn: HTMLButtonElement;
   headersCopyBtn: HTMLButtonElement;
+  shareBtn: HTMLButtonElement;
+  shareWrap: HTMLElement;
   helpBtn: HTMLButtonElement;
   helpWrap: HTMLElement;
 } {
@@ -45,6 +48,37 @@ export function buildToolbar(
   headersCopyBtn.appendChild(document.createTextNode(' Include headers on copy'));
   headersCopyBtn.addEventListener('click', onHeadersCopyToggle);
 
+  // ── Share button ──────────────────────────────────────────────────────────
+  const shareWrap = document.createElement('div');
+  shareWrap.className = 'toolbar__btn-wrap';
+
+  const shareBtn = document.createElement('button');
+  shareBtn.className = 'toolbar__btn';
+  shareBtn.setAttribute('title', 'Copy link to this view');
+  const shareIcon = document.createElement('i');
+  shareIcon.className = 'fas fa-arrow-up-from-bracket';
+  shareBtn.appendChild(shareIcon);
+  shareBtn.appendChild(document.createTextNode(' Share'));
+
+  const shareToast = document.createElement('div');
+  shareToast.className = 'share-toast';
+  shareToast.textContent = 'URL copied to your clipboard';
+
+  let shareToastTimer: ReturnType<typeof setTimeout> | null = null;
+  shareBtn.addEventListener('click', () => {
+    onShare();
+    if (shareToastTimer !== null) clearTimeout(shareToastTimer);
+    shareToast.classList.add('share-toast--visible');
+    shareToastTimer = setTimeout(() => {
+      shareToast.classList.remove('share-toast--visible');
+      shareToastTimer = null;
+    }, 3000);
+  });
+
+  shareWrap.appendChild(shareBtn);
+  shareWrap.appendChild(shareToast);
+
+  // ── Help button ───────────────────────────────────────────────────────────
   const helpWrap = document.createElement('div');
   helpWrap.className = 'toolbar__btn-wrap';
   const helpBtn = document.createElement('button');
@@ -57,7 +91,8 @@ export function buildToolbar(
   toolbar.appendChild(filtersBtn);
   toolbar.appendChild(resetBtn);
   toolbar.appendChild(headersCopyBtn);
+  toolbar.appendChild(shareWrap);
   toolbar.appendChild(helpWrap);
 
-  return { element: toolbar, colsBtn, filtersBtn, resetBtn, headersCopyBtn, helpBtn, helpWrap };
+  return { element: toolbar, colsBtn, filtersBtn, resetBtn, headersCopyBtn, shareBtn, shareWrap, helpBtn, helpWrap };
 }
