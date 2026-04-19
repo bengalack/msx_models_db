@@ -106,7 +106,7 @@
   top: calc(100% + 2px);
   left: 0;                /* align to button's left edge, directly below */
   z-index: 200;
-  width: 300px;
+  width: 400px;
   /* height: 200px; */
   max-height: calc(100vh - 88px);  /* viewport minus header+toolbar+gap+scrollbar */
   overflow-y: auto;

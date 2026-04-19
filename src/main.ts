@@ -104,23 +104,60 @@ if (!window.MSX_DATA) {
   helpPanel.className = 'help-panel';
   helpPanel.hidden = true;
   helpPanel.innerHTML = `
-  <h3>Keyboard Shortcuts</h3>
-  <ul>
-    <li><kbd>Esc</kbd> — Reset view</li>
-    <li><kbd>Ctrl+Click</kbd> — Multi-select</li>
-  </ul>
-  <br>
-  <h3>Filters</h3>
-  <p>Use the filter button to narrow results by column values.</p>
-  <br>
-  <h3>Filters</h3>
-  <p>Use the filter button to narrow results by column values.</p>
-  <br>
-  <h3>Filters</h3>
-  <p>Use the filter button to narrow results by column values.</p>
-  <br>
-  <h3>Filters</h3>
-  <p>Use the filter button to narrow results by column values.</p>
+<h3>Dataset</h3>
+<p>
+Main sources: <a href=\"https://openmsx.org/wiki\" >openmsx</a> and <a href=\"https://msx.org/wiki\" >msx.org</a>. The dataset is not complete. Maybe one day😊
+</p><br/>
+<h3>Symbols</h3>
+<p>
+— means empty cell (value is none or unknown).<br/>
+· in a slot means absent slot (slot not expanded).<br/>
+⏺ in a slot means that the page is empty (valid slot).<br/>
+* (suffix) and italics in a slot means mirror.<br/>
+! (suffix) in a slot is a cartridge or expansion slot placed in a sub slot.<br/>
+</p><br/>
+<h3>Sorting</h3>
+<p>
+Click column headers for sorting, click again to sort in opposite direction, and click yet again to remove sorting.
+</p><br/>
+<h3>Filters</h3>
+<p>
+When filters are enabled you can filter on a substring, and benefit from these special characters:<br/>
+| means "or".<br/>
+! means "not".<br/>
+— means empty (em dash).<br/>
+Example for "Engine": "Toshiba|!T9763" for Toshibas excluding the T9763.
+<p>
+</p><br/>
+<h3>Selections</h3>
+<ul>
+<li>Drag, ctrl- and shift-clicks supported.</li>
+<li>Click the line number to select the whole line.</li>
+<li>Click anywhere to deselect.</li>
+</ul>
+</p><br/>
+<h3>Hiding lines</h3>
+<p>
+Pressing the x next to a line number will hide the current line and/or all the selected lines.
+</p><br/>
+<h3>Reduce amount of columns</h3>
+<p>
+Use the 'Columns' button to choose visible columns, or toggle collapse/expand of groups in the header.
+</p><br/>
+<h3>Sharing</h3>
+<p>
+Share the current view customization via an URL. Use the button or just copy the URL in the address field.
+</p><br/>
+<h3>Export</h3>
+<p>
+Select and copy/paste.
+Cells shown as "—" will paste as empty.
+Toggle on 'Include headers on copy' for added context.
+</p><br/>
+<h3>Feedback</h3>
+<p>
+Let me hear your feedback about the <a href=\"https://github.com/bengalack/msx_models_db\">project</a> via a thread on msx.org.
+</p>
 `;
 
   let helpOpen = false;

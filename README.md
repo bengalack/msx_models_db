@@ -30,13 +30,13 @@ By design, this scraper should be re-run from time to time to automatically pick
 Mid-development of this project, msx.org experience huge traffic from general global AI, which results in slowdowns of their site. Their admins were forced to start denying scraping of their wiki. To remedy this, the scraper can use a local mirror instead (see `data/scraper-config.json`). Such a copy is done with "Save as" in your browser. This does not scale well, but is a needed fallback. Developing this tool using local files turned out to be a must anyway, due to development speed. Hopefully the access can be opened up again, as updates on their wiki is not landing in your mirror that easily.
 
 ### Data completeness
-First, the the current data needs more massaging. Then, the amount of models are massive. Not all are covered as the available information is not consistently structured or even available. We could need more sources. Furthermore, the more complex parsing has been downprioritized. For example, there are sections on msx.org that currently isnt't parsed, like when [Yamaha_CX5M](https://www.msx.org/wiki/Yamaha_CX5M) has a table listing up 7 regional variants of the model.
+First, the the current data needs more massaging. Then, the amount of released models are massive. Not all are covered as the available information is not consistently structured or even available. We could need more sources. Furthermore, the more complex parsing tasks have been downprioritized. For example, there are sections on msx.org that currently isnt't parsed, like when [Yamaha_CX5M](https://www.msx.org/wiki/Yamaha_CX5M) has a table listing up 7 regional variants of the model.
 
 
 ## Background story
 This project came to be for two reasons. The author had the need for:
 1. A tool like this
-2. A real life, sane and usable project to test out developing fully using AI and AI agents.
+2. A real life, sane and usable project to test out developing fully using AI agents.
 
 It has been developed using Claude (Sonnet and Opus 4.6). This project has been using the skills from Leif Eric's [Claude Code Agentic Toolkit](https://github.com/leifericf/claude-code-toolkit)  (included as part of this project) as well as [superpowers](https://github.com/obra/superpowers).
 
