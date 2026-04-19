@@ -32,20 +32,23 @@ function preserveDataJs(): Plugin {
 function fileProtocolCompat(): Plugin {
   return {
     name: 'file-protocol-compat',
-    transformIndexHtml(html: string): string {
-      // Remove the bundle script from <head> (where Vite injects it)
-      let out = html.replace(
-        /<script type="module" crossorigin src="\.\/bundle\.js"><\/script>\s*/g,
-        ''
-      );
-      // Inject data.js then bundle.js at end of <body>, so window.MSX_DATA is set first
-      return out.replace('</body>', '  <script src="./data.js"></script>\n  <script src="./bundle.js"></script>\n  </body>');
+    transformIndexHtml: {
+      order: 'post',
+      handler(html: string): string {
+        // Remove the bundle script from <head> (where Vite injects it)
+        let out = html.replace(
+          /<script[^>]*type="module"[^>]*src="\.\/bundle\.js"[^>]*><\/script>\s*/g,
+          ''
+        );
+        // Inject data.js then bundle.js at end of <body>, so window.MSX_DATA is set first
+        return out.replace('</body>', '  <script src="./data.js"></script>\n  <script src="./bundle.js"></script>\n  </body>');
+      },
     },
   };
 }
 
 export default defineConfig({
-  root: OUT_DIR,
+  root: 'src',
   base: './',
   publicDir: false,
   plugins: [preserveDataJs(), fileProtocolCompat()],
