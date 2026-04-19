@@ -11,3 +11,4 @@ data/scraper-config.json
 systemroms/extensions/**
 systemroms/machines/**
 !systemroms/machines/all_sha1s.txt
+msx_models_db.code-workspace
