@@ -98,7 +98,7 @@ def test_apply_link_shares_copies_donor_links():
     assert records[1]["links"] == donor_links
 
 
-def test_apply_link_shares_does_not_overwrite_existing_links():
+def test_apply_link_shares_does_not_overwrite_existing_model_link():
     existing_links = {"model": "https://www.msx.org/wiki/Victor_HC-90A"}
     donor_links = {"model": "https://www.msx.org/wiki/Victor_HC-90"}
     records, natural_keys = _make_records([
@@ -108,6 +108,32 @@ def test_apply_link_shares_does_not_overwrite_existing_links():
     shares = {"victor|hc-90a": "victor|hc-90"}
     apply_link_shares(records, natural_keys, shares)
     assert records[1]["links"] == existing_links  # unchanged
+
+
+def test_apply_link_shares_copies_model_link_when_recipient_has_only_openmsx_link():
+    """Recipient with only openmsx_id (no model link) should inherit the donor's model link."""
+    donor_links = {"model": "https://www.msx.org/wiki/Philips_NMS_8250", "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8250.xml"}
+    recipient_links = {"openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8250-16.xml"}
+    records, natural_keys = _make_records([
+        ("philips|nms 8250", donor_links),
+        ("philips|nms 8250/16", recipient_links),
+    ])
+    shares = {"philips|nms 8250/16": "philips|nms 8250"}
+    apply_link_shares(records, natural_keys, shares)
+    assert records[1]["links"]["model"] == donor_links["model"]
+    assert records[1]["links"]["openmsx_id"] == recipient_links["openmsx_id"]  # preserved
+
+
+def test_apply_link_shares_skips_donor_with_no_model_link():
+    """Donor with only openmsx_id (no model link) should not trigger link inheritance."""
+    donor_links = {"openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-90.xml"}
+    records, natural_keys = _make_records([
+        ("victor|hc-90", donor_links),
+        ("victor|hc-90a", None),
+    ])
+    shares = {"victor|hc-90a": "victor|hc-90"}
+    apply_link_shares(records, natural_keys, shares)
+    assert "links" not in records[1]
 
 
 def test_apply_link_shares_skips_missing_donor():

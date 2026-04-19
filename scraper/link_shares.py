@@ -81,17 +81,17 @@ def apply_link_shares(
     }
 
     for i, nk in enumerate(natural_keys):
-        if records[i].get("links"):
-            continue  # already has links — nothing to do
+        if records[i].get("links", {}).get("model"):
+            continue  # already has a model link — nothing to do
         donor_nk = shares.get(nk)
         if donor_nk is None:
             continue  # not in the shares LUT
         donor_links = nk_to_links.get(donor_nk)
-        if not donor_links:
+        if not donor_links or not donor_links.get("model"):
             log.warning(
-                "link-shares: donor '%s' for '%s' has no links — skipping",
+                "link-shares: donor '%s' for '%s' has no model link — skipping",
                 donor_nk, nk,
             )
             continue
-        records[i]["links"] = donor_links
-        log.debug("link-shares: '%s' inherited links from '%s'", nk, donor_nk)
+        records[i].setdefault("links", {})["model"] = donor_links["model"]
+        log.debug("link-shares: '%s' inherited model link from '%s'", nk, donor_nk)
