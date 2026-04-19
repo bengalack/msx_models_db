@@ -207,7 +207,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 
 ### Toolbar
 - Left: "MSX Models DB" title (H1)
-- Right: `[⊞ Columns]` button (opens column picker panel), `[≡ Filters]` toggle, `[↻ Reset view]` button, `[+ Include headers on copy]` toggle, `[? Help]` button, `[◑]` dark/light mode toggle
+- Right: `[⊞ Columns]` button (opens column picker panel), `[≡ Filters]` toggle, `[↻ Reset view]` button, `[+ Include headers on copy]` toggle, `[↑ Share]` button, `[? Help]` button, `[◑]` dark/light mode toggle
 - Column picker panel: a floating panel listing all toggleable columns grouped by group, each with a checkbox; positioned directly below the Columns button (left-aligned). The Identity group (Manufacturer, Model) is excluded — those columns are always visible and are never listed in the picker.
 - Help panel: a floating panel (300×200px) positioned directly below the Help button (left-aligned); opens on `[? Help]` click
 - Both Columns and Help buttons show active state (inverted colors) while their respective panel is open
@@ -294,6 +294,14 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - Active state: `toolbar__btn--active` class (inverted colors, same as Filters button)
 - Default: OFF; not persisted in URL; not reset by "Reset view"
 - When ON and cells are copied: first TSV row = `shortLabel ?? label` of each selected visible column, in display order
+
+### Share button
+
+- Momentary action button — no toggle state, never highlighted active.
+- Click: copies `window.location.href` to clipboard; shows `share-toast--visible` on the toast pill below the button.
+- Toast pill auto-dismisses after 3 seconds (CSS opacity transition, no layout shift).
+- If clicked again before 3 seconds, the timer resets and the toast remains visible for another 3 seconds.
+- No interaction with URL state, Reset view, filters, or cell selection.
 
 ### Reset view
 - Click `↻ Reset view` → immediately resets all view state to defaults:

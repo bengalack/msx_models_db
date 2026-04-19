@@ -166,6 +166,18 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - If no cells are selected, CTRL+C produces no output regardless of toggle state.
     - The toggle state is NOT encoded in the URL and is NOT reset by "Reset view".
 
+- Share button
+  - Description: A toolbar button that copies the current page URL to the clipboard, allowing users to share their exact view. A 3-second toast notification pill appears below the button confirming the copy.
+  - Priority: Must
+  - Acceptance Criteria:
+    - A button labelled "Share" with a `fa-solid fa-arrow-up-from-bracket` icon is placed between the "Include headers on copy" button and the "Help" button in the toolbar.
+    - Clicking the button copies `window.location.href` to the clipboard (uses `navigator.clipboard.writeText` with `execCommand` fallback).
+    - A toast pill reading "URL copied to your clipboard" appears immediately below the button on click.
+    - The toast auto-dismisses after 3 seconds.
+    - The toast uses CSS opacity transition for fade-in/out; no layout shift.
+    - The Share button has no toggle/active state — it is always a momentary action button.
+    - The Share button has no effect on URL state, Reset view, or any other view state.
+
 - Live URL state
   - Description: The page URL updates in real time to encode the complete current view state as a compact binary payload (base64-encoded in the URL hash fragment). Opening the URL recreates the exact view. Old URLs must remain valid forever across all future data updates.
   - Priority: Must
