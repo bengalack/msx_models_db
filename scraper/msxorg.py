@@ -39,14 +39,37 @@ SKIP_TITLES = {
 }
 
 def _find_next_page_url(soup: BeautifulSoup) -> str | None:
-    """Return the MediaWiki 'next N' pagination URL from a category page, or None."""
-    mw_pages = soup.find(id="mw-pages")
-    if not mw_pages:
-        return None
-    for a in mw_pages.find_all("a"):
+    """Return the MediaWiki 'next N' pagination URL from a category page, or None.
+
+    Handles both URL formats used by msx.org:
+      - /wiki/Category:MSX1_Computers?pagefrom=Toshiba+HX-22I  (newer MediaWiki)
+      - /wiki/index.php?title=Category:MSX1_Computers&from=Toshiba+HX-22I  (older)
+    The pagination link may appear outside the #mw-pages div, so the full page
+    is searched.
+
+    The older index.php form is normalised to the canonical /wiki/<title>?pagefrom=<from>
+    form so that MirrorPageSource can derive the correct filename.
+    """
+    for a in soup.find_all("a"):
         href = a.get("href", "")
-        if "pagefrom=" in href and "next" in _text_content(a).lower():
-            return urljoin(BASE_URL, href)
+        if not ("pagefrom=" in href or "from=" in href):
+            continue
+        if "next" not in _text_content(a).lower():
+            continue
+        full_url = urljoin(BASE_URL, href)
+        # Normalise older index.php?title=Category:X&from=Y → /wiki/Category:X?pagefrom=Y
+        if "index.php" in full_url and "title=" in full_url:
+            from urllib.parse import urlparse, parse_qs
+            parsed = urlparse(full_url)
+            qs = parse_qs(parsed.query, keep_blank_values=True)
+            title = qs.get("title", [None])[0]
+            from_val = qs.get("from", [None])[0]
+            if title:
+                canonical = f"{BASE_URL}/wiki/{title}"
+                if from_val:
+                    canonical += f"?pagefrom={from_val}"
+                return canonical
+        return full_url
     return None
 
 

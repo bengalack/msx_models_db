@@ -398,8 +398,26 @@
     "yamaha|yis-503ii": 395,
     "yamaha|yis-503iir": 396,
     "yashica|yc-64": 397,
-    "yeno|dpc-64": 398
+    "yeno|dpc-64": 398,
+    "toshiba|hx-30": 399,
+    "toshiba|hx-31": 400,
+    "toshiba|hx-51": 401,
+    "toshiba|hx-52": 402,
+    "triton|pc64": 403,
+    "vestel|fc-200": 404,
+    "victor|hc-30": 405,
+    "victor|hc-5": 406,
+    "victor|hc-6": 407,
+    "victor|hc-60": 408,
+    "wandy|dpc-200": 409,
+    "yamaha|cx5": 410,
+    "yamaha|cx5mii or cx5mii/128": 411,
+    "yamaha|yis-303": 412,
+    "yamaha|yis-503fb": 413,
+    "yamaha|yis-603": 414,
+    "yeno|mx64": 415,
+    "yamaha|cx5m (cx5ma, cx5mc, cx5me, cx5mf, cx5mg, cx5ms or cx5mu)": 416
   },
   "retired_models": [],
-  "next_model_id": 399
+  "next_model_id": 417
 }
