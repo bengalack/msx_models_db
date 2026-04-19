@@ -177,7 +177,7 @@ class TestProductionConfig:
 
     def test_model_has_truncate_limit(self) -> None:
         model = next(c for c in COLUMNS if c.key == "model")
-        assert model.truncate_limit == 16
+        assert model.truncate_limit == 20
 
 
 # ---------------------------------------------------------------------------

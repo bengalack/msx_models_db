@@ -14,7 +14,9 @@
       "Bash(python -c ':*)",
       "Bash(cmd /c \"dir C:\\\\source\\\\repos\\\\msx_models_db\\\\docs\\\\plans\")",
       "Bash(cmd /c \"dir C:\\\\source\\\\repos\\\\msx_models_db\\\\docs\")",
-      "Bash(cmd /c \"dir C:\\\\source\\\\repos\\\\msx_models_db\")"
+      "Bash(cmd /c \"dir C:\\\\source\\\\repos\\\\msx_models_db\")",
+      "Bash(rtk vitest:*)",
+      "Bash(grep -r \"cpu\" c:/tools/openmsx21x/share/machines/*.xml)"
     ]
   }
 }

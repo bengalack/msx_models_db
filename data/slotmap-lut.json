@@ -55,7 +55,7 @@
   },
   {
     "element": "ROM",
-    "id_pattern": "JWP|Logo|Plan|Accessories|Hot Paper|Network*|BASIC|Cockpit|Designer|Desk Pac|DESKPAC|Firmware|Memovision|MSX JUSHO|NIA-2001|Painter|Program|ROM|Sakhr|Set-Up|Super Impose|Utility|Word|Word Font|wordpro|Write",
+    "id_pattern": "PioneerLDControl|JWP|Logo|Plan|Accessories|Hot Paper|Network*|BASIC|Cockpit|Designer|Desk Pac|DESKPAC|Firmware|Memovision|MSX JUSHO|NIA-2001|Painter|Program|ROM|Sakhr|Set-Up|Super Impose|Utility|Word|Word Font|wordpro|Write",
     "abbr": "FW",
     "tooltip": "Firmware"
   },

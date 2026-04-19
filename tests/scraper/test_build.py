@@ -483,7 +483,7 @@ class TestBuildTruncateLimit:
     def test_model_column_has_truncate_limit(self, tmp_path):
         data = self._build_and_parse(tmp_path)
         col = next(c for c in data["columns"] if c["key"] == "model")
-        assert col.get("truncateLimit") == 16
+        assert col.get("truncateLimit") == 20
 
     def test_other_column_omits_truncate_limit(self, tmp_path):
         """Columns with truncate_limit=0 must NOT emit truncateLimit."""
