@@ -27,7 +27,7 @@ function preserveDataJs(): Plugin {
 /**
  * Ensures the built HTML is compatible with file:// protocol:
  * - Removes type="module" and crossorigin (Chrome blocks ES module scripts on file://)
- * - Moves bundle.js to end of <body>, after data.js, so window.MSX_DATA is set first
+ * - Injects data.js and bundle.js at end of <body> so window.MSX_DATA is set before the app runs
  */
 function fileProtocolCompat(): Plugin {
   return {
@@ -38,20 +38,19 @@ function fileProtocolCompat(): Plugin {
         /<script type="module" crossorigin src="\.\/bundle\.js"><\/script>\s*/g,
         ''
       );
-      // Fix absolute /data.js path → relative ./data.js for file:// compatibility
-      out = out.replace('src="/data.js"', 'src="./data.js"');
-      // Append bundle at the end of <body>, after data.js
-      return out.replace('</body>', '  <script src="./bundle.js"></script>\n  </body>');
+      // Inject data.js then bundle.js at end of <body>, so window.MSX_DATA is set first
+      return out.replace('</body>', '  <script src="./data.js"></script>\n  <script src="./bundle.js"></script>\n  </body>');
     },
   };
 }
 
 export default defineConfig({
+  root: OUT_DIR,
   base: './',
   publicDir: false,
   plugins: [preserveDataJs(), fileProtocolCompat()],
   build: {
-    outDir: OUT_DIR,
+    outDir: path.resolve(OUT_DIR),
     emptyOutDir: true,
     rollupOptions: {
       output: {

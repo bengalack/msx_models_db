@@ -1,8 +1,8 @@
 # PRD: MSX Models DB
 
 ## Metadata
-- Version: 0.18
-- Date: 2026-04-17
+- Version: 0.19
+- Date: 2026-04-19
 - Owner: bengalack
 
 ## Problem Statement
@@ -102,13 +102,16 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - The Identity group columns (Manufacturer, Model) are always visible and are not listed in the column picker. The Identity group section does not appear in the picker panel.
 
 - Row show/hide
-  - Description: Individual rows can be hidden. A visual indicator appears in the left gutter of the grid whenever one or more rows are hidden.
+  - Description: Individual rows can be hidden via the × button in the left gutter. A visual indicator appears in the left gutter whenever one or more rows are hidden between two visible rows.
   - Priority: Must
   - Acceptance Criteria:
-    - There is a UI control to hide a row (e.g. right-click context menu on row header).
+    - A × button in the left gutter of each row is always visible; clicking it hides that row.
+    - Clicking × on a row that is part of the current row selection hides all selected rows and clears the selection.
+    - Clicking × on a row that is NOT part of the current row selection hides only that row; the existing row selection is unaffected.
+    - Clicking × with no rows selected hides only the row of that ×.
     - Hidden rows are not rendered in the grid.
-    - The left gutter shows a clear visual cue (e.g. a marker or gap indicator) between visible rows when one or more rows are hidden between them.
-    - Clicking the gutter indicator reveals/unhides the hidden row(s).
+    - The left gutter shows a ▲ gap indicator between visible rows wherever one or more rows are hidden between them.
+    - Clicking the gap indicator reveals/unhides all rows hidden in that gap.
     - Hidden row state is reflected in the URL.
 
 - Reset view
