@@ -12,3 +12,4 @@ systemroms/extensions/**
 systemroms/machines/**
 !systemroms/machines/all_sha1s.txt
 msx_models_db.code-workspace
+.claude/settings.local.json
