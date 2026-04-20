@@ -14,3 +14,4 @@ systemroms/machines/**
 msx_models_db.code-workspace
 .claude/settings.local.json
 .claude/settings.json
+dill.txt
