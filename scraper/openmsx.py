@@ -64,7 +64,7 @@ VDP_SPECS: dict[str, dict[str, Any]] = {
 # BIOS ROM byte maps (MSX System Variables — https://map.grauw.nl/resources/msxsystemvars.php)
 # Both fields are encoded in the lower nibble (bits 0–3) of their respective byte.
 _CHARSET_MAP: dict[int, str] = {0: "Japanese", 1: "International", 2: "Korean"}
-_KBTYPE_MAP: dict[int, str] = {0: "Japanese", 1: "International", 2: "French", 3: "UK", 4: "German"}
+_KBTYPE_MAP: dict[int, str] = {0: "Japanese", 1: "International", 2: "French (AZERTY)", 3: "UK", 4: "German", 5: "Russian", 6: "Spanish", 7: "Swedish", 8: "Code 8", 9: "Code 9", 10: "Spanish"}
 _BIOS_BLOCK_SIZE = 8192  # openMSX PanasonicRom block size in bytes
 
 # Default CPU for each MSX type.

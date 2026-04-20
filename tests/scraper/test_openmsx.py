@@ -13,6 +13,8 @@ import pytest
 from scraper.exclude import ExcludeList
 from scraper.openmsx import (
     SKIP_PREFIXES,
+    _CHARSET_MAP,
+    _KBTYPE_MAP,
     fetch_all,
     list_machine_files,
     parse_machine_xml,
@@ -604,26 +606,26 @@ class TestBiosRomExtraction:
         idx, root, sha1 = _write_rom(tmp_path, data)
         xml = _xml(_info(), _bios_devices(sha1))
         result = parse_machine_xml(xml, "test.xml", sha1_index=idx, systemroms_root=root)
-        assert result["character_set"] == "International"
-        assert result["keyboard_type"] == "International"
+        assert result["character_set"] == _CHARSET_MAP[1]
+        assert result["keyboard_type"] == _KBTYPE_MAP[1]
 
     def test_japanese_charset_and_keyboard(self, tmp_path):
         data = _bios_bytes(charset=0, kbtype=0)
         idx, root, sha1 = _write_rom(tmp_path, data)
         xml = _xml(_info(), _bios_devices(sha1))
         result = parse_machine_xml(xml, "test.xml", sha1_index=idx, systemroms_root=root)
-        assert result["character_set"] == "Japanese"
-        assert result["keyboard_type"] == "Japanese"
+        assert result["character_set"] == _CHARSET_MAP[0]
+        assert result["keyboard_type"] == _KBTYPE_MAP[0]
 
     def test_korean_charset(self, tmp_path):
         data = _bios_bytes(charset=2, kbtype=1)
         idx, root, sha1 = _write_rom(tmp_path, data)
         xml = _xml(_info(), _bios_devices(sha1))
         result = parse_machine_xml(xml, "test.xml", sha1_index=idx, systemroms_root=root)
-        assert result["character_set"] == "Korean"
+        assert result["character_set"] == _CHARSET_MAP[2]
 
     @pytest.mark.parametrize("kbval,expected", [
-        (0, "Japanese"), (1, "International"), (2, "French"), (3, "UK"), (4, "German"),
+        (k, v) for k, v in _KBTYPE_MAP.items()
     ])
     def test_all_keyboard_type_values(self, tmp_path, kbval, expected):
         data = _bios_bytes(charset=1, kbtype=kbval)
@@ -635,13 +637,13 @@ class TestBiosRomExtraction:
     def test_lower_nibble_only(self, tmp_path):
         """Upper nibble bits must be ignored."""
         data = bytearray(0x100)
-        data[0x002B] = 0xF1  # upper nibble 0xF, lower nibble 1 → International
-        data[0x002C] = 0xF3  # upper nibble 0xF, lower nibble 3 → UK
+        data[0x002B] = 0xF1  # upper nibble 0xF, lower nibble 1
+        data[0x002C] = 0xF3  # upper nibble 0xF, lower nibble 3
         idx, root, sha1 = _write_rom(tmp_path, bytes(data))
         xml = _xml(_info(), _bios_devices(sha1))
         result = parse_machine_xml(xml, "test.xml", sha1_index=idx, systemroms_root=root)
-        assert result["character_set"] == "International"
-        assert result["keyboard_type"] == "UK"
+        assert result["character_set"] == _CHARSET_MAP[1]
+        assert result["keyboard_type"] == _KBTYPE_MAP[3]
 
     # --- Window offset ---
 
@@ -653,23 +655,23 @@ class TestBiosRomExtraction:
         idx, root, sha1 = _write_rom(tmp_path, bytes(data))
         xml = _xml(_info(), _bios_devices(sha1, window_base=0x8000))
         result = parse_machine_xml(xml, "test.xml", sha1_index=idx, systemroms_root=root)
-        assert result["character_set"] == "International"
-        assert result["keyboard_type"] == "UK"
+        assert result["character_set"] == _CHARSET_MAP[1]
+        assert result["keyboard_type"] == _KBTYPE_MAP[3]
 
     # --- Block-based (PanasonicRom / turbo R) ---
 
     def test_block_based_firstblock_offset(self, tmp_path):
         """firstblock=1 → BIOS starts at byte offset 8192 in the firmware file."""
         data = bytearray(8192 + 0x100)
-        data[8192 + 0x002B] = 0  # Japanese charset
-        data[8192 + 0x002C] = 0  # Japanese keyboard
+        data[8192 + 0x002B] = 0
+        data[8192 + 0x002C] = 0
         idx, root, sha1 = _write_rom(tmp_path, bytes(data), "firmware.rom")
         bios_devices = '<ROM id="MSX BIOS with BASIC ROM"><rom><firstblock>1</firstblock><lastblock>4</lastblock></rom></ROM>'
         pan_rom = f'<PanasonicRom id="Firmware ROM"><rom><sha1>{sha1}</sha1></rom></PanasonicRom>'
         xml = _xml(_info(msx_type="MSXturboR"), bios_devices, extra_root=pan_rom)
         result = parse_machine_xml(xml, "test.xml", sha1_index=idx, systemroms_root=root)
-        assert result["character_set"] == "Japanese"
-        assert result["keyboard_type"] == "Japanese"
+        assert result["character_set"] == _CHARSET_MAP[0]
+        assert result["keyboard_type"] == _KBTYPE_MAP[0]
 
     def test_block_based_firstblock_zero(self, tmp_path):
         data = _bios_bytes(charset=2, kbtype=1)
@@ -678,7 +680,7 @@ class TestBiosRomExtraction:
         pan_rom = f'<PanasonicRom id="Firmware ROM"><rom><sha1>{sha1}</sha1></rom></PanasonicRom>'
         xml = _xml(_info(msx_type="MSXturboR"), bios_devices, extra_root=pan_rom)
         result = parse_machine_xml(xml, "test.xml", sha1_index=idx, systemroms_root=root)
-        assert result["character_set"] == "Korean"
+        assert result["character_set"] == _CHARSET_MAP[2]
 
     # --- Failure / null cases ---
 
@@ -720,7 +722,7 @@ class TestBiosRomExtraction:
         xml = _xml(_info(), _bios_devices(sha1))
         result = parse_machine_xml(xml, "test.xml", sha1_index=idx, systemroms_root=root)
         assert "character_set" not in result  # unknown → null
-        assert result["keyboard_type"] == "International"  # valid field still set
+        assert result["keyboard_type"] == _KBTYPE_MAP[1]  # valid field still set
         assert "Unknown character_set" in caplog.text
 
     def test_no_bios_rom_element_sets_no_fields(self, tmp_path):
