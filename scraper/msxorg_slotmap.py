@@ -148,7 +148,7 @@ def _flatten_table(table: Tag) -> list[list[str]]:
 
             text = cell.get_text(separator=" ", strip=True)
             try:
-                rowspan = max(1, int(cell.get("rowspan", 1)))
+                rowspan = min(max(1, int(cell.get("rowspan", 1))), len(rows) - r_idx)
                 colspan = max(1, int(cell.get("colspan", 1)))
             except (ValueError, TypeError):
                 rowspan = colspan = 1
