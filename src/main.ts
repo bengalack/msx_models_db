@@ -156,7 +156,7 @@ Toggle on 'Include headers on copy' for added context.
 </p><br/>
 <h3>Feedback</h3>
 <p>
-Let me hear your feedback about the <a href=\"https://github.com/bengalack/msx_models_db\">project</a> via a thread on msx.org.
+Let me hear your feedback about the <a href=\"https://github.com/bengalack/msx_models_db\">project</a> via the <a href=\"https://www.msx.org/forum/msx-talk/msx-resource-center/msx-models-overview-tool\">tool thread</a> on msx.org.
 </p>
 `;
 
