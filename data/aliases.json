@@ -13,7 +13,10 @@
     "ML-G3": ["ML-G3 (ES)"],
     "VG 8230": ["VG-8230"],
     "AX-370": ["AX370"],
-    "CPC-61 Zemmix Super V": ["CPC-61"]
+    "BRUC 100": ["BRUC 100 (v1)", "BRUC 100 (v2)"],
+    "DPC-200": ["DPC-200 (BE/FR)"],
+    "CPC-61 Zemmix Super V": ["CPC-61"],
+    "CPC-51 Zemmix V": ["CPC-51"]
   },
   "region": {
     "Korea": ["South Korea (original version)"]

@@ -416,8 +416,10 @@
     "yamaha|yis-503fb": 413,
     "yamaha|yis-603": 414,
     "yeno|mx64": 415,
-    "yamaha|cx5m (cx5ma, cx5mc, cx5me, cx5mf, cx5mg, cx5ms or cx5mu)": 416
+    "yamaha|cx5m (cx5ma, cx5mc, cx5me, cx5mf, cx5mg, cx5ms or cx5mu)": 416,
+    "mitsubishi|ml-ts1": 417,
+    "sanyo|mpc-200": 418
   },
   "retired_models": [],
-  "next_model_id": 417
+  "next_model_id": 419
 }

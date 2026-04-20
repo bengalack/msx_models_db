@@ -6,6 +6,18 @@
     "tooltip": "MSX BIOS with BASIC ROM"
   },
   {
+    "element": "__msxorg_only__",
+    "id_pattern": "8kB SRAM",
+    "abbr": "SRAM",
+    "tooltip": "8kB SRAM"
+  },
+  {
+    "element": "FraelSwitchableROM",
+    "id_pattern": null,
+    "abbr": "MAIN+",
+    "tooltip": "Frael BIOS with BASIC or Firmware ROM"
+  },
+  {
     "element": "ROM",
     "id_pattern": "Sub.ROM",
     "abbr": "SUB",
@@ -55,7 +67,13 @@
   },
   {
     "element": "ROM",
-    "id_pattern": "PioneerLDControl|JWP|Logo|Plan|Accessories|Hot Paper|Network*|BASIC|Cockpit|Designer|Desk Pac|DESKPAC|Firmware|Memovision|MSX JUSHO|NIA-2001|Painter|Program|ROM|Sakhr|Set-Up|Super Impose|Utility|Word|Word Font|wordpro|Write",
+    "id_pattern": "Pasocalc|Lightpen|EJDIC|Personal|JWP|Logo|Plan|Accessories|Hot Paper|Network*|BASIC|Cockpit|Designer|Desk Pac|DESKPAC|Firmware|Memovision|MSX JUSHO|NIA-2001|Painter|Program|ROM|Sakhr|Set-Up|Super Impose|Utility|Word|Word Font|wordpro|Write",
+    "abbr": "FW",
+    "tooltip": "Firmware"
+  },
+  {
+    "element": "PioneerLDControl",
+    "id_pattern": "PBASIC",
     "abbr": "FW",
     "tooltip": "Firmware"
   },
