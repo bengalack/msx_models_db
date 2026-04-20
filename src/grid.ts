@@ -383,46 +383,83 @@ export function buildGrid(data: MSXData, opts?: {
   let dragStart: { modelId: number; colIdx: number } | null = null;
   let isRowDragging = false;
   let rowDragAnchor: number | null = null;
+  let dragRafPending = false;
+  let rowDragRafPending = false;
+
+  // DOM mirror sets — track what's currently highlighted so applySelectionToDOM
+  // and applyRowSelectionToDOM can diff and touch only changed elements.
+  const renderedSelectionCells = new Set<string>();
+  const renderedActiveColIdxs = new Set<number>();
+  const renderedActiveModelIds = new Set<number>();
+  const renderedSelectedRows = new Set<number>();
+
+  // Cached visible model ID order — rebuilt after renderRows() / applyRowVisibility()
+  // so selectRectangle() and selectRowRange() don't query the DOM on every drag step.
+  let cachedVisibleModelIds: number[] = [];
 
   function selKey(modelId: number, colIdx: number): string {
     return `${modelId}:${colIdx}`;
   }
 
   function applySelectionToDOM(): void {
-    if (selectedCells.size === 0) {
-      // Nothing selected — clear any stale highlights and bail out
-      thead.querySelectorAll<HTMLTableCellElement>('th.col-header--active').forEach(th => {
-        th.classList.remove('col-header--active');
-      });
-      tbody.querySelectorAll<HTMLTableCellElement>('td.gutter--cell-active').forEach(td => {
-        td.classList.remove('gutter--cell-active');
-      });
-      return;
+    // Diff cells — only touch elements that changed
+    for (const key of selectedCells) {
+      if (renderedSelectionCells.has(key)) continue;
+      const colon = key.indexOf(':');
+      tbody.querySelector<HTMLTableCellElement>(
+        `tr[data-model-id="${key.slice(0, colon)}"] td[data-col-index="${key.slice(colon + 1)}"]`
+      )?.classList.add('cell--selected');
+      renderedSelectionCells.add(key);
     }
-    tbody.querySelectorAll<HTMLTableCellElement>('td[data-col-index]').forEach(td => {
-      const tr = td.closest<HTMLTableRowElement>('tr[data-model-id]');
-      if (!tr?.dataset.modelId) return;
-      td.classList.toggle(
-        'cell--selected',
-        selectedCells.has(selKey(Number(tr.dataset.modelId), Number(td.dataset.colIndex)))
-      );
-    });
+    for (const key of renderedSelectionCells) {
+      if (selectedCells.has(key)) continue;
+      const colon = key.indexOf(':');
+      tbody.querySelector<HTMLTableCellElement>(
+        `tr[data-model-id="${key.slice(0, colon)}"] td[data-col-index="${key.slice(colon + 1)}"]`
+      )?.classList.remove('cell--selected');
+      renderedSelectionCells.delete(key);
+    }
 
-    const activeColIdxs = new Set<number>();
-    const activeModelIds = new Set<number>();
+    // Derive active col/row sets from current selection
+    const newColIdxs = new Set<number>();
+    const newModelIds = new Set<number>();
     for (const key of selectedCells) {
       const colon = key.indexOf(':');
-      activeModelIds.add(Number(key.slice(0, colon)));
-      activeColIdxs.add(Number(key.slice(colon + 1)));
+      newModelIds.add(Number(key.slice(0, colon)));
+      newColIdxs.add(Number(key.slice(colon + 1)));
     }
 
-    thead.querySelectorAll<HTMLTableCellElement>('th.col-header[data-col-index]').forEach(th => {
-      th.classList.toggle('col-header--active', activeColIdxs.has(Number(th.dataset.colIndex)));
-    });
+    // Diff col headers
+    for (const idx of newColIdxs) {
+      if (!renderedActiveColIdxs.has(idx)) {
+        thead.querySelector<HTMLTableCellElement>(`th.col-header[data-col-index="${idx}"]`)
+          ?.classList.add('col-header--active');
+      }
+    }
+    for (const idx of renderedActiveColIdxs) {
+      if (!newColIdxs.has(idx)) {
+        thead.querySelector<HTMLTableCellElement>(`th.col-header[data-col-index="${idx}"]`)
+          ?.classList.remove('col-header--active');
+      }
+    }
+    renderedActiveColIdxs.clear();
+    for (const idx of newColIdxs) renderedActiveColIdxs.add(idx);
 
-    tbody.querySelectorAll<HTMLTableCellElement>('td.gutter[data-model-id]').forEach(td => {
-      td.classList.toggle('gutter--cell-active', activeModelIds.has(Number(td.dataset.modelId)));
-    });
+    // Diff row gutters (cell-active highlight)
+    for (const id of newModelIds) {
+      if (!renderedActiveModelIds.has(id)) {
+        tbody.querySelector<HTMLTableCellElement>(`td.gutter[data-model-id="${id}"]`)
+          ?.classList.add('gutter--cell-active');
+      }
+    }
+    for (const id of renderedActiveModelIds) {
+      if (!newModelIds.has(id)) {
+        tbody.querySelector<HTMLTableCellElement>(`td.gutter[data-model-id="${id}"]`)
+          ?.classList.remove('gutter--cell-active');
+      }
+    }
+    renderedActiveModelIds.clear();
+    for (const id of newModelIds) renderedActiveModelIds.add(id);
   }
 
   function clearSelection(): void {
@@ -435,8 +472,7 @@ export function buildGrid(data: MSXData, opts?: {
     a: { modelId: number; colIdx: number },
     b: { modelId: number; colIdx: number }
   ): void {
-    const visibleModelIds = Array.from(tbody.querySelectorAll<HTMLTableRowElement>('tr[data-model-id]'))
-      .map(tr => Number(tr.dataset.modelId));
+    const visibleModelIds = cachedVisibleModelIds;
     const visibleColIdxs = data.columns.map((_, i) => i).filter(i => !hiddenCols.has(i));
 
     const ar = visibleModelIds.indexOf(a.modelId);
@@ -470,9 +506,20 @@ export function buildGrid(data: MSXData, opts?: {
   let rowSelAnchor: number | null = null;
 
   function applyRowSelectionToDOM(): void {
-    tbody.querySelectorAll<HTMLTableCellElement>('td.gutter[data-model-id]').forEach(td => {
-      td.classList.toggle('gutter--row-selected', selectedRows.has(Number(td.dataset.modelId)));
-    });
+    for (const id of selectedRows) {
+      if (!renderedSelectedRows.has(id)) {
+        tbody.querySelector<HTMLTableCellElement>(`td.gutter[data-model-id="${id}"]`)
+          ?.classList.add('gutter--row-selected');
+        renderedSelectedRows.add(id);
+      }
+    }
+    for (const id of renderedSelectedRows) {
+      if (!selectedRows.has(id)) {
+        tbody.querySelector<HTMLTableCellElement>(`td.gutter[data-model-id="${id}"]`)
+          ?.classList.remove('gutter--row-selected');
+        renderedSelectedRows.delete(id);
+      }
+    }
   }
 
   // Rebuild selectedCells to contain exactly the cells of all selected rows.
@@ -497,8 +544,7 @@ export function buildGrid(data: MSXData, opts?: {
   }
 
   function selectRowRange(fromModelId: number, toModelId: number): void {
-    const visibleModelIds = Array.from(tbody.querySelectorAll<HTMLTableRowElement>('tr[data-model-id]'))
-      .map(tr => Number(tr.dataset.modelId));
+    const visibleModelIds = cachedVisibleModelIds;
     const fromIdx = visibleModelIds.indexOf(fromModelId);
     const toIdx = visibleModelIds.indexOf(toModelId);
     selectedRows.clear();
@@ -564,6 +610,11 @@ export function buildGrid(data: MSXData, opts?: {
       hiddenCols.delete(colIdx);
     } else {
       hiddenCols.add(colIdx);
+      // Drop any selected cells in this column so they don't reappear when unhidden
+      for (const key of selectedCells) {
+        if (Number(key.slice(key.indexOf(':') + 1)) === colIdx) selectedCells.delete(key);
+      }
+      applySelectionToDOM();
     }
     // Apply to all already-rendered cells for this column (thead + current tbody rows)
     table.querySelectorAll<HTMLElement>(`[data-col-index="${colIdx}"]`).forEach(cell => {
@@ -646,6 +697,7 @@ export function buildGrid(data: MSXData, opts?: {
       tbody.appendChild(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
     }
 
+    cachedVisibleModelIds = filtered.filter(m => !hiddenRows.has(m.id)).map(m => m.id);
     applyRowSelectionToDOM();
     requestAnimationFrame(() => {
       updateGapVisibility();
@@ -698,25 +750,38 @@ export function buildGrid(data: MSXData, opts?: {
     const rows: HTMLTableRowElement[] = [];
     let buffer: number[] = [];
     let rowNum = 1;
+    let lastVisibleRow: HTMLTableRowElement | null = null;
     for (const model of filtered) {
       if (hiddenRows.has(model.id)) {
         buffer.push(model.id);
+        // Build the element hidden so applyRowVisibility() can reveal it without a full re-render
+        const tr = buildDataRow(model, data.columns, 0, data.slotmap_lut ?? {}, hiddenCols, collapsedGroups);
+        tr.style.display = 'none';
+        rowCache.set(model.id, tr);
+        rows.push(tr);
       } else {
         if (buffer.length > 0) {
-          // Mark the previous data row so its border-bottom doesn't overlap the dashed line
-          if (rows.length > 0) rows[rows.length - 1].classList.add('row-before-gap');
+          // Mark the last visible row so its border-bottom doesn't overlap the dashed line
+          lastVisibleRow?.classList.add('row-before-gap');
           rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
           buffer = [];
         }
         const tr = buildDataRow(model, data.columns, rowNum++, data.slotmap_lut ?? {}, hiddenCols, collapsedGroups);
         rowCache.set(model.id, tr);
         rows.push(tr);
+        lastVisibleRow = tr;
       }
     }
     if (buffer.length > 0) {
       rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
     }
+    cachedVisibleModelIds = filtered.filter(m => !hiddenRows.has(m.id)).map(m => m.id);
     tbody.replaceChildren(...rows);
+    // DOM mirrors are stale after a full rebuild — reset so diff applies from scratch.
+    renderedSelectionCells.clear();
+    renderedActiveColIdxs.clear();
+    renderedActiveModelIds.clear();
+    renderedSelectedRows.clear();
     // Re-apply selection highlights
     applySelectionToDOM();
     applyRowSelectionToDOM();
@@ -966,6 +1031,12 @@ export function buildGrid(data: MSXData, opts?: {
     } else {
       hiddenRows.add(modelId);
     }
+    // Clear cell selections for all rows being hidden so they don't reappear
+    // selected when the rows are unhidden later.
+    for (const key of selectedCells) {
+      if (hiddenRows.has(Number(key.slice(0, key.indexOf(':'))))) selectedCells.delete(key);
+    }
+    applySelectionToDOM();
     applyRowVisibility();
     opts?.onStateChange?.();
   });
@@ -980,9 +1051,15 @@ export function buildGrid(data: MSXData, opts?: {
     if (!modelId) return;
     selectRowRange(rowDragAnchor, modelId);
     rowSelAnchor = modelId;
-    applyRowSelectionToDOM();
-    syncCellsFromRowSelection();
-    opts?.onStateChange?.();
+    if (!rowDragRafPending) {
+      rowDragRafPending = true;
+      requestAnimationFrame(() => {
+        rowDragRafPending = false;
+        applyRowSelectionToDOM();
+        syncCellsFromRowSelection();
+        opts?.onStateChange?.();
+      });
+    }
   }, true);
 
   document.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -1067,8 +1144,14 @@ export function buildGrid(data: MSXData, opts?: {
     const modelId = Number(tr.dataset.modelId);
     const colIdx = Number(td.dataset.colIndex);
     selectRectangle(dragStart, { modelId, colIdx });
-    applySelectionToDOM();
-    opts?.onStateChange?.();
+    if (!dragRafPending) {
+      dragRafPending = true;
+      requestAnimationFrame(() => {
+        dragRafPending = false;
+        applySelectionToDOM();
+        opts?.onStateChange?.();
+      });
+    }
   }, true); // capture to catch all child mouseenter events
 
   document.addEventListener('mouseup', () => {
@@ -1112,6 +1195,17 @@ export function buildGrid(data: MSXData, opts?: {
             cell.style.display = 'none';
           }
         });
+        // Drop selected cells for all columns in this group so they don't
+        // reappear selected when the group is expanded again.
+        const groupColIdxs = new Set(
+          data.columns.map((col, i) => ({ col, i }))
+            .filter(({ col }) => col.groupId === groupId)
+            .map(({ i }) => i)
+        );
+        for (const key of selectedCells) {
+          if (groupColIdxs.has(Number(key.slice(key.indexOf(':') + 1)))) selectedCells.delete(key);
+        }
+        applySelectionToDOM();
         recalcGroupHeader(groupId);
         opts?.onStateChange?.();
       }
