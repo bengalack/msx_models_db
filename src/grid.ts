@@ -197,6 +197,8 @@ function buildDataRow(
   columns: ColumnDef[],
   rowIndex: number,
   slotmapLut: Record<string, string>,
+  hiddenCols?: ReadonlySet<number>,
+  collapsedGroups?: ReadonlySet<number>,
 ): HTMLTableRowElement {
   const tr = document.createElement('tr');
   tr.dataset.modelId = String(model.id);
@@ -245,6 +247,17 @@ function buildDataRow(
     groupOrder.set(col.groupId, order + 1);
     if (i < FROZEN_COL_COUNT) td.classList.add('col--frozen');
     if (col.shaded) td.classList.add('col-shaded');
+
+    // Apply column/group visibility inline so no post-render querySelectorAll is needed
+    if (hiddenCols?.has(i)) {
+      td.style.display = 'none';
+    } else if (collapsedGroups?.has(col.groupId)) {
+      if (order === 0) {
+        td.classList.add('col-group-stub');
+      } else {
+        td.style.display = 'none';
+      }
+    }
 
     if (isNullish(rawValue)) {
       td.classList.add('cell-null');
@@ -356,6 +369,9 @@ export function buildGrid(data: MSXData, opts?: {
   // Hidden rows — keyed by stable model ID
   const hiddenRows = new Set<number>();
 
+  // Row element cache — reused by applyRowVisibility() to avoid full DOM rebuild on hide/unhide
+  const rowCache = new Map<number, HTMLTableRowElement>();
+
   // ── Column ID ↔ index maps (for ViewState translation) ───────────────────
   const colIdToIdx = new Map(data.columns.map((col, i) => [col.id, i]));
 
@@ -373,6 +389,16 @@ export function buildGrid(data: MSXData, opts?: {
   }
 
   function applySelectionToDOM(): void {
+    if (selectedCells.size === 0) {
+      // Nothing selected — clear any stale highlights and bail out
+      thead.querySelectorAll<HTMLTableCellElement>('th.col-header--active').forEach(th => {
+        th.classList.remove('col-header--active');
+      });
+      tbody.querySelectorAll<HTMLTableCellElement>('td.gutter--cell-active').forEach(td => {
+        td.classList.remove('gutter--cell-active');
+      });
+      return;
+    }
     tbody.querySelectorAll<HTMLTableCellElement>('td[data-col-index]').forEach(td => {
       const tr = td.closest<HTMLTableRowElement>('tr[data-model-id]');
       if (!tr?.dataset.modelId) return;
@@ -553,15 +579,89 @@ export function buildGrid(data: MSXData, opts?: {
     return hiddenCols;
   }
 
+  // Lightweight hide/unhide: toggles CSS visibility on cached rows, rebuilds
+  // only the gap indicator rows — no full replaceChildren needed.
+  function applyRowVisibility(): void {
+    // If the cache is empty (e.g. first render hasn't run yet), fall back to full render.
+    if (rowCache.size === 0) { renderRows(); return; }
+
+    // Show/hide cached data rows
+    rowCache.forEach((tr, modelId) => {
+      tr.style.display = hiddenRows.has(modelId) ? 'none' : '';
+      tr.classList.remove('row-before-gap');
+    });
+
+    // Remove all existing gap indicators from tbody
+    Array.from(tbody.querySelectorAll<HTMLTableRowElement>('.row-gap-indicator')).forEach(r => r.remove());
+
+    // Re-walk visible rows in current tbody order to insert gap indicators
+    // We iterate over the cached rows in filtered order (same order they were inserted).
+    // To get the right order, re-derive the filtered list from the current state.
+    const sorted = sortColIndex !== null
+      ? sortModels(originalModels, sortColIndex, sortDirection, data.columns)
+      : originalModels;
+    const filtered = filters.size === 0 ? sorted : sorted.filter(model =>
+      [...filters.entries()].every(([colIdx, term]) => {
+        const raw = colIdx < model.values.length ? model.values[colIdx] : null;
+        const value = cellText(raw).toLowerCase();
+        const parts = term.split('|').map(p => p.trim()).filter(p => p.length > 0);
+        if (parts.length === 0) return true;
+        const positive = parts.filter(p => !p.startsWith('!'));
+        const negative = parts.filter(p => p.startsWith('!')).map(p => p.slice(1).toLowerCase()).filter(p => p.length > 0);
+        const passPositive = positive.length === 0 || positive.some(p => value.includes(p.toLowerCase()));
+        const passNegative = negative.every(n => !value.includes(n));
+        return passPositive && passNegative;
+      })
+    );
+
+    // Gap-walk: insert gap indicators between sequences of hidden rows.
+    // Rows are already in the DOM (just display:none); we only insert <tr class="row-gap-indicator">.
+    let buffer: number[] = [];
+    let lastVisibleTr: HTMLTableRowElement | null = null;
+    let rowNum = 1;
+
+    for (const model of filtered) {
+      const tr = rowCache.get(model.id);
+      if (!tr) continue; // filtered-out row not in cache — shouldn't happen
+
+      if (hiddenRows.has(model.id)) {
+        buffer.push(model.id);
+      } else {
+        if (buffer.length > 0) {
+          if (lastVisibleTr) lastVisibleTr.classList.add('row-before-gap');
+          const gapTr = buildGapIndicator(buffer, unhideRowsInGap, data.columns.length);
+          tr.before(gapTr);
+          buffer = [];
+        }
+        // Update row number
+        const numSpan = tr.querySelector<HTMLElement>('.gutter__num');
+        if (numSpan) numSpan.textContent = String(rowNum);
+        rowNum++;
+        lastVisibleTr = tr;
+      }
+    }
+
+    // Trailing gap (hidden rows at the end of the filtered list)
+    if (buffer.length > 0) {
+      tbody.appendChild(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
+    }
+
+    applyRowSelectionToDOM();
+    requestAnimationFrame(() => {
+      updateGapVisibility();
+      updateFrozenOffsets();
+    });
+  }
+
   function hideRow(modelId: number): void {
     hiddenRows.add(modelId);
-    renderRows();
+    applyRowVisibility();
     opts?.onStateChange?.();
   }
 
   function unhideRowsInGap(modelIds: number[]): void {
     modelIds.forEach(id => hiddenRows.delete(id));
-    renderRows();
+    applyRowVisibility();
     opts?.onStateChange?.();
   }
 
@@ -574,6 +674,7 @@ export function buildGrid(data: MSXData, opts?: {
   table.appendChild(tbody);
 
   function renderRows(): void {
+    rowCache.clear();
     const sorted = sortColIndex !== null
       ? sortModels(originalModels, sortColIndex, sortDirection, data.columns)
       : originalModels;
@@ -607,29 +708,15 @@ export function buildGrid(data: MSXData, opts?: {
           rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
           buffer = [];
         }
-        rows.push(buildDataRow(model, data.columns, rowNum++, data.slotmap_lut ?? {}));
+        const tr = buildDataRow(model, data.columns, rowNum++, data.slotmap_lut ?? {}, hiddenCols, collapsedGroups);
+        rowCache.set(model.id, tr);
+        rows.push(tr);
       }
     }
     if (buffer.length > 0) {
       rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
     }
     tbody.replaceChildren(...rows);
-    // Re-apply collapsed group visibility to newly rendered rows
-    collapsedGroups.forEach(groupId => {
-      tbody.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
-        if (cell.dataset.colOrder === '0') {
-          cell.classList.add('col-group-stub');
-        } else {
-          cell.style.display = 'none';
-        }
-      });
-    });
-    // Re-apply individually hidden columns to newly rendered rows
-    hiddenCols.forEach(colIdx => {
-      tbody.querySelectorAll<HTMLElement>(`[data-col-index="${colIdx}"]`).forEach(cell => {
-        cell.style.display = 'none';
-      });
-    });
     // Re-apply selection highlights
     applySelectionToDOM();
     applyRowSelectionToDOM();
@@ -645,17 +732,22 @@ export function buildGrid(data: MSXData, opts?: {
   // Hide the dashed line + unhide button when a gap indicator scrolls under
   // the sticky header — show them again once the gap is fully below it.
   function updateGapVisibility(): void {
+    const gapRows = Array.from(tbody.querySelectorAll<HTMLTableRowElement>('.row-gap-indicator'));
+    if (gapRows.length === 0) return;
 
     const headerBottom = thead.getBoundingClientRect().bottom;
-    for (const row of Array.from(tbody.querySelectorAll<HTMLTableRowElement>('.row-gap-indicator'))) {
+
+    // Phase 1 — read: temporarily show all indicators and collect their measurements
+    gapRows.forEach(row => row.classList.remove('row-gap-indicator--under-header'));
+    const measurements = gapRows.map(row => {
       const btn = row.querySelector<HTMLElement>('.gutter__unhide-btn');
-      if (!btn) continue;
-      // Temporarily show so we can measure
-      row.classList.remove('row-gap-indicator--under-header');
-      const btnBottom = btn.getBoundingClientRect().bottom;
-      const hidden = btnBottom <= headerBottom;
-      row.classList.toggle('row-gap-indicator--under-header', hidden);
-    }
+      return btn ? btn.getBoundingClientRect().bottom : Infinity;
+    });
+
+    // Phase 2 — write: apply visibility based on measurements (no interleaved reads)
+    gapRows.forEach((row, i) => {
+      row.classList.toggle('row-gap-indicator--under-header', measurements[i] <= headerBottom);
+    });
   }
 
   // ── Frozen-column left-offset computation ────────────────────────────────
@@ -874,7 +966,7 @@ export function buildGrid(data: MSXData, opts?: {
     } else {
       hiddenRows.add(modelId);
     }
-    renderRows();
+    applyRowVisibility();
     opts?.onStateChange?.();
   });
 
