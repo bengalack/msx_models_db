@@ -9,7 +9,6 @@
     - Page loads defaultView when URL hash is empty, instead of show-all fallback
 
 - Inbox (untriaged)
-  - MSX1 model support (explicitly out of scope for iteration 1)
   - Column reordering by drag-and-drop
   - Multi-column sort
   - Per-model detail panel / expanded view

@@ -8,7 +8,7 @@
 ## Summary
 - MSX model specifications are scattered across the internet with no unified reference.
 - Goal: a single static web page presenting all relevant MSX models in a sortable, filterable grid.
-- First iteration covers MSX2, MSX2+, and MSX turbo R models only (including unofficial FPGA-based models).
+- Covers MSX1, MSX2, MSX2+, and MSX turbo R models (including unofficial FPGA-based models).
 - Grid supports rich cell selection (click, CTRL+click, SHIFT+click, drag) with visual highlight and native copy.
 - Column groups (Identity, Release, Memory, Video, Audio, Media, CPU/Chipsets, Other, Emulation) can collapse/expand.
 - URL encodes current grid state (selections, sort, filters) to enable sharing and bookmarking.
@@ -20,7 +20,7 @@
 Today, finding detailed and comparable specs for MSX computer models requires visiting multiple websites (msx.org wiki, openMSX documentation, community pages). There is no consolidated, structured view that lets a user quickly compare models across key dimensions like RAM, video chip, CPU speed, or media. Grouping models by standard (MSX2 vs. turbo R) or filtering by manufacturer requires manual effort. This is slow and error-prone.
 
 ## Desired Outcomes
-- A user can open one page and immediately see all MSX2/MSX2+/turbo R models in a grid.
+- A user can open one page and immediately see all MSX1/MSX2/MSX2+/turbo R models in a grid.
 - Columns can be sorted and filtered without reloading the page.
 - Column groups can be collapsed to focus on relevant dimensions.
 - Cells can be selected and copied to clipboard using standard OS shortcuts.
@@ -63,7 +63,7 @@ Today, finding detailed and comparable specs for MSX computer models requires vi
 
 ## In Scope
 - Static web page with a grid/spreadsheet view of MSX models
-- MSX2, MSX2+, MSX turbo R models (official and unofficial FPGA-based)
+- MSX1, MSX2, MSX2+, MSX turbo R models (official and unofficial FPGA-based)
 - Sortable, filterable, and individually show/hide-able columns
 - Collapsible/expandable column groups (hides all columns in the group)
 - Individually show/hide-able rows, with a visual indicator in the left gutter when one or more rows are hidden (making hidden rows discoverable)
@@ -76,7 +76,6 @@ Today, finding detailed and comparable specs for MSX computer models requires vi
 - Works as local `index.html` and as a hosted static site
 
 ## Out of Scope
-- MSX1 models (deferred to a future iteration)
 - User accounts, authentication, or server-side logic
 - Community contributions or crowd-sourced edits via the UI
 - Real-time data fetching from external sources at page load

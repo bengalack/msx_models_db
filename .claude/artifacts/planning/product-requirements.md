@@ -11,7 +11,7 @@ MSX computer model specifications are scattered across multiple websites with no
 The goal is a single static web page that presents all MSX1, MSX2, MSX2+, and MSX turbo R models (including unofficial FPGA-based models) in a structured, spreadsheet-like grid. Users can sort, filter, show/hide columns and rows, select cells, copy data to the clipboard, and share their exact view via URL. The data is maintained in a local JSON file, refreshed on demand by a scraper that pulls from msx.org and the openMSX GitHub repository.
 
 ## Goals
-- Provide a single, authoritative reference for MSX2/MSX2+/turbo R model specifications.
+- Provide a single, authoritative reference for MSX1/MSX2/MSX2+/turbo R model specifications.
 - Enable fast comparison and grouping of models via sort, filter, and column/row visibility controls.
 - Allow any view state to be shared or bookmarked via a live-updating URL.
 - Give the maintainer a repeatable, low-effort process to refresh the data.
