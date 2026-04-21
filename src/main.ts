@@ -74,15 +74,15 @@ if (!window.MSX_DATA) {
   const grid = buildGrid(window.MSX_DATA, {
     initialState,
     onStateChange: scheduleUrlUpdate,
+    // onStateChange: () => {}, // disable in testing if needed.
   });
   const { element: gridEl, toggleFilters, resetView, setColumnVisible, getHiddenCols, clearAllSelection, copySelection } = grid;
 
   const identityGroupId = window.MSX_DATA.groups.find(g => g.key === 'identity')?.id;
   const pickerGroups = window.MSX_DATA.groups.filter(g => g.id !== identityGroupId);
-  const pickerColumns = window.MSX_DATA.columns.filter(c => c.groupId !== identityGroupId);
   const { element: pickerEl, open: openPicker, close: closePicker } = buildColPicker(
     pickerGroups,
-    pickerColumns,
+    window.MSX_DATA.columns,
     getHiddenCols,
     setColumnVisible,
   );
