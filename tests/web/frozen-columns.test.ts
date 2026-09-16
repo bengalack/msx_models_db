@@ -250,7 +250,7 @@ describe('col--frozen and gap indicator rows', () => {
     hideRow(3);
     const gapRow = element.querySelector<HTMLElement>('.row-gap-indicator');
     expect(gapRow).not.toBeNull();
-    const scrollableGap = gapRow!.querySelector<HTMLElement>('td.gutter--gap:not(.gutter--gap-frozen)');
+    const scrollableGap = gapRow!.querySelector<HTMLTableCellElement>('td.gutter--gap:not(.gutter--gap-frozen)');
     expect(scrollableGap).not.toBeNull();
     // 5 total columns minus 2 frozen = 3
     expect(scrollableGap!.colSpan).toBe(5 - FROZEN_COL_COUNT);

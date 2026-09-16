@@ -66,7 +66,9 @@ export default defineConfig({
     },
   },
   test: {
+    // Vite's root is src/, but tests live in tests/web/ — resolve from the repo root.
+    root: path.resolve(),
+    include: ['tests/web/**/*.test.ts'],
     environment: 'jsdom',
-    passWithNoTests: true,
   },
 });

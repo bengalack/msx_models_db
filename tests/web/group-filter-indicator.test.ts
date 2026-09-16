@@ -152,9 +152,9 @@ describe('group filter indicator', () => {
       sortColumnId: null,
       sortDirection: 'asc',
       filters: new Map([[3, 'Year filter']]), // column id 3 = Year, groupId=1
-      hiddenColumnIds: [],
-      hiddenRowIds: [],
-      collapsedGroupIds: [],
+      hiddenColumnIds: new Set(),
+      hiddenRowIds: new Set(),
+      collapsedGroupIds: new Set(),
       selectedCells: new Set(),
     };
     const { element } = buildGrid(data, { initialState: init });
@@ -168,9 +168,9 @@ describe('group filter indicator', () => {
       sortColumnId: null,
       sortDirection: 'asc',
       filters: new Map([[3, '1987']]),
-      hiddenColumnIds: [],
-      hiddenRowIds: [],
-      collapsedGroupIds: [1], // Specs group collapsed
+      hiddenColumnIds: new Set(),
+      hiddenRowIds: new Set(),
+      collapsedGroupIds: new Set([1]), // Specs group collapsed
       selectedCells: new Set(),
     };
     const { element } = buildGrid(data, { initialState: init });
