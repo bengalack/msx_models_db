@@ -13,11 +13,14 @@ from . import build as build_module, merge, msxorg, openmsx
 
 def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
     """Fetch and parse all openMSX machine configs, emit JSON."""
+    from .exclude import load_excludes
     from .openmsx_source import FallbackXMLSource, LiveXMLSource, MirrorXMLSource
     from .slotmap import load_sha1_index
     from .slotmap_lut import load_slotmap_lut
     import requests as _requests
 
+    # Load before any I/O so a malformed exclude.json fails fast (same as build).
+    exclude_list = load_excludes(build_module.EXCLUDE_PATH)
     lut_rules = load_slotmap_lut(build_module.SLOTMAP_LUT_PATH)
     sha1_index = load_sha1_index(
         build_module.SHA1_INDEX_PATH if build_module.SHA1_INDEX_PATH.exists() else None
@@ -49,6 +52,7 @@ def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
         lut_rules=lut_rules,
         sha1_index=sha1_index or None,
         systemroms_root=sr_root,
+        exclude_list=exclude_list,
     )
     output = json.dumps(models, indent=2, ensure_ascii=False)
     if args.output:
@@ -61,8 +65,12 @@ def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
 
 def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
     """Fetch and parse all msx.org wiki model pages, emit JSON."""
+    from .exclude import load_excludes
     from .mirror import FallbackPageSource, LivePageSource, MirrorPageSource
     import requests as _requests
+
+    # Load before any I/O so a malformed exclude.json fails fast (same as build).
+    exclude_list = load_excludes(build_module.EXCLUDE_PATH)
     mirror_path = Path(args.msxorg_mirror) if args.msxorg_mirror else None
     if mirror_path is None:
         cfg = build_module.load_scraper_config()
@@ -80,7 +88,9 @@ def cmd_fetch_msxorg(args: argparse.Namespace) -> None:
     else:
         source = None
         delay = args.delay
-    models = msxorg.fetch_all(source=source, limit=args.limit, delay=delay)
+    models = msxorg.fetch_all(
+        source=source, limit=args.limit, delay=delay, exclude_list=exclude_list,
+    )
     output = json.dumps(models, indent=2, ensure_ascii=False)
     if args.output:
         with open(args.output, "w", encoding="utf-8") as f:
