@@ -9,18 +9,19 @@ from pathlib import Path
 import pytest
 
 from scraper.merge import _renumber_cs_es, _is_slot_type, merge_models, load_substitutions, apply_substitutions, natural_key
+from scraper.symbols import ABSENT as _ABSENT, EMPTY_PAGE as _EMPTY
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────
 
 def _slotmap(**kwargs: str) -> dict:
-    """Build a model dict with all 64 slotmap keys set to '•' by default,
+    """Build a model dict with all 64 slotmap keys set to EMPTY_PAGE by default,
     then override specific keys via kwargs (e.g. slotmap_1_0_0='CS1')."""
     m: dict = {}
     for ms in range(4):
         for ss in range(4):
             for p in range(4):
-                m[f"slotmap_{ms}_{ss}_{p}"] = "•"
+                m[f"slotmap_{ms}_{ss}_{p}"] = _EMPTY
     m.update(kwargs)
     return m
 
@@ -46,7 +47,7 @@ class TestIsSlotType:
     def test_exp_is_slot_type(self):
         assert _is_slot_type("EXP")
     def test_device_abbrs_not_slot_type(self):
-        for v in ("MAIN", "MM", "DSK", "MUS", "•", "⌧", None, 42):
+        for v in ("MAIN", "MM", "DSK", "MUS", _EMPTY, _ABSENT, None, 42):
             assert not _is_slot_type(v)
 
 
@@ -229,7 +230,7 @@ class TestMergeSlotMapCsEsPreference:
         Covers: <primary slot="X"/> (no external="true", no devices) → openMSX: •
         msx.org has CS → merged result: CS.
         """
-        openmsx = [_base_model(extra={**_fill_slot(2, 0, "•")})]
+        openmsx = [_base_model(extra={**_fill_slot(2, 0, _EMPTY)})]
         msxorg  = [_base_model(extra={**_fill_slot(2, 0, "CS1")})]
         result = merge_models(openmsx, msxorg)
         assert len(result) == 1
@@ -241,7 +242,7 @@ class TestMergeSlotMapCsEsPreference:
 
         Covers: <primary slot="X"/> → openMSX: •; msx.org: EXP → merged: EXP.
         """
-        openmsx = [_base_model(extra={**_fill_slot(3, 0, "•")})]
+        openmsx = [_base_model(extra={**_fill_slot(3, 0, _EMPTY)})]
         msxorg  = [_base_model(extra={**_fill_slot(3, 0, "EXP")})]
         result = merge_models(openmsx, msxorg)
         assert len(result) == 1
@@ -255,9 +256,9 @@ class TestMergeSlotMapCsEsPreference:
         connectors labelled ES{N}! by msx.org.
         """
         openmsx = [_base_model(extra={
-            **_fill_slot(0, 1, "•"),
-            **_fill_slot(0, 2, "•"),
-            **_fill_slot(0, 3, "•"),
+            **_fill_slot(0, 1, _EMPTY),
+            **_fill_slot(0, 2, _EMPTY),
+            **_fill_slot(0, 3, _EMPTY),
         })]
         msxorg = [_base_model(extra={
             **_fill_slot(0, 1, "ES1!"),
@@ -279,9 +280,9 @@ class TestMergeSlotMapCsEsPreference:
         After merge and renumber, bare 'ES' is assigned ES1/ES2/ES3.
         """
         openmsx = [_base_model(extra={
-            **_fill_slot(2, 1, "•"),
-            **_fill_slot(2, 2, "•"),
-            **_fill_slot(2, 3, "•"),
+            **_fill_slot(2, 1, _EMPTY),
+            **_fill_slot(2, 2, _EMPTY),
+            **_fill_slot(2, 3, _EMPTY),
         })]
         msxorg = [_base_model(extra={
             **_fill_slot(2, 1, "ES"),

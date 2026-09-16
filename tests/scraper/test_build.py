@@ -6,8 +6,10 @@ import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from scraper.build import build, load_scraper_config
+from scraper.build import SLOTMAP_LUT_PATH, build, load_scraper_config
+from scraper.columns import active_columns
 from scraper.registry import IDRegistry
+from scraper.slotmap_lut import compact_lut, load_slotmap_lut
 
 
 class TestBuildPipeline:
@@ -143,16 +145,6 @@ class TestBuildPipeline:
 class TestBuildSlotmapLUT:
     """Integration tests for slotmap LUT wired into build pipeline."""
 
-    STARTER_ABBRS = {
-        "MAIN", "SUB", "KAN", "HAN", "JE", "MOD", "DOS2", "CP/M",
-        "FW", "DSK", "MUS", "RS", "RSFW", "MM", "PM",
-        "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2327", "\u2022",
-        "CS1", "CS2", "CS3", "CS4", "CS5", "CS6",
-        "CS1!", "CS2!", "CS3!", "CS4!", "CS5!", "CS6!",
-        "ES1", "ES2", "ES3", "ES4", "ES5", "ES6",
-        "ES1!", "ES2!", "ES3!", "ES4!", "ES5!", "ES6!",
-    }
-
     def _run_build(self, tmp_path):
         raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
         openmsx_path = tmp_path / "openmsx.json"
@@ -182,7 +174,7 @@ class TestBuildSlotmapLUT:
         data = json.loads(content[json_start:json_end])
         lut = data.get("slotmap_lut", {})
         assert isinstance(lut, dict)
-        assert set(lut.keys()) == self.STARTER_ABBRS
+        assert set(lut.keys()) == set(compact_lut(load_slotmap_lut(SLOTMAP_LUT_PATH)))
 
     def test_slotmap_lut_values_are_strings(self, tmp_path):
         output_path = self._run_build(tmp_path)
@@ -201,13 +193,13 @@ class TestBuildSlotmapLUT:
         data = json.loads(content[json_start:json_end])
         assert len(data["groups"]) == 13
 
-    def test_data_js_has_93_columns(self, tmp_path):
+    def test_data_js_exports_all_active_columns(self, tmp_path):
         output_path = self._run_build(tmp_path)
         content = output_path.read_text(encoding="utf-8")
         json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
         json_end = content.rindex(";")
         data = json.loads(content[json_start:json_end])
-        assert len(data["columns"]) == 92
+        assert len(data["columns"]) == len(active_columns())
 
     def test_missing_lut_file_aborts_build(self, tmp_path):
         import pytest

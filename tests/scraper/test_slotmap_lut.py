@@ -7,19 +7,15 @@ from pathlib import Path
 import pytest
 
 from scraper.slotmap_lut import compact_lut, load_slotmap_lut
+from scraper.symbols import ABSENT, EMPTY_PAGE
 
 # Path to the committed starter LUT
 STARTER_LUT = Path("data/slotmap-lut.json")
 
-EXPECTED_ABBRS = {
-    "MAIN", "SUB", "KAN", "HAN", "JE", "MOD", "DOS2", "CP/M",
-    "FW", "DSK", "MUS", "RS", "RSFW", "MM", "PM",
-    "RAM", "BUN", "SFG5", "SFG1", "EXP", "\u2327", "\u2022",
-    "CS1", "CS2", "CS3", "CS4", "CS5", "CS6",
-    "CS1!", "CS2!", "CS3!", "CS4!", "CS5!", "CS6!",
-    "ES1", "ES2", "ES3", "ES4", "ES5", "ES6",
-    "ES1!", "ES2!", "ES3!", "ES4!", "ES5!", "ES6!",
-}
+
+def _raw_lut() -> list[dict]:
+    """The LUT file as plain JSON — expectations are derived from it, never hardcoded."""
+    return json.loads(STARTER_LUT.read_text(encoding="utf-8"))
 
 
 # ---------------------------------------------------------------------------
@@ -33,7 +29,7 @@ def test_load_starter_lut_returns_list():
 
 def test_load_starter_lut_count():
     rules = load_slotmap_lut(STARTER_LUT)
-    assert len(rules) == 49
+    assert len(rules) == len(_raw_lut())
 
 
 def test_load_starter_lut_rule_keys():
@@ -48,7 +44,7 @@ def test_load_starter_lut_rule_keys():
 def test_load_starter_lut_abbrs():
     rules = load_slotmap_lut(STARTER_LUT)
     abbrs = {rule["abbr"] for rule in rules}
-    assert abbrs == EXPECTED_ABBRS
+    assert abbrs == {r["abbr"] for r in _raw_lut()}
 
 
 # ---------------------------------------------------------------------------
@@ -59,7 +55,7 @@ def test_compact_lut_returns_abbr_to_tooltip():
     rules = load_slotmap_lut(STARTER_LUT)
     lut = compact_lut(rules)
     assert isinstance(lut, dict)
-    assert set(lut.keys()) == EXPECTED_ABBRS
+    assert set(lut.keys()) == {r["abbr"] for r in _raw_lut()}
 
 
 def test_compact_lut_values_are_strings():
@@ -76,13 +72,22 @@ def test_compact_lut_omits_rule_metadata():
         assert not isinstance(value, dict), "compact_lut should not contain nested dicts"
 
 
-def test_compact_lut_known_entries():
+def test_compact_lut_maps_every_abbr_to_its_tooltip():
     rules = load_slotmap_lut(STARTER_LUT)
     lut = compact_lut(rules)
-    assert lut["MAIN"] == "MSX BIOS with BASIC ROM"
-    assert lut["\u2327"] == "Sub-slot absent (not expanded)"
-    assert lut["\u2022"] == "Empty page \u2014 no device mapped"
-    assert lut["DSK"] == "Disk ROM"
+    for raw in _raw_lut():
+        assert lut[raw["abbr"]] == raw["tooltip"]
+
+
+def test_sentinel_abbrs_match_configured_symbols():
+    """The LUT's __sentinel__ rules must use the symbols from scraper-config.json.
+
+    Changing slotmap_symbols without updating data/slotmap-lut.json would leave
+    the browser without tooltips for absent/empty slot-map cells.
+    """
+    rules = load_slotmap_lut(STARTER_LUT)
+    sentinels = {r["abbr"] for r in rules if r["element"] == "__sentinel__"}
+    assert sentinels == {ABSENT, EMPTY_PAGE}
 
 
 # ---------------------------------------------------------------------------

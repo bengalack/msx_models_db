@@ -380,7 +380,7 @@ class TestMsxOrgWiring:
         fetch_page_calls: list[str] = []
 
         class TrackingSource:
-            def fetch_category(self, standard, url):
+            def fetch_category(self, standard, url, page=1):
                 return self._CATEGORY_HTML
 
             def fetch_page(self, title, url):
@@ -405,7 +405,7 @@ class TestMsxOrgWiring:
         class TrackingSource:
             _CATEGORY_HTML = self._CATEGORY_HTML
 
-            def fetch_category(self, standard, url):
+            def fetch_category(self, standard, url, page=1):
                 return self._CATEGORY_HTML
 
             def fetch_page(self, title, url):
