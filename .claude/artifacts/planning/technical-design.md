@@ -242,7 +242,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 
 - GroupDef
   - Purpose: Defines one collapsible column group
-  - Key fields: `id` (stable int 0–7), `key`, `label`, `order`
+  - Key fields: `id` (stable int, < 32 — URL codec bitmask), `key`, `label`, `order`
   - Relationships: Contains one or more ColumnDefs
   - Retention: Groups are fixed; defined in scraper config
 
@@ -309,7 +309,7 @@ Future format changes increment the version byte; the decoder checks version and
 ## Integrity Strategy
 - Invariants:
   - IDs in id-registry.json are never deleted or reused
-  - `next_model_id` and `next_column_id` only ever increase
+  - `next_model_id` only ever increases; column IDs in `scraper/columns.py` are never renumbered or reused
   - `docs/data.js` is only written after the full scraper run succeeds and the maintainer has resolved all conflicts
   - URL decoder never throws; unknown IDs are silently ignored
 - Idempotency: Scraper run is idempotent on data (same sources → same output); registry is append-only
@@ -373,7 +373,7 @@ Future format changes increment the version byte; the decoder checks version and
 - Unit (scraper): pytest; cover ID registry (match/assign/retire), merge logic, conflict detection
 - Integration: None (no server to integrate against)
 - E2E: None in CI; manual smoke test by opening `docs/index.html` locally
-- CI runs: lint + typecheck + unit tests on push to main
+- CI: none. All checks run locally before committing (see Command Surface).
 
 ## Repository & Delivery Conventions
 
@@ -381,81 +381,90 @@ Future format changes increment the version byte; the decoder checks version and
 
 ```
 msx_models_db/
-├── docs/                   # Committed build output — served by GitHub Pages
-│   ├── index.html          # Built by Vite
-│   ├── bundle.js           # Built by Vite
-│   └── data.js             # Written by scraper (window.MSX_DATA = {...})
-├── src/                    # TypeScript source
-│   ├── main.ts             # Entry point
-│   ├── grid/
-│   │   ├── state.ts        # ViewState type + reducers
-│   │   ├── render.ts       # DOM rendering
-│   │   ├── selection.ts    # Cell selection (click, CTRL, SHIFT, drag)
-│   │   ├── columns.ts      # Column/group show-hide, collapse
-│   │   └── clipboard.ts    # CTRL+C handler
-│   ├── url/
-│   │   ├── codec.ts        # Binary encode/decode of ViewState
-│   │   └── sync.ts         # history.replaceState integration
-│   └── theme.ts            # Dark/light toggle, localStorage persistence
-├── scraper/                # Python scraper package
-│   ├── __main__.py         # Entry point (python -m scraper)
-│   ├── sources/
-│   │   ├── msx_org.py      # msx.org HTML scraper
-│   │   └── openmsx_xml.py  # openMSX XML parser (general fields)
-│   ├── slotmap.py          # Slot map extractor + LUT loader + mirror detection
-│   ├── merge.py            # Merge + interactive conflict resolution
-│   ├── registry.py         # ID registry load/save/match/assign
-│   └── output.py           # Write data.js
+├── docs/                    # Committed build output — served by GitHub Pages
+│   ├── index.html           # Built by Vite
+│   ├── bundle.js            # Built by Vite (IIFE)
+│   ├── fa-solid-900.woff2   # FontAwesome font asset
+│   └── data.js              # Written by scraper (window.MSX_DATA = {...})
+├── src/                     # TypeScript source (Vite root)
+│   ├── index.html           # Vite entry HTML
+│   ├── main.ts              # Entry point: header, toolbar, grid, col picker, URL hash sync
+│   ├── grid.ts              # Grid rendering, sort, filter, selection, hide/unhide, sticky/frozen, clipboard
+│   ├── col-picker.ts        # Column show/hide picker
+│   ├── toolbar.ts           # Toolbar buttons
+│   ├── theme.ts             # Dark/light toggle, localStorage persistence
+│   ├── symbols.ts           # Slot-map symbols (imports data/scraper-config.json)
+│   ├── types.ts             # MSXData, ColumnDef, ViewState, ...
+│   ├── url/codec.ts         # Binary encode/decode of ViewState
+│   └── styles/              # theme, base, header, toolbar, grid, statusbar CSS
+├── scraper/                 # Python scraper package
+│   ├── __main__.py          # CLI (python -m scraper build|fetch-openmsx|fetch-msxorg|merge)
+│   ├── build.py             # Pipeline orchestration; writes docs/data.js
+│   ├── columns.py           # Column/group definitions (single source of truth)
+│   ├── openmsx.py           # openMSX XML parser (general fields, BIOS ROM fields)
+│   ├── openmsx_source.py    # Live/Mirror/Fallback XML sources
+│   ├── msxorg.py            # msx.org HTML scraper
+│   ├── msxorg_slotmap.py    # msx.org slot map table parser
+│   ├── mirror.py            # Live/Mirror/Fallback msx.org page sources
+│   ├── slotmap.py           # openMSX slot map extractor + mirror detection
+│   ├── slotmap_lut.py       # Slot map LUT load/validate/compact
+│   ├── merge.py             # Merge, preference rules, substitutions, conflicts
+│   ├── aliases.py           # Alias LUT
+│   ├── link_shares.py       # Link-shares LUT
+│   ├── exclude.py           # Exclude list
+│   ├── registry.py          # Model ID registry load/save/match/assign
+│   ├── local_source.py      # data/local-raw.json loader
+│   ├── symbols.py           # Slot-map symbols (reads data/scraper-config.json)
+│   └── http.py              # HTTP session helpers
 ├── data/
-│   ├── id-registry.json    # Stable ID registry (committed, never deleted)
-│   ├── slotmap-lut.json    # Slot map vocabulary (maintained by maintainer)
-│   └── schema.md           # MSXData schema documentation
+│   ├── id-registry.json     # Stable model ID registry (committed, append-only)
+│   ├── slotmap-lut.json     # Slot map vocabulary (maintainer-edited)
+│   ├── aliases.json         # Alias LUT (maintainer-edited)
+│   ├── substitutions.json   # Value substitutions (maintainer-edited)
+│   ├── exclude.json         # Exclude list (maintainer-edited)
+│   ├── link-shares.json     # Link-shares LUT (maintainer-edited)
+│   ├── local-raw.json       # Local supplemental data (maintainer-edited, highest authority)
+│   ├── scraper-config.json  # Mirror paths + slot-map symbols
+│   ├── openmsx-raw.json     # Cached fetch output (gitignored)
+│   ├── msxorg-raw.json      # Cached fetch output (gitignored)
+│   └── schema.md            # MSXData schema documentation
+├── helpers/                 # Maintainer helper scripts (e.g. openMSX Tcl dumps)
 ├── systemroms/
 │   └── machines/
-│       ├── all_sha1s.txt   # SHA1→relative-path index (for mirror ROM size lookup)
-│       └── …               # ROM files (not committed; present in maintainer's local env)
+│       ├── all_sha1s.txt    # SHA1→relative-path index (committed)
+│       └── …                # ROM files (not committed; present in maintainer's local env)
 ├── tests/
-│   ├── web/                # Vitest tests
-│   │   ├── codec.test.ts
-│   │   └── state.test.ts
-│   └── scraper/            # pytest tests
-│       ├── test_registry.py
-│       ├── test_merge.py
-│       └── test_slotmap.py  # LUT matching, page assignment, mirror detection
-├── index.html              # Vite dev entry point
-├── vite.config.ts
+│   ├── web/                 # Vitest + jsdom tests (*.test.ts)
+│   └── scraper/             # pytest tests (test_*.py)
+├── vite.config.ts           # Vite build + Vitest config
 ├── tsconfig.json
+├── eslint.config.js
 ├── package.json
-├── requirements.txt        # Python deps (beautifulsoup4, lxml, requests, colorama)
-└── .claude/
+├── pyproject.toml           # pytest config (pythonpath)
+├── requirements.txt         # Python deps (beautifulsoup4, lxml, requests, colorama)
+└── .claude/                 # Agent skills + planning/decision artifacts
 ```
 
 ### Command Surface
 - `npm run dev` — start Vite dev server (hot reload, serves from src/)
-- `npm run build` — bundle TypeScript → docs/index.html + docs/bundle.js
-- `npm test` — run Vitest unit tests
+- `npm run build` — bundle TypeScript → docs/index.html + docs/bundle.js (preserves docs/data.js)
+- `npm test -- --run` (or `npx vitest run`) — run Vitest tests in tests/web/ once
 - `npm run lint` — ESLint on src/
-- `npm run typecheck` — tsc --noEmit
-- `python -m scraper` — run scraper; writes docs/data.js and data/id-registry.json
-- `pytest tests/scraper/` — run scraper unit tests
+- `npm run typecheck` — tsc --noEmit (covers src/, tests/, vite.config.ts)
+- `python -m scraper build [--fetch] [-l]` — run scraper; writes docs/data.js and data/id-registry.json
+- `python -m pytest tests/scraper` — run scraper unit tests
 
-### CI Outline (GitHub Actions)
-- Lint: `npm run lint`
-- Typecheck: `npm run typecheck`
-- Test (web): `npm test -- --run`
-- Test (scraper): `pip install -r requirements.txt && pytest tests/scraper/`
-- Build: `npm run build`
-- (No auto-deploy; maintainer commits docs/ manually after scraper run)
+### Local quality checks (before committing)
+- `npm run lint`, `npm run typecheck`, `npm test -- --run`, `python -m pytest tests/scraper`, `npm run build`
 
 ### Environment Model
 
-- Configuration sources: None at runtime. Scraper reads `data/scraper-config.json` (optional JSON object) for persistent local paths:
+- Configuration sources: None at runtime. `data/scraper-config.json` (committed JSON object; optional for the scraper) holds:
   - `msxorg_mirror` — path to local msx.org mirror directory (browser-saved HTML files)
   - `openmsx_mirror` — path to local openMSX mirror directory (XML files, e.g. `share/machines`)
-  CLI flags `--msxorg-mirror`, `--local-msxorg-only`, `--openmsx-mirror`, `--local-openmsx-only` override config values.
-- Optional scraper env vars:
-  - `SCRAPER_DELAY_MS`: delay between HTTP requests (default: 500)
-  - `GITHUB_TOKEN`: GitHub API token to avoid rate limits when fetching XML file listings
+  - `slotmap_symbols` — `absent`, `empty_page`, `mirror_suffix`, `subslot_suffix` display symbols. Read by `scraper/symbols.py` (falls back to built-in defaults if absent) and imported at build time by `src/symbols.ts` (required for the web build). The `absent`/`empty_page` values must match the `__sentinel__` rules in `data/slotmap-lut.json`.
+  CLI flags `--msxorg-mirror`, `--local-msxorg-only`, `--openmsx-mirror`, `--local-openmsx-only`, `-l/--local-only` override the mirror config values.
+- Request pacing: `--delay SECONDS` on `fetch-openmsx` (default 0.3) and `fetch-msxorg` (default 0.5). No environment variables are read.
 
 ## Evolution Strategy
 - Versioning approach: `MSXData.version` integer increments when the schema changes. The URL codec has its own version byte. Both are checked at load time; unknown versions degrade gracefully.

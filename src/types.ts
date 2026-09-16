@@ -2,7 +2,7 @@
 export interface ColumnDef {
   /** Stable integer ID. Never reassigned or reused. */
   id: number;
-  /** Machine-readable key matching IDRegistry.columns. */
+  /** Machine-readable key (snake_case), as defined in scraper/columns.py. */
   key: string;
   /** Display label shown in the column header. */
   label: string;
@@ -24,7 +24,7 @@ export interface ColumnDef {
 
 /** A collapsible group of columns. */
 export interface GroupDef {
-  /** Stable integer ID (0–7). */
+  /** Stable integer ID (< 32 — collapsed groups are a uint32 bitmask in the URL codec). */
   id: number;
   /** Machine-readable key. */
   key: string;

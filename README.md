@@ -66,6 +66,7 @@ pip install -r requirements.txt
 | `npm run typecheck` | Run TypeScript type checks (no emit) |
 | `npm run lint` | Run ESLint on `src/` |
 | `npm test -- --run` | Run Vitest test suite once |
+| `python -m pytest tests/scraper` | Run scraper test suite |
 | `python -m scraper` | Run the MSX data scraper |
 
 ## GitHub Pages
