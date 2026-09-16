@@ -7,7 +7,7 @@ venv/
 *.egg-info/
 dist-types/
 data/*-raw.json
-data/scraper-config.json
+!data/local-raw.json
 systemroms/extensions/**
 systemroms/machines/**
 !systemroms/machines/all_sha1s.txt
