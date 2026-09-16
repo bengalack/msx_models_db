@@ -32,6 +32,7 @@ function preserveDataJs(): Plugin {
 function fileProtocolCompat(): Plugin {
   return {
     name: 'file-protocol-compat',
+    apply: 'build',
     transformIndexHtml: {
       order: 'post',
       handler(html: string): string {
@@ -47,11 +48,38 @@ function fileProtocolCompat(): Plugin {
   };
 }
 
+/**
+ * Dev server only: serves docs/data.js (read fresh on every request, so a
+ * scraper re-run shows up on reload) and loads it before the app module.
+ */
+function devDataJs(): Plugin {
+  const dataJsPath = path.join(OUT_DIR, 'data.js');
+  return {
+    name: 'dev-data-js',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use('/data.js', (_req, res) => {
+        if (!fs.existsSync(dataJsPath)) {
+          res.statusCode = 404;
+          res.end('// docs/data.js not found — run the Python scraper first');
+          return;
+        }
+        res.setHeader('Content-Type', 'text/javascript; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-store');
+        res.end(fs.readFileSync(dataJsPath));
+      });
+    },
+    transformIndexHtml(html: string): string {
+      return html.replace('<script type="module"', '<script src="/data.js"></script>\n    <script type="module"');
+    },
+  };
+}
+
 export default defineConfig({
   root: 'src',
   base: './',
   publicDir: false,
-  plugins: [preserveDataJs(), fileProtocolCompat()],
+  plugins: [preserveDataJs(), fileProtocolCompat(), devDataJs()],
   build: {
     outDir: path.resolve(OUT_DIR),
     emptyOutDir: true,
