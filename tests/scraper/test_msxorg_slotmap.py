@@ -16,6 +16,7 @@ from scraper.msxorg_slotmap import (
     _flatten_table,
     _page_from_label,
     _parse_col_label,
+    parse_mapper_from_soup,
     parse_msxorg_slotmap,
     parse_slotmap_from_soup,
 )
@@ -423,6 +424,166 @@ class TestParseSlotmapFromSoup:
         from_soup = parse_slotmap_from_soup(BeautifulSoup(html, "lxml"))
         from_bytes = parse_msxorg_slotmap(html)
         assert from_soup == from_bytes
+
+
+# ── Slot map table location (sub-headings, duplicate headings) ───────────
+
+class TestFindSlotmapTable:
+    """Which table counts as "the slot map" — shared by slot-map columns and mapper."""
+
+    def test_table_under_subheading_is_found(self):
+        """Sakhr AX-350 pattern: h2 Slot Map > intro text > h3 variant > table."""
+        page = (
+            b'<html><body>'
+            b'<h2><span id="Slot_Map" class="mw-headline">Slot Map</span></h2>'
+            b'<p>Most units share the slot map of another model.</p>'
+            b'<h3><span id="Slot_Map_with_firmware_v.2.00" class="mw-headline">Firmware 2.00</span></h3>'
+            + _one_cell_table("128kB Memory Mapper").encode()
+            + b'<h3><span id="Slot_Map_with_firmware_v.2.02" class="mw-headline">Firmware 2.02</span></h3>'
+            + _one_cell_table("64kB RAM").encode()
+            + b'</body></html>'
+        )
+        soup = BeautifulSoup(page, "lxml")
+        assert parse_slotmap_from_soup(soup) is not None
+        assert parse_mapper_from_soup(soup) == "Yes"  # first sub-section's table
+
+    def test_first_section_without_table_falls_back_to_next_slot_map_section(self):
+        """Wandy CPC-300 pattern: an empty duplicate "Slot Map" h2 precedes the real one."""
+        page = (
+            b'<html><body>'
+            b'<h2><span id="Slot_Map" class="mw-headline">Slot Map</span></h2>'
+            b'<div>Help needed</div>'
+            b'<h2><span id="Slot_Map_2" class="mw-headline">Slot Map</span></h2>'
+            + _one_cell_table("128kB Memory Mapper").encode()
+            + b'</body></html>'
+        )
+        soup = BeautifulSoup(page, "lxml")
+        assert parse_slotmap_from_soup(soup) is not None
+        assert parse_mapper_from_soup(soup) == "Yes"
+
+    @pytest.mark.parametrize("heading_id", ["Default_Slot_Map", "Original_Slot_Map"])
+    def test_prefixed_slot_map_heading_is_found(self, heading_id):
+        """Omega MSX uses "Default Slot Map", Panasonic FS-A1FX "Original Slot Map"."""
+        page = (
+            f'<html><body><h2><span id="{heading_id}" class="mw-headline">x</span></h2>'
+            + _one_cell_table("512kB Memory Mapper")
+            + "</body></html>"
+        ).encode()
+        soup = BeautifulSoup(page, "lxml")
+        assert parse_slotmap_from_soup(soup) is not None
+        assert parse_mapper_from_soup(soup) == "Yes"
+
+    @pytest.mark.parametrize("heading_id", ["External_Slots", "Special_version_with_3_cartridge_slots", "Slot_Mapping"])
+    def test_non_slot_map_heading_is_not_a_slot_map(self, heading_id):
+        page = (
+            f'<html><body><h2><span id="{heading_id}" class="mw-headline">x</span></h2>'
+            + _one_cell_table("512kB Memory Mapper")
+            + "</body></html>"
+        ).encode()
+        soup = BeautifulSoup(page, "lxml")
+        assert parse_slotmap_from_soup(soup) is None
+        assert parse_mapper_from_soup(soup) is None
+
+    def test_table_in_following_non_slot_map_section_is_not_used(self):
+        """A same-level heading ends the section; tables after it are not the slot map."""
+        page = (
+            b'<html><body>'
+            b'<h2><span id="Slot_Map" class="mw-headline">Slot Map</span></h2>'
+            b'<p>Unknown.</p>'
+            b'<h2><span id="Connections" class="mw-headline">Connections</span></h2>'
+            + _one_cell_table("128kB Memory Mapper").encode()
+            + b'</body></html>'
+        )
+        soup = BeautifulSoup(page, "lxml")
+        assert parse_slotmap_from_soup(soup) is None
+        assert parse_mapper_from_soup(soup) is None
+
+
+# ── parse_mapper_from_soup ───────────────────────────────────────────────
+
+def _one_cell_table(cell_html: str) -> str:
+    """A non-expanded 4-page slot map whose slot 3 holds *cell_html*."""
+    return f"""
+<table>
+<tr><td></td><th>Slot 0</th><th>Slot 1</th><th>Slot 2</th><th>Slot 3</th></tr>
+<tr><th>Page C000h~FFFFh</th><td rowspan="4">Main-ROM</td>
+  <td rowspan="4">Cartridge Slot 1</td><td rowspan="4">Cartridge Slot 2</td>
+  <td rowspan="4">{cell_html}</td></tr>
+<tr><th>Page 8000h~BFFFh</th></tr>
+<tr><th>Page 4000h~7FFFh</th></tr>
+<tr><th>Page 0000h~3FFFh</th></tr>
+</table>
+"""
+
+
+def _mapper(html: bytes) -> str | None:
+    return parse_mapper_from_soup(BeautifulSoup(html, "lxml"))
+
+
+class TestParseMapperFromSoup:
+
+    def test_memory_mapper_cell_is_yes(self):
+        assert _mapper(_make_page(_one_cell_table("128kB Memory Mapper"))) == "Yes"
+
+    @pytest.mark.parametrize("cell", [
+        "MEMORY MAPPER",
+        "memory mapper",
+        "Memory<br>Mapper",
+        "512kB Memory<br/>Mapper",
+        "Memory\nMapper",
+        "Memory  \n  Mapper",
+    ])
+    def test_match_is_case_and_line_break_insensitive(self, cell):
+        assert _mapper(_make_page(_one_cell_table(cell))) == "Yes"
+
+    def test_optional_mapper_wording_is_yes(self):
+        page = _make_page(_one_cell_table("64kB RAM or 256kB with Memory Mapper"))
+        assert _mapper(page) == "Yes"
+
+    def test_panasonic_mapper_alone_is_no(self):
+        """"Panasonic mapper" is not a memory mapper, even though the two often coincide."""
+        assert _mapper(_make_page(_one_cell_table("Panasonic mapper"))) == "No"
+
+    def test_slot_map_without_mapper_cell_is_no(self):
+        assert _mapper(_make_page(_one_cell_table("64kB RAM"))) == "No"
+
+    def test_no_slot_map_section_is_unknown(self):
+        assert _mapper(_make_page()) is None
+
+    def test_heading_without_table_is_unknown(self):
+        html = (
+            b'<html><body>'
+            b'<h2><span id="Slot_Map" class="mw-headline">Slot Map</span></h2>'
+            b'<p>No table here.</p>'
+            b'</body></html>'
+        )
+        assert _mapper(html) is None
+
+    def test_mapper_text_outside_slot_map_table_is_ignored(self):
+        page = _make_page(
+            _one_cell_table("64kB RAM"),
+            extra_sections="<h2>Notes</h2><table><tr><td>Memory Mapper upgrade</td></tr></table>",
+        )
+        assert _mapper(page) == "No"
+
+    def test_uses_first_slot_map_like_slotmap_parser(self):
+        """Pages with several slot maps (default/upgraded) use the first, same as the slot-map columns."""
+        page = _make_page(
+            _one_cell_table("64kB RAM"),
+            extra_sections=(
+                '<h2><span id="Slot_Map_2" class="mw-headline">Slot Map</span></h2>'
+                + _one_cell_table("256kB Memory Mapper")
+            ),
+        )
+        assert _mapper(page) == "No"
+
+    def test_agrees_with_slotmap_mm_classification(self):
+        """When the slot-map columns contain a memory mapper cell, mapper is Yes."""
+        html = _make_page(_MINIMAL_5ROW_TABLE)
+        slotmap = parse_msxorg_slotmap(html)
+        assert slotmap is not None
+        assert any(v in ("MM", "PM") for v in slotmap.values())
+        assert _mapper(html) == "Yes"
 
 
 # ── Cartridge in subslot → ! suffix ─────────────────────────────────────

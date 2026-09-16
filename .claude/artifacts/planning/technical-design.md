@@ -641,6 +641,7 @@ def load_excludes(path: Path) -> ExcludeList:
 | `scraper/openmsx.py` | `list_machine_files()` checks filename rules; `fetch_all()` checks model rules post-parse |
 | `scraper/msxorg.py` | `fetch_all()` checks model rules post-parse |
 | `scraper/build.py` | Loads `ExcludeList` at startup; passes to both scrapers; emits dead-rule WARNs at end |
+| `scraper/__main__.py` — `fetch-openmsx`, `fetch-msxorg` | Load `ExcludeList` before any I/O and pass it to `fetch_all` (no dead-rule WARNs: a single-source fetch can't judge rules meant for the other source) |
 
 ---
 
@@ -661,6 +662,41 @@ When multiple RAM-typed elements are present, their sizes are summed for `ram`. 
 | Path | Change |
 |---|---|
 | `scraper/openmsx.py` — `_extract_memory` | Detect `<PanasonicRAM>` and set `mapper = "Yes"` in addition to accumulating RAM size |
+
+---
+
+## Feature Design: Memory Mapper Extraction from msx.org Slot Map
+
+### Overview
+
+Models sourced only from msx.org previously had no `mapper` value. The msx.org model page's **Slot Map** table is used to derive it: if any cell of the slot map mentions a memory mapper, `mapper = "Yes"`, otherwise `"No"`. Pages without a slot map table leave `mapper` unset (unknown → empty cell).
+
+### Detection logic — `parse_mapper_from_soup` (`scraper/msxorg_slotmap.py`)
+
+1. Locate the slot map table with `_find_slotmap_table` — the same table `parse_slotmap_from_soup` uses, so mapper and slot-map columns always agree:
+   - Slot map sections are headings whose anchor id contains `Slot_Map` as a whole word (`Slot_Map`, `Slot_Map_2`, `Slot_Map_with_KB-7`, `Default_Slot_Map` on Omega MSX, `Original_Slot_Map` on Panasonic FS-A1FX; not `External_Slots`).
+   - A section runs from its heading to the next heading of the **same or higher level**; tables under sub-headings belong to it (Sakhr AX-350: `h2` Slot Map > `h3` "Slot Map with firmware v.2.00" > table; AVT DPC-200: `h3` "According the manual" / "Checked on a real machine").
+   - If a slot map section has no table, the next slot map section is tried (Wandy CPC-300 has an empty duplicate "Slot Map" heading before the real one).
+   - The first table found wins, so pages with several slot maps (default/upgraded configuration, firmware variants) use the first one.
+   - No table in any slot map section → no slot map (e.g. CIEL Expert 2+ Turbo).
+2. Flatten the table (`_flatten_table`; `<br>` becomes a space) and test every cell against `memory[\s\-]*mapper` (case-insensitive; `\s` also absorbs line breaks).
+3. Any match → `"Yes"`; table present without a match → `"No"`; no table → `None` (key not set).
+
+`"Panasonic mapper"` alone does **not** count: it is not a memory mapper, even though the two often coincide. Wording such as `"64kB RAM or 256kB with Memory Mapper"` (optional mapper) yields `"Yes"`.
+
+Survey of the msx.org mirror (2026-09-16): 256 pages with a slot map table; 79 contain a memory mapper cell (written `<size> Memory Mapper`, once as `64kB RAM or 256kB with Memory Mapper`); no other cell uses "memory". The 5 pages with a `Panasonic mapper` cell (FS-A1FM, FS-A1GT, FS-A1ST, FS-A1WSX, FS-A1WX) each also have a separate `Memory Mapper` cell, so they are "Yes" on that basis.
+
+### Precedence
+
+Unchanged merge rules: `data/local-raw.json` > openMSX > msx.org. When openMSX and msx.org disagree, openMSX wins and the conflict is logged.
+
+### Data flows affected
+
+| Path | Change |
+|---|---|
+| `scraper/msxorg_slotmap.py` | Extract section-aware `_find_slotmap_table` (also fixes slot-map columns for pages with sub-headings or duplicate headings); add `parse_mapper_from_soup` |
+| `scraper/msxorg.py` — `parse_model_page` | Set `result["mapper"]` from `parse_mapper_from_soup` (propagates to split variants) |
+| `data/msxorg-raw.json` / `docs/data.js` | Regenerated; msx.org-only models gain `mapper` values |
 
 ---
 

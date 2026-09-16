@@ -458,6 +458,61 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
 # ── Public API ────────────────────────────────────────────────────────────
 
 
+def _heading_level(node: Tag) -> int | None:
+    """Return N for an <hN> tag, else None."""
+    name = node.name or ""
+    if len(name) == 2 and name[0] == "h" and name[1].isdigit():
+        return int(name[1])
+    return None
+
+
+# Heading anchor ids of slot map sections: "Slot_Map", "Slot_Map_2",
+# "Slot_Map_with_KB-7", "Default_Slot_Map" (Omega MSX), "Original_Slot_Map"
+# (Panasonic FS-A1FX).  "Slot_Map" must be a whole word between underscores.
+_SLOTMAP_HEADING_ID_RE = re.compile(r"(?:^|_)Slot_Map(?:_|$)")
+
+
+def _find_slotmap_table(
+    soup: BeautifulSoup,
+    page_title: str,
+    *,
+    warn: bool = True,
+) -> Tag | None:
+    """Return the slot map table of the first slot map section that has one.
+
+    A section runs from its heading to the next heading of the same or higher
+    level, so tables under sub-headings count (Sakhr AX-350: h2 Slot Map >
+    h3 "Slot Map with firmware v.2.00" > table).  If a section has no table,
+    the next ``Slot_Map*`` section is tried (Wandy CPC-300 has an empty
+    duplicate "Slot Map" heading).  The first table wins, so pages with
+    several slot maps (default/upgraded configuration) use the first.
+    """
+    spans = soup.find_all("span", id=_SLOTMAP_HEADING_ID_RE)
+    if not spans:
+        return None
+
+    for span in spans:
+        heading = span.parent
+        level = _heading_level(heading)
+        if level is None:
+            continue
+        node = heading.next_sibling
+        while node is not None:
+            if isinstance(node, Tag):
+                if node.name == "table":
+                    return node
+                node_level = _heading_level(node)
+                if node_level is not None and node_level <= level:
+                    break  # section ended
+            node = node.next_sibling
+
+    if warn:
+        log.warning(
+            "Slot_Map heading found but no table follows in %s", page_title
+        )
+    return None
+
+
 def parse_slotmap_from_soup(
     soup: BeautifulSoup,
     page_title: str = "<unknown>",
@@ -465,35 +520,36 @@ def parse_slotmap_from_soup(
     """Extract the slot map from an already-parsed msx.org wiki page.
 
     Returns a 64-key ``slotmap_*`` dict, or ``None`` if no Slot_Map section
-    is found.  Only the first ``Slot_Map`` section is used (pages with multiple
-    sections, such as 1chipMSX, use the default/first configuration).
+    (with a table) is found.  Only the first ``Slot_Map`` section is used.
     """
-    slot_span = soup.find("span", id=re.compile(r"^Slot_Map"))
-    if slot_span is None:
-        return None
-
-    h2 = slot_span.parent  # the <h2> element
-
-    # Walk siblings until we find the first <table>
-    table: Tag | None = None
-    node = h2.next_sibling
-    while node is not None:
-        if isinstance(node, Tag):
-            if node.name == "table":
-                table = node
-                break
-            # Stop at the next heading (another section began)
-            if node.name and node.name[0] == "h" and node.name[1:].isdigit():
-                break
-        node = node.next_sibling
-
+    table = _find_slotmap_table(soup, page_title)
     if table is None:
-        log.warning(
-            "Slot_Map heading found but no table follows in %s", page_title
-        )
         return None
-
     return _parse_slotmap_table(table, page_title)
+
+
+# A memory mapper cell: "128kB Memory Mapper", "Memory<br>Mapper", ...
+# "Panasonic mapper" deliberately does not count: it is not a memory mapper,
+# even though the two often coincide in the same machine.
+_MAPPER_CELL_RE = re.compile(r"memory[\s\-]*mapper", re.IGNORECASE)
+
+
+def parse_mapper_from_soup(
+    soup: BeautifulSoup,
+    page_title: str = "<unknown>",
+) -> str | None:
+    """Derive the ``mapper`` field from the page's slot map.
+
+    Returns ``"Yes"`` if any slot-map cell mentions a memory mapper (case and
+    line-break insensitive), ``"No"`` if the slot map has no such cell, and
+    ``None`` (unknown) when the page has no slot map table.  Uses the same
+    table as :func:`parse_slotmap_from_soup`.
+    """
+    table = _find_slotmap_table(soup, page_title, warn=False)
+    if table is None:
+        return None
+    cells = (cell for row in _flatten_table(table) for cell in row)
+    return "Yes" if any(_MAPPER_CELL_RE.search(c) for c in cells) else "No"
 
 
 def parse_msxorg_slotmap(

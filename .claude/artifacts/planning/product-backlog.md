@@ -17,6 +17,9 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Memory Mapper from msx.org slot map
+    - "Yes" if any slot map cell mentions "memory mapper" ("Panasonic mapper" alone does not count), "No" otherwise; unset without slot map
+    - Fills mapper for msx.org-only models; openMSX still wins on conflict
   - Expansion Slots column (id=101, Media group)
     - Derived from final slotmap ES* count; no scraped fallback
   - Cart Slots (id=19) now derived from final slotmap CS* count

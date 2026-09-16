@@ -176,6 +176,37 @@ class TestParseModelPageSplit:
         assert results == []
 
 
+class TestParseModelPageMapper:
+    """mapper is derived from the Slot Map section of the model page."""
+
+    @staticmethod
+    def _page(slot_map_cell: str | None) -> bytes:
+        specs = (
+            '<table class="wikitable">'
+            "<tr><th>Brand</th><td>Sony</td></tr>"
+            "<tr><th>Model</th><td>HB-F1XD / HB-F1XDmk2</td></tr>"
+            "</table>"
+        )
+        slot_map = "" if slot_map_cell is None else (
+            '<h2><span id="Slot_Map" class="mw-headline">Slot Map</span></h2>'
+            "<table><tr><td></td><th>Slot 0</th></tr>"
+            f'<tr><th>Page 0000h~3FFFh</th><td>{slot_map_cell}</td></tr></table>'
+        )
+        return f"<html><body>{specs}{slot_map}</body></html>".encode()
+
+    def test_mapper_yes_for_every_variant(self):
+        results = parse_model_page(self._page("128kB Memory Mapper"), "MSX2", "Sony HB-F1XD")
+        assert [r.get("mapper") for r in results] == ["Yes"] * len(results)
+
+    def test_mapper_no_when_slot_map_lacks_mapper(self):
+        results = parse_model_page(self._page("64kB RAM"), "MSX2", "Sony HB-F1XD")
+        assert all(r.get("mapper") == "No" for r in results)
+
+    def test_mapper_absent_without_slot_map(self):
+        results = parse_model_page(self._page(None), "MSX2", "Sony HB-F1XD")
+        assert all("mapper" not in r for r in results)
+
+
 class TestListModelPagesGraceful:
     """Category page fetch failures are logged and skipped; other categories continue."""
 
