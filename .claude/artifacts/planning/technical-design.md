@@ -677,7 +677,8 @@ Models sourced only from msx.org previously had no `mapper` value. The msx.org m
    - Slot map sections are headings whose anchor id contains `Slot_Map` as a whole word (`Slot_Map`, `Slot_Map_2`, `Slot_Map_with_KB-7`, `Default_Slot_Map` on Omega MSX, `Original_Slot_Map` on Panasonic FS-A1FX; not `External_Slots`).
    - A section runs from its heading to the next heading of the **same or higher level**; tables under sub-headings belong to it (Sakhr AX-350: `h2` Slot Map > `h3` "Slot Map with firmware v.2.00" > table; AVT DPC-200: `h3` "According the manual" / "Checked on a real machine").
    - If a slot map section has no table, the next slot map section is tried (Wandy CPC-300 has an empty duplicate "Slot Map" heading before the real one).
-   - The first table found wins, so pages with several slot maps (default/upgraded configuration, firmware variants) use the first one.
+   - Within a section, a table under a sub-heading containing "Checked on a real machine" wins (AVT DPC-200 lists "According the manual" first). Only headings count: body notes saying a map "needs to be checked on a real machine" mean the opposite.
+   - Otherwise the first table found wins, so pages with several slot maps (default/upgraded configuration, firmware variants) use the first one.
    - No table in any slot map section → no slot map (e.g. CIEL Expert 2+ Turbo).
 2. Flatten the table (`_flatten_table`; `<br>` becomes a space) and test every cell against `memory[\s\-]*mapper` (case-insensitive; `\s` also absorbs line breaks).
 3. Any match → `"Yes"`; table present without a match → `"No"`; no table → `None` (key not set).

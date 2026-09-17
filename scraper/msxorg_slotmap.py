@@ -471,6 +471,12 @@ def _heading_level(node: Tag) -> int | None:
 # (Panasonic FS-A1FX).  "Slot_Map" must be a whole word between underscores.
 _SLOTMAP_HEADING_ID_RE = re.compile(r"(?:^|_)Slot_Map(?:_|$)")
 
+# A sub-heading marking a slot map verified on hardware (AVT DPC-200:
+# "According the manual" first, then "Checked on a real machine").  Only
+# headings count — body notes saying a map "needs to be checked on a real
+# machine" mean the opposite.
+_VERIFIED_SUBHEADING_RE = re.compile(r"checked\s+on\s+a\s+real\s+machine", re.IGNORECASE)
+
 
 def _find_slotmap_table(
     soup: BeautifulSoup,
@@ -484,8 +490,10 @@ def _find_slotmap_table(
     level, so tables under sub-headings count (Sakhr AX-350: h2 Slot Map >
     h3 "Slot Map with firmware v.2.00" > table).  If a section has no table,
     the next ``Slot_Map*`` section is tried (Wandy CPC-300 has an empty
-    duplicate "Slot Map" heading).  The first table wins, so pages with
-    several slot maps (default/upgraded configuration) use the first.
+    duplicate "Slot Map" heading).  Within a section, a table under a
+    "Checked on a real machine" sub-heading wins; otherwise the first table
+    wins, so pages with several slot maps (default/upgraded configuration)
+    use the first.
     """
     spans = soup.find_all("span", id=_SLOTMAP_HEADING_ID_RE)
     if not spans:
@@ -496,15 +504,26 @@ def _find_slotmap_table(
         level = _heading_level(heading)
         if level is None:
             continue
+        first_table: Tag | None = None
+        under_verified_heading = False
         node = heading.next_sibling
         while node is not None:
             if isinstance(node, Tag):
                 if node.name == "table":
-                    return node
+                    if under_verified_heading:
+                        return node
+                    if first_table is None:
+                        first_table = node
                 node_level = _heading_level(node)
-                if node_level is not None and node_level <= level:
-                    break  # section ended
+                if node_level is not None:
+                    if node_level <= level:
+                        break  # section ended
+                    under_verified_heading = bool(
+                        _VERIFIED_SUBHEADING_RE.search(node.get_text(" ", strip=True))
+                    )
             node = node.next_sibling
+        if first_table is not None:
+            return first_table
 
     if warn:
         log.warning(

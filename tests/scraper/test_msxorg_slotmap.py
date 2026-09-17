@@ -461,6 +461,45 @@ class TestFindSlotmapTable:
         assert parse_slotmap_from_soup(soup) is not None
         assert parse_mapper_from_soup(soup) == "Yes"
 
+    def test_checked_on_real_machine_subsection_wins_over_first_table(self):
+        """AVT DPC-200: "According the manual" comes first, the verified map second."""
+        page = (
+            b'<html><body>'
+            b'<h2><span id="Slot_Map" class="mw-headline">Slot Map</span></h2>'
+            b'<h3><span id="According_the_manual" class="mw-headline">According the manual</span></h3>'
+            + _one_cell_table("64kB RAM").encode()
+            + b'<h3><span id="Checked_on_a_real_machine" class="mw-headline">Checked on a real machine</span></h3>'
+            + _one_cell_table("128kB Memory Mapper").encode()
+            + b'</body></html>'
+        )
+        assert _mapper(page) == "Yes"
+
+    def test_assumption_note_mentioning_real_machine_does_not_win(self):
+        """ "...needs to be checked on a real machine" notes are body text, not a verified sub-section."""
+        page = (
+            b'<html><body>'
+            b'<h2><span id="Slot_Map" class="mw-headline">Slot Map</span></h2>'
+            b'<h3><span id="Version_1" class="mw-headline">Version 1</span></h3>'
+            + _one_cell_table("64kB RAM").encode()
+            + b'<h3><span id="Version_2" class="mw-headline">Version 2</span></h3>'
+            b'<div>The below slot-map is an assumption, it needs to be checked on a real machine.</div>'
+            + _one_cell_table("128kB Memory Mapper").encode()
+            + b'</body></html>'
+        )
+        assert _mapper(page) == "No"
+
+    def test_real_machine_table_outside_the_slot_map_section_is_ignored(self):
+        page = (
+            b'<html><body>'
+            b'<h2><span id="Slot_Map" class="mw-headline">Slot Map</span></h2>'
+            + _one_cell_table("64kB RAM").encode()
+            + b'<h2><span id="Upgrades" class="mw-headline">Upgrades</span></h2>'
+            b'<h3><span id="Checked_on_a_real_machine" class="mw-headline">Checked on a real machine</span></h3>'
+            + _one_cell_table("128kB Memory Mapper").encode()
+            + b'</body></html>'
+        )
+        assert _mapper(page) == "No"
+
     @pytest.mark.parametrize("heading_id", ["Default_Slot_Map", "Original_Slot_Map"])
     def test_prefixed_slot_map_heading_is_found(self, heading_id):
         """Omega MSX uses "Default Slot Map", Panasonic FS-A1FX "Original Slot Map"."""
