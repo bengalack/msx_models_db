@@ -113,7 +113,8 @@ window.MSX_DATA = {
       "key": "region",
       "label": "Region",
       "groupId": 12,
-      "type": "string"
+      "type": "string",
+      "maxWidth": 107
     },
     {
       "id": 5,
