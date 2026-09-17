@@ -53,6 +53,7 @@ class Column:
     linkable: bool = False
     truncate_limit: int = 0               # 0 = no truncation; positive = clip to (limit-1) chars + ellipsis
     shaded: bool = False                  # when True, cells render with a tinted background and bold text
+    max_width: int | None = None          # px cap for data cells; None = shared stylesheet cap
     hidden: bool = False                  # scraped, available to derive, not shipped to browser
     retired: bool = False                 # permanently removed, ID preserved, excluded entirely
     derive: Callable[[dict[str, Any]], Any] | None = None
@@ -103,6 +104,10 @@ def validate_config(groups: list[Group], columns: list[Column]) -> None:
             raise ValueError(
                 f"Retired column {c.key!r} must not have derive"
             )
+        if c.max_width is not None and c.max_width <= 0:
+            raise ValueError(
+                f"Column {c.key!r} max_width must be a positive number of pixels"
+            )
         if c.derive is not None and not callable(c.derive):
             raise ValueError(
                 f"Column {c.key!r} derive must be callable"
@@ -142,7 +147,7 @@ COLUMNS: list[Column] = [
     Column(id=2,  key="model",             label="Model",               group="identity", type="string", linkable=True, truncate_limit=20),
     # Release
     Column(id=3,  key="year",              label="Year",                group="release",  type="number"),
-    Column(id=4,  key="region",            label="Region",              group="release",  type="string"),
+    Column(id=4,  key="region",            label="Region",              group="release",  type="string", max_width=107),
     Column(id=5,  key="generation",        label="Generation",          group="release",  type="string", short_label="Gen"),
     # Memory
     Column(id=7,  key="main_ram_kb",       label="Main RAM (KB)",       group="memory",   type="number", short_label="Main RAM",    tooltip="Main RAM (KB)"),

@@ -63,7 +63,7 @@ User prefers `rtk`-prefixed shell commands (see global CLAUDE.md).
 ### Scraper (`scraper/`)
 - `__main__.py` — argparse CLI (`build`, `fetch-openmsx`, `fetch-msxorg`, `merge`).
 - `build.py` — pipeline orchestration: load config/excludes → load/fetch raw → merge → local overrides → link-shares → derive columns → assign IDs → atomic write of `docs/data.js` + registry. Default file paths are constants at the top.
-- `columns.py` — **single source of truth** for groups and columns (IDs, labels, `hidden`, `retired`, `derive`, `truncate_limit`, `shaded`, `linkable`). Validated on load.
+- `columns.py` — **single source of truth** for groups and columns (IDs, labels, `hidden`, `retired`, `derive`, `truncate_limit`, `shaded`, `linkable`, `max_width`). Validated on load.
 - `openmsx.py` / `openmsx_source.py` — XML parsing (lxml `recover=True`) and Live/Mirror/Fallback XML sources.
 - `msxorg.py` / `mirror.py` / `msxorg_slotmap.py` — msx.org HTML parsing and Live/Mirror/Fallback page sources.
 - `slotmap.py` / `slotmap_lut.py` — 64 slot-map columns (`slotmap_{ms}_{ss}_{page}`), LUT classification (first match wins), mirror detection.

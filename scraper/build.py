@@ -310,6 +310,8 @@ def build(
             entry["truncateLimit"] = col.truncate_limit
         if col.shaded:
             entry["shaded"] = True
+        if col.max_width is not None:
+            entry["maxWidth"] = col.max_width
         js_columns.append(entry)
 
     js_models = []

@@ -247,6 +247,7 @@ function buildDataRow(
     groupOrder.set(col.groupId, order + 1);
     if (i < FROZEN_COL_COUNT) td.classList.add('col--frozen');
     if (col.shaded) td.classList.add('col-shaded');
+    if (col.maxWidth !== undefined) td.style.maxWidth = `${col.maxWidth}px`;
 
     // Apply column/group visibility inline so no post-render querySelectorAll is needed
     if (hiddenCols?.has(i)) {

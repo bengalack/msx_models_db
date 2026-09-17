@@ -17,6 +17,8 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Per-column max width
+    - max_width (px) on Column → maxWidth in data.js; applied to data cells; Region = 107px
   - Memory Mapper from msx.org slot map
     - "Yes" if any slot map cell mentions "memory mapper" ("Panasonic mapper" alone does not count), "No" otherwise; unset without slot map
     - Fills mapper for msx.org-only models; openMSX still wins on conflict

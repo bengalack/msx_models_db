@@ -33,6 +33,16 @@ class TestValidateConfig:
         cols = [Column(id=1, key="c1", label="C1", group="g1", type="string")]
         validate_config(groups, cols)  # should not raise
 
+    @pytest.mark.parametrize("max_width", [-1, 0])
+    def test_non_positive_max_width_rejected(self, max_width) -> None:
+        groups = self._groups()
+        cols = [Column(id=1, key="c1", label="C1", group="g1", type="string", max_width=max_width)]
+        with pytest.raises(ValueError, match="max_width"):
+            validate_config(groups, cols)
+
+    def test_max_width_defaults_to_unset(self) -> None:
+        assert Column(id=1, key="c1", label="C1", group="g1", type="string").max_width is None
+
     def test_duplicate_column_ids_rejected(self) -> None:
         groups = self._groups()
         cols = [

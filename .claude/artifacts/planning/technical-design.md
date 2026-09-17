@@ -600,6 +600,26 @@ else → removeAttribute('title')
 
 ---
 
+## Feature Design: Per-Column Max Width
+
+### Overview
+
+Data cells share a stylesheet cap (`.grid tbody td { max-width: 160px }`, border-box) and otherwise size to content. A column may declare `max_width` (px) in `scraper/columns.py` to cap its data cells narrower (or wider) than the shared cap. Overflow uses the existing ellipsis styling and the `mouseenter` overflow tooltip — no new tooltip path.
+
+First use: Region (`max_width=107`, one third narrower than the 160px it rendered at).
+
+### Data flows affected
+
+| Path | Change |
+|---|---|
+| `scraper/columns.py` | `max_width: int \| None = None`; `validate_config` rejects non-positive values |
+| `scraper/build.py` | Serialise `maxWidth` only when set |
+| `src/types.ts` | `ColumnDef.maxWidth?: number` |
+| `src/grid.ts` — `buildDataRow` | `td.style.maxWidth = maxWidth + 'px'` when set |
+| Sort / filter / clipboard / URL codec | No change |
+
+---
+
 ## Feature Design: Scraper Exclude List
 
 ### Overview

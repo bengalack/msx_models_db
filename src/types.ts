@@ -20,6 +20,8 @@ export interface ColumnDef {
   truncateLimit?: number;
   /** When true, cells in this column render with a tinted background and bold font weight. */
   shaded?: boolean;
+  /** Max width of data cells in px (overflow is ellipsised). Absent = the shared stylesheet cap. */
+  maxWidth?: number;
 }
 
 /** A collapsible group of columns. */
