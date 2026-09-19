@@ -31,6 +31,7 @@ RAW_OPENMSX = Path("data/openmsx-raw.json")
 RAW_MSXORG = Path("data/msxorg-raw.json")
 RAW_LOCAL = Path("data/local-raw.json")
 REGISTRY_PATH = Path("data/id-registry.json")
+ALIASES_PATH = Path("data/aliases.json")
 EXCLUDE_PATH = Path("data/exclude.json")
 SLOTMAP_LUT_PATH = Path("data/slotmap-lut.json")
 SHA1_INDEX_PATH = Path("systemroms/machines/all_sha1s.txt")
@@ -253,7 +254,7 @@ def build(
     if resolutions_path:
         resolutions = merge.load_resolutions(resolutions_path)
 
-    alias_path = Path("data/aliases.json") if Path("data/aliases.json").exists() else None
+    alias_path = ALIASES_PATH if ALIASES_PATH.exists() else None
     merged = merge.merge_models(
         openmsx_data,
         msxorg_data,

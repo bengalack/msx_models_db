@@ -54,6 +54,11 @@ python -m scraper build --fetch -l        # Fetch using local mirrors only (typi
 python -m scraper fetch-openmsx -o data/openmsx-raw.json [--limit N]
 python -m scraper fetch-msxorg  -o data/msxorg-raw.json  [--limit N]
 python -m scraper merge --openmsx ... --msxorg ... -o ...
+
+# HIMEM values: run helpers/dump_himem.tcl inside openMSX (redirect stderr to data/himem-values.txt),
+# then fold the readings into data/local-raw.json:
+python -m scraper update-himem data/himem-values.txt data/local-raw.json --dry-run
+python -m scraper update-himem data/himem-values.txt data/local-raw.json
 ```
 
 User prefers `rtk`-prefixed shell commands (see global CLAUDE.md).
@@ -69,6 +74,13 @@ User prefers `rtk`-prefixed shell commands (see global CLAUDE.md).
 - `slotmap.py` / `slotmap_lut.py` — 64 slot-map columns (`slotmap_{ms}_{ss}_{page}`), LUT classification (first match wins), mirror detection.
 - `merge.py` — natural key `manufacturer|model` (lowercase), openMSX wins over msx.org, substitutions, conflict handling.
 - `aliases.py`, `link_shares.py`, `exclude.py`, `registry.py`, `local_source.py`, `http.py`, `symbols.py`.
+- `update_himem.py` — folds a `helpers/dump_himem.tcl` run (`data/himem-values.txt`) into `data/local-raw.json`.
+  Resolves each openMSX display name by trying every space as the manufacturer/model split, canonicalising through
+  `data/aliases.json` and looking the pair up in `docs/data.js`. Writes **only** `himem_addr`; appends models not yet
+  in the file; skips (and reports) names the DB doesn't have and names that match more than one model, rather than
+  inventing a local-only row or guessing. A name printed without a value = machine failed to boot: never a deletion.
+  A name read twice with different values keeps the lowest. Preserves entry order, sibling fields and newline style,
+  writes only when something changed. See *Feature Design: HIMEM Value Ingestion* in technical-design.md.
 
 Merge precedence: **local-raw.json > openMSX > msx.org**.
 

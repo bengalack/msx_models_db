@@ -8,7 +8,7 @@ import logging
 import sys
 from pathlib import Path
 
-from . import build as build_module, merge, msxorg, openmsx
+from . import build as build_module, merge, msxorg, openmsx, update_himem
 
 
 def cmd_fetch_openmsx(args: argparse.Namespace) -> None:
@@ -149,6 +149,25 @@ def cmd_merge(args: argparse.Namespace) -> None:
         print("Edit the 'use' field in that file, then re-run merge with --resolutions")
 
 
+def cmd_update_himem(args: argparse.Namespace) -> None:
+    """Fold a dump_himem.tcl run into the local supplemental data file."""
+    plan = update_himem.run(
+        dump_path=Path(args.dump),
+        json_path=Path(args.local),
+        db_path=Path(args.db),
+        aliases_path=Path(args.aliases),
+        dry_run=args.dry_run,
+    )
+    dump = update_himem.parse_dump(Path(args.dump).read_text(encoding="utf-8"))
+    print(update_himem.format_report(plan, dump))
+    if args.dry_run:
+        print(f"Dry run — {args.local} not written.")
+    elif plan.has_changes:
+        print(f"Wrote {len(plan.entries)} entries to {args.local}")
+    else:
+        print(f"Nothing to do — {args.local} left untouched.")
+
+
 def main() -> None:
     # Ensure stdout/stderr can handle Unicode (slotmap uses ⌧, ⌴ etc.)
     if sys.stdout and hasattr(sys.stdout, "reconfigure"):
@@ -287,6 +306,36 @@ def main() -> None:
         help="Path to conflict resolution file (previously edited conflicts.json)",
     )
     p_merge.set_defaults(func=cmd_merge)
+
+    # ── update-himem ────────────────────────────────────────────────
+    p_himem = sub.add_parser(
+        "update-himem",
+        help="Fold a dump_himem.tcl run into data/local-raw.json",
+        description="Apply HIMEM readings produced by helpers/dump_himem.tcl to the"
+                    " maintainer-curated local data file. Only himem_addr is touched;"
+                    " machines the database does not have are reported and skipped.",
+    )
+    p_himem.add_argument(
+        "dump", help="HIMEM dump text file (e.g. data/himem-values.txt)",
+    )
+    p_himem.add_argument(
+        "local", help="Local supplemental JSON file to update in place"
+                      " (e.g. data/local-raw.json)",
+    )
+    p_himem.add_argument(
+        "--db", default=str(build_module.DATA_JS_PATH), metavar="FILE",
+        help="Built data.js used to resolve machine names to known models"
+             " (default: %(default)s)",
+    )
+    p_himem.add_argument(
+        "--aliases", default=str(build_module.ALIASES_PATH), metavar="FILE",
+        help="Alias LUT used to canonicalise names (default: %(default)s)",
+    )
+    p_himem.add_argument(
+        "--dry-run", action="store_true",
+        help="Report what would change without writing the file",
+    )
+    p_himem.set_defaults(func=cmd_update_himem)
 
     args = parser.parse_args()
 

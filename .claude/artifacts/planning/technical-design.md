@@ -398,7 +398,7 @@ msx_models_db/
 │   ├── url/codec.ts         # Binary encode/decode of ViewState
 │   └── styles/              # theme, base, header, toolbar, grid, statusbar CSS
 ├── scraper/                 # Python scraper package
-│   ├── __main__.py          # CLI (python -m scraper build|fetch-openmsx|fetch-msxorg|merge)
+│   ├── __main__.py          # CLI (python -m scraper build|fetch-openmsx|fetch-msxorg|merge|update-himem)
 │   ├── build.py             # Pipeline orchestration; writes docs/data.js
 │   ├── columns.py           # Column/group definitions (single source of truth)
 │   ├── openmsx.py           # openMSX XML parser (general fields, BIOS ROM fields)
@@ -414,8 +414,11 @@ msx_models_db/
 │   ├── exclude.py           # Exclude list
 │   ├── registry.py          # Model ID registry load/save/match/assign
 │   ├── local_source.py      # data/local-raw.json loader
+│   ├── update_himem.py      # Folds a dump_himem.tcl run into data/local-raw.json
 │   ├── symbols.py           # Slot-map symbols (reads data/scraper-config.json)
 │   └── http.py              # HTTP session helpers
+├── helpers/
+│   └── dump_himem.tcl       # openMSX script: boots every machine, prints its HIMEM
 ├── data/
 │   ├── id-registry.json     # Stable model ID registry (committed, append-only)
 │   ├── slotmap-lut.json     # Slot map vocabulary (maintainer-edited)
@@ -424,6 +427,7 @@ msx_models_db/
 │   ├── exclude.json         # Exclude list (maintainer-edited)
 │   ├── link-shares.json     # Link-shares LUT (maintainer-edited)
 │   ├── local-raw.json       # Local supplemental data (maintainer-edited, highest authority)
+│   ├── himem-values.txt     # dump_himem.tcl output, input to update-himem
 │   ├── scraper-config.json  # Mirror paths + slot-map symbols
 │   ├── openmsx-raw.json     # Cached fetch output (gitignored)
 │   ├── msxorg-raw.json      # Cached fetch output (gitignored)
@@ -452,6 +456,7 @@ msx_models_db/
 - `npm run lint` — ESLint on src/
 - `npm run typecheck` — tsc --noEmit (covers src/, tests/, vite.config.ts)
 - `python -m scraper build [--fetch] [-l]` — run scraper; writes docs/data.js and data/id-registry.json
+- `python -m scraper update-himem <dump.txt> <local-raw.json> [--dry-run]` — fold HIMEM readings into the local supplemental data (see *Feature Design: HIMEM Value Ingestion*)
 - `python -m pytest tests/scraper` — run scraper unit tests
 
 ### Local quality checks (before committing)
@@ -662,6 +667,73 @@ def load_excludes(path: Path) -> ExcludeList:
 | `scraper/msxorg.py` | `fetch_all()` checks model rules post-parse |
 | `scraper/build.py` | Loads `ExcludeList` at startup; passes to both scrapers; emits dead-rule WARNs at end |
 | `scraper/__main__.py` — `fetch-openmsx`, `fetch-msxorg` | Load `ExcludeList` before any I/O and pass it to `fetch_all` (no dead-rule WARNs: a single-source fetch can't judge rules meant for the other source) |
+
+---
+
+## Feature Design: HIMEM Value Ingestion (`update-himem`)
+
+### Overview
+
+`himem_addr` (column 95) cannot be scraped — it is the stack pointer a machine
+reports after boot, so it has to be measured. `helpers/dump_himem.tcl` runs
+inside openMSX, boots every machine it knows and prints one line per machine to
+stderr:
+
+```
+Sony HB-75P - 0xF380
+```
+
+`python -m scraper update-himem <dump.txt> <local-raw.json>` folds those
+readings into the maintainer-curated file. It is a separate command, not a
+build step: the dump is produced by hand, rarely, and its result is curated
+data that must be reviewable in a diff before it reaches a build.
+
+### Name resolution — `scraper/update_himem.py`
+
+openMSX prints one display string, so the manufacturer/model boundary has to be
+recovered. Every space is tried as the split point; each candidate pair is
+canonicalised through `data/aliases.json` and looked up in the models of
+`docs/data.js`. This is what makes `Al Alamiah AX170` land on `Sakhr AX170` and
+`Mitsubishi ML-G30/model 1` on `ML-G30 Model 1` with no second mapping file to
+maintain.
+
+| Outcome | Behaviour |
+|---|---|
+| exactly one split matches a model | applied |
+| no split matches | skipped and reported — the machine is not in the database (C-BIOS, ColecoVision, `Boosted*`, `Acid*` test configs: everything `data/exclude.json` drops) |
+| more than one split matches | skipped and reported as ambiguous, never guessed |
+
+Resolving against `docs/data.js` rather than the raw caches means additions are
+gated on the built output: a model can only be added if the grid already has a
+row for it. That keeps a reading from silently creating a local-only row, at
+the cost of requiring a reasonably current `docs/data.js` — a machine added to
+openMSX since the last build is reported as unknown until the build is rerun.
+
+### Write rules
+
+- Only `himem_addr` is ever written. Every other field on an existing entry —
+  `msxorg_title`, `nmos_cmos`, anything hand-added — is preserved, as is entry
+  order and key order.
+- A machine in the database but not yet in the file is appended, using the
+  database's spelling, sorted by manufacturer then model.
+- A name printed **without** a value means the machine failed to boot (usually
+  missing ROMs). It is reported and never treated as a reading or a deletion.
+- A display name read more than once with different values (two openMSX
+  configurations sharing a name, e.g. `Panasonic FS-A1WSX`) keeps the
+  **numerically lowest** value, and every value seen is reported.
+- The file is only written when something changed, with an atomic rename, and
+  its existing newline style is preserved — so a no-op run is byte-identical
+  and a real run diffs to just the lines that moved.
+
+### Data flows affected
+
+| Path | Change |
+|---|---|
+| `scraper/update_himem.py` | New module: `parse_dump`, `load_db_index`, `candidate_keys`, `plan_update`, `run`, `format_report` |
+| `scraper/__main__.py` | New `update-himem` subcommand (`--db`, `--aliases`, `--dry-run`) |
+| `scraper/build.py` | New `ALIASES_PATH` constant (was an inline literal), reused as the subcommand's default |
+| `data/himem-values.txt` | Committed dump output; input to the command |
+| `data/local-raw.json` | Updated in place; the only field the command writes is `himem_addr` |
 
 ---
 
