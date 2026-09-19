@@ -2,7 +2,8 @@
   {
     "manufacturer": "Yamaha",
     "model": "CX5M",
-    "msxorg_title": "Yamaha_CX5M"
+    "msxorg_title": "Yamaha_CX5M",
+    "himem_addr": "0xF380"
   },
   {
     "manufacturer": "Aucnet",
@@ -137,7 +138,7 @@
   {
     "manufacturer": "Panasonic",
     "model": "FS-A1WSX",
-    "himem_addr": "0xDF83"
+    "himem_addr": "0xDE67"
   },
   {
     "manufacturer": "Panasonic",
@@ -157,7 +158,7 @@
   {
     "manufacturer": "Philips",
     "model": "NMS 8245",
-    "himem_addr": "0xDF95"
+    "himem_addr": "0xDE79"
   },
   {
     "manufacturer": "Philips",
@@ -468,5 +469,560 @@
     "manufacturer": "Yamaha",
     "model": "YIS-805/128R2",
     "himem_addr": "0xDE77"
+  },
+  {
+    "manufacturer": "AVT",
+    "model": "DPC-200",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Bawareth Ent. for Trade/Daewoo",
+    "model": "Perfect MSX1",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Canon",
+    "model": "V-10",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Canon",
+    "model": "V-8",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Casio",
+    "model": "MX-10/MX-101",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Casio",
+    "model": "MX-15",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Casio",
+    "model": "PV-16",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Casio",
+    "model": "PV-7",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Daewoo",
+    "model": "CPC-51 Zemmix V",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Daewoo",
+    "model": "DPC-100",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Daewoo",
+    "model": "DPC-180",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Daewoo",
+    "model": "DPC-200",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Eurohard/Radofin",
+    "model": "Dragon MSX",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Fenner",
+    "model": "SPC-800",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Fujitsu",
+    "model": "FM-X",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "General",
+    "model": "Paxon PCT-55",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Goldstar",
+    "model": "FC-200",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Goldstar",
+    "model": "FC-80U",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Gradiente",
+    "model": "Expert DD Plus",
+    "himem_addr": "0xDF93"
+  },
+  {
+    "manufacturer": "Gradiente",
+    "model": "Expert GPC-1",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Gradiente",
+    "model": "Expert Plus",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Gradiente",
+    "model": "Expert XP-800",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Hitachi",
+    "model": "MB-H1",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Hitachi",
+    "model": "MB-H2",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Hitachi",
+    "model": "MB-H21",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Hitachi",
+    "model": "MB-H50",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "JVC",
+    "model": "HC-7GB",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Mitsubishi",
+    "model": "ML-8000",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Mitsubishi",
+    "model": "ML-F110",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Mitsubishi",
+    "model": "ML-F120",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Mitsubishi",
+    "model": "ML-F80",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Mitsubishi",
+    "model": "ML-FX1",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "National",
+    "model": "CF-1200",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "National",
+    "model": "CF-2000",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "National",
+    "model": "CF-2700",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "National",
+    "model": "CF-3000",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "National",
+    "model": "CF-3300",
+    "himem_addr": "0xDF93"
+  },
+  {
+    "manufacturer": "National",
+    "model": "FS-1300",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "National",
+    "model": "FS-4000",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Nikko",
+    "model": "PC-70100",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Olympia",
+    "model": "PHC-2",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Philips",
+    "model": "NMS 801",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Philips",
+    "model": "VG 8000/00",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Philips",
+    "model": "VG 8010/00",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Philips",
+    "model": "VG 8010/19",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Philips",
+    "model": "VG 8020/00",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Philips",
+    "model": "VG 8020/19",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Philips",
+    "model": "VG 8020/20",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Pioneer",
+    "model": "PX-7",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Pioneer",
+    "model": "PX-7(UK)",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Pioneer",
+    "model": "PX-V60",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sakhr",
+    "model": "AX170",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sakhr",
+    "model": "AX230",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "MPC-1/Wavy1",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "MPC-10/Wavy10",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "MPC-10/Wavy10mkII",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "MPC-100",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "MPC-11/Wavy11",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "MPC-2/Wavy2",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "MPC-3/Wavy3",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "MPC-6/Wavy6",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "MPC-64",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "PHC-28L",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "PHC-28P",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "PHC-28S",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "PHC-30N",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "PHC-33",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sanyo",
+    "model": "PHC-SPC",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sharp",
+    "model": "HB-8000 v1.1",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sharp",
+    "model": "HB-8000 v1.2",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-10",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-101",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-101P",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-10P",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-11",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-201",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-201P",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-20P",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-501P",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-55P",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-701",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-701FD",
+    "himem_addr": "0xE394"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-75",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-75D",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Sony",
+    "model": "HB-75P",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Spectravideo",
+    "model": "SVI-728",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Spectravideo",
+    "model": "SVI-738 X'PRESS",
+    "himem_addr": "0xE395"
+  },
+  {
+    "manufacturer": "Talent",
+    "model": "DPC-200",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Toshiba",
+    "model": "HX-10",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Toshiba",
+    "model": "HX-10D",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Toshiba",
+    "model": "HX-20E",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Toshiba",
+    "model": "HX-21",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Toshiba",
+    "model": "HX-22",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Toshiba",
+    "model": "HX-22I",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Toshiba",
+    "model": "HX-32",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Toshiba",
+    "model": "HX-51I",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Victor",
+    "model": "HC-7",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "AX150",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "AX200",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "CX11",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "CX5F",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "CX5MII",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "CX5MII/128",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "CX5MU",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "SX-100",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "YIS-503",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "YIS-503F",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "YIS-503II",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yamaha",
+    "model": "YIS-503IIR",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yashica",
+    "model": "YC-64",
+    "himem_addr": "0xF380"
+  },
+  {
+    "manufacturer": "Yeno",
+    "model": "DPC-64",
+    "himem_addr": "0xF380"
   }
 ]
