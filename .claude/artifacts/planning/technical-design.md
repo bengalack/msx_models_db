@@ -56,7 +56,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 
 - Column Configuration
   - Type: Python module (single source of truth)
-  - Responsibilities: Define all column groups, columns (with metadata, display order, types), derived-column rules, hidden/retired flags. All downstream artifacts are generated from this file.
+  - Responsibilities: Define all column groups, columns (with metadata, display order, types), derived-column rules, hidden/retired/default-off flags. All downstream artifacts are generated from this file.
   - Depends On: -
   - Data Stores: `scraper/columns.py` (source code)
 
@@ -304,7 +304,9 @@ Entire buffer → `btoa(String.fromCharCode(...bytes))` → URL-safe base64 (rep
 
 Estimated size for 50 selected cells across 10 rows, all filters empty, no hidden rows: ~90 bytes → ~120 base64 chars.
 
-Future format changes increment the version byte; the decoder checks version and falls back to empty state for unknown versions.
+Future format changes increment the version byte; the decoder checks version and falls back to the caller-supplied fallback state (see below) for unknown versions.
+
+The `hidden_columns` bitset is **absolute, never a delta from the column defaults**. A hash that decodes cleanly is applied verbatim; the defaults apply only when there is no hash or the hash is unreadable. This is what lets a column become `default_off` without a version bump — a URL shared beforehand encodes "nothing hidden" and still opens showing that column, exactly as its author left it.
 
 ## Integrity Strategy
 - Invariants:
@@ -622,6 +624,48 @@ First use: Region (`max_width=107`, one third narrower than the 160px it rendere
 | `src/types.ts` | `ColumnDef.maxWidth?: number` |
 | `src/grid.ts` — `buildDataRow` | `td.style.maxWidth = maxWidth + 'px'` when set |
 | Sort / filter / clipboard / URL codec | No change |
+
+---
+
+## Feature Design: Default-Off Columns
+
+### Overview
+
+A column may declare `default_off=True` in `scraper/columns.py`. It is shipped to the
+browser and toggleable in the column picker exactly like any other column, but it starts
+hidden on a fresh load. This is distinct from `hidden=True`, which means *not shipped at
+all* (scraped only, available to `derive`); the two are mutually exclusive, as are
+`default_off` and `retired`.
+
+First use: Keyboard Layout (column ID 25).
+
+### Where the default lives
+
+`defaultViewState(columns)` in `src/url/codec.ts` builds the view a first-time visitor
+gets: the empty state, plus every `defaultOff` column ID in `hiddenColumnIds`. It is
+passed to `decodeFromHash` as the *fallback*, so it applies only when there is no hash
+or the hash is unreadable.
+
+The key invariant: **defaults seed the initial view; the hash stays absolute.** They are
+never merged. A decodable hash wins outright, even when it hides nothing — which is what
+keeps previously shared URLs faithful without a codec version bump.
+
+`grid.ts` keeps its own `defaultHiddenCols` (column *indices*) purely so `resetView()`
+can restore it. "Reset view" means back to the defaults, not "show every column".
+
+### Data flows affected
+
+| Path | Change |
+|---|---|
+| `scraper/columns.py` | `default_off: bool = False`; `validate_config` rejects it combined with `hidden` or `retired` |
+| `scraper/build.py` | Serialise `defaultOff` only when set |
+| `src/types.ts` | `ColumnDef.defaultOff?: boolean` |
+| `src/url/codec.ts` | `defaultViewState(columns)`; `decodeViewState`/`decodeFromHash` take an optional `fallback` ViewState (cloned on use) |
+| `src/main.ts` | Passes `defaultViewState(columns)` as the decode fallback |
+| `src/grid.ts` — `resetView` | Re-hides `defaultHiddenCols` after the wholesale restore, then recalcs those group headers |
+| `src/col-picker.ts` | No change — already reads `getHiddenCols()` |
+| Binary format / version byte | No change |
+| Sort / filter / clipboard | No change |
 
 ---
 

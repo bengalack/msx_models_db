@@ -22,6 +22,8 @@ export interface ColumnDef {
   shaded?: boolean;
   /** Max width of data cells in px (overflow is ellipsised). Absent = the shared stylesheet cap. */
   maxWidth?: number;
+  /** When true, the column ships and is toggleable but starts hidden on a fresh load. */
+  defaultOff?: boolean;
 }
 
 /** A collapsible group of columns. */

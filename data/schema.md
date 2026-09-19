@@ -39,6 +39,7 @@ Optional fields are only serialised when set (non-empty / `true` / `> 0`), to ke
 | `truncateLimit` | `number?` | Values longer than this are clipped to `(limit − 1)` chars + `…`; full value shown in a tooltip. |
 | `shaded` | `true?` | Cells render with a tinted background and bold text. |
 | `maxWidth` | `number?` | Max width of data cells in px; overflow is ellipsised with a hover tooltip. Absent = the shared stylesheet cap (160px). |
+| `defaultOff` | `true?` | Column ships and is toggleable, but starts hidden on a fresh load (and after "Reset view"). Absent = starts visible. |
 
 ### Column catalogue
 

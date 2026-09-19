@@ -43,6 +43,23 @@ class TestValidateConfig:
     def test_max_width_defaults_to_unset(self) -> None:
         assert Column(id=1, key="c1", label="C1", group="g1", type="string").max_width is None
 
+    def test_default_off_defaults_to_false(self) -> None:
+        assert Column(id=1, key="c1", label="C1", group="g1", type="string").default_off is False
+
+    def test_default_off_with_hidden_rejected(self) -> None:
+        groups = self._groups()
+        cols = [Column(id=1, key="c1", label="C1", group="g1", type="string",
+                       hidden=True, default_off=True)]
+        with pytest.raises(ValueError, match="default_off"):
+            validate_config(groups, cols)
+
+    def test_default_off_with_retired_rejected(self) -> None:
+        groups = self._groups()
+        cols = [Column(id=1, key="c1", label="C1", group="g1", type="string",
+                       retired=True, default_off=True)]
+        with pytest.raises(ValueError, match="default_off"):
+            validate_config(groups, cols)
+
     def test_duplicate_column_ids_rejected(self) -> None:
         groups = self._groups()
         cols = [

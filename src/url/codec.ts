@@ -26,7 +26,7 @@
  * Base64 encoding: URL-safe variant — replace `+`→`-`, `/`→`_`, strip `=` padding.
  */
 
-import type { ViewState } from '../types.js';
+import type { ColumnDef, ViewState } from '../types.js';
 
 const CODEC_VERSION = 0x01;
 
@@ -188,20 +188,55 @@ export function emptyViewState(): ViewState {
   };
 }
 
+/**
+ * The view a first-time visitor gets: empty, except that every column flagged
+ * `defaultOff` in the column config starts hidden.
+ *
+ * Defaults seed the *initial* view only — they are never folded into the hash.
+ * The encoded `hidden_columns` bitset stays absolute (see the format note above),
+ * so a URL shared before a column became `defaultOff` still decodes to exactly
+ * what its author saw, with no codec version bump.
+ */
+export function defaultViewState(columns: readonly ColumnDef[]): ViewState {
+  const state = emptyViewState();
+  for (const col of columns) {
+    if (col.defaultOff) state.hiddenColumnIds.add(col.id);
+  }
+  return state;
+}
+
+/** Copy a ViewState so two callers can never share the same mutable sets. */
+function cloneViewState(state: ViewState): ViewState {
+  return {
+    sortColumnId: state.sortColumnId,
+    sortDirection: state.sortDirection,
+    collapsedGroupIds: new Set(state.collapsedGroupIds),
+    hiddenColumnIds: new Set(state.hiddenColumnIds),
+    hiddenRowIds: new Set(state.hiddenRowIds),
+    filters: new Map(state.filters),
+    selectedCells: new Set(state.selectedCells),
+  };
+}
+
 // ── decoder ────────────────────────────────────────────────────────────────
 
 /**
  * Decode a URL-safe base64 string back to a ViewState.
- * Never throws — returns emptyViewState() on any error.
+ * Never throws — returns `fallback` (default: emptyViewState()) on any error.
  * Unknown IDs are silently dropped.
+ *
+ * `fallback` covers only the *absence* of a decodable hash. A hash that decodes
+ * cleanly wins outright, even when it hides nothing.
  */
 export function decodeViewState(
   base64: string,
   knownColumnIds: Set<number>,
   knownGroupIds: Set<number>,
   knownModelIds: Set<number>,
+  fallback?: ViewState,
 ): ViewState {
-  if (!base64) return emptyViewState();
+  const onFailure = (): ViewState => (fallback ? cloneViewState(fallback) : emptyViewState());
+  if (!base64) return onFailure();
   try {
     const bytes = fromUrlSafeBase64(base64);
     const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
@@ -210,14 +245,14 @@ export function decodeViewState(
     if (bytes.length < 9) {
       // eslint-disable-next-line no-console
       console.warn('[url-codec] decode failed', { error: 'buffer too short', hashLength: base64.length });
-      return emptyViewState();
+      return onFailure();
     }
 
     const version = view.getUint8(offset++);
     if (version !== CODEC_VERSION) {
       // eslint-disable-next-line no-console
       console.warn('[url-codec] unknown version', { received: version, expected: CODEC_VERSION });
-      return emptyViewState();
+      return onFailure();
     }
 
     offset++; // skip flags byte
@@ -236,42 +271,42 @@ export function decodeViewState(
     }
 
     // hidden_columns bitset
-    if (offset + 2 > bytes.length) return emptyViewState();
+    if (offset + 2 > bytes.length) return onFailure();
     const l1 = view.getUint16(offset, false); offset += 2;
-    if (offset + l1 > bytes.length) return emptyViewState();
+    if (offset + l1 > bytes.length) return onFailure();
     const hiddenColsBuf = bytes.slice(offset, offset + l1); offset += l1;
     const hiddenColumnIds = decodeBitset(hiddenColsBuf, knownColumnIds);
 
     // hidden_rows bitset
-    if (offset + 2 > bytes.length) return emptyViewState();
+    if (offset + 2 > bytes.length) return onFailure();
     const l2 = view.getUint16(offset, false); offset += 2;
-    if (offset + l2 > bytes.length) return emptyViewState();
+    if (offset + l2 > bytes.length) return onFailure();
     const hiddenRowsBuf = bytes.slice(offset, offset + l2); offset += l2;
     const hiddenRowIds = decodeBitset(hiddenRowsBuf, knownModelIds);
 
     // filters
-    if (offset + 2 > bytes.length) return emptyViewState();
+    if (offset + 2 > bytes.length) return onFailure();
     const filterCount = view.getUint16(offset, false); offset += 2;
     const decoder = new TextDecoder();
     const filters = new Map<number, string>();
     for (let i = 0; i < filterCount; i++) {
-      if (offset + 4 > bytes.length) return emptyViewState();
+      if (offset + 4 > bytes.length) return onFailure();
       const colId = view.getUint16(offset, false); offset += 2;
       const strLen = view.getUint16(offset, false); offset += 2;
-      if (offset + strLen > bytes.length) return emptyViewState();
+      if (offset + strLen > bytes.length) return onFailure();
       const text = decoder.decode(bytes.slice(offset, offset + strLen)); offset += strLen;
       if (knownColumnIds.has(colId)) filters.set(colId, text);
     }
 
     // selection — per-row bitset
-    if (offset + 2 > bytes.length) return emptyViewState();
+    if (offset + 2 > bytes.length) return onFailure();
     const selRowCount = view.getUint16(offset, false); offset += 2;
     const selectedCells = new Set<string>();
     for (let i = 0; i < selRowCount; i++) {
-      if (offset + 4 > bytes.length) return emptyViewState();
+      if (offset + 4 > bytes.length) return onFailure();
       const modelId = view.getUint16(offset, false); offset += 2;
       const bitsetLen = view.getUint16(offset, false); offset += 2;
-      if (offset + bitsetLen > bytes.length) return emptyViewState();
+      if (offset + bitsetLen > bytes.length) return onFailure();
       const colBitset = bytes.slice(offset, offset + bitsetLen); offset += bitsetLen;
       if (!knownModelIds.has(modelId)) continue; // skip unknown model, already advanced offset
       for (let byteIdx = 0; byteIdx < colBitset.length; byteIdx++) {
@@ -290,7 +325,7 @@ export function decodeViewState(
   } catch (err) {
     // eslint-disable-next-line no-console
     console.warn('[url-codec] decode failed', { error: String(err), hashLength: base64.length });
-    return emptyViewState();
+    return onFailure();
   }
 }
 
@@ -309,15 +344,18 @@ export function encodeToHash(state: ViewState): string {
 
 /**
  * Decode a URL hash string (e.g. `window.location.hash`) to a ViewState.
- * Returns emptyViewState() for empty/absent/corrupt hashes — never throws.
+ * Returns `fallback` (default: emptyViewState()) for empty/absent/corrupt
+ * hashes — never throws. Pass defaultViewState(columns) as the fallback so a
+ * first-time visitor lands on the configured defaults.
  */
 export function decodeFromHash(
   hash: string,
   knownColumnIds: Set<number>,
   knownGroupIds: Set<number>,
   knownModelIds: Set<number>,
+  fallback?: ViewState,
 ): ViewState {
   const raw = hash.startsWith('#') ? hash.slice(1) : hash;
-  if (!raw) return emptyViewState();
-  return decodeViewState(raw, knownColumnIds, knownGroupIds, knownModelIds);
+  if (!raw) return fallback ? cloneViewState(fallback) : emptyViewState();
+  return decodeViewState(raw, knownColumnIds, knownGroupIds, knownModelIds, fallback);
 }

@@ -55,6 +55,7 @@ class Column:
     shaded: bool = False                  # when True, cells render with a tinted background and bold text
     max_width: int | None = None          # px cap for data cells; None = shared stylesheet cap
     hidden: bool = False                  # scraped, available to derive, not shipped to browser
+    default_off: bool = False             # shipped and toggleable, but unchecked on a fresh load
     retired: bool = False                 # permanently removed, ID preserved, excluded entirely
     derive: Callable[[dict[str, Any]], Any] | None = None
 
@@ -94,6 +95,11 @@ def validate_config(groups: list[Group], columns: list[Column]) -> None:
         if c.hidden and c.retired:
             raise ValueError(
                 f"Column {c.key!r} cannot be both hidden and retired"
+            )
+        if c.default_off and (c.hidden or c.retired):
+            raise ValueError(
+                f"Column {c.key!r} cannot be default_off and hidden/retired "
+                "(default_off columns must be shipped to the browser)"
             )
         if c.hidden and c.derive is not None:
             raise ValueError(
@@ -179,7 +185,7 @@ COLUMNS: list[Column] = [
     Column(id=99,  key="engine",           label="Engine",               group="cpu",      type="string"),
     Column(id=100, key="z80_turbo",        label="Z80 Turbo",            group="cpu",      type="string", short_label="Z80 Turbo", tooltip="Z80 turbo mode supported (from openMSX XML)"),
     # Other
-    Column(id=25,  key="keyboard_layout",  label="Keyboard Layout",      group="other",    type="string", short_label="KB Layout",  tooltip="Keyboard Layout"),
+    Column(id=25,  key="keyboard_layout",  label="Keyboard Layout",      group="other",    type="string", short_label="KB Layout",  tooltip="Keyboard Layout", default_off=True),
     Column(id=103, key="character_set",   label="Character Set",        group="other",    type="string", short_label="Char Set",    tooltip="Character set encoded in the main BIOS ROM (byte 0x002B, lower nibble)"),
     Column(id=104, key="keyboard_type",   label="Keyboard Type",        group="other",    type="string", short_label="KB Type",     tooltip="Keyboard type encoded in the main BIOS ROM (byte 0x002C, lower nibble)"),
     Column(id=27,  key="connectivity",    label="Connectivity/Ports",   group="other",    type="string", short_label="Conn/ Ports", tooltip="Connectivity/Ports"),

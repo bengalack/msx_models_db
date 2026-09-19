@@ -542,6 +542,28 @@ class TestBuildMaxWidth:
                 assert col["maxWidth"] == configured[col["key"]], col["key"]
 
 
+class TestBuildDefaultOff:
+    """defaultOff is serialised from Column.default_off, and only when set."""
+
+    def test_default_off_matches_column_config(self, tmp_path):
+        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        openmsx_path = tmp_path / "openmsx.json"
+        msxorg_path = tmp_path / "msxorg.json"
+        output_path = tmp_path / "data.js"
+        openmsx_path.write_text(json.dumps(raw))
+        msxorg_path.write_text(json.dumps([]))
+        build(openmsx_path=openmsx_path, msxorg_path=msxorg_path,
+              registry_path=tmp_path / "registry.json", output_path=output_path)
+        content = output_path.read_text(encoding="utf-8")
+        data = json.loads(content[content.index("{"):content.rindex(";")])
+        configured = {c.key for c in active_columns() if c.default_off}
+        serialised = {col["key"] for col in data["columns"] if col.get("defaultOff")}
+        assert serialised == configured
+        for col in data["columns"]:
+            if col["key"] not in configured:
+                assert "defaultOff" not in col, col["key"]
+
+
 class TestBuildTruncateLimit:
     """Tests for truncateLimit serialisation in ColumnDef output."""
 

@@ -11,7 +11,7 @@ import { initTheme, toggleTheme } from './theme.js';
 import { buildToolbar } from './toolbar.js';
 import { buildGrid } from './grid.js';
 import { buildColPicker } from './col-picker.js';
-import { encodeToHash, decodeFromHash } from './url/codec.js';
+import { encodeToHash, decodeFromHash, defaultViewState } from './url/codec.js';
 
 initTheme();
 
@@ -52,7 +52,12 @@ if (!window.MSX_DATA) {
   const knownColumnIds = new Set(columns.map(c => c.id));
   const knownGroupIds = new Set(groups.map(g => g.id));
   const knownModelIds = new Set(models.map(m => m.id));
-  const initialState = decodeFromHash(window.location.hash, knownColumnIds, knownGroupIds, knownModelIds);
+  // No hash (or an unreadable one) → the configured defaults, which start every
+  // `defaultOff` column hidden. A readable hash always wins, so URLs shared before
+  // a column gained that flag still open exactly as their author left them.
+  const initialState = decodeFromHash(
+    window.location.hash, knownColumnIds, knownGroupIds, knownModelIds, defaultViewState(columns),
+  );
 
   // ── URL state: debounced write-back ───────────────────────────────────────
   let urlDebounceTimer: ReturnType<typeof setTimeout> | null = null;

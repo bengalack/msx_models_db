@@ -367,6 +367,14 @@ export function buildGrid(data: MSXData, opts?: {
   // Hidden columns — keyed by 0-based column index
   const hiddenCols = new Set<number>();
 
+  // Columns that start hidden on a fresh load (ColumnDef.defaultOff). Seeding the
+  // initial view is the caller's job (see defaultViewState in url/codec.ts); this
+  // set is what resetView() restores to, so "Reset view" means "back to the
+  // defaults", not "show every column".
+  const defaultHiddenCols = new Set(
+    data.columns.map((col, i) => (col.defaultOff ? i : -1)).filter(i => i >= 0),
+  );
+
   // Hidden rows — keyed by stable model ID
   const hiddenRows = new Set<number>();
 
@@ -1312,7 +1320,7 @@ export function buildGrid(data: MSXData, opts?: {
     // 2. Clear hidden rows
     hiddenRows.clear();
 
-    // 3. Expand all collapsed groups and show all hidden columns simultaneously.
+    // 3. Expand all collapsed groups and restore columns to their defaults.
     //    Clear both sets first so renderRows() won't re-hide anything.
     collapsedGroups.clear();
     hiddenCols.clear();
@@ -1331,6 +1339,17 @@ export function buildGrid(data: MSXData, opts?: {
       const chevron = th.querySelector<HTMLElement>('.chevron');
       if (chevron) { chevron.classList.remove('fa-chevron-right'); chevron.classList.add('fa-chevron-down'); }
     });
+
+    // 3b. Re-hide the default-off columns, after the wholesale restore above.
+    for (const colIdx of defaultHiddenCols) {
+      hiddenCols.add(colIdx);
+      table.querySelectorAll<HTMLElement>(`[data-col-index="${colIdx}"]`).forEach(cell => {
+        cell.style.display = 'none';
+      });
+    }
+    for (const groupId of new Set([...defaultHiddenCols].map(i => data.columns[i].groupId))) {
+      recalcGroupHeader(groupId);
+    }
 
     // 4. Clear filters
     const filtersWereOn = filterRow.style.display === 'table-row';

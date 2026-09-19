@@ -322,6 +322,8 @@ def build(
             entry["shaded"] = True
         if col.max_width is not None:
             entry["maxWidth"] = col.max_width
+        if col.default_off:
+            entry["defaultOff"] = True
         js_columns.append(entry)
 
     js_models = []
