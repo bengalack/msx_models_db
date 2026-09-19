@@ -109,6 +109,11 @@ Merge precedence: **local-raw.json > openMSX > msx.org**.
 - Before committing, all of these must pass: `npm run lint`, `npm run typecheck`, `npm test -- --run`, `python -m pytest tests/scraper`, and `npm run build` when `src/` changed.
 - **Never hardcode flexible content in tests.** Don't assert `len(columns) == 94`, a fixed set of LUT abbreviations, a label, or a symbol glyph. Load the source of truth (`active_columns()` / `COLUMNS` / `GROUPS` from `scraper/columns.py`, `data/slotmap-lut.json`, `scraper.symbols` constants, `data/scraper-config.json`, `window.MSX_DATA` shape from types) and assert against it. Editing config or data must never break tests when the code is correct. Hardcoded values are fine only in fixtures the test creates itself (tmp files, inline fake data).
 - Test overlapping filter inputs and side effects across boundaries (e.g. hide/unhide interplay with filters/selection), not just each feature in isolation.
+- **Tests must never write the committed data files.** `build()` defaults `registry_path`, `local_path` and
+  `output_path` to the real `data/id-registry.json`, `data/local-raw.json` and `docs/data.js` — always pass `tmp_path`
+  versions. `tests/scraper/conftest.py` holds an autouse guard that fails any test touching them (content *and*
+  mtime, so an identical rewrite is caught too). The registry is append-only, so a stray fixture model would burn a
+  permanent ID.
 - Commit style: Conventional Commits (`feat:`, `fix:`, `perf:`, `chore:`, `docs:`, `tests:`).
 
 ## Gotchas

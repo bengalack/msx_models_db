@@ -41,6 +41,7 @@ class TestBuildPipeline:
             msxorg_path=msxorg_path,
             registry_path=registry_path,
             output_path=output_path,
+            local_path=tmp_path / "local-raw.json",
         )
 
         # data.js exists and contains window.MSX_DATA
@@ -86,6 +87,7 @@ class TestBuildPipeline:
                 msxorg_path=tmp_path / "also_missing.json",
                 registry_path=tmp_path / "reg.json",
                 output_path=tmp_path / "data.js",
+                local_path=tmp_path / "local-raw.json",
             )
 
     def test_seed_model_ids_preserved(self, tmp_path):
@@ -157,6 +159,7 @@ class TestBuildSlotmapLUT:
             msxorg_path=msxorg_path,
             registry_path=tmp_path / "registry.json",
             output_path=output_path,
+            local_path=tmp_path / "local-raw.json",
         )
         return output_path
 
@@ -215,6 +218,7 @@ class TestBuildSlotmapLUT:
                 registry_path=tmp_path / "registry.json",
                 output_path=tmp_path / "data.js",
                 slotmap_lut_path=tmp_path / "nonexistent-lut.json",
+                local_path=tmp_path / "local-raw.json",
             )
 
 
@@ -231,12 +235,16 @@ class TestBuildExcludeList:
             {"manufacturer": "Philips", "model": "NMS 8250", "standard": "MSX2"},
         ]))
         msxorg_path.write_text(json.dumps([]))
-        return openmsx_path, msxorg_path, registry_path, output_path
+        # An empty stand-in keeps these builds off the maintainer's curated
+        # data — build() would otherwise default to the real file.
+        local_path = tmp_path / "local-raw.json"
+        local_path.write_text(json.dumps([]))
+        return openmsx_path, msxorg_path, registry_path, output_path, local_path
 
     def test_excluded_model_absent_from_output(self, tmp_path):
         """A model matching an exclude rule does not appear in data.js."""
         import re
-        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         exclude_path = tmp_path / "exclude.json"
         exclude_path.write_text(json.dumps([
             {"manufacturer": "Sony", "model": "HB-75P"},
@@ -248,6 +256,7 @@ class TestBuildExcludeList:
             registry_path=registry_path,
             exclude_path=exclude_path,
             output_path=output_path,
+            local_path=local_path,
         )
 
         content = output_path.read_text(encoding="utf-8")
@@ -259,7 +268,7 @@ class TestBuildExcludeList:
         """exclude_list loaded by build() is forwarded to fetch_sources()."""
         import scraper.build as build_mod
 
-        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         exclude_path = tmp_path / "exclude.json"
         exclude_path.write_text(json.dumps([{"manufacturer": "Sony", "model": "HB-75P"}]))
 
@@ -276,6 +285,7 @@ class TestBuildExcludeList:
                 registry_path=registry_path,
                 exclude_path=exclude_path,
                 output_path=output_path,
+                local_path=local_path,
             )
 
         el = captured.get("exclude_list")
@@ -289,7 +299,7 @@ class TestBuildExcludeList:
         import scraper.build as build_mod
         from scraper.openmsx_source import MirrorXMLSource
 
-        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         exclude_path = tmp_path / "exclude.json"
         exclude_path.write_text(json.dumps([{"filename": "Boosted*"}]))
 
@@ -308,6 +318,7 @@ class TestBuildExcludeList:
                 registry_path=registry_path,
                 exclude_path=exclude_path,
                 output_path=output_path,
+                local_path=local_path,
             )
             _, kwargs = mock_fetch.call_args
             el = kwargs["exclude_list"]
@@ -325,7 +336,7 @@ class TestBuildExcludeList:
         """
         import logging
 
-        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         exclude_path = tmp_path / "exclude.json"
         exclude_path.write_text(json.dumps([
             {"filename": "Boosted*"},
@@ -340,6 +351,7 @@ class TestBuildExcludeList:
                 registry_path=registry_path,
                 exclude_path=exclude_path,
                 output_path=output_path,
+                local_path=local_path,
             )
 
         assert "[exclude:dead_rule]" not in caplog.text, (
@@ -351,7 +363,7 @@ class TestBuildExcludeList:
         import logging
         import scraper.build as build_mod
 
-        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         exclude_path = tmp_path / "exclude.json"
         exclude_path.write_text(json.dumps([
             {"manufacturer": "Sony", "model": "HB-99Z"},  # model not in cache → dead
@@ -366,6 +378,7 @@ class TestBuildExcludeList:
                     registry_path=registry_path,
                     exclude_path=exclude_path,
                     output_path=output_path,
+                    local_path=local_path,
                 )
 
         assert "[exclude:dead_rule]" in caplog.text
@@ -373,7 +386,7 @@ class TestBuildExcludeList:
 
     def test_empty_excludelist_is_noop(self, tmp_path):
         """An empty exclude.json leaves output identical to no-exclude baseline."""
-        openmsx_path, msxorg_path, registry_path, output_path = self._fixture(tmp_path)
+        openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         exclude_path = tmp_path / "exclude.json"
         exclude_path.write_text("[]")
 
@@ -383,6 +396,7 @@ class TestBuildExcludeList:
             registry_path=registry_path,
             exclude_path=exclude_path,
             output_path=output_path,
+            local_path=local_path,
         )
 
         content = output_path.read_text(encoding="utf-8")
@@ -420,6 +434,7 @@ class TestBuildSlotmapExtractor:
             msxorg_path=msxorg_path,
             registry_path=tmp_path / "registry.json",
             output_path=output_path,
+            local_path=tmp_path / "local-raw.json",
         )
 
         content = output_path.read_text(encoding="utf-8")
@@ -483,6 +498,7 @@ class TestBuildTruncateLimit:
             msxorg_path=msxorg_path,
             registry_path=tmp_path / "registry.json",
             output_path=output_path,
+            local_path=tmp_path / "local-raw.json",
         )
         content = output_path.read_text(encoding="utf-8")
         json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
@@ -570,6 +586,8 @@ class TestBuildMirrorWiring:
                 msxorg_path=mx,
                 output_path=tmp_path / "data.js",
                 mirror_path=mirror_dir,
+                registry_path=tmp_path / "registry.json",
+                local_path=tmp_path / "local-raw.json",
             )
 
         assert captured["mirror_path"] == mirror_dir
@@ -599,6 +617,8 @@ class TestBuildMirrorWiring:
                 openmsx_path=op,
                 msxorg_path=mx,
                 output_path=tmp_path / "data.js",
+                registry_path=tmp_path / "registry.json",
+                local_path=tmp_path / "local-raw.json",
             )
 
         assert captured["mirror_path"] == Path(str(mirror_dir))
@@ -628,6 +648,8 @@ class TestBuildMirrorWiring:
                 msxorg_path=mx,
                 output_path=tmp_path / "data.js",
                 mirror_path=flag_dir,
+                registry_path=tmp_path / "registry.json",
+                local_path=tmp_path / "local-raw.json",
             )
 
         assert captured["mirror_path"] == flag_dir
@@ -651,6 +673,8 @@ class TestBuildMirrorWiring:
                 openmsx_path=op,
                 msxorg_path=mx,
                 output_path=tmp_path / "data.js",
+                registry_path=tmp_path / "registry.json",
+                local_path=tmp_path / "local-raw.json",
             )
 
         assert captured["mirror_path"] is None
@@ -674,6 +698,8 @@ class TestBuildMirrorWiring:
                 output_path=tmp_path / "data.js",
                 mirror_path=mirror_dir,
                 local_only=True,
+                registry_path=tmp_path / "registry.json",
+                local_path=tmp_path / "local-raw.json",
             )
 
         assert captured["local_only"] is True
@@ -710,6 +736,8 @@ class TestBuildOpenMSXMirrorWiring:
                 msxorg_path=mx,
                 output_path=tmp_path / "data.js",
                 openmsx_mirror_path=mirror_dir,
+                registry_path=tmp_path / "registry.json",
+                local_path=tmp_path / "local-raw.json",
             )
 
         assert captured["openmsx_mirror_path"] == mirror_dir
@@ -735,6 +763,8 @@ class TestBuildOpenMSXMirrorWiring:
                 openmsx_path=op,
                 msxorg_path=mx,
                 output_path=tmp_path / "data.js",
+                registry_path=tmp_path / "registry.json",
+                local_path=tmp_path / "local-raw.json",
             )
 
         assert captured["openmsx_mirror_path"] == Path(str(mirror_dir))
@@ -763,6 +793,8 @@ class TestBuildOpenMSXMirrorWiring:
                 msxorg_path=mx,
                 output_path=tmp_path / "data.js",
                 openmsx_mirror_path=flag_dir,
+                registry_path=tmp_path / "registry.json",
+                local_path=tmp_path / "local-raw.json",
             )
 
         assert captured["openmsx_mirror_path"] == flag_dir
@@ -786,6 +818,8 @@ class TestBuildOpenMSXMirrorWiring:
                 openmsx_path=op,
                 msxorg_path=mx,
                 output_path=tmp_path / "data.js",
+                registry_path=tmp_path / "registry.json",
+                local_path=tmp_path / "local-raw.json",
             )
 
         assert captured["openmsx_mirror_path"] is None
@@ -809,6 +843,8 @@ class TestBuildOpenMSXMirrorWiring:
                 output_path=tmp_path / "data.js",
                 openmsx_mirror_path=mirror_dir,
                 local_openmsx_only=True,
+                registry_path=tmp_path / "registry.json",
+                local_path=tmp_path / "local-raw.json",
             )
 
         assert captured["local_openmsx_only"] is True
@@ -840,6 +876,7 @@ class TestOpenMSXIdLink:
             msxorg_path=msxorg_path,
             registry_path=tmp_path / "reg.json",
             output_path=output_path,
+            local_path=tmp_path / "local-raw.json",
         )
         content = output_path.read_text(encoding="utf-8")
         data = json.loads(
