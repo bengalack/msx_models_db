@@ -184,7 +184,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     1. Load column configuration from `scraper/columns.py` (groups, columns, derive functions); validate (no duplicate IDs, no ID 0, group refs valid, etc.)
     2. Load `data/exclude.json` via `ExcludeList`; fail fast with `ValueError` on malformed input; absent file = empty list (no-op)
     3. Load cached raw data from `data/openmsx-raw.json` and `data/msxorg-raw.json`; rename `"standard"` → `"generation"` in cached dicts for backward compatibility; apply exclude rules to cached data
-    4. Load local supplemental data from `data/local-raw.json` (optional; absent file is not an error)
+    4. Load local supplemental data from `data/local-raw.json` (optional; absent file is not an error); apply exclude rules to it too — an exclude rule outranks even local data, so a curated entry cannot resurrect an excluded model and a local-only entry cannot create an unremovable row
     5. If `--fetch`: fetch fresh data from msx.org and openMSX GitHub first, overwriting cached files; exclude rules applied post-parse in each scraper
     6. Merge msx.org and openMSX data per model (openMSX wins on conflict); then apply local overrides on top (local wins for any field it provides)
     6a. After all per-model `links` are computed (keyed model URLs from `msxorg_title`), apply `data/link-shares.json`: for each entry whose recipient has no `links`, copy the donor's `links` (if present). Absent file is silently skipped.
@@ -665,7 +665,7 @@ def load_excludes(path: Path) -> ExcludeList:
 | `data/exclude.json` | New file (committed as `[]`) |
 | `scraper/openmsx.py` | `list_machine_files()` checks filename rules; `fetch_all()` checks model rules post-parse |
 | `scraper/msxorg.py` | `fetch_all()` checks model rules post-parse |
-| `scraper/build.py` | Loads `ExcludeList` at startup; passes to both scrapers; emits dead-rule WARNs at end |
+| `scraper/build.py` | Loads `ExcludeList` at startup; passes to both scrapers; filters cached openMSX, msx.org **and local data** before merge; emits dead-rule WARNs at end |
 | `scraper/__main__.py` — `fetch-openmsx`, `fetch-msxorg` | Load `ExcludeList` before any I/O and pass it to `fetch_all` (no dead-rule WARNs: a single-source fetch can't judge rules meant for the other source) |
 
 ---

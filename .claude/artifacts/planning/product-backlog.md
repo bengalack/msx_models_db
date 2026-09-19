@@ -21,6 +21,8 @@
     - `python -m scraper update-himem <dump.txt> <local-raw.json>` folds a `helpers/dump_himem.tcl` run into the curated data
     - Name resolution via `data/aliases.json` + `docs/data.js`; unknown and ambiguous names skipped, not guessed
     - Filled 111 previously empty MSX1 HIMEM cells; the file had only covered MSX2 and up
+  - Exclude rules apply to `data/local-raw.json`
+    - `exclude.json` now outranks the highest-authority source; a local-only entry can no longer create an unremovable row
   - Per-column max width
     - max_width (px) on Column → maxWidth in data.js; applied to data cells; Region = 107px
   - Memory Mapper from msx.org slot map

@@ -82,7 +82,8 @@ User prefers `rtk`-prefixed shell commands (see global CLAUDE.md).
   A name read twice with different values keeps the lowest. Preserves entry order, sibling fields and newline style,
   writes only when something changed. See *Feature Design: HIMEM Value Ingestion* in technical-design.md.
 
-Merge precedence: **local-raw.json > openMSX > msx.org**.
+Merge precedence: **local-raw.json > openMSX > msx.org**. `exclude.json` outranks all three — exclude rules are
+applied to local data as well, so a curated entry can never resurrect an excluded model.
 
 ### Maintainer-curated data (`data/`)
 `aliases.json`, `substitutions.json`, `exclude.json`, `link-shares.json`, `slotmap-lut.json`, `local-raw.json`, `scraper-config.json` (local mirror paths + slot-map symbols). `id-registry.json` is generated but committed and **append-only** — IDs are never deleted or reused.

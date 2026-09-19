@@ -233,6 +233,7 @@ def build(
     if exclude_list.rules:
         before_openmsx = len(openmsx_data)
         before_msxorg = len(msxorg_data)
+        before_local = len(local_data)
         openmsx_data = [
             m for m in openmsx_data
             if not exclude_list.is_excluded(m.get("manufacturer"), m.get("model"))
@@ -241,12 +242,20 @@ def build(
             m for m in msxorg_data
             if not exclude_list.is_excluded(m.get("manufacturer"), m.get("model"))
         ]
+        # Local data is the highest-authority source, but an exclude rule still
+        # wins: otherwise a curated entry would resurrect an excluded model, or
+        # a local-only entry would create a row no rule could remove.
+        local_data = [
+            m for m in local_data
+            if not exclude_list.is_excluded(m.get("manufacturer"), m.get("model"))
+        ]
         excluded_openmsx = before_openmsx - len(openmsx_data)
         excluded_msxorg = before_msxorg - len(msxorg_data)
-        if excluded_openmsx or excluded_msxorg:
+        excluded_local = before_local - len(local_data)
+        if excluded_openmsx or excluded_msxorg or excluded_local:
             log.info(
-                "[exclude] Filtered from cache: %d openMSX, %d msx.org",
-                excluded_openmsx, excluded_msxorg,
+                "[exclude] Filtered from cache: %d openMSX, %d msx.org, %d local",
+                excluded_openmsx, excluded_msxorg, excluded_local,
             )
 
     # Step 3: Merge

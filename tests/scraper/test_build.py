@@ -264,6 +264,66 @@ class TestBuildExcludeList:
         assert "NMS 8250" in content or "Philips" in content
         assert "HB-75P" not in content
 
+    def test_excluded_model_in_local_data_is_absent_from_output(self, tmp_path):
+        """An exclude rule wins over data/local-raw.json, the highest-authority source."""
+        openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
+        local_path.write_text(json.dumps([
+            {"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"},
+        ]))
+        exclude_path = tmp_path / "exclude.json"
+        exclude_path.write_text(json.dumps([{"manufacturer": "Sony", "model": "HB-75P"}]))
+
+        build(
+            openmsx_path=openmsx_path,
+            msxorg_path=msxorg_path,
+            registry_path=registry_path,
+            exclude_path=exclude_path,
+            output_path=output_path,
+            local_path=local_path,
+        )
+
+        assert "HB-75P" not in output_path.read_text(encoding="utf-8")
+
+    def test_excluded_local_only_model_never_reaches_the_output(self, tmp_path):
+        """A local-only entry — one no source provides — is excludable too."""
+        openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
+        local_path.write_text(json.dumps([
+            {"manufacturer": "Acme", "model": "Ghost-1", "himem_addr": "0xF380"},
+        ]))
+        exclude_path = tmp_path / "exclude.json"
+        exclude_path.write_text(json.dumps([{"manufacturer": "Acme", "model": "Ghost-1"}]))
+
+        build(
+            openmsx_path=openmsx_path,
+            msxorg_path=msxorg_path,
+            registry_path=registry_path,
+            exclude_path=exclude_path,
+            output_path=output_path,
+            local_path=local_path,
+        )
+
+        assert "Ghost-1" not in output_path.read_text(encoding="utf-8")
+
+    def test_local_entry_not_matching_a_rule_survives(self, tmp_path):
+        """Filtering local data must not drop the entries the rules do not name."""
+        openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
+        local_path.write_text(json.dumps([
+            {"manufacturer": "Philips", "model": "NMS 8250", "himem_addr": "0xDE79"},
+        ]))
+        exclude_path = tmp_path / "exclude.json"
+        exclude_path.write_text(json.dumps([{"manufacturer": "Sony", "model": "HB-75P"}]))
+
+        build(
+            openmsx_path=openmsx_path,
+            msxorg_path=msxorg_path,
+            registry_path=registry_path,
+            exclude_path=exclude_path,
+            output_path=output_path,
+            local_path=local_path,
+        )
+
+        assert "0xDE79" in output_path.read_text(encoding="utf-8")
+
     def test_exclude_list_passed_to_fetch_sources(self, tmp_path):
         """exclude_list loaded by build() is forwarded to fetch_sources()."""
         import scraper.build as build_mod
