@@ -3,7 +3,7 @@ import type { MSXData, GroupDef, ColumnDef, ModelRecord, ViewState } from './typ
 /** Number of leading data columns (0-based) that are pinned during horizontal scroll. */
 export const FROZEN_COL_COUNT = 2;
 
-/** Width of the row-number gutter in pixels — must match .gutter { width } in grid.css. */
+/** Width of the row-number gutter in pixels â€” must match .gutter { width } in grid.css. */
 const GUTTER_WIDTH = 52;
 
 // Normalize (sort) comma-separated string values (e.g., for Conn/Ports)
@@ -35,9 +35,9 @@ function isNullish(value: string | number | boolean | null | undefined): boolean
  * Resolve a slot map cell value to its tooltip string, or null if no tooltip.
  *
  * Rules:
- *   - Exact key in lut (including "☒") → lut[value]
- *   - value ends with "*" → look up base (strip "*"); if found → "<base tooltip> (mirror)"
- *   - Not in lut and not a mirror → null (no tooltip)
+ *   - Exact key in lut (including "â˜’") â†’ lut[value]
+ *   - value ends with "*" â†’ look up base (strip "*"); if found â†’ "<base tooltip> (mirror)"
+ *   - Not in lut and not a mirror â†’ null (no tooltip)
  */
 export function resolveSlotmapTooltip(
   value: string,
@@ -64,7 +64,7 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
   gutterCorner.rowSpan = 3; // spans group header, col header, and filter rows
   tr.appendChild(gutterCorner);
 
-  // Build a map of groupId → first column index in the columns array
+  // Build a map of groupId â†’ first column index in the columns array
   const groupStartIdx = new Map<number, number>();
   columns.forEach((col, idx) => {
     if (!groupStartIdx.has(col.groupId)) groupStartIdx.set(col.groupId, idx);
@@ -114,7 +114,12 @@ function buildColHeaderRow(columns: ColumnDef[]): HTMLTableRowElement {
     th.scope = 'col';
     const span = document.createElement('span');
     span.className = 'col-header__text';
-    span.textContent = col.shortLabel ?? col.label;
+    const headerText = col.shortLabel ?? col.label;
+    span.textContent = headerText;
+    // An explicit newline in the short label means "wrap exactly here" — the
+    // header then sizes to its widest line instead of the narrow default cap.
+    if (headerText.includes('
+')) th.classList.add('col-header--wide');
     th.appendChild(span);
     th.title = col.tooltip ?? col.label;
     th.dataset.colGroup = String(col.groupId);
@@ -175,7 +180,7 @@ function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'filter-input';
-    input.placeholder = '…';
+    input.placeholder = 'â€¦';
     input.dataset.colIndex = String(i);
     input.setAttribute('aria-label', `Filter ${columns[i].label}`);
 
@@ -183,7 +188,7 @@ function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
     clearBtn.className = 'filter-clear filter-clear--hidden';
     clearBtn.setAttribute('aria-label', 'Clear filter');
     clearBtn.tabIndex = -1;
-    clearBtn.textContent = '×';
+    clearBtn.textContent = 'Ã—';
 
     td.appendChild(input);
     td.appendChild(clearBtn);
@@ -203,7 +208,7 @@ function buildDataRow(
   const tr = document.createElement('tr');
   tr.dataset.modelId = String(model.id);
 
-  // Gutter — × hide button (left) + 1-based row number (right)
+  // Gutter â€” Ã— hide button (left) + 1-based row number (right)
   const gutter = document.createElement('td');
   gutter.className = 'gutter';
   gutter.dataset.modelId = String(model.id);
@@ -212,7 +217,7 @@ function buildDataRow(
   hideBtn.className = 'gutter__hide-btn';
   hideBtn.setAttribute('aria-label', 'Hide row');
   hideBtn.tabIndex = -1;
-  hideBtn.textContent = '\u00d7'; // ×
+  hideBtn.textContent = '\u00d7'; // Ã—
 
   const numSpan = document.createElement('span');
   numSpan.className = 'gutter__num';
@@ -303,18 +308,18 @@ function buildGapIndicator(
   const tr = document.createElement('tr');
   tr.className = 'row-gap-indicator';
 
-  // Sticky gutter cell — holds the unhide button, stays fixed on horizontal scroll
+  // Sticky gutter cell â€” holds the unhide button, stays fixed on horizontal scroll
   const gutterTd = document.createElement('td');
   gutterTd.className = 'gutter gutter--gap-gutter';
   const btn = document.createElement('button');
   btn.className = 'gutter__unhide-btn';
   btn.setAttribute('aria-label', `Show ${hiddenIds.length} hidden row${hiddenIds.length > 1 ? 's' : ''}`);
-  btn.textContent = '\u25b2'; // ▲
+  btn.textContent = '\u25b2'; // â–²
   btn.addEventListener('click', () => onUnhide(hiddenIds));
   gutterTd.appendChild(btn);
   tr.appendChild(gutterTd);
 
-  // Frozen data cells — one per frozen column, each sticky with the dashed line
+  // Frozen data cells â€” one per frozen column, each sticky with the dashed line
   for (let i = 0; i < FROZEN_COL_COUNT; i++) {
     const frozenTd = document.createElement('td');
     frozenTd.className = 'gutter--gap gutter--gap-frozen';
@@ -322,7 +327,7 @@ function buildGapIndicator(
     tr.appendChild(frozenTd);
   }
 
-  // Scrollable data cell — spans remaining columns, carries the dashed line
+  // Scrollable data cell â€” spans remaining columns, carries the dashed line
   const dataTd = document.createElement('td');
   dataTd.className = 'gutter--gap';
   dataTd.colSpan = colCount - FROZEN_COL_COUNT;
@@ -361,10 +366,10 @@ export function buildGrid(data: MSXData, opts?: {
   let sortColIndex: number | null = null;
   let sortDirection: 'asc' | 'desc' = 'asc';
 
-  // Filter state — keyed by 0-based column index
+  // Filter state â€” keyed by 0-based column index
   const filters = new Map<number, string>();
 
-  // Hidden columns — keyed by 0-based column index
+  // Hidden columns â€” keyed by 0-based column index
   const hiddenCols = new Set<number>();
 
   // Columns that start hidden on a fresh load (ColumnDef.defaultOff). Seeding the
@@ -375,16 +380,16 @@ export function buildGrid(data: MSXData, opts?: {
     data.columns.map((col, i) => (col.defaultOff ? i : -1)).filter(i => i >= 0),
   );
 
-  // Hidden rows — keyed by stable model ID
+  // Hidden rows â€” keyed by stable model ID
   const hiddenRows = new Set<number>();
 
-  // Row element cache — reused by applyRowVisibility() to avoid full DOM rebuild on hide/unhide
+  // Row element cache â€” reused by applyRowVisibility() to avoid full DOM rebuild on hide/unhide
   const rowCache = new Map<number, HTMLTableRowElement>();
 
-  // ── Column ID ↔ index maps (for ViewState translation) ───────────────────
+  // â”€â”€ Column ID â†” index maps (for ViewState translation) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const colIdToIdx = new Map(data.columns.map((col, i) => [col.id, i]));
 
-  // ── Selection state ──────────────────────────────────────────────────────
+  // â”€â”€ Selection state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Key format: "${modelId}:${colIdx}"
   const selectedCells = new Set<string>();
   let selAnchor: { modelId: number; colIdx: number } | null = null;
@@ -395,14 +400,14 @@ export function buildGrid(data: MSXData, opts?: {
   let dragRafPending = false;
   let rowDragRafPending = false;
 
-  // DOM mirror sets — track what's currently highlighted so applySelectionToDOM
+  // DOM mirror sets â€” track what's currently highlighted so applySelectionToDOM
   // and applyRowSelectionToDOM can diff and touch only changed elements.
   const renderedSelectionCells = new Set<string>();
   const renderedActiveColIdxs = new Set<number>();
   const renderedActiveModelIds = new Set<number>();
   const renderedSelectedRows = new Set<number>();
 
-  // Cached visible model ID order — rebuilt after renderRows() / applyRowVisibility()
+  // Cached visible model ID order â€” rebuilt after renderRows() / applyRowVisibility()
   // so selectRectangle() and selectRowRange() don't query the DOM on every drag step.
   let cachedVisibleModelIds: number[] = [];
 
@@ -411,7 +416,7 @@ export function buildGrid(data: MSXData, opts?: {
   }
 
   function applySelectionToDOM(): void {
-    // Diff cells — only touch elements that changed
+    // Diff cells â€” only touch elements that changed
     for (const key of selectedCells) {
       if (renderedSelectionCells.has(key)) continue;
       const colon = key.indexOf(':');
@@ -491,7 +496,7 @@ export function buildGrid(data: MSXData, opts?: {
 
     selectedCells.clear();
     if (ar === -1 || br === -1 || ac === -1 || bc === -1) {
-      // Anchor or target not in visible set — fall back to single cell
+      // Anchor or target not in visible set â€” fall back to single cell
       selectedCells.add(selKey(b.modelId, b.colIdx));
       selAnchor = b;
       return;
@@ -509,7 +514,7 @@ export function buildGrid(data: MSXData, opts?: {
     return selectedCells;
   }
 
-  // ── Row selection state ──────────────────────────────────────────────────
+  // â”€â”€ Row selection state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Keyed by stable model ID; independent of selectedCells
   const selectedRows = new Set<number>();
   let rowSelAnchor: number | null = null;
@@ -569,7 +574,7 @@ export function buildGrid(data: MSXData, opts?: {
     }
   }
 
-  // ── thead ────────────────────────────────────────────────────────────────
+  // â”€â”€ thead â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const thead = document.createElement('thead');
   thead.appendChild(buildGroupHeaderRow(data.groups, data.columns));
   thead.appendChild(buildColHeaderRow(data.columns));
@@ -640,7 +645,7 @@ export function buildGrid(data: MSXData, opts?: {
   }
 
   // Lightweight hide/unhide: toggles CSS visibility on cached rows, rebuilds
-  // only the gap indicator rows — no full replaceChildren needed.
+  // only the gap indicator rows â€” no full replaceChildren needed.
   function applyRowVisibility(): void {
     // If the cache is empty (e.g. first render hasn't run yet), fall back to full render.
     if (rowCache.size === 0) { renderRows(); return; }
@@ -682,7 +687,7 @@ export function buildGrid(data: MSXData, opts?: {
 
     for (const model of filtered) {
       const tr = rowCache.get(model.id);
-      if (!tr) continue; // filtered-out row not in cache — shouldn't happen
+      if (!tr) continue; // filtered-out row not in cache â€” shouldn't happen
 
       if (hiddenRows.has(model.id)) {
         buffer.push(model.id);
@@ -730,7 +735,7 @@ export function buildGrid(data: MSXData, opts?: {
     return hiddenRows;
   }
 
-  // ── tbody ────────────────────────────────────────────────────────────────
+  // â”€â”€ tbody â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const tbody = document.createElement('tbody');
   table.appendChild(tbody);
 
@@ -786,7 +791,7 @@ export function buildGrid(data: MSXData, opts?: {
     }
     cachedVisibleModelIds = filtered.filter(m => !hiddenRows.has(m.id)).map(m => m.id);
     tbody.replaceChildren(...rows);
-    // DOM mirrors are stale after a full rebuild — reset so diff applies from scratch.
+    // DOM mirrors are stale after a full rebuild â€” reset so diff applies from scratch.
     renderedSelectionCells.clear();
     renderedActiveColIdxs.clear();
     renderedActiveModelIds.clear();
@@ -794,7 +799,7 @@ export function buildGrid(data: MSXData, opts?: {
     // Re-apply selection highlights
     applySelectionToDOM();
     applyRowSelectionToDOM();
-    // Defer layout-dependent updates — on initial load the element may not be in
+    // Defer layout-dependent updates â€” on initial load the element may not be in
     // the DOM yet, so getBoundingClientRect()/offsetWidth would return zeros.
     requestAnimationFrame(() => {
       updateGapVisibility();
@@ -802,29 +807,29 @@ export function buildGrid(data: MSXData, opts?: {
     });
   }
 
-  // ── Gap indicator scroll-awareness ──────────────────────────────────────
+  // â”€â”€ Gap indicator scroll-awareness â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Hide the dashed line + unhide button when a gap indicator scrolls under
-  // the sticky header — show them again once the gap is fully below it.
+  // the sticky header â€” show them again once the gap is fully below it.
   function updateGapVisibility(): void {
     const gapRows = Array.from(tbody.querySelectorAll<HTMLTableRowElement>('.row-gap-indicator'));
     if (gapRows.length === 0) return;
 
     const headerBottom = thead.getBoundingClientRect().bottom;
 
-    // Phase 1 — read: temporarily show all indicators and collect their measurements
+    // Phase 1 â€” read: temporarily show all indicators and collect their measurements
     gapRows.forEach(row => row.classList.remove('row-gap-indicator--under-header'));
     const measurements = gapRows.map(row => {
       const btn = row.querySelector<HTMLElement>('.gutter__unhide-btn');
       return btn ? btn.getBoundingClientRect().bottom : Infinity;
     });
 
-    // Phase 2 — write: apply visibility based on measurements (no interleaved reads)
+    // Phase 2 â€” write: apply visibility based on measurements (no interleaved reads)
     gapRows.forEach((row, i) => {
       row.classList.toggle('row-gap-indicator--under-header', measurements[i] <= headerBottom);
     });
   }
 
-  // ── Frozen-column left-offset computation ────────────────────────────────
+  // â”€â”€ Frozen-column left-offset computation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Writes CSS custom properties (--frozen-colN-left) onto the .grid-wrap so
   // each sticky column knows its exact `left` value regardless of which
   // preceding columns are hidden.  Called after every renderRows() and when
@@ -841,23 +846,23 @@ export function buildGrid(data: MSXData, opts?: {
     }
   }
 
-  // ── Seed from initial state ──────────────────────────────────────────────
+  // â”€â”€ Seed from initial state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (opts?.initialState) {
     const init = opts.initialState;
 
-    // Sort (columnId → colIdx)
+    // Sort (columnId â†’ colIdx)
     if (init.sortColumnId !== null) {
       const idx = colIdToIdx.get(init.sortColumnId);
       if (idx !== undefined) { sortColIndex = idx; sortDirection = init.sortDirection; }
     }
 
-    // Filters (columnId → colIdx)
+    // Filters (columnId â†’ colIdx)
     for (const [colId, text] of init.filters) {
       const idx = colIdToIdx.get(colId);
       if (idx !== undefined) filters.set(idx, text);
     }
 
-    // Hidden columns (columnId → colIdx)
+    // Hidden columns (columnId â†’ colIdx)
     for (const colId of init.hiddenColumnIds) {
       const idx = colIdToIdx.get(colId);
       if (idx !== undefined) hiddenCols.add(idx);
@@ -869,14 +874,14 @@ export function buildGrid(data: MSXData, opts?: {
     // Collapsed groups (already group IDs)
     for (const groupId of init.collapsedGroupIds) collapsedGroups.add(groupId);
 
-    // Selected cells ("modelId:colId" → "modelId:colIdx")
+    // Selected cells ("modelId:colId" â†’ "modelId:colIdx")
     for (const cell of init.selectedCells) {
       const colon = cell.indexOf(':');
       const colIdx = colIdToIdx.get(Number(cell.slice(colon + 1)));
       if (colIdx !== undefined) selectedCells.add(`${cell.slice(0, colon)}:${colIdx}`);
     }
 
-    // ── Apply visual state to thead ──────────────────────────────────────
+    // â”€â”€ Apply visual state to thead â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     // Sort indicator
     if (sortColIndex !== null) {
@@ -933,7 +938,7 @@ export function buildGrid(data: MSXData, opts?: {
     }
   }
 
-  // ── getViewState — snapshot of current state as stable ID-based ViewState ─
+  // â”€â”€ getViewState â€” snapshot of current state as stable ID-based ViewState â”€
   function getViewState(): ViewState {
     const hiddenColumnIds = new Set(
       [...hiddenCols].map(idx => data.columns[idx]?.id).filter((id): id is number => id !== undefined)
@@ -968,7 +973,7 @@ export function buildGrid(data: MSXData, opts?: {
 
   renderRows();
 
-  // ── Cell tooltip — only when text is actually truncated ──────────────────
+  // â”€â”€ Cell tooltip â€” only when text is actually truncated â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Link cells manage their own title via the <a> element; skip them here.
   tbody.addEventListener('mouseenter', (e: MouseEvent) => {
     const td = (e.target as HTMLElement).closest<HTMLTableCellElement>('td[data-col-index]');
@@ -988,7 +993,7 @@ export function buildGrid(data: MSXData, opts?: {
     }
   }, true);
 
-  // ── Gutter mousedown — row hide (× button) and row selection (number) ─────────
+  // â”€â”€ Gutter mousedown â€” row hide (Ã— button) and row selection (number) â”€â”€â”€â”€â”€â”€â”€â”€â”€
   tbody.addEventListener('mousedown', (e: MouseEvent) => {
     const target = e.target as HTMLElement;
     const gutterTd = target.closest<HTMLTableCellElement>('td.gutter[data-model-id]');
@@ -996,12 +1001,12 @@ export function buildGrid(data: MSXData, opts?: {
     const modelId = Number(gutterTd.dataset.modelId);
     if (!modelId) return;
 
-    // × hide button — handled on click to avoid accidental drag triggers
+    // Ã— hide button â€” handled on click to avoid accidental drag triggers
     if (target.closest('.gutter__hide-btn')) return;
 
     e.preventDefault(); // prevent text-selection cursor during drag
 
-    // Row number area — row selection
+    // Row number area â€” row selection
     if (e.ctrlKey || e.metaKey) {
       if (selectedRows.has(modelId)) {
         selectedRows.delete(modelId);
@@ -1026,7 +1031,7 @@ export function buildGrid(data: MSXData, opts?: {
     opts?.onStateChange?.();
   });
 
-  // ── Gutter click — × hide button ─────────────────────────────────────────
+  // â”€â”€ Gutter click â€” Ã— hide button â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   tbody.addEventListener('click', (e: MouseEvent) => {
     const target = e.target as HTMLElement;
     if (!target.closest('.gutter__hide-btn')) return;
@@ -1050,7 +1055,7 @@ export function buildGrid(data: MSXData, opts?: {
     opts?.onStateChange?.();
   });
 
-  // ── Gutter drag — extend row selection ───────────────────────────────────
+  // â”€â”€ Gutter drag â€” extend row selection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   tbody.addEventListener('mouseenter', (e: MouseEvent) => {
     if (!isRowDragging || e.buttons !== 1 || rowDragAnchor === null) return;
     const target = e.target as HTMLElement;
@@ -1079,7 +1084,7 @@ export function buildGrid(data: MSXData, opts?: {
     }
   });
 
-  // ── Cell selection (event delegation on tbody) ───────────────────────────
+  // â”€â”€ Cell selection (event delegation on tbody) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   tbody.addEventListener('mousedown', (e: MouseEvent) => {
     const target = e.target as HTMLElement;
     // If the click is on link text, let the browser follow the href naturally
@@ -1118,7 +1123,7 @@ export function buildGrid(data: MSXData, opts?: {
       if (selAnchor) {
         selectRectangle(selAnchor, cell);
       } else {
-        // No anchor yet — treat like plain click
+        // No anchor yet â€” treat like plain click
         selectedCells.clear();
         selectedCells.add(selKey(modelId, colIdx));
         selAnchor = cell;
@@ -1126,7 +1131,7 @@ export function buildGrid(data: MSXData, opts?: {
       applySelectionToDOM();
       opts?.onStateChange?.();
     } else {
-      // Plain click — toggle off if already the only selection, else select single cell
+      // Plain click â€” toggle off if already the only selection, else select single cell
       const key = selKey(modelId, colIdx);
       const wasOnlySelection = selectedCells.has(key) && selectedCells.size === 1;
       selectedCells.clear();
@@ -1141,7 +1146,7 @@ export function buildGrid(data: MSXData, opts?: {
     }
   });
 
-  // ── Drag selection (mouseenter + mouseup) ───────────────────────────────
+  // â”€â”€ Drag selection (mouseenter + mouseup) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   tbody.addEventListener('mouseenter', (e: MouseEvent) => {
     if (!isDragging || e.buttons !== 1 || !dragStart) return;
     const target = e.target as HTMLElement;
@@ -1170,7 +1175,7 @@ export function buildGrid(data: MSXData, opts?: {
     rowDragAnchor = null;
   });
 
-  // ── Group collapse / expand ──────────────────────────────────────────────
+  // â”€â”€ Group collapse / expand â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const groupHeaders = thead.querySelectorAll<HTMLTableCellElement>('th.group-header');
   groupHeaders.forEach(th => {
     th.addEventListener('click', () => {
@@ -1178,7 +1183,7 @@ export function buildGrid(data: MSXData, opts?: {
       const chevron = th.querySelector<HTMLElement>('.chevron')!;
 
       if (collapsedGroups.has(groupId)) {
-        // Expand — restore all cells except those individually hidden
+        // Expand â€” restore all cells except those individually hidden
         collapsedGroups.delete(groupId);
         th.classList.remove('collapsed');
         chevron.classList.remove('fa-chevron-right'); chevron.classList.add('fa-chevron-down');
@@ -1191,7 +1196,7 @@ export function buildGrid(data: MSXData, opts?: {
         recalcGroupHeader(groupId);
         opts?.onStateChange?.();
       } else {
-        // Collapse — keep first cell per row as a zero-width stub anchor;
+        // Collapse â€” keep first cell per row as a zero-width stub anchor;
         // hide all others so the group header colSpan=1 aligns correctly.
         collapsedGroups.add(groupId);
         th.colSpan = 1;
@@ -1221,7 +1226,7 @@ export function buildGrid(data: MSXData, opts?: {
     });
   });
 
-  // ── Column sort ──────────────────────────────────────────────────────────
+  // â”€â”€ Column sort â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const colHeaders = thead.querySelectorAll<HTMLTableCellElement>('th.col-header');
   colHeaders.forEach(th => {
     th.addEventListener('click', () => {
@@ -1247,7 +1252,7 @@ export function buildGrid(data: MSXData, opts?: {
     });
   });
 
-  // ── Column filter inputs ──────────────────────────────────────────────
+  // â”€â”€ Column filter inputs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   thead.querySelectorAll<HTMLInputElement>('input.filter-input').forEach(input => {
     input.addEventListener('input', () => {
       const colIdx = Number(input.dataset.colIndex);
@@ -1288,7 +1293,7 @@ export function buildGrid(data: MSXData, opts?: {
     });
   });
 
-  // ── Toggle filter row ───────────────────────────────────────────────
+  // â”€â”€ Toggle filter row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const filterRow = thead.querySelector<HTMLTableRowElement>('.filter-row')!;
 
   function toggleFilters(): void {
@@ -1311,7 +1316,7 @@ export function buildGrid(data: MSXData, opts?: {
     }
   }
 
-  // ── Reset view ────────────────────────────────────────────────────────
+  // â”€â”€ Reset view â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function resetView(): { filtersWereOn: boolean } {
     // 1. Clear sort
     sortColIndex = null;
@@ -1373,7 +1378,7 @@ export function buildGrid(data: MSXData, opts?: {
     return { filtersWereOn };
   }
 
-  // ── Clipboard copy ────────────────────────────────────────────────────
+  // â”€â”€ Clipboard copy â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function copySelection(includeHeaders?: boolean): string {
     const visibleModelIds = Array.from(tbody.querySelectorAll<HTMLTableRowElement>('tr[data-model-id]'))
       .map(tr => Number(tr.dataset.modelId));

@@ -15,13 +15,13 @@ The system has two independent sub-systems that share a single artifact: `docs/d
 
 The **web page** is a static TypeScript app built with Vite. It reads `data.js` at load time via a `<script>` tag, renders a grid, and manages all state client-side. The build output (`docs/`) is committed to the repository and served directly by GitHub Pages, opened as `file://`, or embedded in Blogger.
 
-The **scraper** is an offline Python CLI. The maintainer runs it on demand to fetch model data from msx.org and openMSX GitHub, merge the results (with interactive conflict resolution), and write a fresh `docs/data.js`. It also maintains `data/id-registry.json` — a committed file that maps model/column identities to their stable integer IDs across all scraper runs.
+The **scraper** is an offline Python CLI. The maintainer runs it on demand to fetch model data from msx.org and openMSX GitHub, merge the results (with interactive conflict resolution), and write a fresh `docs/data.js`. It also maintains `data/id-registry.json` â€” a committed file that maps model/column identities to their stable integer IDs across all scraper runs.
 
 No server is involved at any point. The two sub-systems only communicate through files on disk.
 
-The slot map feature adds 64 columns per model, extracted exclusively from openMSX machine XML files. A maintainer-controlled **Slot Map LUT** (`data/slotmap-lut.json`) maps XML device types and `id` patterns to short abbreviations and tooltip strings. The LUT is consumed by the scraper at build time (regex matching) and embedded in `data.js` as a compact key→tooltip map for runtime tooltip lookup in the browser. Mirror cells are detected in the XML via three methods (explicit `<Mirror>` element, ROM file size vs mapped range, `<rom_visibility>` vs `<mem>` range) and encoded as `<abbr>*` in the output.
+The slot map feature adds 64 columns per model, extracted exclusively from openMSX machine XML files. A maintainer-controlled **Slot Map LUT** (`data/slotmap-lut.json`) maps XML device types and `id` patterns to short abbreviations and tooltip strings. The LUT is consumed by the scraper at build time (regex matching) and embedded in `data.js` as a compact keyâ†’tooltip map for runtime tooltip lookup in the browser. Mirror cells are detected in the XML via three methods (explicit `<Mirror>` element, ROM file size vs mapped range, `<rom_visibility>` vs `<mem>` range) and encoded as `<abbr>*` in the output.
 
-**LUT override — `<mappertype>PANASONIC</mappertype>`:** Some devices (e.g. `<ROM id="Firmware">` in Panasonic turboR machines) wrap a banked firmware area controlled by the Panasonic mapper. A `<mappertype>PANASONIC</mappertype>` child element inside any device overrides whatever the LUT matched (e.g. `FW`) and forces the classification to `PM`. This takes precedence over the `id`-based LUT match and must be checked after the normal LUT lookup in `_classify_devices`.
+**LUT override â€” `<mappertype>PANASONIC</mappertype>`:** Some devices (e.g. `<ROM id="Firmware">` in Panasonic turboR machines) wrap a banked firmware area controlled by the Panasonic mapper. A `<mappertype>PANASONIC</mappertype>` child element inside any device overrides whatever the LUT matched (e.g. `FW`) and forces the classification to `PM`. This takes precedence over the `id`-based LUT match and must be checked after the normal LUT lookup in `_classify_devices`.
 
 ## Domain Boundaries
 
@@ -32,7 +32,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 
 - Scraper (data pipeline)
   - Responsibilities: Fetch, parse, merge all three sources, compute derived columns, conflict-resolve, and write model data; maintain model ID registry; extract and classify slot map data from openMSX XML; detect slot map mirrors
-  - Owns Data: `scraper/columns.py` (single source of truth for column/group definitions); `data/id-registry.json` (source of truth for model IDs); `data/slotmap-lut.json` (slot map vocabulary — maintained by maintainer); `data/local-raw.json` (manually curated supplemental data, highest authority); writes `docs/data.js`
+  - Owns Data: `scraper/columns.py` (single source of truth for column/group definitions); `data/id-registry.json` (source of truth for model IDs); `data/slotmap-lut.json` (slot map vocabulary â€” maintained by maintainer); `data/local-raw.json` (manually curated supplemental data, highest authority); writes `docs/data.js`
   - Merge strategy: openMSX + msx.org merged first (openMSX wins on conflict); local overrides applied on top (local wins for any field it provides)
   - External Interfaces: HTTP GET to msx.org (HTML scraping); HTTP GET to raw.githubusercontent.com or GitHub API (XML files); stdin/stdout for conflict prompts; read-only access to `systemroms/machines/` (ROM file size lookups for mirror detection)
 
@@ -43,7 +43,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Responsibilities: Grid display, column groups, sort/filter, row/column show-hide, cell selection, clipboard copy, URL state sync, theme toggle, **sticky headers and sticky left gutter**
   - Sticky UI: Implements four sticky header rows (page header, toolbar, group header, column header, filter row) and a sticky left gutter (row numbers, hide/unhide controls, gap indicators) as per UX guide. All sticky elements remain visible during both horizontal and vertical scroll, ensuring context is preserved for large grids and wide slot map columns.
   - Sticky Columns: The left gutter (row numbers, hide/unhide) is implemented as a sticky column, always visible regardless of horizontal scroll. The Identity group columns (Manufacturer, Model) are also frozen/sticky during horizontal scroll, pinned immediately to the right of the gutter. The Identity group header is likewise frozen. Gap indicator rows include frozen cells in the frozen panel so the dashed line remains visible. Sticky slot map columns may be considered in future versions if user need arises.
-  - Slot Map Columns: Renders all 64 slot map columns (4 groups × 16 columns) for every model, with group headers and tooltips as defined in the requirements. Cells outside a model's physical slot configuration display `~`. Mirror cells display `<abbr>*` and are visually distinct. All slot map columns are scrollable horizontally, but their group headers and column headers remain sticky.
+  - Slot Map Columns: Renders all 64 slot map columns (4 groups Ã— 16 columns) for every model, with group headers and tooltips as defined in the requirements. Cells outside a model's physical slot configuration display `~`. Mirror cells display `<abbr>*` and are visually distinct. All slot map columns are scrollable horizontally, but their group headers and column headers remain sticky.
   - Group Filter Indicator: Each group header `<th>` contains a FontAwesome `fas fa-filter` icon element (hidden by default). When any column in the group has a non-empty filter value, the header gets class `group-header--filtered` which reveals the icon. The `recalcGroupHeader()` function handles this alongside its existing `group-header--partial` logic. The indicator is visible in both expanded and collapsed states.
   - Depends On: `window.MSX_DATA` (set by data.js before app script runs)
   - Data Stores: In-memory only (no localStorage except theme preference)
@@ -69,13 +69,13 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 - msx.org Page Source
   - Type: Library (module `scraper/mirror.py`)
   - Responsibilities: Abstract the origin of msx.org HTML pages behind a `PageSource` protocol so the rest of the scraper is source-agnostic. Three implementations:
-    - `LivePageSource` — fetches from the live msx.org website; returns `None` + logs on any HTTP error.
-    - `MirrorPageSource` — reads browser-saved HTML files from a local directory. Filename convention: wiki URL slug → URL-decode → underscores→spaces → colons→underscores → append ` - MSX Wiki.html`. Returns `None` + WARN when a file is missing; ERROR when the directory is missing.
-    - `FallbackPageSource` — wraps live + mirror; tries live first, falls back to mirror on failure.
+    - `LivePageSource` â€” fetches from the live msx.org website; returns `None` + logs on any HTTP error.
+    - `MirrorPageSource` â€” reads browser-saved HTML files from a local directory. Filename convention: wiki URL slug â†’ URL-decode â†’ underscoresâ†’spaces â†’ colonsâ†’underscores â†’ append ` - MSX Wiki.html`. Returns `None` + WARN when a file is missing; ERROR when the directory is missing.
+    - `FallbackPageSource` â€” wraps live + mirror; tries live first, falls back to mirror on failure.
   - CLI flags (on `build` and `fetch-msxorg`):
-    - `--msxorg-mirror DIR` — enables FallbackPageSource (live-with-fallback)
-    - `--msxorg-mirror DIR --local-msxorg-only` — enables MirrorPageSource (skip live entirely)
-    - No flag — LivePageSource (default)
+    - `--msxorg-mirror DIR` â€” enables FallbackPageSource (live-with-fallback)
+    - `--msxorg-mirror DIR --local-msxorg-only` â€” enables MirrorPageSource (skip live entirely)
+    - No flag â€” LivePageSource (default)
   - Config: `data/scraper-config.json` key `msxorg_mirror` provides a persistent default mirror path; CLI flag overrides it.
   - Depends On: `requests` (live), filesystem (mirror)
   - Data Stores: local mirror directory (read-only)
@@ -83,13 +83,13 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 - openMSX XML Source
   - Type: Library (module `scraper/openmsx_source.py`)
   - Responsibilities: Abstract the origin of openMSX machine XML files behind an `XMLSource` protocol so the rest of the scraper is source-agnostic. Three implementations:
-    - `LiveXMLSource` — lists files via GitHub API and fetches each from raw.githubusercontent.com; caches download URLs from the listing response.
-    - `MirrorXMLSource` — reads `.xml` files from a local directory (e.g. the openMSX `share/machines` folder). Lists files via `glob("*.xml")` (sorted, skip-prefixes applied). Returns `None` + WARN when a file is missing; ERROR when the directory is missing. No delay between reads.
-    - `FallbackXMLSource` — wraps live + mirror; tries GitHub first, falls back to mirror on any listing or fetch failure.
+    - `LiveXMLSource` â€” lists files via GitHub API and fetches each from raw.githubusercontent.com; caches download URLs from the listing response.
+    - `MirrorXMLSource` â€” reads `.xml` files from a local directory (e.g. the openMSX `share/machines` folder). Lists files via `glob("*.xml")` (sorted, skip-prefixes applied). Returns `None` + WARN when a file is missing; ERROR when the directory is missing. No delay between reads.
+    - `FallbackXMLSource` â€” wraps live + mirror; tries GitHub first, falls back to mirror on any listing or fetch failure.
   - CLI flags (on `build` and `fetch-openmsx`):
-    - `--openmsx-mirror DIR` — enables FallbackXMLSource (live-with-fallback)
-    - `--openmsx-mirror DIR --local-openmsx-only` — enables MirrorXMLSource (skip GitHub entirely)
-    - No flag — LiveXMLSource (default)
+    - `--openmsx-mirror DIR` â€” enables FallbackXMLSource (live-with-fallback)
+    - `--openmsx-mirror DIR --local-openmsx-only` â€” enables MirrorXMLSource (skip GitHub entirely)
+    - No flag â€” LiveXMLSource (default)
   - Config: `data/scraper-config.json` key `openmsx_mirror` provides a persistent default mirror path; CLI flag overrides it.
   - Depends On: `requests` (live), filesystem (mirror)
   - Data Stores: local mirror directory (read-only)
@@ -103,8 +103,8 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 - Alias LUT
   - Type: File artifact (JSON), maintainer-controlled; module `scraper/aliases.py`
   - Responsibilities: Normalize known name variants to canonical forms before merge so that cross-source records differing only in spelling share the same natural key and are deduplicated. Two rule types:
-    - **Single-column** — top-level field-name key → `{ canonical: [alias, ...] }`. Applied field-by-field, case-insensitively.
-    - **Composite** — top-level `"composite"` array of `{ "match": {col: val, ...}, "canonical": {col: val, ...} }` objects. Fires only when *all* match fields agree simultaneously (AND semantics); first matching rule wins. Evaluated after single-column rules so single-column canonicalization can feed composite matching.
+    - **Single-column** â€” top-level field-name key â†’ `{ canonical: [alias, ...] }`. Applied field-by-field, case-insensitively.
+    - **Composite** â€” top-level `"composite"` array of `{ "match": {col: val, ...}, "canonical": {col: val, ...} }` objects. Fires only when *all* match fields agree simultaneously (AND semantics); first matching rule wins. Evaluated after single-column rules so single-column canonicalization can feed composite matching.
   - Runtime type: `AliasLUT` dataclass (`scraper/aliases.py`) with `single: dict[str, dict[str, str]]` and `composite: list[CompositeRule]` fields.
   - Depends On: -
   - Data Stores: `data/aliases.json` (read-only)
@@ -139,8 +139,8 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 - Page load and state restore
   - Trigger: User opens URL (file://, HTTP, or Blogger embed)
   - Steps:
-    1. Browser executes `<script src="data.js">` — sets `window.MSX_DATA`
-    2. Browser executes `<script src="bundle.js">` — app initialises
+    1. Browser executes `<script src="data.js">` â€” sets `window.MSX_DATA`
+    2. Browser executes `<script src="bundle.js">` â€” app initialises
     3. App reads `window.MSX_DATA` (columns, groups, models)
     4. App reads `window.location.hash`; if non-empty, URL Codec decodes it into view state
     5. If hash is empty, app loads default view config from `MSX_DATA.defaultView` (or falls back to show-all)
@@ -148,12 +148,12 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Data touched: window.MSX_DATA, window.location.hash
   - Failure handling: Unknown IDs in decoded hash are silently dropped. If data.js is missing (file:// without data.js), app renders an error message.
 
-- User interaction → URL update
+- User interaction â†’ URL update
   - Trigger: Any state-changing interaction (sort, filter, select, hide/show, collapse)
   - Steps:
     1. Event handler updates in-memory view state object
     2. Grid re-renders affected DOM regions (targeted updates, not full re-render)
-    3. URL Codec serializes full view state → binary payload → base64
+    3. URL Codec serializes full view state â†’ binary payload â†’ base64
     4. `history.replaceState(null, '', '#' + encoded)` updates hash without page reload
   - Data touched: in-memory state, URL hash
   - Failure handling: Codec errors are caught and logged; URL update is skipped (state still applies visually)
@@ -168,7 +168,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Data touched: in-memory selection state
   - Failure handling: If clipboard API unavailable (some file:// environments), fall back to `document.execCommand('copy')` on a hidden textarea
 
-- Filter state → group header indicator
+- Filter state â†’ group header indicator
   - Trigger: Any code path that modifies the `filters` Map (filter input handler, filter clear button, toggleFilters hide-all, URL state restore)
   - Steps:
     1. After modifying `filters`, determine affected group ID(s) from the column's `groupId`
@@ -176,15 +176,15 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     3. Toggle `group-header--filtered` class on the group `<th>` accordingly
     4. CSS rule `.group-header--filtered .filter-indicator { display: inline }` reveals the icon; removal hides it
   - Data touched: `filters` Map (read-only), group header DOM element (class toggle)
-  - Failure handling: If the group header `<th>` is not found (group has 0 visible columns), skip silently — same as existing `recalcGroupHeader` behavior
+  - Failure handling: If the group header `<th>` is not found (group has 0 visible columns), skip silently â€” same as existing `recalcGroupHeader` behavior
 
 - Scraper build (primary workflow)
   - Trigger: Maintainer runs `python -m scraper build` (or `build --fetch` for fresh data)
   - Steps:
     1. Load column configuration from `scraper/columns.py` (groups, columns, derive functions); validate (no duplicate IDs, no ID 0, group refs valid, etc.)
     2. Load `data/exclude.json` via `ExcludeList`; fail fast with `ValueError` on malformed input; absent file = empty list (no-op)
-    3. Load cached raw data from `data/openmsx-raw.json` and `data/msxorg-raw.json`; rename `"standard"` → `"generation"` in cached dicts for backward compatibility; apply exclude rules to cached data
-    4. Load local supplemental data from `data/local-raw.json` (optional; absent file is not an error); apply exclude rules to it too — an exclude rule outranks even local data, so a curated entry cannot resurrect an excluded model and a local-only entry cannot create an unremovable row
+    3. Load cached raw data from `data/openmsx-raw.json` and `data/msxorg-raw.json`; rename `"standard"` â†’ `"generation"` in cached dicts for backward compatibility; apply exclude rules to cached data
+    4. Load local supplemental data from `data/local-raw.json` (optional; absent file is not an error); apply exclude rules to it too â€” an exclude rule outranks even local data, so a curated entry cannot resurrect an excluded model and a local-only entry cannot create an unremovable row
     5. If `--fetch`: fetch fresh data from msx.org and openMSX GitHub first, overwriting cached files; exclude rules applied post-parse in each scraper
     6. Merge msx.org and openMSX data per model (openMSX wins on conflict); then apply local overrides on top (local wins for any field it provides)
     6a. After all per-model `links` are computed (keyed model URLs from `msxorg_title`), apply `data/link-shares.json`: for each entry whose recipient has no `links`, copy the donor's `links` (if present). Absent file is silently skipped.
@@ -194,25 +194,25 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     10. Atomic write `docs/data.js` and `data/id-registry.json`
     11. Emit dead-rule warnings for any exclude rules that matched zero models; print summary: N models written, M excluded, K conflicts resolved, J parse failures
   - Data touched: id-registry.json (read+write), docs/data.js (write), cached raw JSON (read, or write if --fetch)
-  - Failure handling: HTTP errors → retry once, then log and skip model. Parse failures → log field name and raw value, continue. If >20% of models fail to parse, abort before writing output. Missing cached files without --fetch → error with clear message.
+  - Failure handling: HTTP errors â†’ retry once, then log and skip model. Parse failures â†’ log field name and raw value, continue. If >20% of models fail to parse, abort before writing output. Missing cached files without --fetch â†’ error with clear message.
 
 - Slot map extraction (per machine XML)
   - Trigger: Scraper processes an openMSX machine XML file during the build flow
   - Steps:
     1. Parse XML with `lxml` (`recover=True`); locate `<devices>` element
-    2. First pass — walk all `<primary slot="N">` elements:
-       - If `external="true"`: classify as `CS{N}` for sub-slot 0 pages 0–3; mark sub-slots 1–3 as `~`
-       - If no `<secondary>` children: classify direct child devices against LUT; assign to pages via `<mem base size>`; mark sub-slots 1–3 as `~`
-       - If `<secondary>` children present: for each sub-slot 0–3, classify child devices against LUT and assign pages; any missing sub-slot element → `~` for all 4 pages
-    3. For each device assignment: determine which pages (0–3) its `<mem>` range covers (page N = range intersects [N×0x4000, (N+1)×0x4000)); assign abbreviation to those pages
+    2. First pass â€” walk all `<primary slot="N">` elements:
+       - If `external="true"`: classify as `CS{N}` for sub-slot 0 pages 0â€“3; mark sub-slots 1â€“3 as `~`
+       - If no `<secondary>` children: classify direct child devices against LUT; assign to pages via `<mem base size>`; mark sub-slots 1â€“3 as `~`
+       - If `<secondary>` children present: for each sub-slot 0â€“3, classify child devices against LUT and assign pages; any missing sub-slot element â†’ `~` for all 4 pages
+    3. For each device assignment: determine which pages (0â€“3) its `<mem>` range covers (page N = range intersects [NÃ—0x4000, (N+1)Ã—0x4000)); assign abbreviation to those pages
     4. If no LUT rule matches a device: emit `[WARN] Unmatched device: <element> id="<id>" in <filename>` to stdout; write raw device string as cell value
-    5. Second pass — resolve mirrors:
+    5. Second pass â€” resolve mirrors:
        - Method 1 (`<Mirror>` elements): look up referenced slot by `<ps>`/`<ss>`; find abbreviation already assigned to that slot in pass 1; write `<abbr>*` to the pages covered by `<Mirror>`'s `<mem>` range
-       - Method 2 (ROM file size): for each ROM device, look up all `<sha1>` values in `all_sha1s.txt`; try each until a file is found on disk; measure file size; compare to byte count covered by `<mem>`; pages beyond file size → `<abbr>*`; warn if no SHA1 resolves
-       - Method 3 (`<rom_visibility>`): pages within `<mem>` range but outside `<rom_visibility>` range → `<abbr>*`; `rom_visibility` page = original
-    6. Write all 64 slot map values to the model record (keyed by column key, e.g. `slotmap_0_0_0` … `slotmap_3_3_3`)
+       - Method 2 (ROM file size): for each ROM device, look up all `<sha1>` values in `all_sha1s.txt`; try each until a file is found on disk; measure file size; compare to byte count covered by `<mem>`; pages beyond file size â†’ `<abbr>*`; warn if no SHA1 resolves
+       - Method 3 (`<rom_visibility>`): pages within `<mem>` range but outside `<rom_visibility>` range â†’ `<abbr>*`; `rom_visibility` page = original
+    6. Write all 64 slot map values to the model record (keyed by column key, e.g. `slotmap_0_0_0` â€¦ `slotmap_3_3_3`)
   - Data touched: XML file, `data/slotmap-lut.json`, `systemroms/machines/all_sha1s.txt` + ROM files (optional)
-  - Failure handling: Unknown device → warn + raw string. SHA1 not found → warn + skip mirror detection for that ROM. Overlapping `<mem>` ranges → warn + first device wins. Scraper never aborts on slot map issues.
+  - Failure handling: Unknown device â†’ warn + raw string. SHA1 not found â†’ warn + skip mirror detection for that ROM. Overlapping `<mem>` ranges â†’ warn + first device wins. Scraper never aborts on slot map issues.
 
 - BIOS ROM field extraction (per machine XML)
   - Trigger: Scraper processes an openMSX machine XML file during the build flow (called from `parse_machine_xml` in `scraper/openmsx.py`)
@@ -220,11 +220,11 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     1. Find the XML element with `id="MSX BIOS with BASIC ROM"` anywhere in the tree
     2. Locate the inner `<rom>` child of that element
     3. **Direct SHA1 path** (most MSX2 / MSX2+ machines): read `<sha1>` child(ren); read optional `<window base="...">` offset (default 0); try each SHA1 against `all_sha1s.txt`; use first SHA1 whose file exists on disk
-    4. **Block-based path** (turbo R / PanasonicRom machines): read `<firstblock>`; find `<PanasonicRom>` element in the XML root; try its SHA1(s) against `all_sha1s.txt`; byte offset = `firstblock × 8192`
+    4. **Block-based path** (turbo R / PanasonicRom machines): read `<firstblock>`; find `<PanasonicRom>` element in the XML root; try its SHA1(s) against `all_sha1s.txt`; byte offset = `firstblock Ã— 8192`
     5. Read the resolved file; compute `file_pos = bios_offset + byte_offset`; read `data[file_pos] & 0x0F` (lower nibble)
     6. Map nibble value to string via lookup table (`_CHARSET_MAP` for 0x002B, `_KBTYPE_MAP` for 0x002C); store under field key
   - Data touched: XML file, `systemroms/machines/all_sha1s.txt` (optional), ROM file (optional)
-  - Failure handling: No BIOS ROM element → skip (no keys set). SHA1 not in index or file absent → warn + skip. File too short → warn + skip. Unknown nibble value → warn + skip. All failures are per-field: the other field is still extracted if possible. Scraper never aborts.
+  - Failure handling: No BIOS ROM element â†’ skip (no keys set). SHA1 not in index or file absent â†’ warn + skip. File too short â†’ warn + skip. Unknown nibble value â†’ warn + skip. All failures are per-field: the other field is still extracted if possible. Scraper never aborts.
 
 ## Data Model
 
@@ -242,19 +242,19 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 
 - GroupDef
   - Purpose: Defines one collapsible column group
-  - Key fields: `id` (stable int, < 32 — URL codec bitmask), `key`, `label`, `order`
+  - Key fields: `id` (stable int, < 32 â€” URL codec bitmask), `key`, `label`, `order`
   - Relationships: Contains one or more ColumnDefs
   - Retention: Groups are fixed; defined in scraper config
 
 - ModelRecord
-  - Purpose: One row in the grid — one MSX model
+  - Purpose: One row in the grid â€” one MSX model
   - Key fields: `id` (stable int), `values[]` (string|number|null, indexed by column position)
   - Relationships: values[] is parallel to MSXData.columns[]
   - Retention: Regenerated by scraper; stable ID is permanent
 
 - IDRegistry (scraper tool, not shipped to browser)
   - Purpose: Maps model natural keys to stable integer IDs; records retired model IDs. Column IDs are defined in `scraper/columns.py` and not tracked here.
-  - Key fields: `version` (2), `models` (object: natural key → id), `retired_models` (int[]), `next_model_id`
+  - Key fields: `version` (2), `models` (object: natural key â†’ id), `retired_models` (int[]), `next_model_id`
   - Relationships: Source of truth for model ID assignment only
   - Retention: Committed to repo; never reset; append-only for retirements
 
@@ -265,9 +265,9 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Retention: Committed to repo; grows as new device strings are encountered; never loses entries
 
 - SlotMapColumns (in data.js, part of ColumnDef)
-  - Purpose: The 64 slot map columns — 4 groups × 16 columns. Each is a standard ColumnDef with a stable ID and a key of the form `slotmap_{ms}_{ss}_{p}` (main slot, sub-slot, page).
+  - Purpose: The 64 slot map columns â€” 4 groups Ã— 16 columns. Each is a standard ColumnDef with a stable ID and a key of the form `slotmap_{ms}_{ss}_{p}` (main slot, sub-slot, page).
   - Key fields: same as ColumnDef (`id`, `key`, `label`, `groupId`, `type: 'string'`)
-  - Relationships: 4 GroupDefs added ("Slotmap, slot 0–3"); 16 ColumnDefs per group
+  - Relationships: 4 GroupDefs added ("Slotmap, slot 0â€“3"); 16 ColumnDefs per group
   - Retention: IDs permanent once assigned; groups and columns defined in `scraper/columns.py`
 
 - ViewState (in-memory only, serialized to URL)
@@ -276,37 +276,37 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Relationships: References IDs from MSXData
   - Retention: In-memory; encoded in URL hash; never persisted elsewhere
 
-## URL Codec — Binary Format
+## URL Codec â€” Binary Format
 
 ```
 Byte 0:     version (currently 0x01)
 Byte 1:     flags (reserved, 0x00)
-Bytes 2–3:  sort_column_id (uint16, 0x0000 = no sort; column ID 0 is reserved and must never be assigned)
+Bytes 2â€“3:  sort_column_id (uint16, 0x0000 = no sort; column ID 0 is reserved and must never be assigned)
 Byte 4:     sort_direction (0x00=asc, 0x01=desc)
-Bytes 5–8:  collapsed_groups bitmask (uint32, bit N = group ID N collapsed)
-Bytes 9–10: hidden_columns bitset byte length (uint16)
-Bytes …:    hidden_columns bitset (bit N = column ID N hidden)
-Bytes …:    hidden_rows bitset byte length (uint16)
-Bytes …:    hidden_rows bitset (bit N = model ID N hidden)
-Bytes …:    filter_count (uint16)
+Bytes 5â€“8:  collapsed_groups bitmask (uint32, bit N = group ID N collapsed)
+Bytes 9â€“10: hidden_columns bitset byte length (uint16)
+Bytes â€¦:    hidden_columns bitset (bit N = column ID N hidden)
+Bytes â€¦:    hidden_rows bitset byte length (uint16)
+Bytes â€¦:    hidden_rows bitset (bit N = model ID N hidden)
+Bytes â€¦:    filter_count (uint16)
   Per filter:
     column_id (uint16)
     string_byte_length (uint16)
     utf8 bytes
-Bytes …:    selection_row_count (uint16)
+Bytes â€¦:    selection_row_count (uint16)
   Per selected row:
     model_id             (uint16)
     col_bitset_byte_len  (uint16)
     col_bitset bytes     (variable; bit N = column ID N is selected)
 ```
 
-Entire buffer → `btoa(String.fromCharCode(...bytes))` → URL-safe base64 (replace `+`→`-`, `/`→`_`, strip `=` padding) → `#` + result.
+Entire buffer â†’ `btoa(String.fromCharCode(...bytes))` â†’ URL-safe base64 (replace `+`â†’`-`, `/`â†’`_`, strip `=` padding) â†’ `#` + result.
 
-Estimated size for 50 selected cells across 10 rows, all filters empty, no hidden rows: ~90 bytes → ~120 base64 chars.
+Estimated size for 50 selected cells across 10 rows, all filters empty, no hidden rows: ~90 bytes â†’ ~120 base64 chars.
 
 Future format changes increment the version byte; the decoder checks version and falls back to the caller-supplied fallback state (see below) for unknown versions.
 
-The `hidden_columns` bitset is **absolute, never a delta from the column defaults**. A hash that decodes cleanly is applied verbatim; the defaults apply only when there is no hash or the hash is unreadable. This is what lets a column become `default_off` without a version bump — a URL shared beforehand encodes "nothing hidden" and still opens showing that column, exactly as its author left it.
+The `hidden_columns` bitset is **absolute, never a delta from the column defaults**. A hash that decodes cleanly is applied verbatim; the defaults apply only when there is no hash or the hash is unreadable. This is what lets a column become `default_off` without a version bump â€” a URL shared beforehand encodes "nothing hidden" and still opens showing that column, exactly as its author left it.
 
 ## Integrity Strategy
 - Invariants:
@@ -314,7 +314,7 @@ The `hidden_columns` bitset is **absolute, never a delta from the column default
   - `next_model_id` only ever increases; column IDs in `scraper/columns.py` are never renumbered or reused
   - `docs/data.js` is only written after the full scraper run succeeds and the maintainer has resolved all conflicts
   - URL decoder never throws; unknown IDs are silently ignored
-- Idempotency: Scraper run is idempotent on data (same sources → same output); registry is append-only
+- Idempotency: Scraper run is idempotent on data (same sources â†’ same output); registry is append-only
 - Concurrency: Single-maintainer tool; no concurrent access design needed
 
 ## Audit and Compliance
@@ -331,14 +331,14 @@ The `hidden_columns` bitset is **absolute, never a delta from the column default
 - openMSX GitHub repository
   - Direction: Outbound (scraper reads)
   - Interface: HTTP GET to raw.githubusercontent.com XML files
-  - Notes: Fetch file listing via GitHub API (`/repos/openMSX/openMSX/contents/share/machines`); then fetch individual XML files. Can be replaced by a local mirror directory (`--openmsx-mirror DIR`) containing the same `.xml` files — no network access in that mode.
+  - Notes: Fetch file listing via GitHub API (`/repos/openMSX/openMSX/contents/share/machines`); then fetch individual XML files. Can be replaced by a local mirror directory (`--openmsx-mirror DIR`) containing the same `.xml` files â€” no network access in that mode.
 
 ## Technology Stack
 
 ### Backend (Scraper)
 - Language/Runtime: Python 3.11+
 - HTML parsing: `beautifulsoup4` + `lxml` backend
-- XML parsing: `lxml` with `recover=True` (lenient parser — openMSX XML files are often malformed/non-strict and must be parsed permissively)
+- XML parsing: `lxml` with `recover=True` (lenient parser â€” openMSX XML files are often malformed/non-strict and must be parsed permissively)
 - HTTP: `requests` (with retry via `urllib3`)
 - Interactive prompts: built-in `input()` with coloured output via `colorama`
 - JSON: stdlib `json`
@@ -361,14 +361,14 @@ The `hidden_columns` bitset is **absolute, never a delta from the column default
 
 ### Infrastructure Posture
 - Hosting: GitHub Pages (from `docs/` directory on main branch) + local `file://`
-- Environments: Local only (no dev/staging/prod distinction — static files)
-- Deployment style: Commit `docs/` to main branch → GitHub Pages auto-deploys
+- Environments: Local only (no dev/staging/prod distinction â€” static files)
+- Deployment style: Commit `docs/` to main branch â†’ GitHub Pages auto-deploys
 
 ### Observability
 - Logging: Browser `console.warn` for URL decode errors only; no production logging
 - Metrics: None
 - Tracing: None
-- Scraper: stdout only — structured log lines with severity prefix (`[INFO]`, `[WARN]`, `[ERROR]`)
+- Scraper: stdout only â€” structured log lines with severity prefix (`[INFO]`, `[WARN]`, `[ERROR]`)
 
 ### Testing Posture
 - Unit (web): Vitest; cover URL codec (encode/decode round-trips, version handling, unknown ID tolerance), grid state transitions
@@ -383,83 +383,83 @@ The `hidden_columns` bitset is **absolute, never a delta from the column default
 
 ```
 msx_models_db/
-├── docs/                    # Committed build output — served by GitHub Pages
-│   ├── index.html           # Built by Vite
-│   ├── bundle.js            # Built by Vite (IIFE)
-│   ├── fa-solid-900.woff2   # FontAwesome font asset
-│   └── data.js              # Written by scraper (window.MSX_DATA = {...})
-├── src/                     # TypeScript source (Vite root)
-│   ├── index.html           # Vite entry HTML
-│   ├── main.ts              # Entry point: header, toolbar, grid, col picker, URL hash sync
-│   ├── grid.ts              # Grid rendering, sort, filter, selection, hide/unhide, sticky/frozen, clipboard
-│   ├── col-picker.ts        # Column show/hide picker
-│   ├── toolbar.ts           # Toolbar buttons
-│   ├── theme.ts             # Dark/light toggle, localStorage persistence
-│   ├── symbols.ts           # Slot-map symbols (imports data/scraper-config.json)
-│   ├── types.ts             # MSXData, ColumnDef, ViewState, ...
-│   ├── url/codec.ts         # Binary encode/decode of ViewState
-│   └── styles/              # theme, base, header, toolbar, grid, statusbar CSS
-├── scraper/                 # Python scraper package
-│   ├── __main__.py          # CLI (python -m scraper build|fetch-openmsx|fetch-msxorg|merge|update-himem)
-│   ├── build.py             # Pipeline orchestration; writes docs/data.js
-│   ├── columns.py           # Column/group definitions (single source of truth)
-│   ├── openmsx.py           # openMSX XML parser (general fields, BIOS ROM fields)
-│   ├── openmsx_source.py    # Live/Mirror/Fallback XML sources
-│   ├── msxorg.py            # msx.org HTML scraper
-│   ├── msxorg_slotmap.py    # msx.org slot map table parser
-│   ├── mirror.py            # Live/Mirror/Fallback msx.org page sources
-│   ├── slotmap.py           # openMSX slot map extractor + mirror detection
-│   ├── slotmap_lut.py       # Slot map LUT load/validate/compact
-│   ├── merge.py             # Merge, preference rules, substitutions, conflicts
-│   ├── aliases.py           # Alias LUT
-│   ├── link_shares.py       # Link-shares LUT
-│   ├── exclude.py           # Exclude list
-│   ├── registry.py          # Model ID registry load/save/match/assign
-│   ├── local_source.py      # data/local-raw.json loader
-│   ├── update_himem.py      # Folds a dump_himem.tcl run into data/local-raw.json
-│   ├── symbols.py           # Slot-map symbols (reads data/scraper-config.json)
-│   └── http.py              # HTTP session helpers
-├── helpers/
-│   └── dump_himem.tcl       # openMSX script: boots every machine, prints its HIMEM
-├── data/
-│   ├── id-registry.json     # Stable model ID registry (committed, append-only)
-│   ├── slotmap-lut.json     # Slot map vocabulary (maintainer-edited)
-│   ├── aliases.json         # Alias LUT (maintainer-edited)
-│   ├── substitutions.json   # Value substitutions (maintainer-edited)
-│   ├── exclude.json         # Exclude list (maintainer-edited)
-│   ├── link-shares.json     # Link-shares LUT (maintainer-edited)
-│   ├── local-raw.json       # Local supplemental data (maintainer-edited, highest authority)
-│   ├── himem-values.txt     # dump_himem.tcl output, input to update-himem
-│   ├── scraper-config.json  # Mirror paths + slot-map symbols
-│   ├── openmsx-raw.json     # Cached fetch output (gitignored)
-│   ├── msxorg-raw.json      # Cached fetch output (gitignored)
-│   └── schema.md            # MSXData schema documentation
-├── helpers/                 # Maintainer helper scripts (e.g. openMSX Tcl dumps)
-├── systemroms/
-│   └── machines/
-│       ├── all_sha1s.txt    # SHA1→relative-path index (committed)
-│       └── …                # ROM files (not committed; present in maintainer's local env)
-├── tests/
-│   ├── web/                 # Vitest + jsdom tests (*.test.ts)
-│   └── scraper/             # pytest tests (test_*.py)
-├── vite.config.ts           # Vite build + Vitest config
-├── tsconfig.json
-├── eslint.config.js
-├── package.json
-├── pyproject.toml           # pytest config (pythonpath)
-├── requirements.txt         # Python deps (beautifulsoup4, lxml, requests, colorama)
-└── .claude/                 # Agent skills + planning/decision artifacts
+â”œâ”€â”€ docs/                    # Committed build output â€” served by GitHub Pages
+â”‚   â”œâ”€â”€ index.html           # Built by Vite
+â”‚   â”œâ”€â”€ bundle.js            # Built by Vite (IIFE)
+â”‚   â”œâ”€â”€ fa-solid-900.woff2   # FontAwesome font asset
+â”‚   â””â”€â”€ data.js              # Written by scraper (window.MSX_DATA = {...})
+â”œâ”€â”€ src/                     # TypeScript source (Vite root)
+â”‚   â”œâ”€â”€ index.html           # Vite entry HTML
+â”‚   â”œâ”€â”€ main.ts              # Entry point: header, toolbar, grid, col picker, URL hash sync
+â”‚   â”œâ”€â”€ grid.ts              # Grid rendering, sort, filter, selection, hide/unhide, sticky/frozen, clipboard
+â”‚   â”œâ”€â”€ col-picker.ts        # Column show/hide picker
+â”‚   â”œâ”€â”€ toolbar.ts           # Toolbar buttons
+â”‚   â”œâ”€â”€ theme.ts             # Dark/light toggle, localStorage persistence
+â”‚   â”œâ”€â”€ symbols.ts           # Slot-map symbols (imports data/scraper-config.json)
+â”‚   â”œâ”€â”€ types.ts             # MSXData, ColumnDef, ViewState, ...
+â”‚   â”œâ”€â”€ url/codec.ts         # Binary encode/decode of ViewState
+â”‚   â””â”€â”€ styles/              # theme, base, header, toolbar, grid, statusbar CSS
+â”œâ”€â”€ scraper/                 # Python scraper package
+â”‚   â”œâ”€â”€ __main__.py          # CLI (python -m scraper build|fetch-openmsx|fetch-msxorg|merge|update-himem)
+â”‚   â”œâ”€â”€ build.py             # Pipeline orchestration; writes docs/data.js
+â”‚   â”œâ”€â”€ columns.py           # Column/group definitions (single source of truth)
+â”‚   â”œâ”€â”€ openmsx.py           # openMSX XML parser (general fields, BIOS ROM fields)
+â”‚   â”œâ”€â”€ openmsx_source.py    # Live/Mirror/Fallback XML sources
+â”‚   â”œâ”€â”€ msxorg.py            # msx.org HTML scraper
+â”‚   â”œâ”€â”€ msxorg_slotmap.py    # msx.org slot map table parser
+â”‚   â”œâ”€â”€ mirror.py            # Live/Mirror/Fallback msx.org page sources
+â”‚   â”œâ”€â”€ slotmap.py           # openMSX slot map extractor + mirror detection
+â”‚   â”œâ”€â”€ slotmap_lut.py       # Slot map LUT load/validate/compact
+â”‚   â”œâ”€â”€ merge.py             # Merge, preference rules, substitutions, conflicts
+â”‚   â”œâ”€â”€ aliases.py           # Alias LUT
+â”‚   â”œâ”€â”€ link_shares.py       # Link-shares LUT
+â”‚   â”œâ”€â”€ exclude.py           # Exclude list
+â”‚   â”œâ”€â”€ registry.py          # Model ID registry load/save/match/assign
+â”‚   â”œâ”€â”€ local_source.py      # data/local-raw.json loader
+â”‚   â”œâ”€â”€ update_himem.py      # Folds a dump_himem.tcl run into data/local-raw.json
+â”‚   â”œâ”€â”€ symbols.py           # Slot-map symbols (reads data/scraper-config.json)
+â”‚   â””â”€â”€ http.py              # HTTP session helpers
+â”œâ”€â”€ helpers/
+â”‚   â””â”€â”€ dump_himem.tcl       # openMSX script: boots every machine, prints its HIMEM
+â”œâ”€â”€ data/
+â”‚   â”œâ”€â”€ id-registry.json     # Stable model ID registry (committed, append-only)
+â”‚   â”œâ”€â”€ slotmap-lut.json     # Slot map vocabulary (maintainer-edited)
+â”‚   â”œâ”€â”€ aliases.json         # Alias LUT (maintainer-edited)
+â”‚   â”œâ”€â”€ substitutions.json   # Value substitutions (maintainer-edited)
+â”‚   â”œâ”€â”€ exclude.json         # Exclude list (maintainer-edited)
+â”‚   â”œâ”€â”€ link-shares.json     # Link-shares LUT (maintainer-edited)
+â”‚   â”œâ”€â”€ local-raw.json       # Local supplemental data (maintainer-edited, highest authority)
+â”‚   â”œâ”€â”€ himem-values.txt     # dump_himem.tcl output, input to update-himem
+â”‚   â”œâ”€â”€ scraper-config.json  # Mirror paths + slot-map symbols
+â”‚   â”œâ”€â”€ openmsx-raw.json     # Cached fetch output (gitignored)
+â”‚   â”œâ”€â”€ msxorg-raw.json      # Cached fetch output (gitignored)
+â”‚   â””â”€â”€ schema.md            # MSXData schema documentation
+â”œâ”€â”€ helpers/                 # Maintainer helper scripts (e.g. openMSX Tcl dumps)
+â”œâ”€â”€ systemroms/
+â”‚   â””â”€â”€ machines/
+â”‚       â”œâ”€â”€ all_sha1s.txt    # SHA1â†’relative-path index (committed)
+â”‚       â””â”€â”€ â€¦                # ROM files (not committed; present in maintainer's local env)
+â”œâ”€â”€ tests/
+â”‚   â”œâ”€â”€ web/                 # Vitest + jsdom tests (*.test.ts)
+â”‚   â””â”€â”€ scraper/             # pytest tests (test_*.py)
+â”œâ”€â”€ vite.config.ts           # Vite build + Vitest config
+â”œâ”€â”€ tsconfig.json
+â”œâ”€â”€ eslint.config.js
+â”œâ”€â”€ package.json
+â”œâ”€â”€ pyproject.toml           # pytest config (pythonpath)
+â”œâ”€â”€ requirements.txt         # Python deps (beautifulsoup4, lxml, requests, colorama)
+â””â”€â”€ .claude/                 # Agent skills + planning/decision artifacts
 ```
 
 ### Command Surface
-- `npm run dev` — start Vite dev server (hot reload, serves from src/)
-- `npm run build` — bundle TypeScript → docs/index.html + docs/bundle.js (preserves docs/data.js)
-- `npm test -- --run` (or `npx vitest run`) — run Vitest tests in tests/web/ once
-- `npm run lint` — ESLint on src/
-- `npm run typecheck` — tsc --noEmit (covers src/, tests/, vite.config.ts)
-- `python -m scraper build [--fetch] [-l]` — run scraper; writes docs/data.js and data/id-registry.json
-- `python -m scraper update-himem <dump.txt> <local-raw.json> [--dry-run]` — fold HIMEM readings into the local supplemental data (see *Feature Design: HIMEM Value Ingestion*)
-- `python -m pytest tests/scraper` — run scraper unit tests
+- `npm run dev` â€” start Vite dev server (hot reload, serves from src/)
+- `npm run build` â€” bundle TypeScript â†’ docs/index.html + docs/bundle.js (preserves docs/data.js)
+- `npm test -- --run` (or `npx vitest run`) â€” run Vitest tests in tests/web/ once
+- `npm run lint` â€” ESLint on src/
+- `npm run typecheck` â€” tsc --noEmit (covers src/, tests/, vite.config.ts)
+- `python -m scraper build [--fetch] [-l]` â€” run scraper; writes docs/data.js and data/id-registry.json
+- `python -m scraper update-himem <dump.txt> <local-raw.json> [--dry-run]` â€” fold HIMEM readings into the local supplemental data (see *Feature Design: HIMEM Value Ingestion*)
+- `python -m pytest tests/scraper` â€” run scraper unit tests
 
 ### Local quality checks (before committing)
 - `npm run lint`, `npm run typecheck`, `npm test -- --run`, `python -m pytest tests/scraper`, `npm run build`
@@ -467,9 +467,9 @@ msx_models_db/
 ### Environment Model
 
 - Configuration sources: None at runtime. `data/scraper-config.json` (committed JSON object; optional for the scraper) holds:
-  - `msxorg_mirror` — path to local msx.org mirror directory (browser-saved HTML files)
-  - `openmsx_mirror` — path to local openMSX mirror directory (XML files, e.g. `share/machines`)
-  - `slotmap_symbols` — `absent`, `empty_page`, `mirror_suffix`, `subslot_suffix` display symbols. Read by `scraper/symbols.py` (falls back to built-in defaults if absent) and imported at build time by `src/symbols.ts` (required for the web build). The `absent`/`empty_page` values must match the `__sentinel__` rules in `data/slotmap-lut.json`.
+  - `msxorg_mirror` â€” path to local msx.org mirror directory (browser-saved HTML files)
+  - `openmsx_mirror` â€” path to local openMSX mirror directory (XML files, e.g. `share/machines`)
+  - `slotmap_symbols` â€” `absent`, `empty_page`, `mirror_suffix`, `subslot_suffix` display symbols. Read by `scraper/symbols.py` (falls back to built-in defaults if absent) and imported at build time by `src/symbols.ts` (required for the web build). The `absent`/`empty_page` values must match the `__sentinel__` rules in `data/slotmap-lut.json`.
   CLI flags `--msxorg-mirror`, `--local-msxorg-only`, `--openmsx-mirror`, `--local-openmsx-only`, `-l/--local-only` override the mirror config values.
 - Request pacing: `--delay SECONDS` on `fetch-openmsx` (default 0.3) and `fetch-msxorg` (default 0.5). No environment variables are read.
 
@@ -505,7 +505,7 @@ msx_models_db/
 
 - Two-pass XML walk for mirror resolution (`<Mirror>` element method)
   - Why chosen: `<Mirror>` references a slot by number (`<ps>`/`<ss>`), which may appear later in document order; a second pass guarantees all slot content is classified before cross-references are resolved
-  - Cost: Slightly more complex extraction logic; first pass must store intermediate slot→abbr map before second pass
+  - Cost: Slightly more complex extraction logic; first pass must store intermediate slotâ†’abbr map before second pass
 
 - `systemroms/` not committed to the repository
   - Why chosen: ROM files are copyrighted; only the SHA1 index (`all_sha1s.txt`) is committed; mirror detection gracefully degrades when ROM files are absent
@@ -521,9 +521,9 @@ msx_models_db/
 
 ### Overview
 
-Columns may declare an optional `truncate_limit` (positive integer). When a string cell value exceeds this limit, the rendered text is clipped to `(truncate_limit − 1)` characters followed by `…`. The full value is preserved in a `data-full-value` DOM attribute and exposed via a native `title` tooltip. Sorting and clipboard copy are unaffected because both already read from `ModelRecord.values[]` directly — not from `td.textContent`.
+Columns may declare an optional `truncate_limit` (positive integer). When a string cell value exceeds this limit, the rendered text is clipped to `(truncate_limit âˆ’ 1)` characters followed by `â€¦`. The full value is preserved in a `data-full-value` DOM attribute and exposed via a native `title` tooltip. Sorting and clipboard copy are unaffected because both already read from `ModelRecord.values[]` directly â€” not from `td.textContent`.
 
-### Schema Change — `ColumnDef`
+### Schema Change â€” `ColumnDef`
 
 Add one optional field to `ColumnDef` (TypeScript) and the `Column` dataclass (Python):
 
@@ -549,14 +549,14 @@ Initial values:
 - `manufacturer` (id=1): `truncate_limit = 12`
 - `model` (id=2): `truncate_limit = 16`
 
-### Render Path — `buildDataRow` (grid.ts)
+### Render Path â€” `buildDataRow` (grid.ts)
 
 After computing `text = cellText(rawValue, col)`, apply truncation before writing to the DOM:
 
 ```
 if col.truncateLimit > 0 and text.length > col.truncateLimit:
     td.dataset.fullValue = text
-    displayText = text.slice(0, truncateLimit - 1) + '…'
+    displayText = text.slice(0, truncateLimit - 1) + 'â€¦'
 else:
     displayText = text
 ```
@@ -565,29 +565,29 @@ For **plain cells**: `td.textContent = displayText`
 
 For **link cells** (where `col.linkable` and a URL is present):
 - `a.textContent = displayText`
-- `a.title = fullValue + ' — ' + url`  (replaces the current `a.title = url`)
+- `a.title = fullValue + ' â€” ' + url`  (replaces the current `a.title = url`)
 
-### Tooltip Path — `mouseenter` handler (grid.ts)
+### Tooltip Path â€” `mouseenter` handler (grid.ts)
 
 The current handler skips cells with `a.cell-link` and falls through to per-cell overflow or `data-tooltip` logic. The update:
 
-1. **Link cells with truncation** — no longer skipped early; if `td.dataset.fullValue` is set, the combined `a.title` was already written at render time. The handler still exits early — the `<a>` manages its own `title`.
-2. **Plain cells with truncation** — `td.dataset.fullValue` is set; handler sets `td.title = td.dataset.fullValue` (takes priority over the existing overflow check, because the full value is always the right tooltip regardless of whether the cell visually overflows).
-3. **Cells without truncation** — existing behavior unchanged.
+1. **Link cells with truncation** â€” no longer skipped early; if `td.dataset.fullValue` is set, the combined `a.title` was already written at render time. The handler still exits early â€” the `<a>` manages its own `title`.
+2. **Plain cells with truncation** â€” `td.dataset.fullValue` is set; handler sets `td.title = td.dataset.fullValue` (takes priority over the existing overflow check, because the full value is always the right tooltip regardless of whether the cell visually overflows).
+3. **Cells without truncation** â€” existing behavior unchanged.
 
 Priority order inside mouseenter for non-link cells:
 ```
-if td.dataset.fullValue  → td.title = td.dataset.fullValue
-else if scrollWidth > offsetWidth → td.title = td.textContent
-else if td.dataset.tooltip → td.title = td.dataset.tooltip
-else → removeAttribute('title')
+if td.dataset.fullValue  â†’ td.title = td.dataset.fullValue
+else if scrollWidth > offsetWidth â†’ td.title = td.textContent
+else if td.dataset.tooltip â†’ td.title = td.dataset.tooltip
+else â†’ removeAttribute('title')
 ```
 
-### Clipboard Copy — no change needed
+### Clipboard Copy â€” no change needed
 
 `copySelection()` reads `model.values[c]` directly, bypassing all DOM text. No modification required.
 
-### Sort — no change needed
+### Sort â€” no change needed
 
 `sortModels()` reads `model.values[colIndex]` directly. No modification required.
 
@@ -598,8 +598,8 @@ else → removeAttribute('title')
 | `scraper/columns.py` | Add `truncate_limit` field; set 10 on `manufacturer` and `model` |
 | `scraper/build.py` (or equivalent serialiser) | Serialise `truncateLimit` into `ColumnDef` in `data.js` when non-zero |
 | `src/types.ts` | Add `truncateLimit?: number` to `ColumnDef` |
-| `src/grid.ts` — `buildDataRow` | Apply truncation; set `data-full-value`; update `a.title` for link cells |
-| `src/grid.ts` — `mouseenter` handler | Prefer `data-full-value` over overflow check for plain cells |
+| `src/grid.ts` â€” `buildDataRow` | Apply truncation; set `data-full-value`; update `a.title` for link cells |
+| `src/grid.ts` â€” `mouseenter` handler | Prefer `data-full-value` over overflow check for plain cells |
 | Clipboard copy | No change |
 | Sort | No change |
 | URL codec | No change |
@@ -607,11 +607,31 @@ else → removeAttribute('title')
 
 ---
 
+## Feature Design: Column Header Line Breaks
+
+### Overview
+
+`.col-header` caps header width at 5em so short labels wrap to the two lines the 38px header row allows. Labels that need more room can carry an explicit newline in `short_label`: the header renders it verbatim (`white-space: pre-line`) and gets `col-header--wide` (`max-width: none`) so the cell sizes to its widest line instead of the cap. The full `label` remains the header tooltip and the column-picker name.
+
+Used by the two Engine columns, whose headers read "Engine" / "(semi-custom ASIC)" and "Engine" / "(full-custom ASIC)".
+
+### Data flows affected
+
+| Path | Change |
+|---|---|
+| `scraper/columns.py` | `short_label` may contain `
+` |
+| `src/grid.ts` — `buildColHeaderRow` | Add `col-header--wide` when the header text contains `
+` |
+| `src/styles/grid.css` | `.col-header__text { white-space: pre-line }`; `.col-header--wide { max-width: none }` |
+
+---
+
 ## Feature Design: Per-Column Max Width
 
 ### Overview
 
-Data cells share a stylesheet cap (`.grid tbody td { max-width: 160px }`, border-box) and otherwise size to content. A column may declare `max_width` (px) in `scraper/columns.py` to cap its data cells narrower (or wider) than the shared cap. Overflow uses the existing ellipsis styling and the `mouseenter` overflow tooltip — no new tooltip path.
+Data cells share a stylesheet cap (`.grid tbody td { max-width: 160px }`, border-box) and otherwise size to content. A column may declare `max_width` (px) in `scraper/columns.py` to cap its data cells narrower (or wider) than the shared cap. Overflow uses the existing ellipsis styling and the `mouseenter` overflow tooltip â€” no new tooltip path.
 
 First use: Region (`max_width=107`, one third narrower than the 160px it rendered at).
 
@@ -622,7 +642,7 @@ First use: Region (`max_width=107`, one third narrower than the 160px it rendere
 | `scraper/columns.py` | `max_width: int \| None = None`; `validate_config` rejects non-positive values |
 | `scraper/build.py` | Serialise `maxWidth` only when set |
 | `src/types.ts` | `ColumnDef.maxWidth?: number` |
-| `src/grid.ts` — `buildDataRow` | `td.style.maxWidth = maxWidth + 'px'` when set |
+| `src/grid.ts` â€” `buildDataRow` | `td.style.maxWidth = maxWidth + 'px'` when set |
 | Sort / filter / clipboard / URL codec | No change |
 
 ---
@@ -647,7 +667,7 @@ passed to `decodeFromHash` as the *fallback*, so it applies only when there is n
 or the hash is unreadable.
 
 The key invariant: **defaults seed the initial view; the hash stays absolute.** They are
-never merged. A decodable hash wins outright, even when it hides nothing — which is what
+never merged. A decodable hash wins outright, even when it hides nothing â€” which is what
 keeps previously shared URLs faithful without a codec version bump.
 
 `grid.ts` keeps its own `defaultHiddenCols` (column *indices*) purely so `resetView()`
@@ -662,8 +682,8 @@ can restore it. "Reset view" means back to the defaults, not "show every column"
 | `src/types.ts` | `ColumnDef.defaultOff?: boolean` |
 | `src/url/codec.ts` | `defaultViewState(columns)`; `decodeViewState`/`decodeFromHash` take an optional `fallback` ViewState (cloned on use) |
 | `src/main.ts` | Passes `defaultViewState(columns)` as the decode fallback |
-| `src/grid.ts` — `resetView` | Re-hides `defaultHiddenCols` after the wholesale restore, then recalcs those group headers |
-| `src/col-picker.ts` | No change — already reads `getHiddenCols()` |
+| `src/grid.ts` â€” `resetView` | Re-hides `defaultHiddenCols` after the wholesale restore, then recalcs those group headers |
+| `src/col-picker.ts` | No change â€” already reads `getHiddenCols()` |
 | Binary format / version byte | No change |
 | Sort / filter / clipboard | No change |
 
@@ -675,7 +695,7 @@ can restore it. "Reset view" means back to the defaults, not "show every column"
 
 A maintainer-curated `data/exclude.json` file lets the maintainer permanently drop known-unwanted models from the scraper output without modifying scraper code. The list is loaded once at startup; matching is applied after parsing in each scraper (post-parse, before merge). Filename-based rules allow pre-fetch exclusion in the openMSX path.
 
-### Module — `scraper/exclude.py`
+### Module â€” `scraper/exclude.py`
 
 ```python
 @dataclass
@@ -688,8 +708,8 @@ class ExcludeList:
     def dead_rules(self) -> list[int]: ...  # indices of rules with match_count == 0
 
 def load_excludes(path: Path) -> ExcludeList:
-    # absent file → empty list (no error)
-    # malformed JSON or unknown keys → ValueError before any network I/O
+    # absent file â†’ empty list (no error)
+    # malformed JSON or unknown keys â†’ ValueError before any network I/O
 ```
 
 ### Matching rules
@@ -710,7 +730,7 @@ def load_excludes(path: Path) -> ExcludeList:
 | `scraper/openmsx.py` | `list_machine_files()` checks filename rules; `fetch_all()` checks model rules post-parse |
 | `scraper/msxorg.py` | `fetch_all()` checks model rules post-parse |
 | `scraper/build.py` | Loads `ExcludeList` at startup; passes to both scrapers; filters cached openMSX, msx.org **and local data** before merge; emits dead-rule WARNs at end |
-| `scraper/__main__.py` — `fetch-openmsx`, `fetch-msxorg` | Load `ExcludeList` before any I/O and pass it to `fetch_all` (no dead-rule WARNs: a single-source fetch can't judge rules meant for the other source) |
+| `scraper/__main__.py` â€” `fetch-openmsx`, `fetch-msxorg` | Load `ExcludeList` before any I/O and pass it to `fetch_all` (no dead-rule WARNs: a single-source fetch can't judge rules meant for the other source) |
 
 ---
 
@@ -718,7 +738,7 @@ def load_excludes(path: Path) -> ExcludeList:
 
 ### Overview
 
-`himem_addr` (column 95) cannot be scraped — it is the stack pointer a machine
+`himem_addr` (column 95) cannot be scraped â€” it is the stack pointer a machine
 reports after boot, so it has to be measured. `helpers/dump_himem.tcl` runs
 inside openMSX, boots every machine it knows and prints one line per machine to
 stderr:
@@ -732,7 +752,7 @@ readings into the maintainer-curated file. It is a separate command, not a
 build step: the dump is produced by hand, rarely, and its result is curated
 data that must be reviewable in a diff before it reaches a build.
 
-### Name resolution — `scraper/update_himem.py`
+### Name resolution â€” `scraper/update_himem.py`
 
 openMSX prints one display string, so the manufacturer/model boundary has to be
 recovered. Every space is tried as the split point; each candidate pair is
@@ -744,19 +764,19 @@ maintain.
 | Outcome | Behaviour |
 |---|---|
 | exactly one split matches a model | applied |
-| no split matches | skipped and reported — the machine is not in the database (C-BIOS, ColecoVision, `Boosted*`, `Acid*` test configs: everything `data/exclude.json` drops) |
+| no split matches | skipped and reported â€” the machine is not in the database (C-BIOS, ColecoVision, `Boosted*`, `Acid*` test configs: everything `data/exclude.json` drops) |
 | more than one split matches | skipped and reported as ambiguous, never guessed |
 
 Resolving against `docs/data.js` rather than the raw caches means additions are
 gated on the built output: a model can only be added if the grid already has a
 row for it. That keeps a reading from silently creating a local-only row, at
-the cost of requiring a reasonably current `docs/data.js` — a machine added to
+the cost of requiring a reasonably current `docs/data.js` â€” a machine added to
 openMSX since the last build is reported as unknown until the build is rerun.
 
 ### Write rules
 
-- Only `himem_addr` is ever written. Every other field on an existing entry —
-  `msxorg_title`, `nmos_cmos`, anything hand-added — is preserved, as is entry
+- Only `himem_addr` is ever written. Every other field on an existing entry â€”
+  `msxorg_title`, `nmos_cmos`, anything hand-added â€” is preserved, as is entry
   order and key order.
 - A machine in the database but not yet in the file is appended, using the
   database's spelling, sorted by manufacturer then model.
@@ -766,7 +786,7 @@ openMSX since the last build is reported as unknown until the build is rerun.
   configurations sharing a name, e.g. `Panasonic FS-A1WSX`) keeps the
   **numerically lowest** value, and every value seen is reported.
 - The file is only written when something changed, with an atomic rename, and
-  its existing newline style is preserved — so a no-op run is byte-identical
+  its existing newline style is preserved â€” so a no-op run is byte-identical
   and a real run diffs to just the lines that moved.
 
 ### Data flows affected
@@ -787,9 +807,9 @@ openMSX since the last build is reported as unknown until the build is rerun.
 
 The `ram` (RAM size in KB) and `mapper` columns are populated from openMSX machine XML files by inspecting memory-typed device elements under `<devices>`. Three XML element types are relevant, and the rules below define how each affects `ram` and `mapper`:
 
-- `<MemoryMapper>` present → `mapper = "Yes"`; its `<mem size>` contributes to `ram`
-- `<PanasonicRAM>` present → `mapper = "Yes"` (proprietary implementation of the standard MSX memory mapper interface; takes precedence over plain `<RAM>`)
-- `<RAM>` present → `mapper = "No"` (unless a `<MemoryMapper>` or `<PanasonicRAM>` element is also present, in which case mapper is already "Yes")
+- `<MemoryMapper>` present â†’ `mapper = "Yes"`; its `<mem size>` contributes to `ram`
+- `<PanasonicRAM>` present â†’ `mapper = "Yes"` (proprietary implementation of the standard MSX memory mapper interface; takes precedence over plain `<RAM>`)
+- `<RAM>` present â†’ `mapper = "No"` (unless a `<MemoryMapper>` or `<PanasonicRAM>` element is also present, in which case mapper is already "Yes")
 
 When multiple RAM-typed elements are present, their sizes are summed for `ram`. The `mapper` field is set to "Yes" if any `<MemoryMapper>` or `<PanasonicRAM>` element is found; otherwise "No".
 
@@ -797,7 +817,7 @@ When multiple RAM-typed elements are present, their sizes are summed for `ram`. 
 
 | Path | Change |
 |---|---|
-| `scraper/openmsx.py` — `_extract_memory` | Detect `<PanasonicRAM>` and set `mapper = "Yes"` in addition to accumulating RAM size |
+| `scraper/openmsx.py` â€” `_extract_memory` | Detect `<PanasonicRAM>` and set `mapper = "Yes"` in addition to accumulating RAM size |
 
 ---
 
@@ -805,19 +825,19 @@ When multiple RAM-typed elements are present, their sizes are summed for `ram`. 
 
 ### Overview
 
-Models sourced only from msx.org previously had no `mapper` value. The msx.org model page's **Slot Map** table is used to derive it: if any cell of the slot map mentions a memory mapper, `mapper = "Yes"`, otherwise `"No"`. Pages without a slot map table leave `mapper` unset (unknown → empty cell).
+Models sourced only from msx.org previously had no `mapper` value. The msx.org model page's **Slot Map** table is used to derive it: if any cell of the slot map mentions a memory mapper, `mapper = "Yes"`, otherwise `"No"`. Pages without a slot map table leave `mapper` unset (unknown â†’ empty cell).
 
-### Detection logic — `parse_mapper_from_soup` (`scraper/msxorg_slotmap.py`)
+### Detection logic â€” `parse_mapper_from_soup` (`scraper/msxorg_slotmap.py`)
 
-1. Locate the slot map table with `_find_slotmap_table` — the same table `parse_slotmap_from_soup` uses, so mapper and slot-map columns always agree:
+1. Locate the slot map table with `_find_slotmap_table` â€” the same table `parse_slotmap_from_soup` uses, so mapper and slot-map columns always agree:
    - Slot map sections are headings whose anchor id contains `Slot_Map` as a whole word (`Slot_Map`, `Slot_Map_2`, `Slot_Map_with_KB-7`, `Default_Slot_Map` on Omega MSX, `Original_Slot_Map` on Panasonic FS-A1FX; not `External_Slots`).
    - A section runs from its heading to the next heading of the **same or higher level**; tables under sub-headings belong to it (Sakhr AX-350: `h2` Slot Map > `h3` "Slot Map with firmware v.2.00" > table; AVT DPC-200: `h3` "According the manual" / "Checked on a real machine").
    - If a slot map section has no table, the next slot map section is tried (Wandy CPC-300 has an empty duplicate "Slot Map" heading before the real one).
    - Within a section, a table under a sub-heading containing "Checked on a real machine" wins (AVT DPC-200 lists "According the manual" first). Only headings count: body notes saying a map "needs to be checked on a real machine" mean the opposite.
    - Otherwise the first table found wins, so pages with several slot maps (default/upgraded configuration, firmware variants) use the first one.
-   - No table in any slot map section → no slot map (e.g. CIEL Expert 2+ Turbo).
+   - No table in any slot map section â†’ no slot map (e.g. CIEL Expert 2+ Turbo).
 2. Flatten the table (`_flatten_table`; `<br>` becomes a space) and test every cell against `memory[\s\-]*mapper` (case-insensitive; `\s` also absorbs line breaks).
-3. Any match → `"Yes"`; table present without a match → `"No"`; no table → `None` (key not set).
+3. Any match â†’ `"Yes"`; table present without a match â†’ `"No"`; no table â†’ `None` (key not set).
 
 `"Panasonic mapper"` alone does **not** count: it is not a memory mapper, even though the two often coincide. Wording such as `"64kB RAM or 256kB with Memory Mapper"` (optional mapper) yields `"Yes"`.
 
@@ -832,7 +852,7 @@ Unchanged merge rules: `data/local-raw.json` > openMSX > msx.org. When openMSX a
 | Path | Change |
 |---|---|
 | `scraper/msxorg_slotmap.py` | Extract section-aware `_find_slotmap_table` (also fixes slot-map columns for pages with sub-headings or duplicate headings); add `parse_mapper_from_soup` |
-| `scraper/msxorg.py` — `parse_model_page` | Set `result["mapper"]` from `parse_mapper_from_soup` (propagates to split variants) |
+| `scraper/msxorg.py` â€” `parse_model_page` | Set `result["mapper"]` from `parse_mapper_from_soup` (propagates to split variants) |
 | `data/msxorg-raw.json` / `docs/data.js` | Regenerated; msx.org-only models gain `mapper` values |
 
 ---
@@ -852,14 +872,14 @@ rtc_present = devices is not None and devices.find('RTC') is not None
 record['rtc'] = 'Yes' if rtc_present else 'No'
 ```
 
-Models with no openMSX XML file receive `rtc = None` (empty cell in the grid). This is distinct from `"No"` — `"No"` means the XML was parsed and no `<RTC>` element was found; `None` means no XML data was available for that model.
+Models with no openMSX XML file receive `rtc = None` (empty cell in the grid). This is distinct from `"No"` â€” `"No"` means the XML was parsed and no `<RTC>` element was found; `None` means no XML data was available for that model.
 
 ### Precedence
 
-1. `data/local-raw.json` value (if present) — highest authority
-2. openMSX XML detection — `"Yes"` / `"No"`
-3. msx.org — no data; never sets `rtc`
-4. No XML file — `None` (empty)
+1. `data/local-raw.json` value (if present) â€” highest authority
+2. openMSX XML detection â€” `"Yes"` / `"No"`
+3. msx.org â€” no data; never sets `rtc`
+4. No XML file â€” `None` (empty)
 
 ### Data flows affected
 
@@ -875,9 +895,9 @@ Models with no openMSX XML file receive `rtc = None` (empty cell in the grid). T
 
 ### Overview
 
-Column definitions may declare `shaded: bool = True`. When true, data cells (`<td>`) in that column receive a CSS class that renders a subtle tinted background with bold text. This is a pure display concern — no data, sort, filter, or URL codec changes are needed.
+Column definitions may declare `shaded: bool = True`. When true, data cells (`<td>`) in that column receive a CSS class that renders a subtle tinted background with bold text. This is a pure display concern â€” no data, sort, filter, or URL codec changes are needed.
 
-### Schema change — `ColumnDef` / `Column`
+### Schema change â€” `ColumnDef` / `Column`
 
 ```ts
 // src/types.ts
@@ -897,7 +917,7 @@ Serialised into `data.js` only when `True` (same convention as `linkable`).
 
 ### Default shaded columns
 
-Slot map sub-slots 1 and 3 (every other group in the 4-group slot map block) are shaded. This alternation aids visual separation across the 64-column block without requiring borders. The set is derived programmatically from the column key pattern `slotmap_*_1_*` and `slotmap_*_3_*` — never hard-coded as a list of IDs.
+Slot map sub-slots 1 and 3 (every other group in the 4-group slot map block) are shaded. This alternation aids visual separation across the 64-column block without requiring borders. The set is derived programmatically from the column key pattern `slotmap_*_1_*` and `slotmap_*_3_*` â€” never hard-coded as a list of IDs.
 
 ### CSS
 
@@ -918,6 +938,6 @@ Slot map sub-slots 1 and 3 (every other group in the 4-group slot map block) are
 | `scraper/columns.py` | Add `shaded: bool = False`; set `True` on sub-slot 1 and 3 columns |
 | `scraper/build.py` | Serialise `"shaded": true` when `col.shaded` |
 | `src/types.ts` | Add `shaded?: boolean` to `ColumnDef` |
-| `src/grid.ts` — `buildDataRow` | Add `col-shaded` class to `<td>` when `col.shaded` |
+| `src/grid.ts` â€” `buildDataRow` | Add `col-shaded` class to `<td>` when `col.shaded` |
 | `src/styles/theme.css` | Add `--color-surface-shaded` and `--color-surface-shaded-alt` per theme |
 | `src/styles/grid.css` | Add `.col-shaded` rules (odd + even row variants) |

@@ -214,9 +214,16 @@
    Truncation for collapsed groups is handled by .col-group-stub. */
 .col-header__text {
   display: block;
-  white-space: normal;
+  /* pre-line: honour explicit newlines in a short label, still wrap otherwise */
+  white-space: pre-line;
   overflow: hidden;
   max-height: 34px;  /* 38px cell − 2px top padding − 2px bottom padding */
+}
+
+/* Header with an explicit line break in its label: size to the widest line
+   instead of the 5em cap, so multi-word labels stay readable. */
+.col-header--wide {
+  max-width: none;
 }
 
 .col-header:hover {
