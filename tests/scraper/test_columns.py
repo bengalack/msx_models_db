@@ -211,6 +211,30 @@ class TestProductionConfig:
 # _count_slotmap helper
 # ---------------------------------------------------------------------------
 
+class TestEngineColumns:
+    """The two Engine columns: semi-custom ASIC sits left of full-custom ASIC."""
+
+    @staticmethod
+    def _cols():
+        return [c for c in active_columns() if c.key in ("engine", "engine_semi_custom")]
+
+    def test_both_engine_columns_are_active(self):
+        assert {c.key for c in self._cols()} == {"engine", "engine_semi_custom"}
+
+    def test_semi_custom_is_displayed_left_of_full_custom(self):
+        keys = [c.key for c in active_columns()]
+        assert keys.index("engine_semi_custom") < keys.index("engine")
+
+    def test_both_in_same_group_with_short_labels(self):
+        cols = self._cols()
+        assert len({c.group for c in cols}) == 1
+        for c in cols:
+            assert c.short_label, f"{c.key} needs a header label"
+            # The header shows the full label, only wrapped before the parenthesis.
+            assert "\n" in c.short_label, f"{c.key} header label must carry an explicit line break"
+            assert c.short_label.replace("\n", " ") == c.label, c.key
+
+
 class TestCountSlotmap:
     """Tests for the _count_slotmap helper."""
 

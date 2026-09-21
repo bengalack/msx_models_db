@@ -8,15 +8,15 @@ from scraper.columns import COLUMNS, GROUPS, validate_config
 
 
 # ---------------------------------------------------------------------------
-# Counts
+# Structure
 # ---------------------------------------------------------------------------
+# No hardcoded totals: asserting len(COLUMNS)/len(GROUPS) against a literal
+# only restates the config and breaks on every legitimate content change.
+# The slot map's own 4x4x4 shape is fixed by MSX hardware and is checked below.
 
-def test_group_count():
-    assert len(GROUPS) == 13
-
-
-def test_column_count():
-    assert len(COLUMNS) == 96
+def test_every_group_has_at_least_one_column():
+    used = {c.group for c in COLUMNS}
+    assert {g.key for g in GROUPS} <= used
 
 
 # ---------------------------------------------------------------------------

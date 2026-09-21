@@ -17,6 +17,10 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Engine columns split
+    - "Engine" renamed to "Engine (full-custom ASIC)" (id=99, key unchanged)
+    - New "Engine (semi-custom ASIC)" (id=105, key engine_semi_custom), displayed to its left; no scraper source yet
+    - Headers wrap on an explicit newline in short_label; full label stays as tooltip/picker name
   - HIMEM values for MSX1 + `update-himem` command
     - `python -m scraper update-himem <dump.txt> <local-raw.json>` folds a `helpers/dump_himem.tcl` run into the curated data
     - Name resolution via `data/aliases.json` + `docs/data.js`; unknown and ambiguous names skipped, not guessed
@@ -24,7 +28,7 @@
   - Exclude rules apply to `data/local-raw.json`
     - `exclude.json` now outranks the highest-authority source; a local-only entry can no longer create an unremovable row
   - Per-column max width
-    - max_width (px) on Column → maxWidth in data.js; applied to data cells; Region = 107px
+    - max_width (px) on Column â†’ maxWidth in data.js; applied to data cells; Region = 107px
   - Memory Mapper from msx.org slot map
     - "Yes" if any slot map cell mentions "memory mapper" ("Panasonic mapper" alone does not count), "No" otherwise; unset without slot map
     - Fills mapper for msx.org-only models; openMSX still wins on conflict
@@ -39,8 +43,8 @@
     - Gap indicator rows include frozen cells so dashed line stays visible
   - Cell value truncation
     - truncate_limit field on ColumnDef; Model=16, Manufacturer=12
-    - Clip to (limit−1) chars + …; full value in data-full-value DOM attribute
-    - Native title tooltip; combined "<full value> — <url>" tooltip for link cells
+    - Clip to (limitâˆ’1) chars + â€¦; full value in data-full-value DOM attribute
+    - Native title tooltip; combined "<full value> â€” <url>" tooltip for link cells
     - Sort and clipboard copy unaffected (read model.values[] directly)
   - Column cell shading
     - shaded boolean flag on ColumnDef; serialised only when true
@@ -51,40 +55,40 @@
     - Overwrites openMSX+msx.org merged value for any field it provides
     - Models present only in local-raw.json included in output
   - Alias LUT
-    - data/aliases.json: single-column rules (field → canonical: [aliases]) + composite rules
+    - data/aliases.json: single-column rules (field â†’ canonical: [aliases]) + composite rules
     - Composite: match all fields simultaneously (AND); first matching rule wins
     - Applied before natural-key computation; case-insensitive; absent = no-op
   - Link-shares LUT
-    - data/link-shares.json: recipient natural key → donor natural key
+    - data/link-shares.json: recipient natural key â†’ donor natural key
     - Recipient inherits donor's links value if recipient has none; absent = no-op
-  - Scraper — openMSX XML source
+  - Scraper â€” openMSX XML source
     - Fetch machine XML file listing via GitHub API
     - Fetch and parse each XML file with lxml recover=True
     - Extract fields: CPU, clock, RAM, VRAM, VDP, PSG, mapper, openMSX machine ID
-    - XMLSource abstraction (Live, Mirror, Fallback) — see openMSX local mirror
-  - Scraper — msx.org HTML source
+    - XMLSource abstraction (Live, Mirror, Fallback) â€” see openMSX local mirror
+  - Scraper â€” msx.org HTML source
     - Enumerate MSX2, MSX2+, turboR model pages from msx.org category pages
     - Scrape each model page with beautifulsoup4 + lxml
     - Extract fields matching column schema; log parse failures; abort if >20% fail
     - Custom User-Agent; 500ms delay between requests
-    - PageSource abstraction (Live, Mirror, Fallback) — see msx.org local mirror
-  - Scraper — merge + conflict resolution
+    - PageSource abstraction (Live, Mirror, Fallback) â€” see msx.org local mirror
+  - Scraper â€” merge + conflict resolution
     - Match models from both sources by natural key (manufacturer + model name)
     - openMSX wins on conflict; all conflicts logged for maintainer review
     - local-raw.json overrides applied on top (local always wins)
-  - Scraper — openMSX local mirror
+  - Scraper â€” openMSX local mirror
     - XMLSource abstraction (LiveXMLSource, MirrorXMLSource, FallbackXMLSource)
     - --openmsx-mirror DIR and --local-openmsx-only flags
     - data/scraper-config.json key openmsx_mirror for persistent default path
-  - Scraper — msx.org local mirror
+  - Scraper â€” msx.org local mirror
     - PageSource abstraction (LivePageSource, MirrorPageSource, FallbackPageSource)
     - --msxorg-mirror DIR and --local-msxorg-only flags
     - data/scraper-config.json key msxorg_mirror for persistent default path
-  - Scraper — exclude list
+  - Scraper â€” exclude list
     - data/exclude.json: manufacturer+model rules (both scrapers) and filename rules (openMSX only)
     - Wildcard "*" and empty-string "" matching; case-sensitive; fail-fast on malformed input
     - Dead-rule WARN after each run; excluded count in per-scraper summary
-  - Scraper — RTC column extraction
+  - Scraper â€” RTC column extraction
     - Detect `<RTC>` element under `<devices>` in each openMSX machine XML
     - "Yes" if found, "No" if XML parsed and absent, null/empty if no XML file for model
   - Selection column and row header highlight
@@ -99,15 +103,15 @@
     - Hidden column indicator in group header when any column individually hidden
     - Group filter indicator (FontAwesome filter icon) when any column in group has active filter
   - Column sorting
-    - Click header: ascending → descending → clear; ↑/↓ indicator
+    - Click header: ascending â†’ descending â†’ clear; â†‘/â†“ indicator
   - Column filtering
     - Toolbar toggle shows/hides filter row; text input per visible column
-    - Active filter: accent border + clear (×) button; gutter indicator when rows filtered out
+    - Active filter: accent border + clear (Ã—) button; gutter indicator when rows filtered out
   - Column show / hide
-    - Toolbar "⊞ Columns" panel with per-column checkboxes grouped by group
+    - Toolbar "âŠž Columns" panel with per-column checkboxes grouped by group
   - Row show / hide
-    - Right-click row number → Hide Row context menu
-    - Amber ▼▲ gap indicator in gutter; click to unhide
+    - Right-click row number â†’ Hide Row context menu
+    - Amber â–¼â–² gap indicator in gutter; click to unhide
   - Cell selection
     - Click, CTRL+click, SHIFT+click, click+drag; accent-dim fill + solid accent border
   - Clipboard copy
@@ -115,7 +119,7 @@
   - Column configuration + ID registry
     - scraper/columns.py: single source of truth for groups/columns with validation
     - scraper/registry.py: stable integer model IDs, assign/retire
-    - scraper/build.py: merge → derive → assign IDs → write data.js
+    - scraper/build.py: merge â†’ derive â†’ assign IDs â†’ write data.js
     - python -m scraper build [--fetch] CLI command
   - Data schema + seed data
     - TypeScript types (MSXData, ColumnDef, GroupDef, ModelRecord, ViewState)
@@ -131,10 +135,10 @@
     - msx.org parser: CS/ES detection, sequential numbering, LUT matching
     - Handles non-expanded and expanded slots; rowspan flattening; mirror detection
   - Slot map CS/ES resolution
-    - Merge step: upgrade openMSX CS→ES where msx.org says ES; renumber all CS/ES
+    - Merge step: upgrade openMSX CSâ†’ES where msx.org says ES; renumber all CS/ES
   - Slot map tooltip rendering
-    - Browser-side: abbreviation display, LUT tooltip lookup, ⌧/• sentinels, mirror * notation
+    - Browser-side: abbreviation display, LUT tooltip lookup, âŒ§/â€¢ sentinels, mirror * notation
   - Z80 turbo column (id=100, CPU/Chipsets)
     - "Yes" if `<hasturbo>true</hasturbo>`, "No" if XML parsed and absent, null for msx.org-only
     - cpu_speed_mhz (id=23) retired; ID preserved
-  - Scraper — Z80 turbo column extraction
+  - Scraper â€” Z80 turbo column extraction

@@ -182,7 +182,10 @@ COLUMNS: list[Column] = [
     Column(id=97, key="nmos_cmos",        label="NMOS/CMOS",            group="cpu",      type="string", short_label="NMOS/\u200bCMOS",
            derive=lambda m: "CMOS" if "T976" in (m.get("engine") or "") else "NMOS"),
     Column(id=98, key="rtc",              label="RTC",                  group="cpu",      type="string"),
-    Column(id=99,  key="engine",           label="Engine",               group="cpu",      type="string"),
+    Column(id=105, key="engine_semi_custom", label="Engine (semi-custom ASIC)", group="cpu", type="string",
+           short_label="Engine\n(semi-custom ASIC)"),
+    Column(id=99,  key="engine",           label="Engine (full-custom ASIC)", group="cpu", type="string",
+           short_label="Engine\n(full-custom ASIC)"),
     Column(id=100, key="z80_turbo",        label="Z80 Turbo",            group="cpu",      type="string", short_label="Z80 Turbo", tooltip="Z80 turbo mode supported (from openMSX XML)"),
     # Other
     Column(id=25,  key="keyboard_layout",  label="Keyboard Layout",      group="other",    type="string", short_label="KB Layout",  tooltip="Keyboard Layout", default_off=True),
