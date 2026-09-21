@@ -39,6 +39,7 @@ Optional fields are only serialised when set (non-empty / `true` / `> 0`), to ke
 | `truncateLimit` | `number?` | Values longer than this are clipped to `(limit − 1)` chars + `…`; full value shown in a tooltip. |
 | `shaded` | `true?` | Cells render with a tinted background and bold text. |
 | `maxWidth` | `number?` | Max width of data cells in px; overflow is ellipsised with a hover tooltip. Absent = the shared stylesheet cap (160px). |
+| `sortLast` | `string[]?` | Values that sort after all other values (but before blanks), in both directions — e.g. `"None"` in the Engine columns. |
 | `defaultOff` | `true?` | Column ships and is toggleable, but starts hidden on a fresh load (and after "Reset view"). Absent = starts visible. |
 
 ### Column catalogue
@@ -85,6 +86,7 @@ Slot-map columns: 64 columns (4 main slots × 4 sub-slots × 4 pages) with keys 
 | `id` | `number` | **Stable integer ID** from `data/id-registry.json`. Never reassigned or reused. |
 | `values` | `(string \| number \| boolean \| null)[]` | Field values, positionally aligned with `MSXData.columns[]`. |
 | `links` | `Record<string, string>?` | Hyperlink URLs keyed by column key (`model` → msx.org wiki page, `openmsx_id` → openMSX machine XML on GitHub). May be inherited from a donor model via `data/link-shares.json`. |
+| `tooltips` | `Record<string, string>?` | Cell tooltips keyed by column key, shown on hover whether or not the text is clipped. Emitted from hidden columns flagged `tooltip_for` in `scraper/columns.py` (e.g. the scraped Engine text behind the two parsed Engine columns). |
 
 ### values[] alignment rule
 

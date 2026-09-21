@@ -40,6 +40,15 @@ class TestValidateConfig:
         with pytest.raises(ValueError, match="max_width"):
             validate_config(groups, cols)
 
+    def test_empty_sort_last_entry_rejected(self) -> None:
+        groups = self._groups()
+        cols = [Column(id=1, key="c1", label="C1", group="g1", type="string", sort_last=("",))]
+        with pytest.raises(ValueError, match="sort_last"):
+            validate_config(groups, cols)
+
+    def test_sort_last_defaults_to_empty(self) -> None:
+        assert Column(id=1, key="c1", label="C1", group="g1", type="string").sort_last == ()
+
     def test_max_width_defaults_to_unset(self) -> None:
         assert Column(id=1, key="c1", label="C1", group="g1", type="string").max_width is None
 

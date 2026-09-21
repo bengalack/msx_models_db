@@ -1,0 +1,50 @@
+# Engine parsing fixture: source <TAB> semi-custom <TAB> full-custom
+# '-' means the cell stays blank (unknown). Approved 2026-09-21; see
+# .claude/artifacts/planning/2026-09-21-engine-columns-design.md
+# Sources are the live msx.org values; escapes: 	 none, literal text otherwise.
+2 ULA and standard logic	2 ULA + std logic	None
+?	-	-
+? Gate array Toshiba TCX-1012/TCX-1008	TCX-1012/TCX-1008?	None
+? none (separate IC's)	None	None
+???	-	-
+Altera Cyclone EP1C12Q240C8N FPGA chip	None	FPGA
+Daewoo DW64MX1	DW64MX1	None
+Gate array Toshiba TCX-1007	TCX-1007	None
+Gate array Toshiba TCX-1012	TCX-1012	None
+Gate array Toshiba TCX-1012/TCX-1008	TCX-1012/TCX-1008	None
+Gate arrays (Toshiba TCX-1008, TCX-2001 and TCX-2002)	TCX-1008/TCX-2001/TCX-2002	None
+Gate arrays Toshiba TCX-1008, TCX-2001 and TCX-2002	TCX-1008/TCX-2001/TCX-2002	None
+Hitachi HD62003	HD62003	None
+MB64H120, uPD65002C022 (Gate array for lightpen interface)	MB64H120 and uPD65002C022	None
+NEC AW100	AW100	None
+none	None	None
+none (separate IC's)	None	None
+none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions	None	None or S3527
+None (separate ICs whose a gate array Fujitsu MB64H131 )	MB64H131	None
+None (separate ICs whose a gate array Hitachi HG61H06 )	HG61H06	None
+probably Daewoo DW64MX1	DW64MX1?	None
+probably Toshiba T7775	None	T7775?
+Probably Yamaha S1985	None	S1985?
+probably Yamaha S1985	None	S1985?
+probably Yamaha S3527	None	S3527?
+Toshiba  T7937A	None	T7937A
+Toshiba T7775	None	T7775
+Toshiba T7937	None	T7937
+Toshiba T7937 or T7937A	None	T7937 or T7937A
+Toshiba T7937A	None	T7937A
+Toshiba T9763	None	T9763
+Toshiba T9769	None	T9769
+Toshiba T9769 B	None	T9769 (B)
+Toshiba T9769 C and ASCII S1990 bus controller	None	T9769 (C) and S1990
+Toshiba T9769 C and NEC S1990 bus controller	None	T9769 (C) and S1990
+Toshiba T9769 model A or B and gate array Mitsubishi M50014	M50014	T9769 (A or B)
+Toshiba T9769 model B or C and gate array Mitsubishi M50014	M50014	T9769 (B or C)
+Toshiba T9769x (A or B)	None	T9769 (A or B)
+Yamaha  S3527	None	S3527
+Yamaha S1985	None	S1985
+Yamaha S1985 + Sanyo CF77099AFT	CF77099AFT	S1985
+Yamaha S1985 or Yamaha S3527	None	S1985 or S3527
+Yamaha S3527	None	S3527
+Yamaha S3527 also two chips from Toshiba  TC17G005AP-0007	TC17G005AP-0007	S3527
+Yamaha X3527 (a previous version of the Yamaha S3527 )	None	X3527
+Yamaha YM5214	YM5214	None

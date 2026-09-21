@@ -1,0 +1,63 @@
+{
+  "_comment": "Vocabulary for splitting the scraped Engine text into the two ASIC columns. See .claude/artifacts/planning/2026-09-21-engine-columns-design.md. Add new chips here — no code change needed.",
+  "semi_custom": [
+    "DW64MX1",
+    "YM5214",
+    "TCX-1007",
+    "TCX-1008",
+    "TCX-1012",
+    "TCX-2001",
+    "TCX-2002",
+    "MB64H120",
+    "MB64H131",
+    "HG61H06",
+    "HD62003",
+    "AW100",
+    "M50014",
+    "CF77099AFT",
+    "TC17G005AP-0007",
+    "uPD65002C022"
+  ],
+  "full_custom": [
+    "S1985",
+    "S1990",
+    "S3527",
+    "X3527",
+    "T7775",
+    "T7937",
+    "T7937A",
+    "T9763",
+    "T9769",
+    "FPGA"
+  ],
+  "vendors": [
+    "Yamaha",
+    "Toshiba",
+    "Daewoo",
+    "Fujitsu",
+    "Hitachi",
+    "Mitsubishi",
+    "NEC",
+    "Sanyo",
+    "ASCII",
+    "Altera",
+    "Philips",
+    "Panasonic",
+    "Sony"
+  ],
+  "filler": [
+    "gate arrays?",
+    "bus controller",
+    "chips?",
+    "model",
+    "separate ICs?'?s?",
+    "whose a",
+    "two chips from",
+    "also",
+    "standard logic"
+  ],
+  "explanatory_parentheticals": [
+    "a previous version",
+    "gate array for"
+  ]
+}

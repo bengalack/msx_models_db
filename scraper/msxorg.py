@@ -398,7 +398,7 @@ def parse_model_page(
     # Engine (chipset)
     chipset = specs.get("Chipset", "")
     if chipset:
-        result["engine"] = chipset
+        result["engine_raw"] = chipset
 
     # Keyboard layout
     kb = specs.get("Keyboard layout", "")

@@ -22,6 +22,8 @@ export interface ColumnDef {
   shaded?: boolean;
   /** Max width of data cells in px (overflow is ellipsised). Absent = the shared stylesheet cap. */
   maxWidth?: number;
+  /** Values that sort after all other values (but before blanks), in both directions. */
+  sortLast?: string[];
   /** When true, the column ships and is toggleable but starts hidden on a fresh load. */
   defaultOff?: boolean;
 }
@@ -52,6 +54,11 @@ export interface ModelRecord {
    * Only present for models that have a known URL for that column.
    */
   links?: Record<string, string>;
+  /**
+   * Optional cell tooltips keyed by column key — shown on hover regardless of
+   * whether the cell text is clipped (e.g. the scraped text behind a parsed value).
+   */
+  tooltips?: Record<string, string>;
 }
 
 /** The full dataset consumed by the web page at load time. */

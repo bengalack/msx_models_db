@@ -564,6 +564,28 @@ class TestBuildDefaultOff:
                 assert "defaultOff" not in col, col["key"]
 
 
+class TestBuildSortLast:
+    """sortLast is serialised from Column.sort_last, and only when set."""
+
+    def test_sort_last_matches_column_config(self, tmp_path):
+        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        openmsx_path = tmp_path / "openmsx.json"
+        msxorg_path = tmp_path / "msxorg.json"
+        output_path = tmp_path / "data.js"
+        openmsx_path.write_text(json.dumps(raw))
+        msxorg_path.write_text(json.dumps([]))
+        build(openmsx_path=openmsx_path, msxorg_path=msxorg_path,
+              registry_path=tmp_path / "registry.json", output_path=output_path)
+        content = output_path.read_text(encoding="utf-8")
+        data = json.loads(content[content.index("{"):content.rindex(";")])
+        configured = {c.key: list(c.sort_last) for c in active_columns()}
+        for col in data["columns"]:
+            if configured[col["key"]]:
+                assert col["sortLast"] == configured[col["key"]], col["key"]
+            else:
+                assert "sortLast" not in col, col["key"]
+
+
 class TestBuildTruncateLimit:
     """Tests for truncateLimit serialisation in ColumnDef output."""
 

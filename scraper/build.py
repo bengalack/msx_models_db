@@ -222,6 +222,12 @@ def build(
         if "cartridge_slots" in model and "scraped_cart_slots" not in model:
             model["scraped_cart_slots"] = model.pop("cartridge_slots")
 
+    # Backward-compat migration: the scraped chipset text moved from "engine" to
+    # "engine_raw"; "engine" is now the derived full-custom ASIC column.
+    for model in openmsx_data + msxorg_data:
+        if "engine" in model and "engine_raw" not in model:
+            model["engine_raw"] = model.pop("engine")
+
     # Load local supplemental data (optional — absent file is not an error).
     local_data = local_source.load_local(local_path)
 
@@ -322,9 +328,17 @@ def build(
             entry["shaded"] = True
         if col.max_width is not None:
             entry["maxWidth"] = col.max_width
+        if col.sort_last:
+            entry["sortLast"] = list(col.sort_last)
         if col.default_off:
             entry["defaultOff"] = True
         js_columns.append(entry)
+
+    active_keys = {c.key for c in active_cols}
+    tooltip_source_columns = [
+        c for c in COLUMNS
+        if c.tooltip_for and any(t in active_keys for t in c.tooltip_for)
+    ]
 
     js_models = []
     for model in merged:
@@ -337,6 +351,17 @@ def build(
             "id": model["_id"],
             "values": values,
         }
+
+        # Cell tooltips: hidden columns flagged tooltip_for ship their scraped text
+        # as the always-on hover text of the derived columns they feed.
+        tooltips: dict[str, str] = {}
+        for src_col in tooltip_source_columns:
+            text = model.get(src_col.key)
+            if text:
+                for target in src_col.tooltip_for:
+                    tooltips[target] = str(text)
+        if tooltips:
+            record["tooltips"] = tooltips
 
         # Add links for linkable columns
         links: dict[str, str] = {}

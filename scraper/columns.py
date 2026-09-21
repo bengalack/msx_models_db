@@ -29,6 +29,24 @@ def _count_slotmap(model: dict, kind: str) -> int | None:
     return count if count else None
 
 
+_ENGINE_CHIPS: Any = None
+
+
+def _parse_engine_field(model: dict, index: int) -> str | None:
+    """Split ``engine_raw`` into (semi-custom, full-custom); return one of them.
+
+    Imported lazily and cached so that importing the column config does not read
+    data files.  ``index`` 0 = semi-custom, 1 = full-custom.
+    """
+    from .engine import load_chip_dictionary, parse_engine
+
+    global _ENGINE_CHIPS
+    if _ENGINE_CHIPS is None:
+        _ENGINE_CHIPS = load_chip_dictionary()
+    context = f"{model.get('manufacturer', '')}|{model.get('model', '')}"
+    return parse_engine(model.get("engine_raw"), _ENGINE_CHIPS, context=context)[index]
+
+
 # ---------------------------------------------------------------------------
 # Dataclasses
 # ---------------------------------------------------------------------------
@@ -54,7 +72,10 @@ class Column:
     truncate_limit: int = 0               # 0 = no truncation; positive = clip to (limit-1) chars + ellipsis
     shaded: bool = False                  # when True, cells render with a tinted background and bold text
     max_width: int | None = None          # px cap for data cells; None = shared stylesheet cap
+    sort_last: tuple[str, ...] = ()       # values that sort after all others (before blanks)
     hidden: bool = False                  # scraped, available to derive, not shipped to browser
+    tooltip_for: tuple[str, ...] = ()     # hidden column whose text ships as the cell tooltip
+                                          # of these column keys
     default_off: bool = False             # shipped and toggleable, but unchecked on a fresh load
     retired: bool = False                 # permanently removed, ID preserved, excluded entirely
     derive: Callable[[dict[str, Any]], Any] | None = None
@@ -110,6 +131,10 @@ def validate_config(groups: list[Group], columns: list[Column]) -> None:
             raise ValueError(
                 f"Retired column {c.key!r} must not have derive"
             )
+        if any(not isinstance(v, str) or not v for v in c.sort_last):
+            raise ValueError(
+                f"Column {c.key!r} sort_last must contain non-empty strings"
+            )
         if c.max_width is not None and c.max_width <= 0:
             raise ValueError(
                 f"Column {c.key!r} max_width must be a positive number of pixels"
@@ -164,7 +189,7 @@ COLUMNS: list[Column] = [
     Column(id=11, key="vdp",              label="VDP",                  group="video",    type="string"),
     Column(id=8,  key="vram_kb",           label="VRAM (KB)",           group="video",    type="number", short_label="VRAM",         tooltip="VRAM (KB)"),
     Column(id=96, key="wait_cycles",       label="Wait Cycles",         group="video",    type="string",
-           derive=lambda m: "1" if "T976" in (m.get("engine") or "") else None),
+           derive=lambda m: "1" if "T976" in (m.get("engine_raw") or "") else None),
     # Audio
     Column(id=15, key="psg",              label="PSG",                  group="audio",    type="string"),
     Column(id=16, key="fm_chip",          label="MSX-MUSIC",            group="audio",    type="string"),
@@ -180,12 +205,14 @@ COLUMNS: list[Column] = [
     Column(id=23, key="cpu_speed_mhz",    label="CPU Speed (MHz)",      group="cpu",      type="number", retired=True),
     Column(id=24, key="sub_cpu",          label="Sub-CPU",              group="cpu",      type="string"),
     Column(id=97, key="nmos_cmos",        label="NMOS/CMOS",            group="cpu",      type="string", short_label="NMOS/\u200bCMOS",
-           derive=lambda m: "CMOS" if "T976" in (m.get("engine") or "") else "NMOS"),
+           derive=lambda m: "CMOS" if "T976" in (m.get("engine_raw") or "") else "NMOS"),
     Column(id=98, key="rtc",              label="RTC",                  group="cpu",      type="string"),
     Column(id=105, key="engine_semi_custom", label="Engine (semi-custom ASIC)", group="cpu", type="string",
-           short_label="Engine\n(semi-custom ASIC)"),
+           short_label="Engine\n(semi-custom ASIC)", max_width=130, sort_last=("None",),
+           derive=lambda m: _parse_engine_field(m, 0)),
     Column(id=99,  key="engine",           label="Engine (full-custom ASIC)", group="cpu", type="string",
-           short_label="Engine\n(full-custom ASIC)"),
+           short_label="Engine\n(full-custom ASIC)", max_width=130, sort_last=("None",),
+           derive=lambda m: _parse_engine_field(m, 1)),
     Column(id=100, key="z80_turbo",        label="Z80 Turbo",            group="cpu",      type="string", short_label="Z80 Turbo", tooltip="Z80 turbo mode supported (from openMSX XML)"),
     # Other
     Column(id=25,  key="keyboard_layout",  label="Keyboard Layout",      group="other",    type="string", short_label="KB Layout",  tooltip="Keyboard Layout", default_off=True),
@@ -196,10 +223,12 @@ COLUMNS: list[Column] = [
     Column(id=28, key="openmsx_id",       label="openMSX Machine ID",   group="emulation", type="string", short_label="openMSX ID",  tooltip="openMSX Machine ID",
            linkable=True, truncate_limit=20),
     Column(id=29, key="fpga_support",     label="FPGA",                 group="emulation", type="string",
-           derive=lambda m: "Yes" if "Altera" in (m.get("engine") or "") else None),
+           derive=lambda m: "Yes" if "Altera" in (m.get("engine_raw") or "") else None),
 
     # Hidden scraper inputs — not shipped to browser; available to derive functions
     Column(id=102, key="scraped_cart_slots", label="Scraped Cart Slots", group="media", type="number", hidden=True),
+    Column(id=106, key="engine_raw", label="Engine (scraped text)", group="cpu", type="string", hidden=True,
+           tooltip_for=("engine", "engine_semi_custom")),
 
     # Slotmap, slot 0  (IDs 30–45)  — ms=0, ss=0..3, p=0..3
     Column(id=30, key="slotmap_0_0_0", label="0 / P0", group="slotmap_0", type="string"),

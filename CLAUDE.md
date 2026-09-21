@@ -86,7 +86,7 @@ Merge precedence: **local-raw.json > openMSX > msx.org**. `exclude.json` outrank
 applied to local data as well, so a curated entry can never resurrect an excluded model.
 
 ### Maintainer-curated data (`data/`)
-`aliases.json`, `substitutions.json`, `exclude.json`, `link-shares.json`, `slotmap-lut.json`, `local-raw.json`, `scraper-config.json` (local mirror paths + slot-map symbols). `id-registry.json` is generated but committed and **append-only** — IDs are never deleted or reused.
+`aliases.json`, `substitutions.json`, `exclude.json`, `link-shares.json`, `slotmap-lut.json`, `local-raw.json`, `engine-chips.json`, `scraper-config.json` (local mirror paths + slot-map symbols). `id-registry.json` is generated but committed and **append-only** — IDs are never deleted or reused.
 
 ### Web (`src/`)
 - `main.ts` — entry; wires header, toolbar, grid, column picker, URL hash sync.
