@@ -17,6 +17,14 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - VDP normalisation from openMSX
+    - PAL/NTSC suffix stripped (T6950PAL -> T6950); engine part numbers (T7937A) left to msx.org's VDP
+    - msx.org parser recognises TMS91x8/91x9, T6950, YM2220 and drops package suffixes (TMS9118NL -> TMS9118): 39 models gained a VDP
+  - Aliases carry model ids
+    - A model renamed/merged by aliases.json adopts the lowest registered id among its pre-alias keys; no hand edits to id-registry.json
+  - Yamaha/Sakhr AX models use the hyphen (AX-150, AX-170, AX-200, AX-230, AX-350II, AX-350IIF, AX-500)
+    - Duplicates merged: Sakhr AX-170/AX170, Sakhr AX-230/AX230, Sakhr AX-150/Yamaha AX150, Sakhr AX-200/Yamaha AX200
+  - Casio MX-10: openMSX's combined "MX-10/MX-101" machine merged into the msx.org MX-10 row (MX-101 stays msx.org-only)
   - Engine columns parsed from the scraped chipset text
     - Both columns capped at 130px (max_width); "None" sorts after real values (sort_last)
     - engine_raw (hidden) holds the source; engine (full-custom) and engine_semi_custom derived via scraper/engine.py

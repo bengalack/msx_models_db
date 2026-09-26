@@ -13,6 +13,14 @@
     "ML-G3": ["ML-G3 (ES)"],
     "VG 8230": ["VG-8230"],
     "AX-370": ["AX370"],
+    "AX-170": ["AX170"],
+    "AX-230": ["AX230", "AX-230 (Manufacturer: Sanyo)"],
+    "AX-150": ["AX150"],
+    "AX-200": ["AX200"],
+    "AX-350II": ["AX350II"],
+    "AX-350IIF": ["AX350IIF"],
+    "AX-500": ["AX500"],
+    "MX-10": ["MX-10/MX-101"],
     "BRUC 100": ["BRUC 100 (v1)", "BRUC 100 (v2)"],
     "DPC-200": ["DPC-200 (BE/FR)"],
     "CPC-61 Zemmix Super V": ["CPC-61"],
@@ -24,15 +32,23 @@
   "composite": [
     {
       "match":     {"manufacturer": "Sakhr",  "model": "AX-350IIF"},
-      "canonical": {"manufacturer": "Yamaha", "model": "AX350IIF"}
+      "canonical": {"manufacturer": "Yamaha", "model": "AX-350IIF"}
     },
     {
       "match":     {"manufacturer": "Sakhr",  "model": "AX-350II"},
-      "canonical": {"manufacturer": "Yamaha", "model": "AX350II"}
+      "canonical": {"manufacturer": "Yamaha", "model": "AX-350II"}
+    },
+    {
+      "match":     {"manufacturer": "Sakhr",  "model": "AX-150"},
+      "canonical": {"manufacturer": "Yamaha", "model": "AX-150"}
+    },
+    {
+      "match":     {"manufacturer": "Sakhr",  "model": "AX-200"},
+      "canonical": {"manufacturer": "Yamaha", "model": "AX-200"}
     },
     {
       "match":     {"manufacturer": "Sakhr",  "model": "AX-500"},
-      "canonical": {"manufacturer": "Yamaha", "model": "AX500"}
+      "canonical": {"manufacturer": "Yamaha", "model": "AX-500"}
     },
     {
       "match":     {"manufacturer": "Yamaha", "model": "CX5M (CX5MA, CX5MC, CX5ME, CX5MF, CX5MG, CX5MS or CX5MU)"},
