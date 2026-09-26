@@ -499,6 +499,56 @@ _SLOTMAP_HEADING_ID_RE = re.compile(r"(?:^|_)Slot_Map(?:_|$)")
 _VERIFIED_SUBHEADING_RE = re.compile(r"checked\s+on\s+a\s+real\s+machine", re.IGNORECASE)
 
 
+def _section_table(span: Tag) -> Tag | None:
+    """The slot map table of the section headed by *span*, or None.
+
+    The section runs from the heading to the next heading of the same or
+    higher level. A table under a "Checked on a real machine" sub-heading wins;
+    otherwise the first table does.
+    """
+    heading = span.parent
+    level = _heading_level(heading)
+    if level is None:
+        return None
+    first_table: Tag | None = None
+    under_verified_heading = False
+    node = heading.next_sibling
+    while node is not None:
+        if isinstance(node, Tag):
+            if node.name == "table":
+                if under_verified_heading:
+                    return node
+                if first_table is None:
+                    first_table = node
+            node_level = _heading_level(node)
+            if node_level is not None:
+                if node_level <= level:
+                    break  # section ended
+                under_verified_heading = bool(
+                    _VERIFIED_SUBHEADING_RE.search(node.get_text(" ", strip=True))
+                )
+        node = node.next_sibling
+    return first_table
+
+
+def slotmap_sections(soup: BeautifulSoup) -> list[tuple[str, Tag]]:
+    """Every slot map section that has a table, as ``(heading text, table)``.
+
+    In page order. Used by the series-page logic to pick the slot map that
+    belongs to a variant ("Slot Map for HB-75 model", "... for other models").
+    """
+    out: list[tuple[str, Tag]] = []
+    for span in soup.find_all("span", id=_SLOTMAP_HEADING_ID_RE):
+        table = _section_table(span)
+        if table is not None:
+            # Visible text plus the decoded anchor id (MediaWiki encodes "(" as
+            # ".28", "&" as ".26", spaces as "_"), so either one can be matched.
+            anchor = re.sub(r"\.([0-9A-F]{2})", lambda m: chr(int(m.group(1), 16)), span.get("id", ""))
+            heading = f"{span.get_text(' ', strip=True)} {anchor.replace('_', ' ')}".strip()
+            out.append((heading, table))
+    return out
+
+
 def _find_slotmap_table(
     soup: BeautifulSoup,
     page_title: str,
@@ -516,35 +566,11 @@ def _find_slotmap_table(
     wins, so pages with several slot maps (default/upgraded configuration)
     use the first.
     """
-    spans = soup.find_all("span", id=_SLOTMAP_HEADING_ID_RE)
-    if not spans:
+    sections = slotmap_sections(soup)
+    if sections:
+        return sections[0][1]
+    if not soup.find_all("span", id=_SLOTMAP_HEADING_ID_RE):
         return None
-
-    for span in spans:
-        heading = span.parent
-        level = _heading_level(heading)
-        if level is None:
-            continue
-        first_table: Tag | None = None
-        under_verified_heading = False
-        node = heading.next_sibling
-        while node is not None:
-            if isinstance(node, Tag):
-                if node.name == "table":
-                    if under_verified_heading:
-                        return node
-                    if first_table is None:
-                        first_table = node
-                node_level = _heading_level(node)
-                if node_level is not None:
-                    if node_level <= level:
-                        break  # section ended
-                    under_verified_heading = bool(
-                        _VERIFIED_SUBHEADING_RE.search(node.get_text(" ", strip=True))
-                    )
-            node = node.next_sibling
-        if first_table is not None:
-            return first_table
 
     if warn:
         log.warning(
@@ -588,8 +614,18 @@ def parse_mapper_from_soup(
     table = _find_slotmap_table(soup, page_title, warn=False)
     if table is None:
         return None
+    return mapper_from_table(table)
+
+
+def mapper_from_table(table: Tag) -> str:
+    """``"Yes"`` if any cell of a slot map *table* mentions a memory mapper, else ``"No"``."""
     cells = (cell for row in _flatten_table(table) for cell in row)
     return "Yes" if any(_MAPPER_CELL_RE.search(c) for c in cells) else "No"
+
+
+def parse_slotmap_table(table: Tag, page_title: str = "<unknown>") -> dict[str, str]:
+    """Parse an already-chosen slot map *table* into the 64 ``slotmap_*`` cells."""
+    return _parse_slotmap_table(table, page_title)
 
 
 def parse_msxorg_slotmap(

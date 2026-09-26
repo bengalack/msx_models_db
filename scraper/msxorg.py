@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import re
 import time
-from typing import Any
+from typing import Any, Callable
 from urllib.parse import quote, unquote, urljoin
 
 import requests
@@ -13,7 +13,13 @@ from bs4 import BeautifulSoup, Tag
 
 from .exclude import ExcludeList
 from .mirror import LivePageSource, MirrorPageSource, PageSource, slug_to_filename
-from .msxorg_slotmap import parse_mapper_from_soup, parse_slotmap_from_soup
+from .msxorg_series import build_variant_specs, series_slug
+from .msxorg_slotmap import (
+    mapper_from_table,
+    parse_mapper_from_soup,
+    parse_slotmap_from_soup,
+    parse_slotmap_table,
+)
 
 log = logging.getLogger(__name__)
 
@@ -376,16 +382,38 @@ def parse_model_page(
     html: bytes,
     standard: str,
     page_title: str,
+    *,
+    series_loader: Callable[[str], bytes | None] | None = None,
 ) -> list[dict[str, Any]]:
     """Parse a single model wiki page.
 
     Returns a list of model dicts (one per variant when the Model field
     contains " / ").  Returns an empty list if no specs table is found.
+
+    A member page without its own specs table that defers to a series page
+    ("see HB-75 series for the technical details") is parsed from that series
+    page for its own variant; ``series_loader(slug)`` returns the series HTML.
+    See scraper/msxorg_series.py.
     """
     soup = BeautifulSoup(html, "lxml")
     specs = _find_specs_table(soup)
+    sections = soup              # where Connections / slot map are read from
+    series_slot_table = None     # slot map chosen for the variant (series pages)
+    series = None
     if not specs:
-        log.warning("No specs table found on %s — skipped", page_title)
+        series = series_slug(soup)
+        series_html = series_loader(series) if series and series_loader else None
+        if series_html:
+            series_soup = BeautifulSoup(series_html, "lxml")
+            specs, series_slot_table = build_variant_specs(series_soup, page_title)
+            sections = series_soup
+            if specs:
+                log.info("[msxorg:series] %s parsed from series %s", page_title, series)
+    if not specs:
+        if series:
+            log.warning("No specs table on %s and series %s unavailable — skipped", page_title, series)
+        else:
+            log.warning("No specs table found on %s — skipped", page_title)
         return []
 
     brand = specs.get("Brand", "").strip()
@@ -461,7 +489,7 @@ def parse_model_page(
         result["keyboard_layout"] = kb
 
     # Connections section for tape, printer, cartridge slots.
-    conn = _parse_connections(soup)
+    conn = _parse_connections(sections)
     # Only set if not already found from Media or specs table.
     for k, v in conn.items():
         if k not in result:
@@ -471,12 +499,16 @@ def parse_model_page(
     result = {k: v for k, v in result.items() if v is not None}
 
     # Slot map — parsed from the same HTML page.
-    slotmap = parse_slotmap_from_soup(soup, page_title)
-    if slotmap is not None:
-        result.update(slotmap)
-    mapper = parse_mapper_from_soup(soup, page_title)
-    if mapper is not None:
-        result["mapper"] = mapper
+    if series_slot_table is not None:
+        result.update(parse_slotmap_table(series_slot_table, page_title))
+        result["mapper"] = mapper_from_table(series_slot_table)
+    elif sections is soup:
+        slotmap = parse_slotmap_from_soup(soup, page_title)
+        if slotmap is not None:
+            result.update(slotmap)
+        mapper = parse_mapper_from_soup(soup, page_title)
+        if mapper is not None:
+            result["mapper"] = mapper
 
     # If the Model field contained " / ", emit one entry per variant.
     if len(model_names) == 1:
@@ -524,6 +556,17 @@ def fetch_all(
     skipped = 0
     errors = 0
 
+    # Series pages (Category:<Series>) shared by several member pages: fetched
+    # through the same source, once per run.
+    series_cache: dict[str, bytes | None] = {}
+
+    def load_series(slug: str) -> bytes | None:
+        if slug not in series_cache:
+            series_cache[slug] = source.fetch_page(
+                f"Category:{slug.replace('_', ' ')}", WIKI_URL + "Category:" + quote(slug, safe="/"),
+            )
+        return series_cache[slug]
+
     for i, page in enumerate(pages):
         title = page["title"]
         url = page["url"]
@@ -547,7 +590,7 @@ def fetch_all(
             errors += 1
             continue
         try:
-            parsed = parse_model_page(content, standard, title)
+            parsed = parse_model_page(content, standard, title, series_loader=load_series)
             if parsed:
                 for result in parsed:
                     if exclude_list and exclude_list.is_excluded(

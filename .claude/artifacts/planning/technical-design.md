@@ -621,6 +621,18 @@ else → removeAttribute('title')
 
 ---
 
+## Feature Design: msx.org Series Pages
+
+msx.org keeps the technical details of some families (Sony HB-10/75/F500/…, Toshiba HX-10/20/21/22) on one **series page** (`Category:Sony_HB-75`); the member pages have no specs table and link to it ("see HB-75 series for the technical details"). `parse_model_page` detects that link and, through a `series_loader` supplied by `fetch_all` (same `PageSource`, cached per run), parses the series page **for the member's own variant** with `scraper/msxorg_series.py`:
+
+- `build_variant_specs` resolves each specs value for the variant — shared, `V: x` labels, leading `(V) x`, trailing `x (V) or y (other models)`, `x in V`, region-qualified Year, "see table above" → per-variant table — and leaves a field **unset** when it names other variants but not this one.
+- `choose_slotmap_table` picks the variant's slot map by heading: names the variant → names its RAM size → "other models" → first. Memory Mapper uses the same table.
+- Identity: manufacturer = series Brand, model = member page title without the brand, `msxorg_title` = the member page (so the grid links to it).
+
+Full rules, known gaps and results: `.claude/artifacts/planning/2026-09-26-msxorg-series-pages-design.md`.
+
+---
+
 ## Feature Design: Engine Columns (semi-custom / full-custom ASIC)
 
 ### Overview

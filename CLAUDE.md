@@ -71,6 +71,7 @@ User prefers `rtk`-prefixed shell commands (see global CLAUDE.md).
 - `columns.py` — **single source of truth** for groups and columns (IDs, labels, `hidden`, `retired`, `derive`, `truncate_limit`, `shaded`, `linkable`, `max_width`). Validated on load.
 - `openmsx.py` / `openmsx_source.py` — XML parsing (lxml `recover=True`) and Live/Mirror/Fallback XML sources.
 - `msxorg.py` / `mirror.py` / `msxorg_slotmap.py` — msx.org HTML parsing and Live/Mirror/Fallback page sources.
+- `msxorg_series.py` — member pages that defer to a series page (`Category:Sony_HB-75`) are parsed from it for their own variant (per-variant value resolution, slot map choice). See *Feature Design: msx.org Series Pages*.
 - `slotmap.py` / `slotmap_lut.py` — 64 slot-map columns (`slotmap_{ms}_{ss}_{page}`), LUT classification (first match wins), mirror detection.
 - `merge.py` — natural key `manufacturer|model` (lowercase), openMSX wins over msx.org, substitutions, conflict handling.
 - `aliases.py`, `link_shares.py`, `exclude.py`, `registry.py`, `local_source.py`, `http.py`, `symbols.py`.

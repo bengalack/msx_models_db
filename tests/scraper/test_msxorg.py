@@ -618,3 +618,118 @@ class TestListModelPagesFromMirrorScan:
         _write_page(tmp_path, "Sony_HB-75P", _mirror_page("Sony_HB-75P", [std], body=body))
         models = fetch_all(source=MirrorPageSource(tmp_path), delay=0)
         assert [(m["manufacturer"], m["model"], m["generation"]) for m in models] == [("Sony", "HB-75P", std)]
+
+
+# ---------------------------------------------------------------------------
+# Series pages — member pages without a specs table defer to their series
+# ---------------------------------------------------------------------------
+
+_MEMBER_PAGE = b"""
+<html><body><div id="bodyContent">
+<p>This machine was aimed at the European market - see
+<a href="/wiki/Category:Sony_HB-10">HB-10 series</a> for the technical details</p>
+</div></body></html>
+"""
+
+_SERIES_PAGE = b"""
+<html><body><div id="bodyContent">
+<table>
+<tr><th>Product</th><th>Region</th><th>Keyboard</th></tr>
+<tr><td>Sony HB-10</td><td>JP</td><td>QWERTY/JP50on</td></tr>
+<tr><td>Sony HB-10P</td><td>NL</td><td>QWERTY with &#163; key</td></tr>
+</table>
+<table>
+<tr><th>Brand</th><td>Sony</td></tr>
+<tr><th>Model</th><td>HB-10 / HB-10P</td></tr>
+<tr><th>Year</th><td>Late 1985 (HB-10) or 1986 (other models)</td></tr>
+<tr><th>Region</th><td>See table above</td></tr>
+<tr><th>RAM</th><td>16kB in slot 0 (HB-10) or 64kB in slot 3 (other models)</td></tr>
+<tr><th>Video</th><td>Texas Instruments TMS9118NL (HB-10) or Toshiba T6950 (other models)</td></tr>
+<tr><th>Chipset</th><td>Yamaha S3527</td></tr>
+</table>
+<h2><span id="Slot_Map_for_16kB_model" class="mw-headline">Slot Map for 16kB model</span></h2>
+<table><tr><td></td><th>Slot 0</th><th>Slot 3</th></tr>
+<tr><th>Page 0000h~3FFFh</th><td>Main-ROM</td><td></td></tr></table>
+<h2><span id="Slot_Map_for_64kB_models" class="mw-headline">Slot Map for 64kB models</span></h2>
+<table><tr><td></td><th>Slot 0</th><th>Slot 3</th></tr>
+<tr><th>Page 0000h~3FFFh</th><td>Main-ROM</td><td>64kB Memory Mapper</td></tr></table>
+</div>
+<div id="mw-pages"><a href="/wiki/Sony_HB-10">Sony HB-10</a><a href="/wiki/Sony_HB-10P">Sony HB-10P</a></div>
+</body></html>
+"""
+
+
+class TestParseModelPageSeries:
+    """A member page with no specs table is parsed from its series page, for its own variant."""
+
+    @staticmethod
+    def _loader(requested: list[str]):
+        def load(slug: str) -> bytes | None:
+            requested.append(slug)
+            return _SERIES_PAGE if slug == "Sony_HB-10" else None
+        return load
+
+    def test_member_gets_its_variant_values(self):
+        requested: list[str] = []
+        results = parse_model_page(_MEMBER_PAGE, "MSX1", "Sony HB-10P", series_loader=self._loader(requested))
+        assert requested == ["Sony_HB-10"]
+        assert len(results) == 1
+        r = results[0]
+        assert (r["manufacturer"], r["model"]) == ("Sony", "HB-10P")
+        assert r["msxorg_title"] == "Sony HB-10P"      # links to the member's own page
+        assert r["year"] == 1986
+        assert r["region"] == "Netherlands"
+        assert r["main_ram_kb"] == 64
+        assert r["vdp"] == "T6950"
+        assert r["engine_raw"] == "Yamaha S3527"
+
+    def test_slot_map_and_mapper_come_from_the_variants_slot_map(self):
+        results = parse_model_page(_MEMBER_PAGE, "MSX1", "Sony HB-10P", series_loader=self._loader([]))
+        assert results[0]["mapper"] == "Yes"             # 64kB models table has a memory mapper
+        results = parse_model_page(_MEMBER_PAGE, "MSX1", "Sony HB-10", series_loader=self._loader([]))
+        assert results[0]["mapper"] == "No"              # 16kB model table does not
+        assert results[0]["main_ram_kb"] == 16
+
+    def test_without_loader_the_member_page_is_skipped(self):
+        assert parse_model_page(_MEMBER_PAGE, "MSX1", "Sony HB-10P") == []
+
+    def test_missing_series_page_skips_the_member(self):
+        assert parse_model_page(_MEMBER_PAGE.replace(b"Sony_HB-10", b"Sony_HB-99"), "MSX1",
+                                "Sony HB-10P", series_loader=self._loader([])) == []
+
+    def test_page_with_own_specs_ignores_series(self):
+        requested: list[str] = []
+        page = (b'<html><body><table class="wikitable"><tr><th>Brand</th><td>Sony</td></tr>'
+                b'<tr><th>Model</th><td>HB-75P</td></tr></table></body></html>')
+        results = parse_model_page(page, "MSX1", "Sony HB-75P", series_loader=self._loader(requested))
+        assert requested == []
+        assert results[0]["model"] == "HB-75P"
+
+
+class TestFetchAllSeries:
+    def test_series_page_is_fetched_once_through_the_page_source(self):
+        fetched: list[str] = []
+
+        class Source:
+            def fetch_category(self, standard, url, page=1):
+                return None
+
+            def scan_pages(self):
+                return iter([])
+
+            def fetch_page(self, title, url):
+                fetched.append(url.rsplit("/wiki/", 1)[1])
+                return _SERIES_PAGE if "Category:" in url else _MEMBER_PAGE
+
+        with patch_list_pages([("Sony HB-10", "MSX1"), ("Sony HB-10P", "MSX1")]):
+            models = fetch_all(source=Source(), delay=0)
+
+        assert sorted(m["model"] for m in models) == ["HB-10", "HB-10P"]
+        assert fetched.count("Category:Sony_HB-10") == 1
+
+
+def patch_list_pages(pages):
+    from unittest.mock import patch as _patch
+    entries = [{"title": t, "url": "https://www.msx.org/wiki/" + t.replace(" ", "_"), "standard": s}
+               for t, s in pages]
+    return _patch("scraper.msxorg.list_model_pages", return_value=entries)

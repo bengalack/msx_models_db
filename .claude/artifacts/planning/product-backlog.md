@@ -17,6 +17,9 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - msx.org series pages (Sony HB-10/55/75/101/201/501/F500/F700, Toshiba HX-10/20/21/22)
+    - Member pages parsed from their series page for their own variant; all 49 get msx.org data and links
+    - 26 variants without an openMSX machine added as models
   - Slot map: empty page (⏺) only in confirmed slots
     - Confirmed = another page in the same primary slot is used, or openMSX declares the slot; else absent (·)
     - 32 msx.org-only models: wholly empty slots now show · instead of ⏺
