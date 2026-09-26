@@ -28,6 +28,7 @@
   - Yamaha/Sakhr AX models use the hyphen (AX-150, AX-170, AX-200, AX-230, AX-350II, AX-350IIF, AX-500)
     - Duplicates merged: Sakhr AX-170/AX170, Sakhr AX-230/AX230, Sakhr AX-150/Yamaha AX150, Sakhr AX-200/Yamaha AX200
   - Casio MX-10: openMSX's combined "MX-10/MX-101" machine merged into the msx.org MX-10 row (MX-101 stays msx.org-only)
+  - National FS-4700F: msx.org's "FS-4700" (no such model) merged into it
   - Engine columns parsed from the scraped chipset text
     - Both columns capped at 130px (max_width); "None" sorts after real values (sort_last)
     - engine_raw (hidden) holds the source; engine (full-custom) and engine_semi_custom derived via scraper/engine.py
