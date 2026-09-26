@@ -6130,8 +6130,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "S3527",
         "No",
         "Spanish",
         "International",
@@ -6204,6 +6204,10 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8245-16.xml",
         "model": "https://www.msx.org/wiki/Philips_NMS_8245"
@@ -6234,8 +6238,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "S3527",
         "No",
         "French (AZERTY)",
         "International",
@@ -6308,6 +6312,10 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8245-19.xml",
         "model": "https://www.msx.org/wiki/Philips_NMS_8245"
@@ -6446,8 +6454,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "S3527",
         "No",
         "Spanish",
         "International",
@@ -6520,6 +6528,10 @@ window.MSX_DATA = {
         "DSK*",
         "DSK*"
       ],
+      "tooltips": {
+        "engine": "Yamaha  S3527",
+        "engine_semi_custom": "Yamaha  S3527"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8250-16.xml",
         "model": "https://www.msx.org/wiki/Philips_NMS_8250"
@@ -6550,8 +6562,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "S3527",
         "No",
         "French (AZERTY)",
         "International",
@@ -6624,6 +6636,10 @@ window.MSX_DATA = {
         "DSK*",
         "DSK*"
       ],
+      "tooltips": {
+        "engine": "Yamaha  S3527",
+        "engine_semi_custom": "Yamaha  S3527"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8250-19.xml",
         "model": "https://www.msx.org/wiki/Philips_NMS_8250"
@@ -7084,8 +7100,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "S3527",
         "No",
         "International",
         "International",
@@ -7158,6 +7174,10 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-00.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8235"
@@ -7188,8 +7208,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "S3527",
         "No",
         "German (QWERTZ)",
         "International",
@@ -7262,6 +7282,10 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-02.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8235"
@@ -7292,8 +7316,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "S3527",
         "No",
         "French (AZERTY)",
         "International",
@@ -7366,6 +7390,10 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-19.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8235"
@@ -7396,8 +7424,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "S3527",
         "No",
         "International",
         "International",
@@ -7470,6 +7498,10 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-20.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8235"
@@ -7500,8 +7532,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "S3527",
         "No",
         "French (AZERTY)",
         "International",
@@ -7574,6 +7606,10 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-39.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8235"
@@ -12232,8 +12268,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "S1985",
         "No",
         "Russian",
         "International",
@@ -12306,6 +12342,10 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "Yamaha S1985",
+        "engine_semi_custom": "Yamaha S1985"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F9P_Russian.xml",
         "model": "https://www.msx.org/wiki/Sony_HB-F9P"
@@ -14487,8 +14527,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "None",
         "No",
         "Japanese (ANSI)",
         "Japanese",
@@ -14561,6 +14601,10 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-90A.xml",
         "model": "https://www.msx.org/wiki/Victor_HC-90"
@@ -14698,8 +14742,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "Yes",
-        null,
-        null,
+        "None",
+        "None",
         "No",
         "Japanese (ANSI)",
         "Japanese",
@@ -14772,6 +14816,10 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-95A.xml",
         "model": "https://www.msx.org/wiki/Victor_HC-95"
@@ -33001,7 +33049,7 @@ window.MSX_DATA = {
         null,
         "0xF380",
         "TMS9129",
-        null,
+        16,
         null,
         "AY-3-8910",
         null,
@@ -33013,8 +33061,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "None",
+        "None",
         "No",
         "proto_int",
         "International",
@@ -33087,6 +33135,10 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8000.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8000"
@@ -33105,7 +33157,7 @@ window.MSX_DATA = {
         null,
         "0xF380",
         "TMS9129",
-        null,
+        16,
         null,
         "AY-3-8910",
         null,
@@ -33117,8 +33169,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "None",
+        "None",
         "No",
         "proto_int",
         "International",
@@ -33191,6 +33243,10 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8010.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8010"
@@ -33209,7 +33265,7 @@ window.MSX_DATA = {
         null,
         "0xF380",
         "TMS9929A",
-        null,
+        16,
         null,
         "AY-3-8910",
         null,
@@ -33221,8 +33277,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "None",
+        "None",
         "No",
         "proto_fr",
         "International",
@@ -33295,6 +33351,10 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8010F.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8010"
@@ -33313,7 +33373,7 @@ window.MSX_DATA = {
         null,
         "0xF380",
         "TMS9929A",
-        null,
+        16,
         null,
         "AY-3-8910",
         null,
@@ -33325,8 +33385,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "None",
+        "None or S3527",
         "No",
         "International",
         "International",
@@ -33399,6 +33459,10 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "tooltips": {
+        "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8020.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8020"
@@ -33409,7 +33473,7 @@ window.MSX_DATA = {
       "values": [
         "Philips",
         "VG 8020/19",
-        null,
+        1985,
         "France",
         "MSX1",
         64,
@@ -33417,7 +33481,7 @@ window.MSX_DATA = {
         null,
         "0xF380",
         "TMS9929A",
-        null,
+        16,
         null,
         "AY-3-8910",
         null,
@@ -33429,8 +33493,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "None",
+        "None or S3527",
         "No",
         "French (AZERTY)",
         "International",
@@ -33503,6 +33567,10 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8020F.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8020"
@@ -33513,7 +33581,7 @@ window.MSX_DATA = {
       "values": [
         "Philips",
         "VG 8020/20",
-        null,
+        1985,
         "Europe",
         "MSX1",
         64,
@@ -33521,7 +33589,7 @@ window.MSX_DATA = {
         null,
         "0xF380",
         "TMS9129",
-        null,
+        16,
         null,
         "AY-3-8910",
         null,
@@ -33533,8 +33601,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "None",
+        "None or S3527",
         "No",
         "International",
         "International",
@@ -33607,6 +33675,10 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8020-20.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8020"
@@ -35944,9 +36016,9 @@ window.MSX_DATA = {
         64,
         "No",
         null,
-        null,
+        "0xF380",
         "TMS9129",
-        null,
+        16,
         null,
         "AY-3-8910",
         null,
@@ -35958,8 +36030,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "None",
+        "None",
         "No",
         "Spanish",
         "International",
@@ -36032,6 +36104,10 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-728_ES.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-728"
@@ -36048,9 +36124,9 @@ window.MSX_DATA = {
         64,
         "No",
         null,
-        null,
+        "0xF380",
         "TMS9129",
-        null,
+        16,
         null,
         "AY-3-8910",
         null,
@@ -36062,8 +36138,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "None",
+        "None",
         "No",
         "Swedish",
         "International",
@@ -36136,6 +36212,10 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-728_SE.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-728"
@@ -36166,8 +36246,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "2 ULA + std logic",
+        "None",
         "No",
         "International",
         "International",
@@ -36240,6 +36320,10 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "2 ULA and standard logic",
+        "engine_semi_custom": "2 ULA and standard logic"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-738.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-738"
@@ -36270,8 +36354,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "2 ULA + std logic",
+        "None",
         "No",
         "German (QWERTZ)",
         "International",
@@ -36344,6 +36428,10 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "2 ULA and standard logic",
+        "engine_semi_custom": "2 ULA and standard logic"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-738_DE.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-738"
@@ -36374,8 +36462,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "2 ULA + std logic",
+        "None",
         "No",
         "pl",
         "International",
@@ -36448,6 +36536,10 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "2 ULA and standard logic",
+        "engine_semi_custom": "2 ULA and standard logic"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-738_PL.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-738"
@@ -36478,8 +36570,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        null,
-        null,
+        "2 ULA + std logic",
+        "None",
         "No",
         "Swedish",
         "International",
@@ -36552,6 +36644,10 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "tooltips": {
+        "engine": "2 ULA and standard logic",
+        "engine_semi_custom": "2 ULA and standard logic"
+      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-738_SE.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-738"
