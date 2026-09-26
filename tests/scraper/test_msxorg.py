@@ -733,3 +733,64 @@ def patch_list_pages(pages):
     entries = [{"title": t, "url": "https://www.msx.org/wiki/" + t.replace(" ", "_"), "standard": s}
                for t, s in pages]
     return _patch("scraper.msxorg.list_model_pages", return_value=entries)
+
+
+# ---------------------------------------------------------------------------
+# Model name cleanup — editorial notes are not part of the name
+# ---------------------------------------------------------------------------
+
+class TestModelNameNotes:
+    @staticmethod
+    def _page(model_field: str) -> bytes:
+        return (f'<html><body><table class="wikitable"><tr><th>Brand</th><td>Pioneer</td></tr>'
+                f'<tr><th>Model</th><td>{model_field}</td></tr></table></body></html>').encode()
+
+    @pytest.mark.parametrize("field,expected", [
+        ("PX-7(HB) - note: to not be confused with the Japanese Pioneer PX-7 (BK)!", "PX-7(HB)"),
+        ("PX-7(HB) (note: not the Japanese PX-7)", "PX-7(HB)"),
+        ("PX-7(HB) - Note: see below", "PX-7(HB)"),
+    ])
+    def test_note_is_dropped(self, field, expected):
+        [record] = parse_model_page(self._page(field), "MSX1", "Pioneer PX-7(HB)")
+        assert record["model"] == expected
+
+    def test_cleaned_name_is_recorded_as_former_name(self):
+        from scraper.aliases import FORMER_MODEL_FIELD
+        field = "PX-7(HB) - note: to not be confused with the Japanese Pioneer PX-7 (BK)!"
+        [record] = parse_model_page(self._page(field), "MSX1", "Pioneer PX-7(HB)")
+        assert record[FORMER_MODEL_FIELD] == field
+
+    def test_ordinary_names_are_untouched(self):
+        from scraper.aliases import FORMER_MODEL_FIELD
+        [record] = parse_model_page(self._page("PX-7"), "MSX1", "Pioneer PX-7")
+        assert record["model"] == "PX-7"
+        assert FORMER_MODEL_FIELD not in record
+
+    def test_split_models_are_cleaned_too(self):
+        results = parse_model_page(self._page("PX-7 / PX-7(HB) - note: not the PX-7 (BK)"), "MSX1", "Pioneer PX-7")
+        assert [r["model"] for r in results] == ["PX-7", "PX-7(HB)"]
+
+
+def test_cleaned_name_keeps_its_registry_id(tmp_path):
+    """The id registered under the note-laden name carries over to the clean name."""
+    import json
+    from scraper.aliases import FORMER_MODEL_FIELD
+    from scraper.build import build
+    from scraper.registry import IDRegistry
+
+    note_name = "PX-7(HB) - note: to not be confused with the Japanese Pioneer PX-7 (BK)!"
+    (tmp_path / "registry.json").write_text(json.dumps({
+        "version": 2, "models": {f"pioneer|{note_name.lower()}": 269},
+        "retired_models": [], "next_model_id": 500,
+    }))
+    (tmp_path / "openmsx.json").write_text(json.dumps([]))
+    (tmp_path / "msxorg.json").write_text(json.dumps([{
+        "manufacturer": "Pioneer", "model": "PX-7(HB)", "generation": "MSX1",
+        "msxorg_title": "Pioneer PX-7(HB)", FORMER_MODEL_FIELD: note_name,
+    }]))
+    build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
+          local_path=tmp_path / "local.json", registry_path=tmp_path / "registry.json",
+          output_path=tmp_path / "data.js")
+    reg = IDRegistry.load(tmp_path / "registry.json")
+    assert reg.models["pioneer|px-7(hb)"] == 269
+    assert reg.next_model_id == 500

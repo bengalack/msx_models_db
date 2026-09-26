@@ -11,7 +11,7 @@ from urllib.parse import quote, unquote, urljoin
 import requests
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
-from .aliases import KNOWN_AS_FIELD
+from .aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD
 from .exclude import ExcludeList
 from .revisions import REVISION_FIELD, revision_name, revision_numbers
 from .mirror import LivePageSource, MirrorPageSource, PageSource, slug_to_filename
@@ -589,6 +589,14 @@ def fill_from_donors(
     return filled
 
 
+_MODEL_NOTE_RE = re.compile(r"\s*(?:-\s*note\b.*|\(\s*note\b[^)]*\))\s*$", re.IGNORECASE)
+
+
+def _strip_model_note(name: str) -> str:
+    """Drop an editorial note from a Model value ("X - note: ...", "X (note: ...)")."""
+    return _MODEL_NOTE_RE.sub("", name).strip() or name
+
+
 def _record_from_specs(
     specs: dict[str, str],
     *,
@@ -769,7 +777,9 @@ def parse_model_page(
     brand = re.sub(r"\s*\(.*?\)\s*", "", brand).strip()
 
     # Split combined models like "AX-350II / AX-350IIF" into separate entries.
-    model_names = [m.strip() for m in model_raw.split(" / ")]
+    # Editorial notes are not part of a name: "PX-7(HB) - note: to not be confused …".
+    model_names = [_strip_model_note(m.strip()) for m in model_raw.split(" / ")]
+    renamed = [m.strip() for m in model_raw.split(" / ")] != model_names
 
     # A page with its own specs that describes revisions: the base record takes
     # the 1st-revision values of the fields that mention revisions, and the
@@ -788,6 +798,8 @@ def parse_model_page(
                                   sections=sections, slot_table=table, slot_page=None if table else slot_page)
 
     result = build(specs, slot_table)
+    if renamed:
+        result[FORMER_MODEL_FIELD] = model_raw
     aliases = known_as_names(soup, model_names[0], brand)
     if aliases:
         result[KNOWN_AS_FIELD] = aliases

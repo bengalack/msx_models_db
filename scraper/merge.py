@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from scraper.aliases import KNOWN_AS_FIELD, AliasLUT, apply_aliases, load_aliases
+from scraper.aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, AliasLUT, apply_aliases, load_aliases
 from scraper.revisions import REVISION_FIELD
 from scraper.symbols import ABSENT as _ABSENT, EMPTY_PAGE as _EMPTY_PAGE
 
@@ -169,6 +169,11 @@ def merge_models(
         after = natural_key(record)
         if before != after:
             former_keys.setdefault(after, set()).add(before)
+        # A name the msx.org parser cleaned (editorial note dropped) is a former name too.
+        if record.get(FORMER_MODEL_FIELD):
+            former = natural_key({"manufacturer": record.get("manufacturer"), "model": record[FORMER_MODEL_FIELD]})
+            if former != after:
+                former_keys.setdefault(after, set()).add(former)
 
     # A revision record from msx.org ("HB-F500 (v2)") only becomes a row when
     # openMSX has that machine; msx.org alone never creates a revision row.

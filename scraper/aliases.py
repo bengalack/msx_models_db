@@ -141,3 +141,8 @@ def apply_aliases(record: dict, lut: AliasLUT) -> None:
 # "also known as" ("The HX-51 computer, also known as the HX-51I, ...").
 # merge_models uses them to join the openMSX machine of that name.
 KNOWN_AS_FIELD = "_known_as"
+
+# Internal field on an msx.org record whose model name the parser cleaned (an
+# editorial note dropped from the Model field): the name as the page wrote it.
+# merge_models treats it as a former name, so the model keeps its registry id.
+FORMER_MODEL_FIELD = "_former_model"

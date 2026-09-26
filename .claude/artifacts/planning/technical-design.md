@@ -108,6 +108,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     - **Single-column** — top-level field-name key → `{ canonical: [alias, ...] }`. Applied field-by-field, case-insensitively.
     - **Composite** — top-level `"composite"` array of `{ "match": {col: val, ...}, "canonical": {col: val, ...} }` objects. Fires only when *all* match fields agree simultaneously (AND semantics); first matching rule wins. Evaluated after single-column rules so single-column canonicalization can feed composite matching.
   - Runtime type: `AliasLUT` dataclass (`scraper/aliases.py`) with `single: dict[str, dict[str, str]]` and `composite: list[CompositeRule]` fields.
+  - **Parser-cleaned names carry ids too.** The msx.org parser drops an editorial note from a Model value ("PX-7(HB) - note: to not be confused with …", "X (note: …)") and records the original in `_former_model` (`FORMER_MODEL_FIELD`); `merge_models` adds it to the model's former keys, so the id registered under the note-laden name carries over.
   - **Aliases carry ids.** `merge_models` records each record's natural key before aliasing; a merged model whose key changed carries those *former keys* (`_former_keys`, internal, never shipped). The registry adopts an id from them — see Key Flow step 8. So adding an alias renames or merges models without losing their ids, and removing it later restores the old key's id.
   - Depends On: -
   - Data Stores: `data/aliases.json` (read-only)

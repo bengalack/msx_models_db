@@ -17,6 +17,7 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - msx.org Model values: editorial notes dropped (Pioneer PX-7(HB)); the model keeps its id
   - Chip links in the Engine columns
     - links map in data/engine-chips.json; each known chip in the cell is its own link, the rest of the cell selects
   - Adaptations fill their blanks from the model they were adapted from
