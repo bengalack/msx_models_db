@@ -284,6 +284,13 @@ def build(
     if subs:
         merge.apply_substitutions(merged, subs)
 
+    # Step 3c: Adaptations — fill each adaptation's blanks from the final row of
+    # the model it was adapted from (openMSX data included), before deriving
+    # columns so Cart Slots, Memory Mapper and Engine follow the filled data.
+    adapted = msxorg.fill_from_donors(merged, load=lambda title: None)
+    if adapted:
+        log.info("[adaptation] %d models filled from the model they were adapted from", adapted)
+
     # Step 4: Derive computed columns
     derive_cols = [c for c in COLUMNS if c.derive is not None]
     for model in merged:

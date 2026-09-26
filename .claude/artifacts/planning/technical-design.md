@@ -621,6 +621,14 @@ else → removeAttribute('title')
 
 ---
 
+## Feature Design: Adaptations
+
+An msx.org page that says its model *is the adaptation of* another ("The Fenner FPC-900 is the adaptation of the Sanyo MPC-25FD computer …") records the donor page as `_adapted_from` (`adapted_from` in `scraper/msxorg.py`; forward statements about the page's own model only — "has been adapted for … - see Y", prototypes and category links are not donors; "the second version of X" picks revision 2). In the build, after the merge and before derived columns, `fill_from_donors` fills **every field the adaptation lacks** from the donor's final merged row — nested through donors of donors — except identity, `openmsx_id` and the BIOS-derived `character_set` / `keyboard_type`. The slot map (with Memory Mapper) is copied as a unit only when the adaptation has none.
+
+Rules and results: `.claude/artifacts/planning/2026-09-26-adaptations-design.md`.
+
+---
+
 ## Feature Design: "Also Known As" Aliases
 
 msx.org sometimes names the same machine differently from openMSX and says so: "The HX-51 computer, also known as the HX-51I, …". `known_as_names` in `scraper/msxorg.py` records such names on the msx.org record (internal `_known_as`, constant `KNOWN_AS_FIELD` in `scraper/aliases.py`).

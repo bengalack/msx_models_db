@@ -17,6 +17,8 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Adaptations fill their blanks from the model they were adapted from
+    - "X is the adaptation of Y" on msx.org; every missing field copied from Y's merged row, nested; 34 models gain data
   - "Also known as" aliases from msx.org
     - HX-51 merged into HX-51I, HX-10P into HX-10; applies to any page stating its model is also known as an openMSX machine
   - Model revisions (`<model> (vN)`)

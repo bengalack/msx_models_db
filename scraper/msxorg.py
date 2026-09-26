@@ -9,7 +9,7 @@ from typing import Any, Callable
 from urllib.parse import quote, unquote, urljoin
 
 import requests
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 from .aliases import KNOWN_AS_FIELD
 from .exclude import ExcludeList
@@ -423,6 +423,172 @@ def known_as_names(page: bytes | BeautifulSoup, model: str, brand: str) -> list[
     return names
 
 
+# ── Adaptations ─────────────────────────────────────────────────────────
+#
+# "The Fenner FPC-900 is the adaptation of the Sanyo MPC-25FD computer ..." —
+# the adaptation's blanks are filled from the donor model's record.
+# Design: .claude/artifacts/planning/2026-09-26-adaptations-design.md
+
+# Internal field on an msx.org record: {"title": donor page title, "revision": N}.
+ADAPTED_FROM_FIELD = "_adapted_from"
+
+# Never copied from a donor: the adaptation's identity, the donor's emulator
+# machine (openmsx_id would claim — and link to — a machine the adaptation is
+# not), and the character set / keyboard type read from the donor's BIOS ROM,
+# which the adaptation replaced with a localised one. Everything else missing
+# is filled.
+_NEVER_INHERITED = {
+    "manufacturer", "model", "generation", "msxorg_title",
+    "openmsx_id", "character_set", "keyboard_type",
+    "mapper",  # derived from the slot map, so it travels with it
+    KNOWN_AS_FIELD, ADAPTED_FROM_FIELD, REVISION_FIELD,
+}
+
+_LINK_START, _LINK_END = "\x01", "\x02"
+_NOT_A_MODEL_PAGE = re.compile(r"^(?:Category|File|Image|Special|Template|Help|User):|index\.php", re.IGNORECASE)
+_ADAPTATION_RE = re.compile(
+    r"(?:^|\s)(?P<subj>(?:The|This)\s+[^.]{1,80}?|[Ii]t(?:'s|’s|\s+is|\s+was))\s+"
+    r"(?:(?:is|was)\s+)?(?:actually\s+)?(?:the|an|one\s+of\s+the(?:\s+\w+)?)\s+(?:\w+\s+)?adaptations?\b(?P<rest>.*)"
+)
+_ADAPTED_FOR_RE = re.compile(
+    rf"(?:^|\s)(?P<subj>(?:The|This)\s+[^.{_LINK_START}]{{1,60}}?)\s+is\s+the\s+"
+    rf"{_LINK_START}(?P<slug>[^{_LINK_END}]+){_LINK_END}[^.{_LINK_START}]{{0,60}}?\s+adapted\s+for\b"
+)
+_LINK_RE = re.compile(rf"{_LINK_START}(?P<slug>[^{_LINK_END}]*){_LINK_END}")
+
+
+def _text_with_links(node: Tag) -> str:
+    """Node text with each wiki link marked as <START>slug<END> before its anchor text."""
+    parts: list[str] = []
+    for el in node.descendants:
+        if isinstance(el, Tag) and el.name == "a":
+            href = el.get("href", "")
+            slug = unquote(href.split("/wiki/", 1)[1]) if "/wiki/" in href else ""
+            parts.append(f" {_LINK_START}{slug}{_LINK_END}")
+        elif isinstance(el, NavigableString) and not isinstance(el, Comment):
+            parts.append(str(el))
+    return re.sub(r"\s+", " ", "".join(parts)).strip()
+
+
+def _is_own_subject(subject: str, model: str) -> bool:
+    """The sentence is about the page's own model (not another computer)."""
+    plain = _LINK_RE.sub(" ", subject).strip().lower()
+    if plain.startswith("it") or plain in ("this computer", "this machine", "this model"):
+        return True
+    first = re.split(r"[\s(]", model.strip().lower(), maxsplit=1)[0]
+    return bool(first) and first in plain
+
+
+def adapted_from(page: bytes | BeautifulSoup, model: str, brand: str) -> dict[str, Any] | None:
+    """The model this page's model is an adaptation of, or None.
+
+    ``{"title": "<donor page title>", "revision": N}``. Only forward statements
+    about the page's own model count ("The X is the adaptation ... of <link>",
+    "It's the adaptation of <link>", "The X is the <link> adapted for ...");
+    "has been adapted for ... - see Y" (this page is the donor), sentences about
+    a prototype, and links to categories are not donors.
+    """
+    soup = page if isinstance(page, BeautifulSoup) else BeautifulSoup(page, "lxml")
+    body = soup.select_one("#bodyContent") or soup
+    for node in body.find_all(["p", "li"]):
+        for sentence in re.split(r"(?<=[.!?])\s+(?=[A-Z])", _text_with_links(node)):
+            if re.search(r"\bprototype\b", sentence, re.IGNORECASE):
+                continue
+            m = _ADAPTED_FOR_RE.search(sentence)
+            if m and _is_own_subject(m.group("subj"), model) and not _NOT_A_MODEL_PAGE.search(m.group("slug")):
+                return {"title": m.group("slug").replace("_", " "), "revision": 1}
+            m = _ADAPTATION_RE.search(sentence)
+            if not m or not _is_own_subject(m.group("subj"), model):
+                continue
+            of = re.search(r"\bof\b", m.group("rest"))
+            if not of:
+                continue
+            after = m.group("rest")[of.end():]
+            for link in _LINK_RE.finditer(after):
+                slug = link.group("slug")
+                if not slug or _NOT_A_MODEL_PAGE.search(slug):
+                    continue
+                revs = revision_numbers(_LINK_RE.sub(" ", after[:link.start()]))
+                return {"title": slug.replace("_", " "), "revision": min(revs) if len(revs) == 1 else 1}
+    return None
+
+
+def fill_from_donors(
+    records: list[dict[str, Any]],
+    load: Callable[[str], list[dict[str, Any]] | None],
+    *,
+    max_depth: int = 5,
+) -> int:
+    """Fill each adaptation's blanks from its donor's record (in place).
+
+    A field the adaptation lacks is copied, except identity and market fields
+    (``_NEVER_INHERITED``). The slot map is copied as a unit (with its Memory
+    Mapper) and only when the adaptation has none. The donor's own blanks are
+    filled from *its* donor first (nesting; cycle-safe, depth-limited). Donor
+    pages outside ``records`` are fetched with ``load(title)``.
+    Returns the number of records that gained data.
+    """
+    pages: dict[str, list[dict[str, Any]]] = {}
+    for record in records:
+        pages.setdefault(record.get("msxorg_title"), []).append(record)
+    loaded: dict[str, list[dict[str, Any]]] = {}
+
+    def donor_of(record: dict[str, Any]) -> dict[str, Any] | None:
+        ref = record.get(ADAPTED_FROM_FIELD)
+        if not ref:
+            return None
+        title = ref.get("title")
+        candidates = pages.get(title)
+        if candidates is None:
+            if title not in loaded:
+                loaded[title] = load(title) or []
+            candidates = loaded[title]
+        if not candidates:
+            log.info("[msxorg:adaptation] Donor page %r not available for %s", title, record.get("msxorg_title"))
+            return None
+        revision = ref.get("revision", 1)
+        if revision > 1:
+            for candidate in candidates:
+                if candidate.get(REVISION_FIELD) == revision:
+                    return candidate
+        return next((c for c in candidates if not c.get(REVISION_FIELD)), candidates[0])
+
+    done: set[int] = set()
+    filled = 0
+
+    def fill(record: dict[str, Any], active: frozenset[int]) -> None:
+        nonlocal filled
+        if id(record) in done:
+            return
+        donor = donor_of(record)
+        if donor is None or donor is record:
+            done.add(id(record))
+            return
+        if id(donor) not in active and len(active) < max_depth:
+            fill(donor, active | {id(record)})
+        changed = False
+        for key, value in donor.items():
+            if key in _NEVER_INHERITED or key.startswith("slotmap_") or value is None:
+                continue
+            if record.get(key) is None:
+                record[key] = value
+                changed = True
+        donor_slots = {k: v for k, v in donor.items() if k.startswith("slotmap_")}
+        if donor_slots and not any(k.startswith("slotmap_") for k in record):
+            record.update(donor_slots)
+            if donor.get("mapper") is not None:
+                record["mapper"] = donor["mapper"]
+            changed = True
+        if changed:
+            filled += 1
+            log.info("[msxorg:adaptation] %s filled from %s", record.get("msxorg_title"), donor.get("msxorg_title"))
+        done.add(id(record))
+
+    for record in records:
+        fill(record, frozenset())
+    return filled
+
+
 def _record_from_specs(
     specs: dict[str, str],
     *,
@@ -625,6 +791,9 @@ def parse_model_page(
     aliases = known_as_names(soup, model_names[0], brand)
     if aliases:
         result[KNOWN_AS_FIELD] = aliases
+    donor = adapted_from(soup, model_names[0], brand)
+    if donor:
+        result[ADAPTED_FROM_FIELD] = donor
 
     # If the Model field contained " / ", emit one entry per variant.
     if len(model_names) == 1:
