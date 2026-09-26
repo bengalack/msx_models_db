@@ -418,7 +418,13 @@
     "yeno|mx64": 415,
     "yamaha|cx5m (cx5ma, cx5mc, cx5me, cx5mf, cx5mg, cx5ms or cx5mu)": 416,
     "mitsubishi|ml-ts1": 417,
-    "sanyo|mpc-200": 418
+    "sanyo|mpc-200": 418,
+    "sakhr|ax-230": 281,
+    "yamaha|ax-150": 275,
+    "yamaha|ax-200": 279,
+    "yamaha|ax-350ii": 151,
+    "yamaha|ax-350iif": 152,
+    "yamaha|ax-500": 91
   },
   "retired_models": [],
   "next_model_id": 419
