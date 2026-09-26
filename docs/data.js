@@ -1677,8 +1677,8 @@ window.MSX_DATA = {
         "PM"
       ],
       "tooltips": {
-        "engine": "Toshiba T9769 C and NEC S1990 bus controller",
-        "engine_semi_custom": "Toshiba T9769 C and NEC S1990 bus controller"
+        "engine": "Toshiba T9769 C and ASCII S1990 bus controller",
+        "engine_semi_custom": "Toshiba T9769 C and ASCII S1990 bus controller"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Panasonic_FS-A1ST",
@@ -2001,8 +2001,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/AVT_CPC-300"
@@ -2108,8 +2108,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Bawareth_Perfect_MSX2"
@@ -2431,8 +2431,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-300",
@@ -2445,7 +2445,7 @@ window.MSX_DATA = {
         "Daewoo",
         "CPC-300E",
         1986,
-        "Korea",
+        "South Korea, USSR",
         "MSX2",
         64,
         "Yes",
@@ -2467,7 +2467,7 @@ window.MSX_DATA = {
         "DW64MX1",
         "None",
         "No",
-        "QWERTY/Korean + numeric keypad",
+        "QWERTY/Korean + numeric keypad - JCUKEN stickers on a few exemplars",
         "Japanese",
         "Japanese",
         "Cassette, Printer",
@@ -2539,8 +2539,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-300E",
@@ -2647,8 +2647,8 @@ window.MSX_DATA = {
         null
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-330K"
@@ -2660,7 +2660,7 @@ window.MSX_DATA = {
         "Daewoo",
         "CPC-400",
         1987,
-        "Korea",
+        "South Korea, USSR",
         "MSX2",
         128,
         "Yes",
@@ -2754,8 +2754,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-400"
@@ -2767,7 +2767,7 @@ window.MSX_DATA = {
         "Daewoo",
         "CPC-400S",
         1986,
-        "Korea",
+        "South Korea, USSR",
         "MSX2",
         128,
         "Yes",
@@ -2861,8 +2861,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-400S",
@@ -2969,8 +2969,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-61",
@@ -3077,8 +3077,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPG-120"
@@ -4376,220 +4376,6 @@ window.MSX_DATA = {
       }
     },
     {
-      "id": 44,
-      "values": [
-        "Mitsubishi",
-        "ML-TS100",
-        1987,
-        "Japan",
-        "MSX2",
-        512,
-        null,
-        null,
-        null,
-        "V9938",
-        128,
-        null,
-        "AY-3-8910",
-        null,
-        "1",
-        2,
-        null,
-        "Yes",
-        null,
-        null,
-        "NMOS",
-        null,
-        null,
-        null,
-        null,
-        "QWERTY/JIS + numeric keypad",
-        null,
-        null,
-        "Cassette, Printer",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "tooltips": {
-        "engine": "?",
-        "engine_semi_custom": "?"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-TS100"
-      }
-    },
-    {
-      "id": 45,
-      "values": [
-        "Mitsubishi",
-        "ML-TS100M2",
-        1987,
-        "Japan",
-        "MSX2",
-        512,
-        null,
-        null,
-        null,
-        "V9938",
-        128,
-        null,
-        "AY-3-8910",
-        null,
-        "2",
-        2,
-        null,
-        "Yes",
-        null,
-        null,
-        "NMOS",
-        null,
-        null,
-        null,
-        null,
-        "QWERTY/JIS + numeric keypad",
-        null,
-        null,
-        "Cassette, Printer",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "tooltips": {
-        "engine": "?",
-        "engine_semi_custom": "?"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-TS100M2"
-      }
-    },
-    {
       "id": 46,
       "values": [
         "Mitsubishi",
@@ -4714,7 +4500,7 @@ window.MSX_DATA = {
         "AY-3-8910",
         "YM2413",
         null,
-        2,
+        1,
         null,
         null,
         null,
@@ -4831,7 +4617,7 @@ window.MSX_DATA = {
         "None",
         "S3527",
         "No",
-        "QWERTY/JP50on by default (JIS available with switch) + numeric keypad",
+        "QWERTY/JP50on by default (JIS available with switch, JIS stickers provided) + numeric keypad",
         "Japanese",
         "Japanese",
         "Cassette, Printer",
@@ -4939,7 +4725,7 @@ window.MSX_DATA = {
         "None",
         "S1985",
         "No",
-        "QWERTY/JIS by default (JP50on available with dip switch) + numeric keypad",
+        "QWERTY/JP50on by default (JIS available with switch, JIS stickers provided) + numeric keypad",
         "Japanese",
         "Japanese",
         "Cassette, Printer",
@@ -5047,7 +4833,7 @@ window.MSX_DATA = {
         "None",
         "S3527",
         "No",
-        "QWERTY/JP50on by default (JIS available with switch) + numeric keypad",
+        "QWERTY/JP50on by default (JIS available with switch, JIS stickers provided) + numeric keypad",
         "Japanese",
         "Japanese",
         "Cassette, Printer",
@@ -5123,7 +4909,7 @@ window.MSX_DATA = {
         "engine_semi_custom": "Yamaha S3527"
       },
       "links": {
-        "model": "https://www.msx.org/wiki/National_FS-4700",
+        "model": "https://www.msx.org/wiki/National_FS-4700F",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4700F.xml"
       }
     },
@@ -5155,7 +4941,7 @@ window.MSX_DATA = {
         "None",
         "S1985?",
         "No",
-        "QWERTY/JIS by default (JP50on available with switch) + numeric keypad",
+        "QWERTY/JIS by default (JP50on available with switch, JP50on stickers provided) + numeric keypad",
         "Japanese",
         "Japanese",
         "Cassette, Printer",
@@ -5263,7 +5049,7 @@ window.MSX_DATA = {
         "None",
         "S3527",
         "No",
-        "QWERTY/JP50on by default (JIS available with switch) + numeric keypad",
+        "QWERTY/JP50on by default (JIS available with switch, JIS stickers provided) + numeric keypad",
         "Japanese",
         "Japanese",
         "Cassette, Printer",
@@ -5371,7 +5157,7 @@ window.MSX_DATA = {
         "None",
         "S3527",
         "No",
-        "QWERTY/JP50on by default (JIS available with switch) + numeric keypad",
+        "QWERTY/JP50on by default (JIS available with switch, JIS stickers provided) + numeric keypad",
         "Japanese",
         "Japanese",
         "Cassette, Printer",
@@ -6223,7 +6009,7 @@ window.MSX_DATA = {
         "AY-3-8910",
         null,
         "1",
-        2,
+        1,
         null,
         "Yes",
         null,
@@ -6271,30 +6057,30 @@ window.MSX_DATA = {
         "·",
         "·",
         "·",
-        "CS2",
-        "CS2",
-        "CS2",
-        "CS2",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
+        "⏺",
+        "⏺",
+        "⏺",
+        "⏺",
+        "⏺",
+        "RS",
+        "⏺",
+        "⏺",
+        "MM",
+        "MM",
+        "MM",
+        "MM",
+        "EXP",
+        "EXP",
+        "EXP",
+        "EXP",
         "SUB",
         "⏺",
         "⏺",
         "⏺",
-        "MM",
-        "MM",
-        "MM",
-        "MM",
+        "⏺",
+        "⏺",
+        "⏺",
+        "⏺",
         "MM",
         "MM",
         "MM",
@@ -6309,7 +6095,7 @@ window.MSX_DATA = {
         "engine_semi_custom": "Yamaha S3527"
       },
       "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8245_Home_Banking"
+        "model": "https://www.msx.org/wiki/Philips/Phonola_NMS_8245_Home_Banking"
       }
     },
     {
@@ -9033,9 +8819,9 @@ window.MSX_DATA = {
         "·",
         "·",
         "SUB",
-        "SUB",
-        "SUB",
-        "SUB",
+        "SUB*",
+        "SUB*",
+        "SUB*",
         "·",
         "·",
         "·",
@@ -13337,8 +13123,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Talent_DPC-300"
@@ -13684,7 +13470,7 @@ window.MSX_DATA = {
         "AY-3-8910",
         "YM2413",
         null,
-        2,
+        1,
         null,
         null,
         null,
@@ -13732,10 +13518,10 @@ window.MSX_DATA = {
         "·",
         "·",
         "·",
-        "CS2",
-        "CS2",
-        "CS2",
-        "CS2",
+        "EXP",
+        "EXP",
+        "EXP",
+        "EXP",
         "·",
         "·",
         "·",
@@ -14996,7 +14782,7 @@ window.MSX_DATA = {
         "MM",
         "MM",
         "SUB",
-        "SUB",
+        "FW",
         "⏺",
         "⏺",
         "CS1",
@@ -15049,8 +14835,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Wandy_CPC-300"
@@ -15723,7 +15509,7 @@ window.MSX_DATA = {
         null,
         "1",
         2,
-        1,
+        2,
         "Yes",
         null,
         null,
@@ -15738,14 +15524,14 @@ window.MSX_DATA = {
         "Cassette, Printer",
         null,
         null,
-        "MAIN",
-        "MAIN",
-        "⏺",
-        "⏺",
-        "⏺",
+        "FW",
         "FW",
         "⏺",
         "⏺",
+        "ES1!",
+        "ES1!",
+        "ES1!",
+        "ES1!",
         "SUB",
         "DSK",
         "⏺",
@@ -15798,10 +15584,10 @@ window.MSX_DATA = {
         "MM",
         "MM",
         "MM",
-        "ES1!",
-        "ES1!",
-        "ES1!",
-        "ES1!"
+        "ES2!",
+        "ES2!",
+        "ES2!",
+        "ES2!"
       ],
       "tooltips": {
         "engine": "Yamaha S1985",
@@ -16023,7 +15809,7 @@ window.MSX_DATA = {
         "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip"
       },
       "links": {
-        "model": "https://www.msx.org/wiki/1chipMSX"
+        "model": "https://www.msx.org/wiki/D4_Enterprise_1chipMSX"
       }
     },
     {
@@ -16452,7 +16238,7 @@ window.MSX_DATA = {
         "engine_semi_custom": "none"
       },
       "links": {
-        "model": "https://www.msx.org/wiki/Omega_MSX"
+        "model": "https://www.msx.org/wiki/MSXmakers_Omega_MSX"
       }
     },
     {
@@ -16461,7 +16247,7 @@ window.MSX_DATA = {
         "Al Fateh",
         "100",
         1986,
-        "Middle East",
+        "Libya",
         "MSX1",
         64,
         "No",
@@ -16568,7 +16354,7 @@ window.MSX_DATA = {
         "Al Fateh",
         "123",
         1986,
-        "Middle East",
+        "Libya",
         "MSX1",
         64,
         "No",
@@ -16984,8 +16770,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Bawareth_Perfect_MSX1"
@@ -17104,14 +16890,14 @@ window.MSX_DATA = {
       "values": [
         "Canon",
         "V-20",
-        1985,
-        "France",
+        1984,
+        "Japan",
         "MSX1",
         64,
         "No",
         null,
         null,
-        "TMS9929A",
+        "TMS9918A",
         16,
         null,
         "AY-3-8910",
@@ -17127,7 +16913,7 @@ window.MSX_DATA = {
         "None",
         "None",
         null,
-        "AZERTY",
+        "QWERTY/JIS",
         null,
         null,
         "Cassette, Printer",
@@ -17203,7 +16989,7 @@ window.MSX_DATA = {
         "engine_semi_custom": "none (separate IC's)"
       },
       "links": {
-        "model": "https://www.msx.org/wiki/Canon_V-20_(FR)"
+        "model": "https://www.msx.org/wiki/Canon_V-20"
       }
     },
     {
@@ -18060,8 +17846,8 @@ window.MSX_DATA = {
         null
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-200"
@@ -18092,8 +17878,8 @@ window.MSX_DATA = {
         null,
         "NMOS",
         null,
-        null,
-        null,
+        "DW64MX1",
+        "None",
         null,
         "no keyboard",
         null,
@@ -18166,6 +17952,10 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "tooltips": {
+        "engine": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )"
+      },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-50"
       }
@@ -18270,8 +18060,8 @@ window.MSX_DATA = {
         null
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-50A"
@@ -18377,8 +18167,8 @@ window.MSX_DATA = {
         null
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-50B"
@@ -20014,7 +19804,7 @@ window.MSX_DATA = {
         null,
         1,
         1,
-        null,
+        "Yes",
         null,
         null,
         "NMOS",
@@ -20025,7 +19815,7 @@ window.MSX_DATA = {
         "QWERTY/JIS",
         null,
         null,
-        null,
+        "Cassette",
         null,
         null,
         "MAIN",
@@ -20201,8 +19991,8 @@ window.MSX_DATA = {
         null
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose a gate array General HD61J209F )",
+        "engine_semi_custom": "None (separate ICs whose a gate array General HD61J209F )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/General_PCT-50"
@@ -20308,8 +20098,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose a gate array General HD61J209F )",
+        "engine_semi_custom": "None (separate ICs whose a gate array General HD61J209F )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/General_PCT-55"
@@ -22382,7 +22172,7 @@ window.MSX_DATA = {
         null,
         "NMOS",
         null,
-        "DW64MX1?",
+        "DW64MX1",
         "None",
         null,
         "QWERTY with accents key",
@@ -22457,8 +22247,8 @@ window.MSX_DATA = {
         null
       ],
       "tooltips": {
-        "engine": "probably Daewoo DW64MX1",
-        "engine_semi_custom": "probably Daewoo DW64MX1"
+        "engine": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/In_Tensai_DPC-200CD"
@@ -22671,8 +22461,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose a gate array Hitachi HD27L019)",
+        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/JVC_HC-7E"
@@ -22778,8 +22568,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose a gate array Hitachi HD27L019)",
+        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/JVC_HC-7GB",
@@ -23333,7 +23123,7 @@ window.MSX_DATA = {
         "United Kingdom",
         "MSX1",
         32,
-        null,
+        "No",
         null,
         null,
         "TMS9929A",
@@ -23358,70 +23148,70 @@ window.MSX_DATA = {
         "Cassette, Printer",
         null,
         null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
+        "MAIN",
+        "MAIN",
+        "⏺",
+        "⏺",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "⏺",
+        "⏺",
+        "RAM",
+        "RAM",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "CS1",
+        "CS1",
+        "CS1",
+        "CS1",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "CS2",
+        "CS2",
+        "CS2",
+        "CS2",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·",
+        "·"
       ],
       "tooltips": {
         "engine": "none (separate IC's)",
@@ -26876,7 +26666,7 @@ window.MSX_DATA = {
         "Sakhr",
         "AX-170",
         1986,
-        "Middle East",
+        "Middle East, Maghreb",
         "MSX1",
         64,
         "No",
@@ -27091,7 +26881,7 @@ window.MSX_DATA = {
         "Sakhr",
         "AX-170F",
         1986,
-        "Middle East",
+        "Middle East, Maghreb",
         "MSX1",
         64,
         "No",
@@ -27198,7 +26988,7 @@ window.MSX_DATA = {
         "Yamaha",
         "AX-200",
         1986,
-        "Middle East",
+        "Middle East, Maghreb",
         "MSX1",
         64,
         "No",
@@ -27306,7 +27096,7 @@ window.MSX_DATA = {
         "Sakhr",
         "AX-200F",
         1986,
-        "Middle East",
+        "Middle East, Maghreb",
         "MSX1",
         64,
         "No",
@@ -27615,8 +27405,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "NEC AW100",
-        "engine_semi_custom": "NEC AW100"
+        "engine": "None (separate ICs whose a gate array NEC AW100)",
+        "engine_semi_custom": "None (separate ICs whose a gate array NEC AW100)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sakhr_AX-330"
@@ -27722,8 +27512,8 @@ window.MSX_DATA = {
         null
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)",
+        "engine_semi_custom": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sakhr_AX-660"
@@ -27829,8 +27619,8 @@ window.MSX_DATA = {
         null
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)",
+        "engine_semi_custom": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sakhr_AX-990"
@@ -28182,7 +27972,7 @@ window.MSX_DATA = {
         null,
         "NMOS",
         null,
-        "None",
+        "MB64H131",
         "None",
         null,
         "QWERTY/JP50on",
@@ -28257,8 +28047,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sanno_SPCmk-II"
@@ -28289,7 +28079,7 @@ window.MSX_DATA = {
         null,
         "NMOS",
         null,
-        "None",
+        "MB64H131",
         "None",
         null,
         "QWERTY/JP50on",
@@ -28364,8 +28154,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sanno_SPCmk-III"
@@ -28610,7 +28400,7 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        "None",
+        "MB64H120",
         "None",
         "No",
         "QWERTY with a \"£\" key",
@@ -28685,8 +28475,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
+        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sanyo_MPC-100",
@@ -28793,8 +28583,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "MB64H120, uPD65002C022 (Gate array for lightpen interface)",
-        "engine_semi_custom": "MB64H120, uPD65002C022 (Gate array for lightpen interface)"
+        "engine": "None (separate ICs whose 2 gate arrays: Fujitsu MB64H120 for memory, uPD65002C022 for light pen interface)",
+        "engine_semi_custom": "None (separate ICs whose 2 gate arrays: Fujitsu MB64H120 for memory, uPD65002C022 for light pen interface)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sanyo_MPC-10mkII"
@@ -28914,7 +28704,7 @@ window.MSX_DATA = {
         "MPC-2",
         1985,
         "Japan",
-        "MSX1",
+        "MSX2",
         64,
         "No",
         null,
@@ -29360,7 +29150,7 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        "None",
+        "MB64H120",
         "None",
         "No",
         "QWERTZ",
@@ -29435,8 +29225,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose a gate array VLC9001, which is a Fujitsu MB64H120 clone)",
+        "engine_semi_custom": "None (separate ICs whose a gate array VLC9001, which is a Fujitsu MB64H120 clone)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sanyo_MPC-64",
@@ -29682,7 +29472,7 @@ window.MSX_DATA = {
         null,
         "NMOS",
         "No",
-        "None",
+        "MB64H120",
         "None",
         "No",
         "AZERTY",
@@ -29757,8 +29547,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
+        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sanyo_PHC-28L",
@@ -29790,7 +29580,7 @@ window.MSX_DATA = {
         null,
         "NMOS",
         null,
-        "None",
+        "MB64H120",
         "None",
         null,
         "QWERTZ",
@@ -29865,8 +29655,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
+        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sanyo_PHC-28P_(GE)"
@@ -29997,14 +29787,14 @@ window.MSX_DATA = {
         "AY-3-8910",
         null,
         null,
-        3,
+        2,
         null,
         "Yes",
         "Z80",
         null,
         "NMOS",
         "No",
-        "None",
+        "MB64H120",
         "None",
         "No",
         "QWERTY with a \"£\" key",
@@ -30061,10 +29851,10 @@ window.MSX_DATA = {
         "·",
         "·",
         "·",
-        "CS3",
-        "CS3",
-        "CS3",
-        "CS3",
+        "EXP",
+        "EXP",
+        "EXP",
+        "EXP",
         "·",
         "·",
         "·",
@@ -30079,8 +29869,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
+        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sanyo_PHC-28S",
@@ -30112,7 +29902,7 @@ window.MSX_DATA = {
         null,
         "NMOS",
         null,
-        "None",
+        "MB64H120",
         "None",
         null,
         "QWERTY/JP50on",
@@ -30187,8 +29977,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
+        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Sanyo_PHC-30"
@@ -30856,7 +30646,7 @@ window.MSX_DATA = {
         "AY-3-8910",
         null,
         null,
-        2,
+        1,
         null,
         "Yes",
         null,
@@ -32421,8 +32211,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-51",
@@ -37593,8 +37383,8 @@ window.MSX_DATA = {
         "·"
       ],
       "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine": "None (separate ICs whose a gate array Hitachi HD27L019)",
+        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)"
       },
       "links": {
         "model": "https://www.msx.org/wiki/Victor_HC-7",
