@@ -24,6 +24,8 @@ export interface ColumnDef {
   maxWidth?: number;
   /** Values that sort after all other values (but before blanks), in both directions. */
   sortLast?: string[];
+  /** When true, known chip ids in the cell text link to MSXData.chip_links (Engine columns). */
+  chipLinks?: boolean;
   /** When true, the column ships and is toggleable but starts hidden on a fresh load. */
   defaultOff?: boolean;
 }
@@ -78,6 +80,11 @@ export interface MSXData {
    * Keyed by abbr (e.g. "MAIN", "SUB", "~"). Absent in legacy data files.
    */
   slotmap_lut?: Record<string, string>;
+  /**
+   * Chip id -> URL (from data/engine-chips.json). Columns with chipLinks link
+   * every occurrence of these ids in their cell text. Absent in legacy data files.
+   */
+  chip_links?: Record<string, string>;
   /** Optional default view configuration. Undefined = show all, no sort, no filters. */
   defaultView?: DefaultViewConfig;
 }

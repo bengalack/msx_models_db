@@ -203,11 +203,53 @@ function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
   return tr;
 }
 
+const chipLinkPatterns = new WeakMap<Record<string, string>, RegExp | null>();
+
+/** Whole-token, longest-first matcher for the chip ids in *links* (cached per map). */
+function chipLinkPattern(links: Record<string, string>): RegExp | null {
+  if (!chipLinkPatterns.has(links)) {
+    const ids = Object.keys(links).sort((a, b) => b.length - a.length);
+    const escaped = ids.map(id => id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    chipLinkPatterns.set(links, ids.length ? new RegExp(`(?<![\\w-])(?:${escaped.join('|')})(?![\\w-])`, 'g') : null);
+  }
+  return chipLinkPatterns.get(links) ?? null;
+}
+
+/**
+ * Replace the cell text with text nodes and one link per known chip id, so
+ * clicking a chip follows its link and clicking the rest selects the cell.
+ */
+function renderChipLinks(td: HTMLTableCellElement, text: string, links: Record<string, string>): void {
+  const pattern = chipLinkPattern(links);
+  if (!pattern) return;
+  pattern.lastIndex = 0;
+  let last = 0;
+  let match: RegExpExecArray | null;
+  const nodes: Node[] = [];
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > last) nodes.push(document.createTextNode(text.slice(last, match.index)));
+    const a = document.createElement('a');
+    a.className = 'cell-link';
+    a.href = links[match[0]];
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.title = links[match[0]];
+    a.textContent = match[0];
+    nodes.push(a);
+    last = match.index + match[0].length;
+  }
+  if (!nodes.length) return;
+  if (last < text.length) nodes.push(document.createTextNode(text.slice(last)));
+  td.textContent = '';
+  nodes.forEach(n => td.appendChild(n));
+}
+
 function buildDataRow(
   model: ModelRecord,
   columns: ColumnDef[],
   rowIndex: number,
   slotmapLut: Record<string, string>,
+  chipLinks: Record<string, string>,
   hiddenCols?: ReadonlySet<number>,
   collapsedGroups?: ReadonlySet<number>,
 ): HTMLTableRowElement {
@@ -302,6 +344,9 @@ function buildDataRow(
         a.title = td.dataset.fullValue ? `${td.dataset.fullValue} \u2014 ${url}` : url;
         a.textContent = displayText;
         td.appendChild(a);
+      }
+      else if (col.chipLinks) {
+        renderChipLinks(td, displayText, chipLinks);
       }
     }
 
@@ -780,7 +825,7 @@ export function buildGrid(data: MSXData, opts?: {
       if (hiddenRows.has(model.id)) {
         buffer.push(model.id);
         // Build the element hidden so applyRowVisibility() can reveal it without a full re-render
-        const tr = buildDataRow(model, data.columns, 0, data.slotmap_lut ?? {}, hiddenCols, collapsedGroups);
+        const tr = buildDataRow(model, data.columns, 0, data.slotmap_lut ?? {}, data.chip_links ?? {}, hiddenCols, collapsedGroups);
         tr.style.display = 'none';
         rowCache.set(model.id, tr);
         rows.push(tr);
@@ -791,7 +836,7 @@ export function buildGrid(data: MSXData, opts?: {
           rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
           buffer = [];
         }
-        const tr = buildDataRow(model, data.columns, rowNum++, data.slotmap_lut ?? {}, hiddenCols, collapsedGroups);
+        const tr = buildDataRow(model, data.columns, rowNum++, data.slotmap_lut ?? {}, data.chip_links ?? {}, hiddenCols, collapsedGroups);
         rowCache.set(model.id, tr);
         rows.push(tr);
         lastVisibleRow = tr;
@@ -989,7 +1034,8 @@ export function buildGrid(data: MSXData, opts?: {
   tbody.addEventListener('mouseenter', (e: MouseEvent) => {
     const td = (e.target as HTMLElement).closest<HTMLTableCellElement>('td[data-col-index]');
     if (!td) return;
-    if (td.querySelector('a.cell-link')) return;
+    // Whole-cell link cells manage their own title; chip-link cells keep the cell tooltip.
+    if (td.querySelector('a.cell-link') && !td.dataset.tooltip) return;
     // A cell tooltip always wins: it carries information the cell text does not
     // (the scraped source text, a slot map abbreviation's meaning).
     const staticTooltip = td.dataset.tooltip;

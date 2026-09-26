@@ -48,6 +48,7 @@ class ChipDictionary:
     vendors: tuple[str, ...] = ()
     filler: tuple[str, ...] = ()
     explanatory: tuple[str, ...] = ()
+    links: dict[str, str] = field(default_factory=dict)   # chip id -> URL
     _vendor_re: re.Pattern[str] | None = field(default=None, compare=False)
     _filler_res: tuple[re.Pattern[str], ...] = field(default=(), compare=False)
     _explanatory_re: re.Pattern[str] | None = field(default=None, compare=False)
@@ -81,6 +82,14 @@ def load_chip_dictionary(path: Path = CHIPS_PATH) -> ChipDictionary:
             f"Engine chip dictionary: {sorted(overlap)} listed as both semi-custom and full-custom"
         )
 
+    links = raw.get("links", {})
+    if not isinstance(links, dict) or not all(isinstance(k, str) and isinstance(v, str) and v
+                                               for k, v in links.items()):
+        raise ValueError("Engine chip dictionary: 'links' must map chip ids to URL strings")
+    unknown = sorted(set(links) - set(semi) - set(full))
+    if unknown:
+        raise ValueError(f"Engine chip dictionary: links for unknown chips {unknown}")
+
     vendors = _list("vendors")
     filler = _list("filler")
     explanatory = _list("explanatory_parentheticals")
@@ -100,6 +109,7 @@ def load_chip_dictionary(path: Path = CHIPS_PATH) -> ChipDictionary:
         vendors=vendors,
         filler=filler,
         explanatory=explanatory,
+        links=dict(links),
         _vendor_re=re.compile("|".join(re.escape(v) for v in vendors), re.IGNORECASE) if vendors else None,
         _filler_res=tuple(re.compile(rf"\b{p}\b", re.IGNORECASE) for p in filler),
         _explanatory_re=(

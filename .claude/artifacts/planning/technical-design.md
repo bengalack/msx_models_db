@@ -674,6 +674,10 @@ Full rules, decisions and the expected output for all 46 live source values: `.c
 
 Summary: normalise whitespace; `?`/`???` are unknown (blank, rendered as an em-dash); `probably`/`possibly`/leading `?` append `?` to the chip id; vendor names and filler words are stripped; chips are matched against `data/engine-chips.json` in source order; `T9769` keeps its A/B/C qualifier in brackets; several chips join with ` or ` (alternatives), `/` (same family) or ` and `; an understood source marks the other column `None`. Chip-shaped tokens outside the dictionary are logged as `[engine:unknown_chip]` and the scraper continues.
 
+### Chip links
+
+`data/engine-chips.json` has a `links` map (chip id → msx.org page); links for chips not in the dictionary are rejected at load. The build ships it as `MSXData.chip_links` and flags both Engine columns `chipLinks` (`Column.chip_links`). The grid (`renderChipLinks` in `src/grid.ts`) turns every whole-token occurrence of a linked chip id in the cell text into its own `a.cell-link` (new tab); the rest stays text — so "T9769 (C) and S1990" links T9769 only. Clicking a chip follows it (the selection handler ignores `a.cell-link`), clicking elsewhere in the cell selects it, and the cell keeps its source-text tooltip.
+
 ### Cell tooltips (new `ModelRecord.tooltips`)
 
 A hidden column may declare `tooltip_for=(<column key>, …)`. The build then emits its text into `ModelRecord.tooltips[<column key>]`, and the grid sets `td.dataset.tooltip` from it. A cell tooltip now takes precedence over the truncation/overflow tooltip, so the scraped sentence is always visible on hover.

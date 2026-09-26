@@ -17,6 +17,8 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Chip links in the Engine columns
+    - links map in data/engine-chips.json; each known chip in the cell is its own link, the rest of the cell selects
   - Adaptations fill their blanks from the model they were adapted from
     - "X is the adaptation of Y" on msx.org; every missing field copied from Y's merged row, nested; 34 models gain data
   - "Also known as" aliases from msx.org

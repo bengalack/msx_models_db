@@ -23,6 +23,7 @@ from .link_shares import apply_link_shares, load_link_shares
 from .registry import IDRegistry
 from .slotmap import load_sha1_index
 from .slotmap_lut import compact_lut, load_slotmap_lut
+from .engine import load_chip_dictionary
 
 log = logging.getLogger(__name__)
 
@@ -353,6 +354,8 @@ def build(
             entry["maxWidth"] = col.max_width
         if col.sort_last:
             entry["sortLast"] = list(col.sort_last)
+        if col.chip_links:
+            entry["chipLinks"] = True
         if col.default_off:
             entry["defaultOff"] = True
         js_columns.append(entry)
@@ -419,6 +422,7 @@ def build(
         "columns": js_columns,
         "models": js_models,
         "slotmap_lut": slotmap_lut_compact,
+        "chip_links": load_chip_dictionary().links if any(c.chip_links for c in active_cols) else {},
     }
 
     # Step 7: Write output

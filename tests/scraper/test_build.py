@@ -1059,3 +1059,21 @@ class TestOpenMSXIdLink:
         links = sony.get("links", {})
         assert "model" in links
         assert "openmsx_id" in links
+
+
+class TestBuildChipLinks:
+    """Engine columns carry chipLinks; data.js ships the dictionary's chip links."""
+
+    def test_chip_links_match_the_dictionary_and_column_config(self, tmp_path):
+        from scraper.engine import load_chip_dictionary
+        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        (tmp_path / "openmsx.json").write_text(json.dumps(raw))
+        (tmp_path / "msxorg.json").write_text(json.dumps([]))
+        build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
+              registry_path=tmp_path / "registry.json", output_path=tmp_path / "data.js")
+        content = (tmp_path / "data.js").read_text(encoding="utf-8")
+        data = json.loads(content[content.index("{"):content.rindex(";")])
+        assert data["chip_links"] == load_chip_dictionary().links
+        configured = {c.key for c in active_columns() if c.chip_links}
+        assert configured, "some column links chips"
+        assert {c["key"] for c in data["columns"] if c.get("chipLinks")} == configured

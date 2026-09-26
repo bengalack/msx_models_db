@@ -200,3 +200,32 @@ class TestChipDictionary:
     def test_committed_dictionary_classes_do_not_overlap(self):
         raw = json.loads(CHIPS_PATH.read_text(encoding="utf-8"))
         assert not set(raw["semi_custom"]) & set(raw["full_custom"])
+
+
+# ── Chip links ──────────────────────────────────────────────────────────────
+
+class TestChipLinks:
+    def test_committed_links_point_at_known_chips(self):
+        chips = load_chip_dictionary()
+        assert chips.links, "the committed dictionary ships chip links"
+        known = set(chips.semi_custom) | set(chips.full_custom)
+        assert set(chips.links) <= known
+        assert all(url.startswith("https://") for url in chips.links.values())
+
+    def test_link_for_unknown_chip_raises(self, tmp_path):
+        path = tmp_path / "chips.json"
+        path.write_text(json.dumps({"semi_custom": ["X1"], "links": {"Y2": "https://example.org/Y2"}}),
+                        encoding="utf-8")
+        with pytest.raises(ValueError, match="links.*Y2"):
+            load_chip_dictionary(path)
+
+    def test_non_string_link_raises(self, tmp_path):
+        path = tmp_path / "chips.json"
+        path.write_text(json.dumps({"semi_custom": ["X1"], "links": {"X1": 42}}), encoding="utf-8")
+        with pytest.raises(ValueError, match="links"):
+            load_chip_dictionary(path)
+
+    def test_links_are_optional(self, tmp_path):
+        path = tmp_path / "chips.json"
+        path.write_text(json.dumps({"semi_custom": ["X1"]}), encoding="utf-8")
+        assert load_chip_dictionary(path).links == {}

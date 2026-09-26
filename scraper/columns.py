@@ -73,6 +73,7 @@ class Column:
     shaded: bool = False                  # when True, cells render with a tinted background and bold text
     max_width: int | None = None          # px cap for data cells; None = shared stylesheet cap
     sort_last: tuple[str, ...] = ()       # values that sort after all others (before blanks)
+    chip_links: bool = False              # link known chip ids in the cell text (data/engine-chips.json links)
     hidden: bool = False                  # scraped, available to derive, not shipped to browser
     tooltip_for: tuple[str, ...] = ()     # hidden column whose text ships as the cell tooltip
                                           # of these column keys
@@ -208,10 +209,10 @@ COLUMNS: list[Column] = [
            derive=lambda m: "CMOS" if "T976" in (m.get("engine_raw") or "") else "NMOS"),
     Column(id=98, key="rtc",              label="RTC",                  group="cpu",      type="string"),
     Column(id=105, key="engine_semi_custom", label="Engine (semi-custom ASIC)", group="cpu", type="string",
-           short_label="Engine\n(semi-custom ASIC)", max_width=130, sort_last=("None",),
+           short_label="Engine\n(semi-custom ASIC)", max_width=130, sort_last=("None",), chip_links=True,
            derive=lambda m: _parse_engine_field(m, 0)),
     Column(id=99,  key="engine",           label="Engine (full-custom ASIC)", group="cpu", type="string",
-           short_label="Engine\n(full-custom ASIC)", max_width=130, sort_last=("None",),
+           short_label="Engine\n(full-custom ASIC)", max_width=130, sort_last=("None",), chip_links=True,
            derive=lambda m: _parse_engine_field(m, 1)),
     Column(id=100, key="z80_turbo",        label="Z80 Turbo",            group="cpu",      type="string", short_label="Z80 Turbo", tooltip="Z80 turbo mode supported (from openMSX XML)"),
     # Other
