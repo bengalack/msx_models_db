@@ -12,6 +12,7 @@
     "MB64H131",
     "HG61H06",
     "HD62003",
+    "HD61J209F",
     "AW100",
     "M50014",
     "CF77099AFT",
@@ -69,6 +70,7 @@
     "S3527": "https://www.msx.org/wiki/Yamaha_S3527",
     "DW64MX1": "https://www.msx.org/wiki/Daewoo_DW64MX1",
     "MB64H131": "https://www.msx.org/wiki/Fujitsu_MB64H131",
+    "HD61J209F": "https://www.msx.org/wiki/General_HD61J209F",
     "HG61H06": "https://www.msx.org/wiki/Hitachi_HG61H06",
     "M50014": "https://www.msx.org/wiki/Mitsubishi_M50014"
   }
