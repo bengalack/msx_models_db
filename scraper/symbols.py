@@ -5,8 +5,10 @@ key is missing; this keeps older config files working unchanged.
 
 Exported names
 --------------
-ABSENT         : marks a sub-slot that is physically absent (non-expanded SS1-3)
-EMPTY_PAGE     : marks a page in a real sub-slot with no device mapped
+ABSENT         : the slot/sub-slot is absent or not confirmed (non-expanded SS1-3,
+                 slots openMSX does not declare, slots msx.org shows wholly empty)
+EMPTY_PAGE     : a page with no device in a *confirmed* slot: some other page of the
+                 same primary slot is used, or openMSX declares the slot
 MIRROR_SUFFIX  : appended to an abbreviation to indicate a mirror page
 SUBSLOT_SUFFIX : appended to CS/ES when the slot is inside a sub-slot (non-standard)
 """

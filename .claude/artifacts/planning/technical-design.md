@@ -43,7 +43,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Responsibilities: Grid display, column groups, sort/filter, row/column show-hide, cell selection, clipboard copy, URL state sync, theme toggle, **sticky headers and sticky left gutter**
   - Sticky UI: Implements four sticky header rows (page header, toolbar, group header, column header, filter row) and a sticky left gutter (row numbers, hide/unhide controls, gap indicators) as per UX guide. All sticky elements remain visible during both horizontal and vertical scroll, ensuring context is preserved for large grids and wide slot map columns.
   - Sticky Columns: The left gutter (row numbers, hide/unhide) is implemented as a sticky column, always visible regardless of horizontal scroll. The Identity group columns (Manufacturer, Model) are also frozen/sticky during horizontal scroll, pinned immediately to the right of the gutter. The Identity group header is likewise frozen. Gap indicator rows include frozen cells in the frozen panel so the dashed line remains visible. Sticky slot map columns may be considered in future versions if user need arises.
-  - Slot Map Columns: Renders all 64 slot map columns (4 groups × 16 columns) for every model, with group headers and tooltips as defined in the requirements. Cells outside a model's physical slot configuration display `~`. Mirror cells display `<abbr>*` and are visually distinct. All slot map columns are scrollable horizontally, but their group headers and column headers remain sticky.
+  - Slot Map Columns: Renders all 64 slot map columns (4 groups × 16 columns) for every model, with group headers and tooltips as defined in the requirements. Cells outside a model's confirmed slot configuration display the `absent` symbol; empty pages of a confirmed slot display the `empty_page` symbol (see *Slot map cell semantics*). Mirror cells display `<abbr>*` and are visually distinct. All slot map columns are scrollable horizontally, but their group headers and column headers remain sticky.
   - Group Filter Indicator: Each group header `<th>` contains a FontAwesome `fas fa-filter` icon element (hidden by default). When any column in the group has a non-empty filter value, the header gets class `group-header--filtered` which reveals the icon. The `recalcGroupHeader()` function handles this alongside its existing `group-header--partial` logic. The indicator is visible in both expanded and collapsed states.
   - Depends On: `window.MSX_DATA` (set by data.js before app script runs)
   - Data Stores: In-memory only (no localStorage except theme preference)
@@ -206,9 +206,9 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Steps:
     1. Parse XML with `lxml` (`recover=True`); locate `<devices>` element
     2. First pass — walk all `<primary slot="N">` elements:
-       - If `external="true"`: classify as `CS{N}` for sub-slot 0 pages 0–3; mark sub-slots 1–3 as `~`
-       - If no `<secondary>` children: classify direct child devices against LUT; assign to pages via `<mem base size>`; mark sub-slots 1–3 as `~`
-       - If `<secondary>` children present: for each sub-slot 0–3, classify child devices against LUT and assign pages; any missing sub-slot element → `~` for all 4 pages
+       - If `external="true"`: classify as `CS{N}` for sub-slot 0 pages 0–3; mark sub-slots 1–3 `absent`
+       - If no `<secondary>` children: classify direct child devices against LUT; assign to pages via `<mem base size>`; mark sub-slots 1–3 `absent`
+       - If `<secondary>` children present: for each sub-slot 0–3, classify child devices against LUT and assign pages; any missing sub-slot element → `absent` for all 4 pages; pages of a declared slot with no device → `empty_page`; primary slots with no `<primary>` element → `absent`
     3. For each device assignment: determine which pages (0–3) its `<mem>` range covers (page N = range intersects [N×0x4000, (N+1)×0x4000)); assign abbreviation to those pages
     4. If no LUT rule matches a device: emit `[WARN] Unmatched device: <element> id="<id>" in <filename>` to stdout; write raw device string as cell value
     5. Second pass — resolve mirrors:
@@ -218,6 +218,14 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     6. Write all 64 slot map values to the model record (keyed by column key, e.g. `slotmap_0_0_0` … `slotmap_3_3_3`)
   - Data touched: XML file, `data/slotmap-lut.json`, `systemroms/machines/all_sha1s.txt` + ROM files (optional)
   - Failure handling: Unknown device → warn + raw string. SHA1 not found → warn + skip mirror detection for that ROM. Overlapping `<mem>` ranges → warn + first device wins. Scraper never aborts on slot map issues.
+
+- Slot map cell semantics (both sources)
+  - `absent` (symbol from `slotmap_symbols.absent`): the slot or sub-slot is not present, **or its presence is not confirmed**.
+  - `empty_page` (`slotmap_symbols.empty_page`): no device on this page of a **confirmed** slot.
+  - A slot is confirmed when some other page in the same primary slot is used (in any sub-slot), or openMSX declares it (`<primary>`/`<secondary>` element).
+  - openMSX (`scraper/slotmap.py`): the declaration is the confirmation, so declared-but-empty pages are `empty_page` and undeclared slots `absent`.
+  - msx.org (`scraper/msxorg_slotmap.py`): the wiki draws an absent slot and an unused one identically, so a primary slot with no used page in any sub-slot is set wholly `absent`. Survey 2026-09-26: of 32 such slots on merged models, openMSX declared 8 of them, so a blanket "empty column = empty page" guess was wrong for 1 in 4.
+  - Merge: openMSX wins slot map conflicts, so where openMSX has the machine its declarations decide. msx.org-only models show `absent` for wholly empty slots.
 
 - BIOS ROM field extraction (per machine XML)
   - Trigger: Scraper processes an openMSX machine XML file during the build flow (called from `parse_machine_xml` in `scraper/openmsx.py`)

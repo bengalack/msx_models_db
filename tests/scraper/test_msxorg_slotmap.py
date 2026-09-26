@@ -538,6 +538,66 @@ class TestFindSlotmapTable:
         assert parse_mapper_from_soup(soup) is None
 
 
+# ── Empty-page rule: ⏺ only where the slot is confirmed ───────────────────
+#
+# msx.org draws an unused slot column the same way whether the slot is absent
+# or present-but-empty, so a slot with no used page anywhere (in any of its
+# sub-slots) is unconfirmed and stays ABSENT. Pages are EMPTY_PAGE only when
+# something else in the same primary slot is used. (openMSX declaring the slot
+# is the other kind of confirmation; that happens at merge time.)
+
+_TWO_USED_SLOTS_TABLE = """
+<table>
+<tr><td></td><th>Slot 0</th><th>Slot 1</th><th>Slot 2</th><th>Slot 3</th></tr>
+<tr><th>Page C000h~FFFFh</th><td></td><td rowspan="4">Cartridge Slot 1</td><td></td><td></td></tr>
+<tr><th>Page 8000h~BFFFh</th><td></td><td></td><td></td></tr>
+<tr><th>Page 4000h~7FFFh</th><td rowspan="2">Main-ROM</td><td></td><td></td></tr>
+<tr><th>Page 0000h~3FFFh</th><td></td><td></td></tr>
+</table>
+"""
+
+_EXPANDED_TABLE = """
+<table>
+<tr><td></td><th>Slot 0</th><th>Slot 1</th><th>Slot 2-0</th><th>Slot 2-1</th><th>Slot 2-2</th><th>Slot 2-3</th>
+    <th>Slot 3-0</th><th>Slot 3-1</th><th>Slot 3-2</th><th>Slot 3-3</th></tr>
+<tr><th>Page C000h~FFFFh</th><td rowspan="4">Main-ROM</td><td rowspan="4">Cartridge Slot 1</td>
+    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td rowspan="4">64kB RAM</td></tr>
+<tr><th>Page 8000h~BFFFh</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><th>Page 4000h~7FFFh</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><th>Page 0000h~3FFFh</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+"""
+
+
+def _slot_values(result: dict[str, str], ms: int) -> set[str]:
+    return {result[f"slotmap_{ms}_{ss}_{p}"] for ss in range(4) for p in range(4)}
+
+
+class TestEmptyPageNeedsConfirmedSlot:
+
+    def test_unused_nonexpanded_slot_is_absent(self):
+        result = parse_msxorg_slotmap(_make_page(_TWO_USED_SLOTS_TABLE))
+        for ms in (2, 3):
+            assert _slot_values(result, ms) == {_ABSENT}, f"slot {ms}"
+
+    def test_used_slot_marks_its_other_pages_empty(self):
+        result = parse_msxorg_slotmap(_make_page(_TWO_USED_SLOTS_TABLE))
+        # Slot 0: Main-ROM on pages 0-1 confirms the slot -> pages 2-3 are empty, not absent
+        assert [result[f"slotmap_0_0_{p}"] for p in range(4)] == ["MAIN", "MAIN", _EMPTY_PAGE, _EMPTY_PAGE]
+        # ...and a non-expanded slot still has no sub-slots 1-3
+        assert {result[f"slotmap_0_{ss}_{p}"] for ss in (1, 2, 3) for p in range(4)} == {_ABSENT}
+
+    def test_unused_expanded_slot_is_absent(self):
+        result = parse_msxorg_slotmap(_make_page(_EXPANDED_TABLE))
+        assert _slot_values(result, 2) == {_ABSENT}
+
+    def test_expanded_slot_with_one_used_subslot_marks_the_others_empty(self):
+        result = parse_msxorg_slotmap(_make_page(_EXPANDED_TABLE))
+        for ss in (0, 1, 2):
+            assert {result[f"slotmap_3_{ss}_{p}"] for p in range(4)} == {_EMPTY_PAGE}, f"sub-slot {ss}"
+        assert {result[f"slotmap_3_3_{p}"] for p in range(4)} == {"RAM"}
+
+
 # ── parse_mapper_from_soup ───────────────────────────────────────────────
 
 def _one_cell_table(cell_html: str) -> str:

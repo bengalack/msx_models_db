@@ -4,9 +4,11 @@ Walks the <primary>/<secondary> hierarchy and classifies each device via the
 slot map LUT, producing 64 cell values (4 main slots × 4 sub-slots × 4 pages)
 per machine.
 
-Cell value conventions:
-  "⌧"        — sub-slot physically absent (non-expanded SS1-3, cartridge SS1-3)
-  "•"        — page is present in a real sub-slot but has no device mapped
+Cell value conventions (glyphs come from scraper.symbols / data/scraper-config.json):
+  ABSENT     — slot/sub-slot the XML does not declare (non-expanded SS1-3,
+               cartridge SS1-3, primary slots with no <primary> element)
+  EMPTY_PAGE — page with no device in a slot the XML declares (the declaration
+               is what confirms the slot)
   "EXP"      — secondary slot explicitly declared in the XML with no device
                (physical expansion connector, e.g. an internal bus)
   "CS{N}"    — cartridge slot N (sequential counter, not slot index)
@@ -257,8 +259,8 @@ def extract_slotmap(
     """Extract all 64 slot map cell values from an openMSX machine XML root.
 
     Returns a dict with all 64 keys (slotmap_{ms}_{ss}_{p}), each valued as:
-    "⌧"   — sub-slot is physically absent (non-expanded SS1-3, cartridge SS1-3)
-    "•"   — sub-slot is real but the page has no device mapped (U+2022)
+    ABSENT     — slot/sub-slot not declared in the XML (non-expanded SS1-3, cartridge SS1-3)
+    EMPTY_PAGE — declared slot, but the page has no device mapped
     "CS{N}" — cartridge slot N (sequential 1-based counter)
     "<abbr>" — LUT-matched abbreviation (e.g. "MAIN", "MM", "DSK")
     "<abbr>*" — mirror page (origin abbreviation + asterisk)

@@ -98,10 +98,12 @@ Slot-map cells hold an abbreviation from `slotmap_lut` (e.g. `MAIN`, `DSK`, `CS1
 
 | Config key | Meaning |
 |---|---|
-| `absent` | Sub-slot physically absent (slot not expanded) |
-| `empty_page` | Sub-slot exists but no device is mapped on this page |
+| `absent` | Slot or sub-slot absent, **or not confirmed** (see rule below) |
+| `empty_page` | No device on this page of a **confirmed** slot |
 | `mirror_suffix` | Appended to an abbreviation for a mirrored page (e.g. `DSK*`) |
 | `subslot_suffix` | Appended to `CS`/`ES` when the slot sits inside a sub-slot (e.g. `CS1!`) |
+
+**Empty-page rule.** `empty_page` is used only where the slot is confirmed: some other page in the same primary slot is used (in any of its sub-slots), or openMSX declares the slot. Otherwise the cell is `absent`. msx.org draws an absent slot and a present-but-unused one identically, so a slot msx.org shows wholly empty is unconfirmed; when openMSX has the machine, its XML decides (openMSX wins slot map conflicts).
 
 The `absent` and `empty_page` symbols also appear as `__sentinel__` rules in `data/slotmap-lut.json` so they get tooltips; the two files must agree (enforced by `tests/scraper/test_slotmap_lut.py`).
 

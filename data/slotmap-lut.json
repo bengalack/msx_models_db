@@ -303,12 +303,12 @@
     "element": "__sentinel__",
     "id_pattern": null,
     "abbr": "·",
-    "tooltip": "Sub-slot absent (not expanded)"
+    "tooltip": "Absent — slot not present, or not confirmed"
   },
   {
     "element": "__sentinel__",
     "id_pattern": null,
     "abbr": "⏺",
-    "tooltip": "Empty page — no device mapped"
+    "tooltip": "Empty page — slot confirmed, no device mapped"
   }
 ]

@@ -17,6 +17,9 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Slot map: empty page (⏺) only in confirmed slots
+    - Confirmed = another page in the same primary slot is used, or openMSX declares the slot; else absent (·)
+    - 32 msx.org-only models: wholly empty slots now show · instead of ⏺
   - VDP normalisation from openMSX
     - PAL/NTSC suffix stripped (T6950PAL -> T6950); engine part numbers (T7937A) left to msx.org's VDP
     - msx.org parser recognises TMS91x8/91x9, T6950, YM2220 and drops package suffixes (TMS9118NL -> TMS9118): 39 models gained a VDP

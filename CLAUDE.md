@@ -121,6 +121,7 @@ applied to local data as well, so a curated entry can never resurrect an exclude
 ## Gotchas
 
 - **Slot-map symbols live in two places**: `slotmap_symbols` in `data/scraper-config.json` (used by `scraper/symbols.py` and imported by `src/symbols.ts`) and the `__sentinel__` rules in `data/slotmap-lut.json`. Change both together. Tests must use the `scraper.symbols` constants, never literal glyphs — the configured values differ from the code defaults.
+- **Slot map `empty_page` means a confirmed slot.** Use it only when another page in the same primary slot is used or openMSX declares the slot; otherwise `absent`. msx.org can't tell an absent slot from an unused one. See *Slot map cell semantics* in technical-design.md.
 - `data/scraper-config.json` is committed on purpose (the web build needs it); it also holds the maintainer's local mirror paths.
 - `data/local-raw.json` is committed (exception to the `data/*-raw.json` ignore rule); the other `*-raw.json` files are local fetch caches.
 - Test fakes for `PageSource` / `XMLSource` must match the protocol signatures (e.g. `fetch_category(standard, url, page=1)`).

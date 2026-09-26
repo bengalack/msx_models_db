@@ -4,9 +4,14 @@ Parses the "Slot Map" section found on many msx.org model wiki pages and
 produces the same 64-cell ``dict[str, str]`` output format as
 ``scraper.slotmap.extract_slotmap()``.
 
-Cell value conventions (identical to scraper.slotmap):
-  "⌧"       — sub-slot physically absent (non-expanded SS 1-3, cartridge SS 1-3)
-  "⌴"       — sub-slot present but no device mapped on this page
+Cell value conventions (identical to scraper.slotmap; glyphs come from
+scraper.symbols / data/scraper-config.json):
+  ABSENT     — slot/sub-slot absent or not confirmed: non-expanded SS 1-3,
+               cartridge SS 1-3, and every page of a primary slot that has no
+               used page in any sub-slot (msx.org draws an absent slot and an
+               unused one identically, so a wholly empty slot is unconfirmed)
+  EMPTY_PAGE — no device on this page of a *confirmed* slot (some other page
+               in the same primary slot is used)
   "CS{N}"   — cartridge slot N (1-based sequential counter per table, L→R)
   "<abbr>"  — short abbreviation (e.g. "MAIN", "MM", "DSK")
   "<abbr>*" — mirror page (origin abbreviation + asterisk, e.g. "DSK*")
@@ -436,7 +441,23 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
                 result[f"slotmap_{ms}_{ss}_{p}"] = "?*"
 
     # ── Fill sentinel / empty-page for slots based on expansion status ────
+    # EMPTY_PAGE means "the slot is confirmed, this page just has nothing".
+    # msx.org draws an unused slot column the same whether the slot is absent
+    # or present-but-empty, so a primary slot with no used page in any of its
+    # sub-slots is unconfirmed and stays ABSENT.  (openMSX declaring the slot
+    # is the other kind of confirmation; the merge takes openMSX's cells.)
+    def _slot_is_used(ms: int) -> bool:
+        return any(
+            result[f"slotmap_{ms}_{ss}_{p}"] not in (_ABSENT, _EMPTY_PAGE)
+            for ss in range(4) for p in range(4)
+        )
+
     for ms, subs in ms_subslots.items():
+        if not _slot_is_used(ms):
+            for ss in range(4):
+                for p in range(4):
+                    result[f"slotmap_{ms}_{ss}_{p}"] = _ABSENT
+            continue
         if ms_expanded[ms]:
             # Expanded: all 4 sub-slots are physically present.
             # Any sub-slot not seen in col_to_slot, or any page still ⌧ → ⌴
