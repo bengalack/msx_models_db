@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import time
 from pathlib import Path
 from typing import Any
@@ -267,12 +268,37 @@ def _extract_memory(devices: etree._Element, out: dict[str, Any]) -> None:
             break
 
 
+_VDP_REGION_SUFFIX_RE = re.compile(r"(?:PAL|NTSC)$", re.IGNORECASE)
+_ENGINE_CHIP_IDS: frozenset[str] | None = None
+
+
+def _engine_chip_ids() -> frozenset[str]:
+    """Upper-cased chip ids from data/engine-chips.json, loaded once."""
+    global _ENGINE_CHIP_IDS
+    if _ENGINE_CHIP_IDS is None:
+        from .engine import load_chip_dictionary
+        chips = load_chip_dictionary()
+        _ENGINE_CHIP_IDS = frozenset(c.upper() for c in chips.semi_custom + chips.full_custom)
+    return _ENGINE_CHIP_IDS
+
+
 def _extract_video(devices: etree._Element, out: dict[str, Any]) -> None:
-    """Extract VDP version and VRAM."""
+    """Extract VDP version and VRAM.
+
+    openMSX names some VDPs after the chip that contains them, with the video
+    standard appended (T6950PAL, YM2220NTSC, T7937APAL). The region suffix is
+    dropped; a chip listed in data/engine-chips.json is an MSX-Engine that is
+    reported in the Engine columns, so ``vdp`` is left unset and msx.org's VDP
+    value fills the cell instead.
+    """
     vdp = devices.find(".//VDP")
     if vdp is None:
         return
     version = _text(vdp.find("version"))
+    if version:
+        version = _VDP_REGION_SUFFIX_RE.sub("", version) or version
+    if version and version.upper() in _engine_chip_ids():
+        version = None
     if version:
         out["vdp"] = version
         specs = VDP_SPECS.get(version, {})

@@ -889,6 +889,17 @@ Unchanged merge rules: `data/local-raw.json` > openMSX > msx.org. When openMSX a
 
 ---
 
+## Feature Design: VDP Normalisation from openMSX XML
+
+openMSX names some VDPs after the chip that contains them, with the video standard appended: `T6950PAL`, `YM2220NTSC`, `T7937APAL`. `_extract_video` in `scraper/openmsx.py`:
+
+1. Strips a trailing `PAL`/`NTSC` (case-insensitive): `T6950PAL` → `T6950`, `YM2220NTSC` → `YM2220`. These are real VDP clones and stay in the VDP column.
+2. Leaves `vdp` unset when the remaining value is a chip listed in `data/engine-chips.json` (e.g. `T7937A`). That part is an MSX-Engine and is already reported in the Engine columns; with openMSX silent, msx.org's VDP value fills the cell. Models without an msx.org VDP render blank.
+
+VRAM is still read from the same element.
+
+---
+
 ## Feature Design: RTC Column Extraction from openMSX XML
 
 ### Overview

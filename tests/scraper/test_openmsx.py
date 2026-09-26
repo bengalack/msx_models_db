@@ -222,6 +222,33 @@ class TestParseXMLVideo:
         assert "vdp" not in result
         assert "vram_kb" not in result
 
+    @pytest.mark.parametrize("region", ["PAL", "NTSC", "pal"])
+    def test_region_suffix_is_stripped(self, region):
+        """openMSX appends the video standard to clone VDPs (T6950PAL); the chip is T6950."""
+        xml = _xml(_info(), f'<VDP id="VDP"><version>T6950{region}</version><vram>16</vram></VDP>')
+        result = parse_machine_xml(xml, "test.xml")
+        assert result["vdp"] == "T6950"
+        assert result["vram_kb"] == 16
+
+    @pytest.mark.parametrize("region", ["", "PAL", "NTSC"])
+    def test_engine_part_number_is_not_a_vdp(self, region):
+        """An MSX-Engine listed in engine-chips.json is reported in the Engine columns, not VDP.
+
+        Leaving vdp unset lets msx.org's VDP value fill the cell instead.
+        """
+        from scraper.engine import load_chip_dictionary
+        chips = load_chip_dictionary()
+        engine = next(iter(chips.full_custom + chips.semi_custom))
+        xml = _xml(_info(), f'<VDP id="VDP"><version>{engine}{region}</version><vram>16</vram></VDP>')
+        result = parse_machine_xml(xml, "test.xml")
+        assert "vdp" not in result
+        assert result["vram_kb"] == 16  # VRAM is still real information
+
+    def test_real_vdp_name_is_not_mistaken_for_region_suffix(self):
+        xml = _xml(_info(), '<VDP id="VDP"><version>TMS9929A</version><vram>16</vram></VDP>')
+        result = parse_machine_xml(xml, "test.xml")
+        assert result["vdp"] == "TMS9929A"
+
 
 class TestParseXMLAudio:
     """T-014: audio field extraction."""
