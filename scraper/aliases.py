@@ -186,3 +186,8 @@ KNOWN_AS_FIELD = "_known_as"
 # editorial note dropped from the Model field): the name as the page wrote it.
 # merge_models treats it as a former name, so the model keeps its registry id.
 FORMER_MODEL_FIELD = "_former_model"
+
+# Internal field on an msx.org record for a localised product of the page's
+# model ("CX5MU" on the CX5M page): the model it localises. merge_models keeps
+# the record only when openMSX has that machine.
+LOCALISED_FIELD = "_localised"

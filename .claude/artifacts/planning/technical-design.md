@@ -653,6 +653,20 @@ A regional version of a model is `<model> (<TAG>)` with a country tag (openMSX: 
 
 ---
 
+## Feature Design: Several Models and Localised Products on One Page
+
+An msx.org page with its own specs table can describe more than one model. `split_model_field` (`scraper/msxorg.py`) reads the specs Model value:
+
+- `A / B`, and `A or B` when the names share their first 3 characters ("CX5MII or CX5MII/128", "YIS-805/128 or YIS-805/256"): **several models**, one record each. Each takes the values that name it (`named_specs` in `scraper/msxorg_series.py`, same resolver as series pages: "64kB (CX5MII) or 128kB (CX5MII/128)") and its own slot map (`choose_slotmap_table`); unnamed values are shared. A value that names only other models is left out for this one.
+- `A or X` otherwise ("FM-X or MB25150"): X is **another name** of A — added to the record's "known as" names.
+- `A (A1, A2 or A3)` — two or more code-shaped items (no spaces, a digit): the **localised product codes** of A ("CX5M (CX5MA, CX5MC, … or CX5MU)").
+- The first model keeps the combined name as a former name (`_former_model`), so the old row's id carries over.
+- **Localised products.** Products listed in the Model value, plus those in a per-product table (first column "Product"; a table-only product localises the longest model name it starts with), each get a record (`_localised_records`): the model's values, overridden by values naming the product and by its table row — Region (codes expanded), Keyboard, VDP. It is marked `_localised` (`LOCALISED_FIELD`) and shares the page's link. `merge_models` keeps it **only when openMSX has that machine and msx.org has no page of its own for it**; otherwise it is dropped, so the table never creates msx.org-only rows.
+- Resolver form added for all pages: a shared lead followed by labelled items — "PSG, (AX-200M version) SFG, MIDI" → "PSG" for every variant, "PSG, SFG, MIDI" for the AX-200M.
+- Result (2026-09-26): Yamaha CX5MII and CX5MII/128 joined the msx.org CX5MII page; CX5MU the CX5M page (US row of the product table: United States, QWERTY, TMS9918A); Fujitsu FM-X joined its page; Yamaha YIS-805/128 is an msx.org-only row (reusing the id of the former combined row); YIS-503FB, AX-350II/IIF and AX-170/F take their own RAM, slot map and keyboard values. The composite alias for the CX5M name and the YIS-805/256 alias were removed.
+
+---
+
 ## Feature Design: Model Revisions
 
 A revision *N* of a model is `<model> (vN)` (openMSX's convention; revision 1 is the plain name, and an openMSX `(v1)` machine is aliased onto it). msx.org marks revision-specific facts in free text ("2nd Gen HB-F500", "(HB-F500 second version)", "(version 2)", "1st version: …"); `scraper/revisions.py` holds that vocabulary.

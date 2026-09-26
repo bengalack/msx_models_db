@@ -871,3 +871,110 @@ def test_canonicalised_tag_keeps_its_registry_id(tmp_path, monkeypatch):
     )
     assert reg.models["maker|m-7(gb)"] == 42
     assert reg.next_model_id == 500
+
+
+# ---------------------------------------------------------------------------
+# Several models, localised products and other names in one Model field
+# ---------------------------------------------------------------------------
+
+from scraper.msxorg import split_model_field
+
+
+@pytest.mark.parametrize("raw,models,products,others", [
+    ("M-1", ["M-1"], {}, []),
+    ("M-1 / M-1F", ["M-1", "M-1F"], {}, []),
+    ("MX5 or MX5/128", ["MX5", "MX5/128"], {}, []),
+    ("FM-1 or QB2515", ["FM-1"], {}, ["QB2515"]),
+    ("MX5 (MX5A, MX5C or MX5U)", ["MX5"], {"MX5A": "MX5", "MX5C": "MX5", "MX5U": "MX5"}, []),
+    ("Perfect One (DPC-1CD)", ["Perfect One (DPC-1CD)"], {}, []),   # one name in parentheses: kept
+    ("AB-2 (Manufacturer: Maker)", ["AB-2 (Manufacturer: Maker)"], {}, []),
+    ("PX-7(HB) - note: not the PX-7", ["PX-7(HB)"], {}, []),
+])
+def test_split_model_field(raw, models, products, others):
+    assert split_model_field(raw) == (models, products, others)
+
+
+def _multi_page(model: str, ram: str, extra: str = "", table: str = "") -> bytes:
+    return (f'<html><body>{table}<table class="wikitable">'
+            f'<tr><th>Brand</th><td>Maker</td></tr><tr><th>Model</th><td>{model}</td></tr>'
+            f'<tr><th>Region</th><td>Europe</td></tr><tr><th>RAM</th><td>{ram}</td></tr>'
+            f'<tr><th>Keyboard layout</th><td>QWERTY</td></tr>{extra}</table></body></html>').encode()
+
+
+_PRODUCT_TABLE = ('<table><tr><th>Product</th><th>Region</th><th>Keyboard</th><th>VDP</th></tr>'
+                  '<tr><td>MX5A</td><td>AU, NZ</td><td>QWERTY with £ key</td><td>TMS9929A</td></tr>'
+                  '<tr><td>MX5U</td><td>US</td><td>QWERTY</td><td>TMS9918A</td></tr></table>')
+
+
+class TestSeveralModelsOnOnePage:
+    def test_or_models_take_their_own_values(self):
+        records = parse_model_page(_multi_page("MX5 or MX5/128", "64kB (MX5) or 128kB (MX5/128)"), "MSX1", "Maker MX5")
+        assert {r["model"]: r["main_ram_kb"] for r in records} == {"MX5": 64, "MX5/128": 128}
+        assert {r["msxorg_title"] for r in records} == {"Maker MX5"}
+
+    def test_or_name_is_another_name(self):
+        from scraper.aliases import KNOWN_AS_FIELD
+        [record] = parse_model_page(_multi_page("FM-1 or QB2515", "16kB"), "MSX1", "Maker FM-1")
+        assert record["model"] == "FM-1"
+        assert record[KNOWN_AS_FIELD] == ["QB2515"]
+
+    def test_combined_name_is_a_former_name(self):
+        from scraper.aliases import FORMER_MODEL_FIELD
+        records = parse_model_page(_multi_page("MX5 or MX5/128", "64kB"), "MSX1", "Maker MX5")
+        assert records[0][FORMER_MODEL_FIELD] == "MX5 or MX5/128"
+        assert FORMER_MODEL_FIELD not in records[1]
+
+    def test_shared_lead_then_labelled_item(self):
+        extra = "<tr><th>Audio</th><td>PSG (AY-3-8910), (M-1 version) SFG, MIDI</td></tr>"
+        records = parse_model_page(_multi_page("M-1 / M-1F", "64kB", extra), "MSX1", "Maker M-1")
+        by_model = {r["model"]: r for r in records}
+        assert by_model["M-1F"]["psg"] == by_model["M-1"]["psg"]
+        assert by_model["M-1F"]["psg"] is not None
+
+
+class TestLocalisedProducts:
+    def test_listed_products_take_their_table_row(self):
+        from scraper.aliases import LOCALISED_FIELD
+        page = _multi_page("MX5 (MX5A or MX5U)", "32kB", table=_PRODUCT_TABLE)
+        records = {r["model"]: r for r in parse_model_page(page, "MSX1", "Maker MX5")}
+        assert set(records) == {"MX5", "MX5A", "MX5U"}
+        assert LOCALISED_FIELD not in records["MX5"]
+        u = records["MX5U"]
+        assert u[LOCALISED_FIELD] == "MX5"
+        assert (u["region"], u["keyboard_layout"], u["vdp"]) == ("United States", "QWERTY", "TMS9918A")
+        assert u["main_ram_kb"] == records["MX5"]["main_ram_kb"]
+        assert u["msxorg_title"] == "Maker MX5"
+
+    def test_table_only_products_localise_the_longest_prefix(self):
+        from scraper.aliases import LOCALISED_FIELD
+        table = _PRODUCT_TABLE.replace("MX5A", "MX5/128A")
+        page = _multi_page("MX5 or MX5/128", "64kB (MX5) or 128kB (MX5/128)", table=table)
+        records = {r["model"]: r for r in parse_model_page(page, "MSX1", "Maker MX5")}
+        assert records["MX5/128A"][LOCALISED_FIELD] == "MX5/128"
+        assert records["MX5/128A"]["main_ram_kb"] == 128
+        assert records["MX5U"][LOCALISED_FIELD] == "MX5"
+
+
+def test_localised_products_join_only_openmsx_machines(tmp_path, monkeypatch):
+    """A localised record becomes a row only for an openMSX machine without an msx.org page of its own."""
+    from scraper.aliases import LOCALISED_FIELD
+    page = "Maker MX5"
+    msxorg = [
+        {"manufacturer": "Maker", "model": "MX5", "generation": "MSX1", "msxorg_title": page, "vram_kb": 16},
+        {"manufacturer": "Maker", "model": "MX5U", "generation": "MSX1", "msxorg_title": page,
+         "vram_kb": 16, "keyboard_layout": "QWERTY", LOCALISED_FIELD: "MX5"},
+        {"manufacturer": "Maker", "model": "MX5A", "generation": "MSX1", "msxorg_title": page,
+         "vram_kb": 16, LOCALISED_FIELD: "MX5"},
+        {"manufacturer": "Maker", "model": "MX5C", "generation": "MSX1", "msxorg_title": page,
+         "vram_kb": 16, LOCALISED_FIELD: "MX5"},
+        {"manufacturer": "Maker", "model": "MX5C", "generation": "MSX1", "msxorg_title": "Maker MX5C",
+         "vram_kb": 32},
+    ]
+    openmsx = [{"manufacturer": "Maker", "model": m, "generation": "MSX1"} for m in ("MX5", "MX5U", "MX5C")]
+    data, _ = _build_with_aliases(tmp_path, monkeypatch, {}, openmsx=openmsx, msxorg=msxorg)
+    keys = [c["key"] for c in data["columns"]]
+    rows = {r["model"]: (r, m.get("links", {})) for m in data["models"] for r in [dict(zip(keys, m["values"]))]}
+    assert set(rows) == {"MX5", "MX5U", "MX5C"}           # MX5A: no openMSX machine
+    assert rows["MX5U"][0]["vram_kb"] == 16
+    assert rows["MX5U"][1]["model"] == rows["MX5"][1]["model"]
+    assert rows["MX5C"][0]["vram_kb"] == 32                # its own page wins

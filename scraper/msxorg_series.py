@@ -43,9 +43,9 @@ _TABLE_COLUMN_FOR_FIELD = {"Region": "Region", "Keyboard layout": "Keyboard"}
 
 # Region codes used in the variant tables.
 _REGION_CODES = {
-    "AR": "Argentina", "AU": "Australia", "BE": "Belgium", "CH": "Switzerland",
+    "AR": "Argentina", "AU": "Australia", "BE": "Belgium", "CA": "Canada", "CH": "Switzerland",
     "DE": "Germany", "ES": "Spain", "FI": "Finland", "FR": "France", "GB": "United Kingdom",
-    "IT": "Italy", "JP": "Japan", "KR": "Korea", "NL": "Netherlands", "SE": "Sweden",
+    "IT": "Italy", "JP": "Japan", "KR": "Korea", "NL": "Netherlands", "NZ": "New Zealand", "SE": "Sweden",
     "UK": "United Kingdom", "US": "United States",
 }
 # Region names a region-qualified value may use; a European country also
@@ -145,6 +145,15 @@ def _segments(text: str, vre: re.Pattern[str]) -> list[_Segment] | None:
         return [_Segment(_strip_separators(text[m.end():groups[i + 1].start() if i + 1 < len(groups) else len(text)]),
                          *qualifier(m.group(1)))
                 for i, m in enumerate(groups)]
+    # Shared lead, then labelled items: "PSG, (AX-200M version) SFG, MIDI" ->
+    # "PSG" for every variant, "PSG, SFG, MIDI" for the AX-200M.
+    if groups and text[:groups[0].start()].rstrip().endswith(","):
+        lead = text[:groups[0].start()].rstrip().rstrip(",").strip()
+        labelled = [_Segment(f"{lead}, " + _strip_separators(
+                                 text[m.end():groups[i + 1].start() if i + 1 < len(groups) else len(text)]),
+                             *qualifier(m.group(1)))
+                    for i, m in enumerate(groups)]
+        return labelled + [_Segment(lead, frozenset(), frozenset(), False)]
 
     # "in" qualifier: "TCX-1010 in HX-21, TCX-1012 in HX-21F"
     parts = [p for p in re.split(r",\s*", text) if p]
@@ -451,3 +460,68 @@ def build_variant_specs(
     if ctx is None:
         return None, None
     return resolve_specs(ctx, page_title=page_title or member_title)
+
+
+# ── Several models on one page ──────────────────────────────────────────────
+
+# Per-product table columns and the specs field each one answers.
+_PRODUCT_COLUMNS = {"Region": "Region", "Keyboard": "Keyboard layout", "VDP": "Video"}
+
+
+def product_names(soup: BeautifulSoup) -> list[str]:
+    """Product codes listed in the page's per-variant table(s) (first column "Product")."""
+    names: list[str] = []
+    for grid in _variant_tables(soup):
+        for row in grid[1:]:
+            name = _normalise(row[0]) if row else ""
+            if name and name not in names:
+                names.append(name)
+    return names
+
+
+def named_specs(specs: dict[str, str], variant: str, variants: list[str]) -> dict[str, str]:
+    """*specs* for one of several models on a page.
+
+    A value that names models ("64kB (CX5MII) or 128kB (CX5MII/128)") is
+    resolved for *variant*, and left out when it names others only; every
+    other value is shared and kept as is.
+    """
+    vre = _variant_re(variants)
+    out: dict[str, str] = {}
+    for field, raw in specs.items():
+        if field in ("Brand", "Model") or not _names_in(_normalise(raw), vre):
+            out[field] = raw
+            continue
+        value = resolve_value(raw, variant, variants)
+        if value is not None:
+            out[field] = value
+    return out
+
+
+def localised_specs(
+    specs: dict[str, str],
+    soup: BeautifulSoup,
+    base_specs: dict[str, str],
+    product: str,
+    variants: list[str],
+) -> dict[str, str]:
+    """Specs of a localised product ("CX5MU") of a model whose specs are *base_specs*.
+
+    The product is the base model sold in another country: it takes the base
+    values, overridden by values that name the product and by its row in the
+    per-product table (Region, Keyboard, VDP).
+    """
+    vre = _variant_re(variants)
+    out = {**base_specs, "Model": product}
+    for field, raw in specs.items():
+        if field in ("Brand", "Model") or product.upper() not in _names_in(_normalise(raw), vre):
+            continue
+        value = resolve_value(raw, product, variants)
+        if value and not _SEE_TABLE_RE.search(value):
+            out[field] = value
+    row = variant_row(soup, product, variants)
+    for column, field in _PRODUCT_COLUMNS.items():
+        value = row.get(column, "")
+        if value:
+            out[field] = expand_region_codes(value) if field == "Region" else value
+    return out

@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from scraper.aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, AliasLUT, apply_aliases, load_aliases
+from scraper.aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, LOCALISED_FIELD, AliasLUT, apply_aliases, load_aliases
 from scraper.revisions import REVISION_FIELD
 from scraper.symbols import ABSENT as _ABSENT, EMPTY_PAGE as _EMPTY_PAGE
 
@@ -177,11 +177,17 @@ def merge_models(
 
     # A revision record from msx.org ("HB-F500 (v2)") only becomes a row when
     # openMSX has that machine; msx.org alone never creates a revision row.
+    # Likewise a localised product ("CX5MU" on the CX5M page), which also yields
+    # to an msx.org page of its own.
     openmsx_keys = {natural_key(m) for m in openmsx}
+    own_page_keys = {natural_key(m) for m in msxorg or [] if not m.get(LOCALISED_FIELD)}
     kept_msxorg = []
     for m in msxorg or []:
         if m.get(REVISION_FIELD) and natural_key(m) not in openmsx_keys:
             log.info("[merge:revision] No openMSX machine for %s — dropped", natural_key(m))
+            continue
+        if m.get(LOCALISED_FIELD) and (natural_key(m) not in openmsx_keys or natural_key(m) in own_page_keys):
+            log.debug("[merge:localised] %s dropped (no openMSX machine, or msx.org page of its own)", natural_key(m))
             continue
         kept_msxorg.append(m)
     msxorg = kept_msxorg

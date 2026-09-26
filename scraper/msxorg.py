@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 import time
 from typing import Any, Callable
@@ -11,13 +12,17 @@ from urllib.parse import quote, unquote, urljoin
 import requests
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
-from .aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD
+from .aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, LOCALISED_FIELD
 from .inherit import fill_blanks
 from .exclude import ExcludeList
 from .revisions import REVISION_FIELD, revision_name, revision_numbers
 from .mirror import LivePageSource, MirrorPageSource, PageSource, slug_to_filename
 from .msxorg_series import (
     VariantContext,
+    choose_slotmap_table,
+    localised_specs,
+    named_specs,
+    product_names,
     page_context,
     resolve_specs,
     revisions_in,
@@ -542,7 +547,7 @@ def fill_from_donors(
             for candidate in candidates:
                 if candidate.get(REVISION_FIELD) == revision:
                     return candidate
-        return next((c for c in candidates if not c.get(REVISION_FIELD)), candidates[0])
+        return next((c for c in candidates if not c.get(REVISION_FIELD) and not c.get(LOCALISED_FIELD)), candidates[0])
 
     done: set[int] = set()
     filled = 0
@@ -574,6 +579,46 @@ _MODEL_NOTE_RE = re.compile(r"\s*(?:-\s*note\b.*|\(\s*note\b[^)]*\))\s*$", re.IG
 def _strip_model_note(name: str) -> str:
     """Drop an editorial note from a Model value ("X - note: ...", "X (note: ...)")."""
     return _MODEL_NOTE_RE.sub("", name).strip() or name
+
+
+# "CX5M (CX5MA, CX5MC, ... or CX5MU)": a model and the product codes of its localised versions.
+_PRODUCT_LIST_RE = re.compile(r"^(?P<name>[^()]+?)\s*\((?P<list>[^()]*(?:,|\bor\b)[^()]*)\)$")
+_PRODUCT_CODE_RE = re.compile(r"^\S*\d\S*$")
+_OR_RE = re.compile(r"\s+or\s+")
+# Alternatives sharing this much of their start are models of one family
+# ("CX5MII or CX5MII/128"); otherwise they are two names of one model ("FM-X or MB25150").
+_FAMILY_STEM = 3
+
+
+def split_model_field(model_raw: str) -> tuple[list[str], dict[str, str], list[str]]:
+    """``(models, products, other_names)`` named by a specs Model value.
+
+    ``products`` maps each localised product code to the model it localises.
+
+    - ``A / B`` and ``A or B`` of one family: several models (``models``).
+    - ``A or X`` otherwise: X is another name of A (``other_names``).
+    - ``A (A1, A2 or A3)``: the product codes of A's localised versions (``products``).
+    - Editorial notes are dropped ("PX-7(HB) - note: ...").
+    """
+    models: list[str] = []
+    products: dict[str, str] = {}
+    other_names: list[str] = []
+    for part in model_raw.split(" / "):
+        name = _strip_model_note(part.strip())
+        m = _PRODUCT_LIST_RE.match(name)
+        if m:
+            items = [i.strip() for i in re.split(r",|\bor\b", m.group("list")) if i.strip()]
+            if len(items) >= 2 and all(_PRODUCT_CODE_RE.match(i) for i in items):
+                name = m.group("name").strip()
+                for item in items:
+                    products.setdefault(item, name)
+        alternatives = [name] if "(" in name else [a for a in _OR_RE.split(name) if a]
+        first = alternatives[0]
+        models.append(first)
+        for alt in alternatives[1:]:
+            family = len(os.path.commonprefix([first.lower(), alt.lower()])) >= _FAMILY_STEM
+            (models if family else other_names).append(alt)
+    return models, products, other_names
 
 
 # A country tag closing a regional page title: "Panasonic CF-2700 (GE)".
@@ -728,6 +773,41 @@ def _revision_records(
     return records
 
 
+def _localised_records(
+    soup: BeautifulSoup,
+    specs: dict[str, str],
+    model_names: list[str],
+    products: dict[str, str],
+    model_specs: Callable[[str], tuple[dict[str, str], Tag | None]],
+    build: Callable[..., dict[str, Any]],
+    page_title: str,
+) -> list[dict[str, Any]]:
+    """One record per localised product of the page's models ("CX5MU" of "CX5M").
+
+    Products come from the Model field's list and from the per-product table
+    (first column "Product"); a table-only product localises the longest model
+    name it starts with. Each record is its model's, with the values that name
+    the product and its table row (Region, Keyboard, VDP) on top. The merge
+    keeps it only when openMSX has that machine (``LOCALISED_FIELD``).
+    """
+    found = dict(products)
+    for name in product_names(soup):
+        if name in model_names or name in found:
+            continue
+        prefixed = [m for m in model_names if name.upper().startswith(m.upper())]
+        found[name] = max(prefixed, key=len) if prefixed else model_names[0]
+    variants = model_names + [p for p in found if p not in model_names]
+    records = []
+    for product, base in found.items():
+        base_specs, table = model_specs(base)
+        record = build(localised_specs(specs, soup, base_specs, product, variants), table, product)
+        record[LOCALISED_FIELD] = base
+        records.append(record)
+    if records:
+        log.info("[msxorg:localised] %s: %d localised product(s) %s", page_title, len(records), list(found))
+    return records
+
+
 def parse_model_page(
     html: bytes,
     standard: str,
@@ -780,10 +860,13 @@ def parse_model_page(
     # Clean up brand: "Philips (Manufacturer: Sanyo)" → "Philips"
     brand = re.sub(r"\s*\(.*?\)\s*", "", brand).strip()
 
-    # Split combined models like "AX-350II / AX-350IIF" into separate entries.
-    # Editorial notes are not part of a name: "PX-7(HB) - note: to not be confused …".
-    model_names = [_strip_model_note(m.strip()) for m in model_raw.split(" / ")]
-    renamed = [m.strip() for m in model_raw.split(" / ")] != model_names
+    # Several models ("AX-350II / AX-350IIF", "CX5MII or CX5MII/128"), localised
+    # product codes ("CX5M (CX5MA, ... or CX5MU)") and other names ("FM-X or
+    # MB25150") in the Model field; editorial notes dropped.
+    model_names, products, other_names = split_model_field(model_raw)
+    first_raw = model_raw.split(" / ")[0].strip()
+    renamed = model_names[0] != first_raw
+    own_page = ctx is None
 
     # A page with its own specs that describes revisions: the base record takes
     # the 1st-revision values of the fields that mention revisions, and the
@@ -808,29 +891,40 @@ def parse_model_page(
         return _record_from_specs(spec, brand=name_brand, model=model, standard=standard, page_title=page_title,
                                   sections=sections, slot_table=table, slot_page=None if table else slot_page)
 
-    result = build(specs, slot_table)
+    # Several models on the page's own specs: each takes the values that name it
+    # and its own slot map; a series page was already resolved for this member.
+    multi = own_page and len(model_names) > 1
+
+    def model_specs(model: str) -> tuple[dict[str, str], Tag | None]:
+        if not multi:
+            return specs, slot_table
+        spec = named_specs(specs, model, model_names)
+        return spec, choose_slotmap_table(soup, model, model_names, spec.get("RAM", ""))
+
+    records: list[dict[str, Any]] = []
+    for model in model_names:
+        spec, table = model_specs(model)
+        records.append(build(spec, table, model) if model != model_names[0] else build(spec, table))
+    result = records[0]
     if renamed:
-        result[FORMER_MODEL_FIELD] = model_raw
-    aliases = known_as_names(soup, model_names[0], brand)
+        result[FORMER_MODEL_FIELD] = first_raw
+    aliases = known_as_names(soup, model_names[0], brand) + [n for n in other_names]
     if aliases:
-        result[KNOWN_AS_FIELD] = aliases
+        result[KNOWN_AS_FIELD] = list(dict.fromkeys(aliases))
     donor = adapted_from(soup, model_names[0], brand)
     if donor:
         result[ADAPTED_FROM_FIELD] = donor
-
-    # If the Model field contained " / ", emit one entry per variant.
-    if len(model_names) == 1:
-        return [result] + (_revision_records(ctx, specs, slot_table, result, build) if ctx else [])
-    results = [result]
-    for extra_model in model_names[1:]:
-        variant = dict(result)
-        variant["model"] = extra_model
-        results.append(variant)
-    log.info(
-        "[msxorg:split] Split %d variants from %s | models=%s",
-        len(results), page_title, model_names,
-    )
-    return results
+    for record in records[1:]:
+        for field in (KNOWN_AS_FIELD, ADAPTED_FROM_FIELD):
+            if field in result:
+                record[field] = result[field]
+    if len(records) > 1:
+        log.info("[msxorg:split] Split %d variants from %s | models=%s", len(records), page_title, model_names)
+    if ctx is not None and len(model_names) == 1:
+        records += _revision_records(ctx, specs, slot_table, result, build)
+    if own_page:
+        records += _localised_records(soup, specs, model_names, products, model_specs, build, page_title)
+    return records
 
 
 # ── Main entry point ─────────────────────────────────────────────────

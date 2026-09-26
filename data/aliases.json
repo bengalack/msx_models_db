@@ -26,8 +26,7 @@
     "BRUC 100": ["BRUC 100 (v1)"],
     "DPC-200": ["DPC-200 (BE/FR)"],
     "CPC-61 Zemmix Super V": ["CPC-61"],
-    "CPC-51 Zemmix V": ["CPC-51"],
-    "YIS-805/256": ["YIS-805/128 or YIS-805/256"]
+    "CPC-51 Zemmix V": ["CPC-51"]
   },
   "variant_tag": {
     "DE": ["GE"],
@@ -61,10 +60,6 @@
     {
       "match":     {"manufacturer": "Sakhr",  "model": "AX-500"},
       "canonical": {"manufacturer": "Yamaha", "model": "AX-500"}
-    },
-    {
-      "match":     {"manufacturer": "Yamaha", "model": "CX5M (CX5MA, CX5MC, CX5ME, CX5MF, CX5MG, CX5MS or CX5MU)"},
-      "canonical": {"manufacturer": "Yamaha", "model": "CX5M"}
     },
     {
       "match":     {"manufacturer": "D4 Enterprise", "model": "1chipMSX"},
