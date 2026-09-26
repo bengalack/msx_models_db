@@ -266,7 +266,8 @@ window.MSX_DATA = {
       "maxWidth": 130,
       "sortLast": [
         "None"
-      ]
+      ],
+      "chipLinks": true
     },
     {
       "id": 99,
@@ -278,7 +279,8 @@ window.MSX_DATA = {
       "maxWidth": 130,
       "sortLast": [
         "None"
-      ]
+      ],
+      "chipLinks": true
     },
     {
       "id": 100,
@@ -19956,7 +19958,7 @@ window.MSX_DATA = {
         null,
         "NMOS",
         null,
-        "None",
+        "HD61J209F",
         "None",
         null,
         "QWERTY/JIS for the optional PCJ-50 keyboard",
@@ -20063,7 +20065,7 @@ window.MSX_DATA = {
         null,
         "NMOS",
         null,
-        "None",
+        "HD61J209F",
         "None",
         null,
         "QWERTY/JIS for the optional PCJ-50 keyboard",
@@ -43567,5 +43569,18 @@ window.MSX_DATA = {
     "EXP": "Expansion Bus",
     "·": "Absent — slot not present, or not confirmed",
     "⏺": "Empty page — slot confirmed, no device mapped"
+  },
+  "chip_links": {
+    "HD62003": "https://www.msx.org/wiki/Hitachi_HD62003",
+    "T7775": "https://www.msx.org/wiki/Toshiba_T7775",
+    "T7937": "https://www.msx.org/wiki/Toshiba_T7937",
+    "T9769": "https://www.msx.org/wiki/Toshiba_T9769",
+    "S1985": "https://www.msx.org/wiki/Yamaha_S1985",
+    "S3527": "https://www.msx.org/wiki/Yamaha_S3527",
+    "DW64MX1": "https://www.msx.org/wiki/Daewoo_DW64MX1",
+    "MB64H131": "https://www.msx.org/wiki/Fujitsu_MB64H131",
+    "HD61J209F": "https://www.msx.org/wiki/General_HD61J209F",
+    "HG61H06": "https://www.msx.org/wiki/Hitachi_HG61H06",
+    "M50014": "https://www.msx.org/wiki/Mitsubishi_M50014"
   }
 };
