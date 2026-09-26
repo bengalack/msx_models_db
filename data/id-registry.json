@@ -457,7 +457,8 @@
     "sanyo|phc-28p (de)": 303,
     "sanyo|phc-28p (es)": 304,
     "sanyo|phc-30n (de)": 309,
-    "yamaha|yis-805/256": 446
+    "yamaha|yis-805/256": 446,
+    "yamaha|yis-805/128": 158
   },
   "retired_models": [],
   "next_model_id": 447
