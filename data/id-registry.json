@@ -450,7 +450,8 @@
     "toshiba|hx-20i": 441,
     "toshiba|hx-21f": 442,
     "toshiba|hx-22ch": 443,
-    "toshiba|hx-22gb": 444
+    "toshiba|hx-22gb": 444,
+    "pioneer|px-7(hb)": 269
   },
   "retired_models": [],
   "next_model_id": 445

@@ -25955,7 +25955,7 @@ window.MSX_DATA = {
       "id": 269,
       "values": [
         "Pioneer",
-        "PX-7(HB) - note: to not be confused with the Japanese Pioneer PX-7 (BK)!",
+        "PX-7(HB)",
         1985,
         "United Kingdom",
         "MSX1",
