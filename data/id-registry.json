@@ -451,8 +451,14 @@
     "toshiba|hx-21f": 442,
     "toshiba|hx-22ch": 443,
     "toshiba|hx-22gb": 444,
-    "pioneer|px-7(hb)": 269
+    "pioneer|px-7(hb)": 269,
+    "panasonic|cf-2700 (cu)": 445,
+    "pioneer|px-7(gb)": 344,
+    "sanyo|phc-28p (de)": 303,
+    "sanyo|phc-28p (es)": 304,
+    "sanyo|phc-30n (de)": 309,
+    "yamaha|yis-805/256": 446
   },
   "retired_models": [],
-  "next_model_id": 445
+  "next_model_id": 447
 }
