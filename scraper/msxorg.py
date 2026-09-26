@@ -6,7 +6,7 @@ import logging
 import re
 import time
 from typing import Any
-from urllib.parse import urljoin
+from urllib.parse import quote, unquote, urljoin
 
 import requests
 from bs4 import BeautifulSoup, Tag
@@ -117,6 +117,7 @@ def list_model_pages(
     Returns list of {title, url, standard}.
     """
     url_to_entry: dict[str, dict[str, str]] = {}
+    any_category = False
 
     for standard, cat_url in CATEGORY_URLS.items():
         current_url = cat_url
@@ -126,6 +127,7 @@ def list_model_pages(
             content = source.fetch_category(standard, current_url, page=page_num)
             if content is None:
                 break
+            any_category = True
             soup = BeautifulSoup(content, "lxml")
 
             for a_tag in soup.select("#mw-pages a, .mw-category a"):
@@ -160,8 +162,56 @@ def list_model_pages(
         if delay:
             time.sleep(delay)
 
+    if not any_category and hasattr(source, "scan_pages"):
+        log.info("No category pages available — enumerating model pages from the mirror directory")
+        return _list_model_pages_from_mirror(source)
+
     models = list(url_to_entry.values())
     log.info("Found %d model pages across all categories", len(models))
+    return models
+
+
+# Category slug (decoded, e.g. "Category:MSX2+_Computers") → standard.
+_CATEGORY_SLUG_TO_STANDARD: dict[str, str] = {
+    unquote(url.split("/wiki/", 1)[1]): standard for standard, url in CATEGORY_URLS.items()
+}
+_RE_PAGE_NAME = re.compile(rb'wgPageName\s*[=:]\s*"((?:[^"\\]|\\.)*)"')
+
+
+def _list_model_pages_from_mirror(source: Any) -> list[dict[str, str]]:
+    """Enumerate model pages by scanning a mirror directory that has no category pages.
+
+    Each page supplies its own wiki slug (``wgPageName``) and its standard (the
+    highest-ranked MSX computer category in its category links). Pages in none
+    of those categories, or without a slug, are skipped.
+    """
+    models: list[dict[str, str]] = []
+    for filename, content in source.scan_pages():
+        m = _RE_PAGE_NAME.search(content)
+        if not m:
+            log.warning("[mirror:scan] No wgPageName in %s — skipping", filename)
+            continue
+        slug = m.group(1).decode("utf-8").replace("\\/", "/")
+        soup = BeautifulSoup(content, "lxml")
+        standard: str | None = None
+        for a_tag in soup.select("#mw-normal-catlinks a"):
+            href = unquote(a_tag.get("href", ""))
+            cat = _CATEGORY_SLUG_TO_STANDARD.get(href.split("/wiki/", 1)[-1])
+            if cat and GENERATION_RANK[cat] > GENERATION_RANK.get(standard or "", -1):
+                standard = cat
+        title = slug.replace("_", " ")
+        if standard is None or title in SKIP_TITLES:
+            log.debug("[mirror:scan] Not an MSX computer model page: %s", filename)
+            continue
+        url = WIKI_URL + quote(slug, safe="/")
+        if slug_to_filename(url) != filename:
+            log.warning(
+                "[mirror:scan] Page %r is saved as %s, expected %s — skipping",
+                slug, filename, slug_to_filename(url),
+            )
+            continue
+        models.append({"title": title, "url": url, "standard": standard})
+    log.info("Found %d model pages in the mirror directory", len(models))
     return models
 
 

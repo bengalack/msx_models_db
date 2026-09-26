@@ -87,6 +87,15 @@ class TestMirrorPageSource:
             src.fetch_page("Sony HB-F9S", "https://www.msx.org/wiki/Sony_HB-F9S")
         assert any("Mirror file not found" in r.message for r in caplog.records)
 
+    def test_scan_pages_skips_category_and_foreign_files(self, tmp_path):
+        (tmp_path / "Sony HB-F9S - MSX Wiki.html").write_bytes(b"model")
+        (tmp_path / "Category_MSX2 Computers - MSX Wiki.html").write_bytes(b"cat")
+        (tmp_path / "notes.txt").write_bytes(b"x")
+        assert MirrorPageSource(tmp_path).scan_pages() == [("Sony HB-F9S - MSX Wiki.html", b"model")]
+
+    def test_scan_pages_nonexistent_dir_returns_empty(self, tmp_path):
+        assert MirrorPageSource(tmp_path / "does_not_exist").scan_pages() == []
+
     def test_nonexistent_dir_logs_error(self, tmp_path, caplog):
         import logging
         with caplog.at_level(logging.ERROR, logger="scraper.mirror"):
@@ -224,3 +233,10 @@ class TestMirrorPageSourcePagination:
             page=2,
         )
         assert result is None
+
+
+def test_fallback_scan_pages_delegates_to_mirror():
+    mirror = MagicMock(spec=MirrorPageSource)
+    mirror.scan_pages.return_value = [("A - MSX Wiki.html", b"a")]
+    src = FallbackPageSource(MagicMock(spec=LivePageSource), mirror)
+    assert src.scan_pages() == [("A - MSX Wiki.html", b"a")]

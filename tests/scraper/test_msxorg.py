@@ -543,3 +543,78 @@ class TestListModelPagesPagination:
         pages = list_model_pages(source, delay=0)
         hx10 = next(p for p in pages if p["title"] == "Sony HX-10")
         assert hx10["standard"] == "MSX2"
+
+
+# ---------------------------------------------------------------------------
+# list_model_pages — mirror without category pages (directory scan fallback)
+# ---------------------------------------------------------------------------
+
+from urllib.parse import quote
+
+from scraper.mirror import slug_to_filename
+from scraper.msxorg import CATEGORY_URLS, GENERATION_RANK, WIKI_URL
+
+
+def _cat_path(standard: str) -> str:
+    return "/wiki/" + CATEGORY_URLS[standard].split("/wiki/", 1)[1]
+
+
+def _mirror_page(slug: str, standards: list[str], *, sidebar: str | None = None, body: str = "") -> bytes:
+    """A browser-saved model page: wgPageName, category links, optional sidebar link."""
+    cats = " | ".join(f'<a href="{_cat_path(s)}">{s}</a>' for s in standards)
+    side = f'<div id="sidebar"><a href="{_cat_path(sidebar)}">x</a></div>' if sidebar else ""
+    return (
+        f'<html><head><script>var wgPageName="{slug.replace("/", chr(92) + "/")}";</script></head>'
+        f"<body>{side}{body}"
+        f'<div id="catlinks"><div id="mw-normal-catlinks"><a href="/wiki/Special:Categories">Categories</a>: {cats}'
+        f"</div></div></body></html>"
+    ).encode("utf-8")
+
+
+def _write_page(tmp_path, slug: str, content: bytes) -> None:
+    (tmp_path / slug_to_filename(WIKI_URL + quote(slug, safe="/"))).write_bytes(content)
+
+
+class TestListModelPagesFromMirrorScan:
+    _by_rank = sorted(GENERATION_RANK, key=GENERATION_RANK.__getitem__)
+
+    def test_standard_is_highest_ranked_category(self, tmp_path):
+        low, high = self._by_rank[0], self._by_rank[-1]
+        _write_page(tmp_path, "Acme_X-1", _mirror_page("Acme_X-1", [high, low]))
+        pages = list_model_pages(MirrorPageSource(tmp_path), delay=0)
+        assert [(p["title"], p["standard"]) for p in pages] == [("Acme X-1", high)]
+
+    def test_url_maps_back_to_saved_file(self, tmp_path):
+        slug = "Yamaha_CX7M/128"
+        content = _mirror_page(slug, [self._by_rank[0]])
+        _write_page(tmp_path, slug, content)
+        src = MirrorPageSource(tmp_path)
+        pages = list_model_pages(src, delay=0)
+        assert len(pages) == 1
+        assert src.fetch_page(pages[0]["title"], pages[0]["url"]) == content
+
+    def test_category_link_outside_catlinks_is_ignored(self, tmp_path):
+        _write_page(tmp_path, "MSX_Fair", _mirror_page("MSX_Fair", [], sidebar=self._by_rank[0]))
+        assert list_model_pages(MirrorPageSource(tmp_path), delay=0) == []
+
+    def test_category_files_and_pages_without_slug_are_skipped(self, tmp_path):
+        std = self._by_rank[0]
+        (tmp_path / "Category_Acme X - MSX Wiki.html").write_bytes(_mirror_page("Category:Acme_X", [std]))
+        (tmp_path / "Acme X-2 - MSX Wiki.html").write_bytes(
+            _mirror_page("Acme_X-2", [std]).replace(b"wgPageName", b"wgOther")
+        )
+        assert list_model_pages(MirrorPageSource(tmp_path), delay=0) == []
+
+    def test_category_pages_take_precedence_over_scan(self, tmp_path):
+        std = self._by_rank[0]
+        (tmp_path / slug_to_filename(CATEGORY_URLS[std])).write_bytes(_GOOD_CATEGORY_HTML)
+        _write_page(tmp_path, "Acme_X-1", _mirror_page("Acme_X-1", [std]))
+        pages = list_model_pages(MirrorPageSource(tmp_path), delay=0)
+        assert [p["title"] for p in pages] == ["Sony HB-75P"]
+
+    def test_fetch_all_parses_scanned_pages(self, tmp_path):
+        body = _GOOD_MODEL_HTML.decode().split("<body>", 1)[1].rsplit("</body>", 1)[0]
+        std = self._by_rank[0]
+        _write_page(tmp_path, "Sony_HB-75P", _mirror_page("Sony_HB-75P", [std], body=body))
+        models = fetch_all(source=MirrorPageSource(tmp_path), delay=0)
+        assert [(m["manufacturer"], m["model"], m["generation"]) for m in models] == [("Sony", "HB-75P", std)]

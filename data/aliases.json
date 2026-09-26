@@ -16,7 +16,7 @@
     "AX-170": ["AX170"],
     "AX-230": ["AX230", "AX-230 (Manufacturer: Sanyo)"],
     "AX-150": ["AX150"],
-    "AX-200": ["AX200"],
+    "AX-200": ["AX200", "AX-200M"],
     "AX-350II": ["AX350II"],
     "AX-350IIF": ["AX350IIF"],
     "AX-500": ["AX500"],
@@ -54,6 +54,18 @@
     {
       "match":     {"manufacturer": "Yamaha", "model": "CX5M (CX5MA, CX5MC, CX5ME, CX5MF, CX5MG, CX5MS or CX5MU)"},
       "canonical": {"manufacturer": "Yamaha", "model": "CX5M"}
+    },
+    {
+      "match":     {"manufacturer": "D4 Enterprise", "model": "1chipMSX"},
+      "canonical": {"manufacturer": "ESE",           "model": "One chip MSX"}
+    },
+    {
+      "match":     {"manufacturer": "MSXmakers", "model": "Omega MSX"},
+      "canonical": {"manufacturer": "None",      "model": "Omega MSX"}
+    },
+    {
+      "match":     {"manufacturer": "Philips or Phonola", "model": "NMS 8245 Home Banking"},
+      "canonical": {"manufacturer": "Philips",            "model": "NMS 8245 Home Banking"}
     }
   ]
 }

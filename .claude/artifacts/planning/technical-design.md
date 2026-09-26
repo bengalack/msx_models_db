@@ -70,8 +70,9 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Type: Library (module `scraper/mirror.py`)
   - Responsibilities: Abstract the origin of msx.org HTML pages behind a `PageSource` protocol so the rest of the scraper is source-agnostic. Three implementations:
     - `LivePageSource` — fetches from the live msx.org website; returns `None` + logs on any HTTP error.
-    - `MirrorPageSource` — reads browser-saved HTML files from a local directory. Filename convention: wiki URL slug → URL-decode → underscores→spaces → colons→underscores → append ` - MSX Wiki.html`. Returns `None` + WARN when a file is missing; ERROR when the directory is missing.
-    - `FallbackPageSource` — wraps live + mirror; tries live first, falls back to mirror on failure.
+    - `MirrorPageSource` — reads browser-saved HTML files from a local directory. Filename convention: wiki URL slug → URL-decode → underscores→spaces → colons→underscores → append ` - MSX Wiki.html`. Returns `None` + WARN when a file is missing; ERROR when the directory is missing. `scan_pages()` returns every non-`Category_` page in the directory.
+    - `FallbackPageSource` — wraps live + mirror; tries live first, falls back to mirror on failure. `scan_pages()` delegates to the mirror.
+  - Mirrors without category pages: automated dumps (e.g. `msx_org_wiki_auto_dumps`) hold model pages but no `Category:MSX* Computers` listings. When no category page can be read at all, `msxorg.list_model_pages` falls back to `scan_pages()`: each page's URL comes from its embedded `wgPageName`, its standard from the highest-ranked MSX computer category in `#mw-normal-catlinks` (links elsewhere on the page are ignored). Pages without a slug or outside those categories are skipped; a page whose slug does not map back to its own filename is skipped with a WARN. Category pages, when present, still win.
   - CLI flags (on `build` and `fetch-msxorg`):
     - `--msxorg-mirror DIR` — enables FallbackPageSource (live-with-fallback)
     - `--msxorg-mirror DIR --local-msxorg-only` — enables MirrorPageSource (skip live entirely)

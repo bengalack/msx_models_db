@@ -20,6 +20,10 @@ Filename convention (MirrorPageSource):
     ``Category:MSX2_Computers`` → ``Category_MSX2 Computers - MSX Wiki.html``
     ``CIEL_Expert_2%2B_Turbo`` → ``CIEL Expert 2+ Turbo - MSX Wiki.html``
     ``Yamaha_CX7M/128``        → ``Yamaha CX7M_128 - MSX Wiki.html``
+
+Mirrors without category pages (e.g. automated dumps) are supported through
+``scan_pages()``: ``msxorg.list_model_pages`` falls back to it when no category
+listing can be read, and derives each page's URL and standard from the page itself.
 """
 
 from __future__ import annotations
@@ -32,6 +36,8 @@ from urllib.parse import unquote
 import requests
 
 log = logging.getLogger(__name__)
+
+_SUFFIX = " - MSX Wiki.html"
 
 
 class PageSource(Protocol):
@@ -85,7 +91,7 @@ def slug_to_filename(url: str) -> str:
     title = unquote(slug).replace("_", " ")
     # Colons and slashes are illegal in Windows filenames → replace with underscore
     safe_title = title.replace(":", "_").replace("/", "_")
-    return f"{safe_title} - MSX Wiki.html"
+    return f"{safe_title}{_SUFFIX}"
 
 
 class MirrorPageSource:
@@ -122,13 +128,26 @@ class MirrorPageSource:
         else:
             base_url = url.split("?")[0]
             base_filename = slug_to_filename(base_url)
-            stem = base_filename[: -len(" - MSX Wiki.html")]
-            filename = f"{stem}_page{page} - MSX Wiki.html"
+            stem = base_filename[: -len(_SUFFIX)]
+            filename = f"{stem}_page{page}{_SUFFIX}"
         return self._read(filename, f"category {standard!r} page {page}")
 
     def fetch_page(self, title: str, url: str) -> bytes | None:
         filename = slug_to_filename(url)
         return self._read(filename, f"model {title!r}")
+
+    def scan_pages(self) -> list[tuple[str, bytes]]:
+        """Return ``(filename, content)`` for every non-category page in the mirror.
+
+        Used to enumerate models when the mirror holds no category listing pages.
+        """
+        if not self._dir.exists():
+            return []
+        return [
+            (path.name, path.read_bytes())
+            for path in sorted(self._dir.glob(f"*{_SUFFIX}"))
+            if path.is_file() and not path.name.startswith("Category_")
+        ]
 
 
 class FallbackPageSource:
@@ -155,3 +174,6 @@ class FallbackPageSource:
             return content
         log.info("Live fetch failed for model %r — falling back to mirror", title)
         return self._mirror.fetch_page(title, url)
+
+    def scan_pages(self) -> list[tuple[str, bytes]]:
+        return self._mirror.scan_pages()
