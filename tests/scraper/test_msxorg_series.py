@@ -243,6 +243,19 @@ class TestBuildVariantSpecs:
         assert specs["Region"] == "Germany"
         assert specs["Year"] == "1986"      # region-qualified year uses the variant's region
 
+    def test_family_wide_region_is_not_given_to_a_variant_missing_from_the_region_table(self):
+        """HX-10: 'Europe, Japan' covers the family; a variant absent from the table gets no region."""
+        html = (_SERIES_PAGE
+                .replace("<tr><th>Region</th><td>See table above</td></tr>",
+                         "<tr><th>Region</th><td>Europe, Japan</td></tr>")
+                .replace('<a href="/wiki/Sony_HB-10D">Sony HB-10D</a>',
+                         '<a href="/wiki/Sony_HB-10D">Sony HB-10D</a><a href="/wiki/Sony_HB-10X">Sony HB-10X</a>'))
+        soup = BeautifulSoup(html, "lxml")
+        specs, _ = build_variant_specs(soup, "Sony HB-10X", page_title="Sony HB-10X")
+        assert "Region" not in specs
+        specs, _ = build_variant_specs(soup, "Sony HB-10D", page_title="Sony HB-10D")
+        assert specs["Region"] == "Germany"   # from the table, as before
+
     def test_no_specs_table(self):
         soup = BeautifulSoup("<html><body><p>nothing</p></body></html>", "lxml")
         assert build_variant_specs(soup, "Sony HB-10D", page_title="Sony HB-10D") == (None, None)

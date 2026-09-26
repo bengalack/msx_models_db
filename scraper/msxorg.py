@@ -11,6 +11,7 @@ from urllib.parse import quote, unquote, urljoin
 import requests
 from bs4 import BeautifulSoup, Tag
 
+from .aliases import KNOWN_AS_FIELD
 from .exclude import ExcludeList
 from .revisions import REVISION_FIELD, revision_name, revision_numbers
 from .mirror import LivePageSource, MirrorPageSource, PageSource, slug_to_filename
@@ -386,6 +387,42 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
     return result
 
 
+# ── "Also known as" ─────────────────────────────────────────────────────
+
+
+_QUOTES = "'\"‘’“”"
+# Where the alias name ends: punctuation, or a word that starts the rest of the sentence.
+_KNOWN_AS_END = r"(?=\s*(?:[,.;(]|$)|\s+(?:as|is|was|has|had|and|for|in|with|by|but)\b)"
+
+
+def known_as_names(page: bytes | BeautifulSoup, model: str, brand: str) -> list[str]:
+    """Other names the page gives *its own* model ("also known as ...").
+
+    Only sentences whose subject is the page's model count: "The [brand] <model>
+    [computer], (also | more commonly) known (simply) as (the) X" or "This model
+    is also known as X". Sentences about another computer ("the adaptation of
+    the MPC-25FD computer, also known as Wavy 25"), a revision, software, chips
+    or companies are not aliases.
+    """
+    soup = page if isinstance(page, BeautifulSoup) else BeautifulSoup(page, "lxml")
+    body = soup.select_one("#bodyContent") or soup
+    subject = rf"(?:{re.escape(brand)}\s+)?{re.escape(model)}(?:\s+computer)?" if model else r"(?!)"
+    pattern = re.compile(
+        rf"\b(?:The\s+{subject}|This\s+(?:model|computer|machine))\s*,?\s*"
+        rf"(?:(?:is|was)\s+)?(?:also|more\s+commonly|commonly|better)?\s*known\s+(?:simply\s+)?as\s+"
+        rf"(?:the\s+)?[{_QUOTES}]?\s*(?P<name>[A-Za-z0-9][A-Za-z0-9\-/+ ]*?)\s*[{_QUOTES}]?{_KNOWN_AS_END}",
+        re.IGNORECASE,
+    )
+    names: list[str] = []
+    for node in body.find_all(["p", "li"]):
+        text = re.sub(r"\s+", " ", node.get_text(" ", strip=True))
+        for m in pattern.finditer(text):
+            name = m.group("name").strip()
+            if name and name.upper() != model.upper() and name not in names and len(name) <= 30:
+                names.append(name)
+    return names
+
+
 def _record_from_specs(
     specs: dict[str, str],
     *,
@@ -585,6 +622,9 @@ def parse_model_page(
                                   sections=sections, slot_table=table, slot_page=None if table else slot_page)
 
     result = build(specs, slot_table)
+    aliases = known_as_names(soup, model_names[0], brand)
+    if aliases:
+        result[KNOWN_AS_FIELD] = aliases
 
     # If the Model field contained " / ", emit one entry per variant.
     if len(model_names) == 1:

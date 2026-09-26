@@ -17,6 +17,8 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - "Also known as" aliases from msx.org
+    - HX-51 merged into HX-51I, HX-10P into HX-10; applies to any page stating its model is also known as an openMSX machine
   - Model revisions (`<model> (vN)`)
     - msx.org revision info ("2nd Gen", "second version", "version 2") overrides the base values for the (vN) row, same msx.org link
     - Only when openMSX has the revision machine: HB-F500 (v2), BRUC 100 (v2); Bruc 100 split into v1/v2

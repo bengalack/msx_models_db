@@ -58,7 +58,7 @@ A member page with no specs table that links to a series ("… series" link to a
 Region codes from the variant table are expanded (`JP` → Japan, `UK` → United Kingdom, `DE` → Germany, …); unknown codes are kept.
 
 ### Region
-The variant table's Region wins when the table has one (it is per variant by definition); the specs Region is often a family-wide list (`Argentina, Italy, Japan, Spain`) and is only used when the table has no Region column.
+The variant table's Region wins when the table has one (it is per variant by definition); the specs Region is often a family-wide list (`Argentina, Italy, Japan, Spain`) and is only used when the table has no Region column — or, when it has one, only for a value that names variants. A variant missing from a page that lists per-variant regions gets no region rather than the family-wide list (HX-10P: unset, so openMSX's `uk` stays).
 
 ### Choosing the slot map (first match wins)
 1. A heading naming the variant (`Slot Map for HB-75 model`, `… on HX-22I (also probably HX-22CH and HX-22GB)`).
@@ -81,7 +81,7 @@ Memory Mapper is derived from the same chosen table, so the two stay consistent.
 | Toshiba HX-10P, HX-10 Japanese models | Keyboard | "(Japanese models) QWERTY/JIS", and the Japanese variant table has no keyboard column | unset |
 
 | Toshiba HX-20I | Year | Italy is not named in the year text | unset |
-| Toshiba HX-10P, HX-10 Japanese models | Region | not in a variant table with a Region column | the family-wide `Europe, Japan` |
+| Toshiba HX-10 Japanese models | Region | in a variant table without a Region column | the family-wide `Europe, Japan` |
 
 Each can be corrected per model in `data/local-raw.json`, or fixed on the wiki.
 

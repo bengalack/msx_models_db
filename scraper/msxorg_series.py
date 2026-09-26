@@ -403,8 +403,15 @@ def resolve_specs(
     # The variant table's Region is per variant by definition, so it beats the
     # specs Region, which is often a family-wide list ("Argentina, Italy, Japan, Spain").
     region = from_table("Region")
+    # When the page lists per-variant regions and this variant is not among
+    # them, a region shared by the whole family ("Europe, Japan") is not this
+    # variant's region: leave it unset rather than guess.
+    table_has_region = any("Region" in (h.strip() for h in grid[0]) for grid in _variant_tables(ctx.soup))
+    family_wide = table_has_region and not row
     if region is None and specs.get("Region") is not None:
-        region = resolve_value(specs["Region"], variant, variants, revision=revision)
+        raw_region = _normalise(specs["Region"])
+        if not (family_wide and _segments(raw_region, _variant_re(variants)) is None):
+            region = resolve_value(raw_region, variant, variants, revision=revision)
         if region is not None and _SEE_TABLE_RE.search(region):
             region = None
     if region:

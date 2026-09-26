@@ -135,3 +135,9 @@ def apply_aliases(record: dict, lut: AliasLUT) -> None:
         ):
             record.update(canonical)
             break  # first match wins
+
+
+# Internal field on an msx.org record: other names its page says the model is
+# "also known as" ("The HX-51 computer, also known as the HX-51I, ...").
+# merge_models uses them to join the openMSX machine of that name.
+KNOWN_AS_FIELD = "_known_as"

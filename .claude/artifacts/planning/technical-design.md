@@ -621,6 +621,16 @@ else → removeAttribute('title')
 
 ---
 
+## Feature Design: "Also Known As" Aliases
+
+msx.org sometimes names the same machine differently from openMSX and says so: "The HX-51 computer, also known as the HX-51I, …". `known_as_names` in `scraper/msxorg.py` records such names on the msx.org record (internal `_known_as`, constant `KNOWN_AS_FIELD` in `scraper/aliases.py`).
+
+- Only sentences whose subject is the page's own model count: "The [brand] <model> [computer], (also | more commonly) known (simply) as (the) X", "This model is also known as X". Sentences about another computer ("the adaptation of the MPC-25FD computer, also known as Wavy 25"), a revision ("the second version (also known as SPC-800A)"), software, chips or companies are not aliases. An *adaptation* is a different model, not an alias.
+- `merge_models`: an msx.org record with no openMSX machine under its own name, whose "known as" name (after `data/aliases.json`) is an openMSX machine, joins that machine (`[merge:known_as]`). The row takes openMSX's name and id; the msx.org link is kept. Not applied when msx.org has its own page under that name.
+- Result (2026-09-26): Toshiba HX-51 → HX-51I, Toshiba HX-10P → HX-10. Names matching no openMSX machine (HX-52I, Wavy35, SPC Super) change nothing.
+
+---
+
 ## Feature Design: Model Revisions
 
 A revision *N* of a model is `<model> (vN)` (openMSX's convention; revision 1 is the plain name, and an openMSX `(v1)` machine is aliased onto it). msx.org marks revision-specific facts in free text ("2nd Gen HB-F500", "(HB-F500 second version)", "(version 2)", "1st version: …"); `scraper/revisions.py` holds that vocabulary.
@@ -638,6 +648,7 @@ Rules and results: `.claude/artifacts/planning/2026-09-26-model-revisions-design
 msx.org keeps the technical details of some families (Sony HB-10/75/F500/…, Toshiba HX-10/20/21/22) on one **series page** (`Category:Sony_HB-75`); the member pages have no specs table and link to it ("see HB-75 series for the technical details"). `parse_model_page` detects that link and, through a `series_loader` supplied by `fetch_all` (same `PageSource`, cached per run), parses the series page **for the member's own variant** with `scraper/msxorg_series.py`:
 
 - `build_variant_specs` resolves each specs value for the variant — shared, `V: x` labels, leading `(V) x`, trailing `x (V) or y (other models)`, `x in V`, region-qualified Year, "see table above" → per-variant table — and leaves a field **unset** when it names other variants but not this one.
+- Region: the variant table's Region wins; the specs Region is used otherwise, except that a family-wide value (`Europe, Japan`) is not given to a variant missing from a page that lists per-variant regions.
 - `choose_slotmap_table` picks the variant's slot map by heading: names the variant → names its RAM size → "other models" → first. Memory Mapper uses the same table.
 - Identity: manufacturer = series Brand, model = member page title without the brand, `msxorg_title` = the member page (so the grid links to it).
 

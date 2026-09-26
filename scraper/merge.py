@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from scraper.aliases import AliasLUT, apply_aliases, load_aliases
+from scraper.aliases import KNOWN_AS_FIELD, AliasLUT, apply_aliases, load_aliases
 from scraper.revisions import REVISION_FIELD
 from scraper.symbols import ABSENT as _ABSENT, EMPTY_PAGE as _EMPTY_PAGE
 
@@ -180,6 +180,27 @@ def merge_models(
             continue
         kept_msxorg.append(m)
     msxorg = kept_msxorg
+
+    # "Also known as": an msx.org record with no openMSX machine under its own
+    # name joins the openMSX machine its page says it is also known as
+    # (msx.org HX-51 -> openMSX HX-51I), unless msx.org has its own page for
+    # that name. The row takes openMSX's name; the msx.org link is kept.
+    openmsx_by_key = {natural_key(m): m for m in openmsx}
+    msxorg_keys = {natural_key(m) for m in msxorg}
+    for m in msxorg:
+        names = m.get(KNOWN_AS_FIELD) or []
+        if not names or natural_key(m) in openmsx_by_key:
+            continue
+        for name in names:
+            probe = {"manufacturer": m.get("manufacturer"), "model": name}
+            apply_aliases(probe, alias_lut)
+            key = natural_key(probe)
+            if key in openmsx_by_key and key not in msxorg_keys:
+                log.info("[merge:known_as] %s is also known as %s — merged", natural_key(m), key)
+                m["manufacturer"] = openmsx_by_key[key].get("manufacturer")
+                m["model"] = openmsx_by_key[key].get("model")
+                msxorg_keys.add(key)
+                break
 
     # Index by natural key.
     o_by_key: dict[str, dict[str, Any]] = {}
