@@ -898,6 +898,8 @@ openMSX names some VDPs after the chip that contains them, with the video standa
 
 VRAM is still read from the same element.
 
+msx.org side (`_parse_vdp` in `scraper/msxorg.py`): the "Video" field is matched against V9938/V9958, TI TMS99x8/99x9 and TMS91x8/91x9 (`TMS-9118` spelling accepted), Toshiba T6950 and Yamaha YM2220. A package suffix such as `NL` is dropped (`TMS9118NL` → `TMS9118`). When several are named, V9958 > V9938 > the rest; among equals the first mentioned wins, which picks the actual chip in texts like "Toshiba T6950, Texas Instruments TMS9918/TMS9929 compatible".
+
 ---
 
 ## Feature Design: RTC Column Extraction from openMSX XML

@@ -77,7 +77,12 @@ def _find_next_page_url(soup: BeautifulSoup) -> str | None:
 
 _RE_KB = re.compile(r"(\d+)\s*kB", re.IGNORECASE)
 _RE_YEAR = re.compile(r"(\d{4})")
-_RE_VDP = re.compile(r"(V9958|V9938|TMS99[12][89]A?)", re.IGNORECASE)
+# VDP part numbers: Yamaha V99x8; TI TMS99x8/99x9 and the TMS91x8/91x9 family
+# (optionally written "TMS-9118", optionally followed by a package suffix such as
+# "NL", which is not part of the chip); Toshiba T6950 and Yamaha YM2220 clones.
+_RE_VDP = re.compile(
+    r"\b(V99[35]8|TMS-?9[19][12][89]A?|T6950A?|YM2220)(?=[A-Z]*\b)", re.IGNORECASE
+)
 _RE_RAM_MAIN = re.compile(
     r"(\d+)\s*kB(?:\s+(?:in|mapped|main|slot))", re.IGNORECASE
 )
@@ -212,7 +217,7 @@ _VDP_RANK: dict[str, int] = {"v9958": 2, "v9938": 1}  # TMS99xx → 0 (default)
 
 def _parse_vdp(raw: str) -> str | None:
     """Extract VDP chip name; when multiple are listed, return the highest-ranked."""
-    matches = _RE_VDP.findall(raw)
+    matches = [m.upper().replace("-", "") for m in _RE_VDP.findall(raw)]
     if not matches:
         return None
     return max(matches, key=lambda v: _VDP_RANK.get(v.lower(), 0))

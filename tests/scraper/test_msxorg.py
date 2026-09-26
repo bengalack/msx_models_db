@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock
 
+import pytest
+
 from scraper.mirror import MirrorPageSource
 from scraper.msxorg import _parse_vdp, _parse_connections, fetch_all, list_model_pages, parse_model_page
 from bs4 import BeautifulSoup
@@ -75,6 +77,28 @@ class TestParseVdp:
 
     def test_no_match_returns_none(self):
         assert _parse_vdp("no vdp here") is None
+
+    @pytest.mark.parametrize("raw,expected", [
+        ("Texas Instruments TMS9118NL", "TMS9118"),   # NL = package suffix, not part of the chip
+        ("Texas Instruments TMS9128NL", "TMS9128"),
+        ("Texas Instruments TMS9129NL", "TMS9129"),
+        ("Texas Instruments TMS9129A", "TMS9129A"),
+        ("Texas Instruments TMS-9118NL", "TMS9118"),  # hyphenated spelling
+        ("Texas Instruments  TMS9118NL", "TMS9118"),
+        ("TMS9918ANL", "TMS9918A"),
+        ("Toshiba T6950", "T6950"),
+        ("Toshiba T6950A", "T6950A"),
+        ("Yamaha YM2220", "YM2220"),
+    ])
+    def test_ti_91xx_family_toshiba_and_yamaha_clones(self, raw, expected):
+        assert _parse_vdp(raw) == expected
+
+    @pytest.mark.parametrize("raw", ["probably Toshiba T6950", "? Toshiba T6950"])
+    def test_uncertainty_prefix_still_finds_the_chip(self, raw):
+        assert _parse_vdp(raw) == "T6950"
+
+    def test_clone_ranks_below_v9938(self):
+        assert _parse_vdp("TMS9129 / V9938") == "V9938"
 
 
 # ---------------------------------------------------------------------------
