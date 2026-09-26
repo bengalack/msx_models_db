@@ -17,6 +17,9 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Model revisions (`<model> (vN)`)
+    - msx.org revision info ("2nd Gen", "second version", "version 2") overrides the base values for the (vN) row, same msx.org link
+    - Only when openMSX has the revision machine: HB-F500 (v2), BRUC 100 (v2); Bruc 100 split into v1/v2
   - msx.org series pages (Sony HB-10/55/75/101/201/501/F500/F700, Toshiba HX-10/20/21/22)
     - Member pages parsed from their series page for their own variant; all 49 get msx.org data and links
     - 26 variants without an openMSX machine added as models

@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from scraper.aliases import AliasLUT, apply_aliases, load_aliases
+from scraper.revisions import REVISION_FIELD
 from scraper.symbols import ABSENT as _ABSENT, EMPTY_PAGE as _EMPTY_PAGE
 
 log = logging.getLogger(__name__)
@@ -168,6 +169,17 @@ def merge_models(
         after = natural_key(record)
         if before != after:
             former_keys.setdefault(after, set()).add(before)
+
+    # A revision record from msx.org ("HB-F500 (v2)") only becomes a row when
+    # openMSX has that machine; msx.org alone never creates a revision row.
+    openmsx_keys = {natural_key(m) for m in openmsx}
+    kept_msxorg = []
+    for m in msxorg or []:
+        if m.get(REVISION_FIELD) and natural_key(m) not in openmsx_keys:
+            log.info("[merge:revision] No openMSX machine for %s — dropped", natural_key(m))
+            continue
+        kept_msxorg.append(m)
+    msxorg = kept_msxorg
 
     # Index by natural key.
     o_by_key: dict[str, dict[str, Any]] = {}

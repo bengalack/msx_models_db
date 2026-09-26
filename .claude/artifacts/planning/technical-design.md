@@ -621,6 +621,18 @@ else → removeAttribute('title')
 
 ---
 
+## Feature Design: Model Revisions
+
+A revision *N* of a model is `<model> (vN)` (openMSX's convention; revision 1 is the plain name, and an openMSX `(v1)` machine is aliased onto it). msx.org marks revision-specific facts in free text ("2nd Gen HB-F500", "(HB-F500 second version)", "(version 2)", "1st version: …"); `scraper/revisions.py` holds that vocabulary.
+
+- The per-variant resolver (`resolve_value`, `choose_slotmap_table`) treats revision references like variant names: the base record skips values and slot maps marked for a later revision; `override=True` returns only what is marked for revision *N*.
+- `parse_model_page` emits `<model> (vN)` for every later revision with its own properties: a copy of the base record, overridden by the revision-*N* values, with the **same `msxorg_title`** (same msx.org link) and an internal `_revision` marker. Works for series pages and ordinary pages.
+- `merge_models` drops an msx.org revision record when openMSX has no machine with that natural key (`[merge:revision]`), so msx.org alone never creates a revision row.
+
+Rules and results: `.claude/artifacts/planning/2026-09-26-model-revisions-design.md`.
+
+---
+
 ## Feature Design: msx.org Series Pages
 
 msx.org keeps the technical details of some families (Sony HB-10/75/F500/…, Toshiba HX-10/20/21/22) on one **series page** (`Category:Sony_HB-75`); the member pages have no specs table and link to it ("see HB-75 series for the technical details"). `parse_model_page` detects that link and, through a `series_loader` supplied by `fetch_all` (same `PageSource`, cached per run), parses the series page **for the member's own variant** with `scraper/msxorg_series.py`:

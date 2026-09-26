@@ -12,8 +12,16 @@ import requests
 from bs4 import BeautifulSoup, Tag
 
 from .exclude import ExcludeList
+from .revisions import REVISION_FIELD, revision_name, revision_numbers
 from .mirror import LivePageSource, MirrorPageSource, PageSource, slug_to_filename
-from .msxorg_series import build_variant_specs, series_slug
+from .msxorg_series import (
+    VariantContext,
+    page_context,
+    resolve_specs,
+    revisions_in,
+    series_context,
+    series_slug,
+)
 from .msxorg_slotmap import (
     mapper_from_table,
     parse_mapper_from_soup,
@@ -378,59 +386,25 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
     return result
 
 
-def parse_model_page(
-    html: bytes,
+def _record_from_specs(
+    specs: dict[str, str],
+    *,
+    brand: str,
+    model: str,
     standard: str,
     page_title: str,
-    *,
-    series_loader: Callable[[str], bytes | None] | None = None,
-) -> list[dict[str, Any]]:
-    """Parse a single model wiki page.
+    sections: BeautifulSoup,
+    slot_table: Tag | None,
+    slot_page: BeautifulSoup | None,
+) -> dict[str, Any]:
+    """Build one model record from a (possibly per-variant) specs dict.
 
-    Returns a list of model dicts (one per variant when the Model field
-    contains " / ").  Returns an empty list if no specs table is found.
-
-    A member page without its own specs table that defers to a series page
-    ("see HB-75 series for the technical details") is parsed from that series
-    page for its own variant; ``series_loader(slug)`` returns the series HTML.
-    See scraper/msxorg_series.py.
+    ``sections`` holds the Connections section. The slot map comes from
+    ``slot_table`` when one was chosen, else from ``slot_page``'s first slot map.
     """
-    soup = BeautifulSoup(html, "lxml")
-    specs = _find_specs_table(soup)
-    sections = soup              # where Connections / slot map are read from
-    series_slot_table = None     # slot map chosen for the variant (series pages)
-    series = None
-    if not specs:
-        series = series_slug(soup)
-        series_html = series_loader(series) if series and series_loader else None
-        if series_html:
-            series_soup = BeautifulSoup(series_html, "lxml")
-            specs, series_slot_table = build_variant_specs(series_soup, page_title)
-            sections = series_soup
-            if specs:
-                log.info("[msxorg:series] %s parsed from series %s", page_title, series)
-    if not specs:
-        if series:
-            log.warning("No specs table on %s and series %s unavailable — skipped", page_title, series)
-        else:
-            log.warning("No specs table found on %s — skipped", page_title)
-        return []
-
-    brand = specs.get("Brand", "").strip()
-    model_raw = specs.get("Model", "").strip()
-    if not model_raw:
-        log.warning("No Model field in specs table on %s — skipped", page_title)
-        return []
-
-    # Clean up brand: "Philips (Manufacturer: Sanyo)" → "Philips"
-    brand = re.sub(r"\s*\(.*?\)\s*", "", brand).strip()
-
-    # Split combined models like "AX-350II / AX-350IIF" into separate entries.
-    model_names = [m.strip() for m in model_raw.split(" / ")]
-
     result: dict[str, Any] = {
         "manufacturer": brand,
-        "model": model_names[0],
+        "model": model,
         "generation": standard,
         "msxorg_title": page_title,
     }
@@ -498,21 +472,123 @@ def parse_model_page(
     # Remove None values.
     result = {k: v for k, v in result.items() if v is not None}
 
-    # Slot map — parsed from the same HTML page.
-    if series_slot_table is not None:
-        result.update(parse_slotmap_table(series_slot_table, page_title))
-        result["mapper"] = mapper_from_table(series_slot_table)
-    elif sections is soup:
-        slotmap = parse_slotmap_from_soup(soup, page_title)
+    # Slot map and the Memory Mapper derived from it.
+    if slot_table is not None:
+        result.update(parse_slotmap_table(slot_table, page_title))
+        result["mapper"] = mapper_from_table(slot_table)
+    elif slot_page is not None:
+        slotmap = parse_slotmap_from_soup(slot_page, page_title)
         if slotmap is not None:
             result.update(slotmap)
-        mapper = parse_mapper_from_soup(soup, page_title)
+        mapper = parse_mapper_from_soup(slot_page, page_title)
         if mapper is not None:
             result["mapper"] = mapper
+    return result
+
+
+def _revision_records(
+    ctx: VariantContext,
+    base_specs: dict[str, str],
+    base_table: Tag | None,
+    base: dict[str, Any],
+    build: Callable[[dict[str, str], Tag | None], dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """One record per later revision with its own properties (``M (vN)``).
+
+    Each starts as a copy of the base record and is overridden by every value
+    marked for that revision; the msx.org link (``msxorg_title``) is shared.
+    See .claude/artifacts/planning/2026-09-26-model-revisions-design.md.
+    """
+    records = []
+    for n in revisions_in(ctx):
+        override_specs, override_table = resolve_specs(ctx, revision=n, override=True)
+        if not override_specs and override_table is None:
+            continue
+        parsed = build({**base_specs, **override_specs}, override_table or base_table)
+        record = {**base, **parsed, "model": revision_name(base["model"], n), REVISION_FIELD: n}
+        if all(record.get(k) == base.get(k) for k in record if k not in ("model", REVISION_FIELD)):
+            continue  # nothing of this revision differs from the base
+        log.info("[msxorg:revision] %s: revision %d emitted as %r", base["msxorg_title"], n, record["model"])
+        records.append(record)
+    return records
+
+
+def parse_model_page(
+    html: bytes,
+    standard: str,
+    page_title: str,
+    *,
+    series_loader: Callable[[str], bytes | None] | None = None,
+) -> list[dict[str, Any]]:
+    """Parse a single model wiki page.
+
+    Returns a list of model dicts (one per variant when the Model field
+    contains " / ", plus one per later revision — ``M (v2)`` — when the page
+    describes revision-specific properties).  Returns an empty list if no specs
+    table is found.
+
+    A member page without its own specs table that defers to a series page
+    ("see HB-75 series for the technical details") is parsed from that series
+    page for its own variant; ``series_loader(slug)`` returns the series HTML.
+    See scraper/msxorg_series.py and scraper/revisions.py.
+    """
+    soup = BeautifulSoup(html, "lxml")
+    specs = _find_specs_table(soup)
+    ctx: VariantContext | None = None
+    sections = soup              # page holding Connections
+    slot_table: Tag | None = None
+    slot_page: BeautifulSoup | None = soup
+    series = None
+    if not specs:
+        series = series_slug(soup)
+        series_html = series_loader(series) if series and series_loader else None
+        if series_html:
+            series_soup = BeautifulSoup(series_html, "lxml")
+            ctx = series_context(series_soup, page_title)
+            if ctx is not None:
+                specs, slot_table = resolve_specs(ctx, page_title=page_title)
+                sections, slot_page = series_soup, None
+                log.info("[msxorg:series] %s parsed from series %s", page_title, series)
+    if not specs:
+        if series:
+            log.warning("No specs table on %s and series %s unavailable — skipped", page_title, series)
+        else:
+            log.warning("No specs table found on %s — skipped", page_title)
+        return []
+
+    brand = specs.get("Brand", "").strip()
+    model_raw = specs.get("Model", "").strip()
+    if not model_raw:
+        log.warning("No Model field in specs table on %s — skipped", page_title)
+        return []
+
+    # Clean up brand: "Philips (Manufacturer: Sanyo)" → "Philips"
+    brand = re.sub(r"\s*\(.*?\)\s*", "", brand).strip()
+
+    # Split combined models like "AX-350II / AX-350IIF" into separate entries.
+    model_names = [m.strip() for m in model_raw.split(" / ")]
+
+    # A page with its own specs that describes revisions: the base record takes
+    # the 1st-revision values of the fields that mention revisions, and the
+    # 1st-revision slot map.
+    if ctx is None and len(model_names) == 1:
+        page = page_context(soup, specs, brand, model_names[0], model_names)
+        if revisions_in(page):
+            ctx = page
+            base_specs, slot_table = resolve_specs(ctx, page_title=page_title)
+            specs = {k: base_specs[k] if revision_numbers(v) else v
+                     for k, v in specs.items() if not revision_numbers(v) or k in base_specs}
+            slot_page = None if slot_table is not None else soup
+
+    def build(spec: dict[str, str], table: Tag | None, model: str = model_names[0]) -> dict[str, Any]:
+        return _record_from_specs(spec, brand=brand, model=model, standard=standard, page_title=page_title,
+                                  sections=sections, slot_table=table, slot_page=None if table else slot_page)
+
+    result = build(specs, slot_table)
 
     # If the Model field contained " / ", emit one entry per variant.
     if len(model_names) == 1:
-        return [result]
+        return [result] + (_revision_records(ctx, specs, slot_table, result, build) if ctx else [])
     results = [result]
     for extra_model in model_names[1:]:
         variant = dict(result)
