@@ -293,10 +293,26 @@ def build(
                 model[col.key] = col.derive(model)
 
     # Step 5: Assign model IDs
+    # Two passes: models already registered under their own key keep their ids
+    # first, so a model renamed by an alias (pass 2) can only adopt an id from
+    # its former keys that no other model in this build is using.
     registry = IDRegistry.load(registry_path)
+    taken: set[int] = set()
+    pending: list[dict[str, Any]] = []
     for model in merged:
-        nk = merge.natural_key(model)
-        model["_id"] = registry.assign_model_id(nk)
+        known = registry.get_model_id(merge.natural_key(model))
+        if known is not None:
+            model["_id"] = known
+            taken.add(known)
+        else:
+            pending.append(model)
+    for model in pending:
+        model["_id"] = registry.assign_model_id(
+            merge.natural_key(model),
+            former_keys=model.get(merge.FORMER_KEYS_FIELD, ()),
+            taken=taken,
+        )
+        taken.add(model["_id"])
 
     # Step 6: Build data.js payload
     active_cols = active_columns()

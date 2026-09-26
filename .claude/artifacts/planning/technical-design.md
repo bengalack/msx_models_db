@@ -97,6 +97,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 - ID Registry
   - Type: File artifact (JSON)
   - Responsibilities: Map model natural keys to permanent integer IDs; record retired model IDs. Column IDs are defined in `scraper/columns.py` and are not part of the registry.
+  - Generated only: the build appends to it; it is never edited by hand. Renames go through `data/aliases.json` (see *Alias LUT* and Key Flow step 8).
   - Depends On: -
   - Data Stores: `data/id-registry.json`
 
@@ -106,6 +107,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     - **Single-column** — top-level field-name key → `{ canonical: [alias, ...] }`. Applied field-by-field, case-insensitively.
     - **Composite** — top-level `"composite"` array of `{ "match": {col: val, ...}, "canonical": {col: val, ...} }` objects. Fires only when *all* match fields agree simultaneously (AND semantics); first matching rule wins. Evaluated after single-column rules so single-column canonicalization can feed composite matching.
   - Runtime type: `AliasLUT` dataclass (`scraper/aliases.py`) with `single: dict[str, dict[str, str]]` and `composite: list[CompositeRule]` fields.
+  - **Aliases carry ids.** `merge_models` records each record's natural key before aliasing; a merged model whose key changed carries those *former keys* (`_former_keys`, internal, never shipped). The registry adopts an id from them — see Key Flow step 8. So adding an alias renames or merges models without losing their ids, and removing it later restores the old key's id.
   - Depends On: -
   - Data Stores: `data/aliases.json` (read-only)
 
@@ -189,7 +191,10 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
     6. Merge msx.org and openMSX data per model (openMSX wins on conflict); then apply local overrides on top (local wins for any field it provides)
     6a. After all per-model `links` are computed (keyed model URLs from `msxorg_title`), apply `data/link-shares.json`: for each entry whose recipient has no `links`, copy the donor's `links` (if present). Absent file is silently skipped.
     7. Compute derived columns: for each model row, run every `Column.derive` callable; store results under the column's key
-    8. Load `data/id-registry.json`; match models by natural key (manufacturer + model name); assign new IDs for unmatched entries
+    8. Load `data/id-registry.json` and assign ids in two passes:
+       - Pass 1: every model whose natural key is registered keeps its id.
+       - Pass 2: remaining models. If the model was renamed by an alias, adopt the **lowest** registered, non-retired id among its former keys that no model in this build already uses, registering it under the new key (logged `[registry:rename]`; former keys stay registered). Otherwise issue a new id.
+       - Two old ids merging into one model: the lower survives; the higher disappears from the grid (its key stays registered and is never reused).
     9. Build output: generate `docs/data.js` with groups (from config), active columns (excluding hidden/retired), and model values[] positionally aligned to active columns
     10. Atomic write `docs/data.js` and `data/id-registry.json`
     11. Emit dead-rule warnings for any exclude rules that matched zero models; print summary: N models written, M excluded, K conflicts resolved, J parse failures
@@ -310,7 +315,7 @@ The `hidden_columns` bitset is **absolute, never a delta from the column default
 
 ## Integrity Strategy
 - Invariants:
-  - IDs in id-registry.json are never deleted or reused
+  - IDs in id-registry.json are never deleted or reused; the file is only written by the build (renames come from aliases, never hand edits)
   - `next_model_id` only ever increases; column IDs in `scraper/columns.py` are never renumbered or reused
   - `docs/data.js` is only written after the full scraper run succeeds and the maintainer has resolved all conflicts
   - URL decoder never throws; unknown IDs are silently ignored

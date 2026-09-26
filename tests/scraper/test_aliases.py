@@ -315,3 +315,94 @@ def test_merge_uses_aliases(tmp_path):
     merged = merge_models(openmsx_records, msxorg_records, alias_path=alias_file)
     assert len(merged) == 1
     assert merged[0]["manufacturer"] == "Sakhr"
+
+
+# ---------------------------------------------------------------------------
+# Former keys — the pre-alias natural keys a merged model descends from
+# ---------------------------------------------------------------------------
+
+def _alias_file(tmp_path, content):
+    import json
+    path = tmp_path / "aliases.json"
+    path.write_text(json.dumps(content), encoding="utf-8")
+    return path
+
+
+def test_merge_records_former_keys_from_every_source(tmp_path):
+    from scraper.merge import FORMER_KEYS_FIELD, merge_models
+
+    alias_file = _alias_file(tmp_path, {
+        "model": {"AX-230": ["AX230", "AX-230 (Manufacturer: Sanyo)"]},
+    })
+    openmsx = [{"manufacturer": "Sakhr", "model": "AX230"}]
+    msxorg  = [{"manufacturer": "Sakhr", "model": "AX-230 (Manufacturer: Sanyo)"}]
+    local   = [{"manufacturer": "Sakhr", "model": "AX230", "himem_addr": "0xF380"}]
+
+    merged = merge_models(openmsx, msxorg, local=local, alias_path=alias_file)
+
+    assert len(merged) == 1
+    assert merged[0]["model"] == "AX-230"
+    assert merged[0][FORMER_KEYS_FIELD] == ["sakhr|ax-230 (manufacturer: sanyo)", "sakhr|ax230"]
+
+
+def test_merge_composite_alias_records_former_key(tmp_path):
+    from scraper.merge import FORMER_KEYS_FIELD, merge_models
+
+    alias_file = _alias_file(tmp_path, {
+        "model": {"AX-150": ["AX150"]},
+        "composite": [{"match": {"manufacturer": "Sakhr", "model": "AX-150"},
+                       "canonical": {"manufacturer": "Yamaha", "model": "AX-150"}}],
+    })
+    merged = merge_models(
+        [{"manufacturer": "Yamaha", "model": "AX150"}],
+        [{"manufacturer": "Sakhr", "model": "AX-150"}],
+        alias_path=alias_file,
+    )
+    assert len(merged) == 1
+    assert (merged[0]["manufacturer"], merged[0]["model"]) == ("Yamaha", "AX-150")
+    assert merged[0][FORMER_KEYS_FIELD] == ["sakhr|ax-150", "yamaha|ax150"]
+
+
+def test_unaliased_model_has_no_former_keys(tmp_path):
+    from scraper.merge import FORMER_KEYS_FIELD, merge_models
+
+    alias_file = _alias_file(tmp_path, {"model": {"AX-150": ["AX150"]}})
+    merged = merge_models([{"manufacturer": "Sony", "model": "HB-75P"}], [], alias_path=alias_file)
+    assert FORMER_KEYS_FIELD not in merged[0]
+
+
+def test_build_keeps_lowest_former_id_when_alias_renames_a_model(tmp_path, monkeypatch):
+    """End to end: an alias that merges two known models keeps the lower id and spends none."""
+    import json
+    from scraper import build as build_module
+    from scraper.registry import IDRegistry
+
+    alias_file = _alias_file(tmp_path, {
+        "model": {"AX-150": ["AX150"]},
+        "composite": [{"match": {"manufacturer": "Sakhr", "model": "AX-150"},
+                       "canonical": {"manufacturer": "Yamaha", "model": "AX-150"}}],
+    })
+    monkeypatch.setattr(build_module, "ALIASES_PATH", alias_file)
+
+    registry_path = tmp_path / "registry.json"
+    registry_path.write_text(json.dumps({
+        "version": 2,
+        "models": {"sakhr|ax-150": 275, "yamaha|ax150": 384},
+        "retired_models": [],
+        "next_model_id": 400,
+    }))
+    openmsx = tmp_path / "openmsx.json"
+    msxorg = tmp_path / "msxorg.json"
+    openmsx.write_text(json.dumps([{"manufacturer": "Yamaha", "model": "AX150", "generation": "MSX1"}]))
+    msxorg.write_text(json.dumps([{"manufacturer": "Sakhr", "model": "AX-150", "generation": "MSX1"}]))
+    output = tmp_path / "data.js"
+
+    build_module.build(openmsx_path=openmsx, msxorg_path=msxorg, local_path=tmp_path / "local.json",
+                       registry_path=registry_path, output_path=output)
+
+    content = output.read_text(encoding="utf-8")
+    data = json.loads(content[content.index("{"):content.rindex(";")])
+    assert [m["id"] for m in data["models"]] == [275]
+    reg = IDRegistry.load(registry_path)
+    assert reg.models["yamaha|ax-150"] == 275
+    assert reg.next_model_id == 400

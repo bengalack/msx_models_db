@@ -16,6 +16,11 @@ log = logging.getLogger(__name__)
 # ── Natural key ──────────────────────────────────────────────────────
 
 
+# Merged-model field listing the natural keys the model had before
+# data/aliases.json renamed it. Internal: never shipped to the browser.
+FORMER_KEYS_FIELD = "_former_keys"
+
+
 def natural_key(model: dict[str, Any]) -> str:
     """Build a stable natural key: 'manufacturer|model' (lowercased, trimmed)."""
     mfr = (model.get("manufacturer") or "").lower().strip()
@@ -154,8 +159,15 @@ def merge_models(
     alias_lut: AliasLUT = AliasLUT()
     if alias_path is not None:
         alias_lut = load_aliases(alias_path)
+    # Remember the key each record had before aliasing, so the registry can keep
+    # a renamed model's id (see IDRegistry.assign_model_id).
+    former_keys: dict[str, set[str]] = {}
     for record in [*openmsx, *(msxorg or []), *(local or [])]:
+        before = natural_key(record)
         apply_aliases(record, alias_lut)
+        after = natural_key(record)
+        if before != after:
+            former_keys.setdefault(after, set()).add(before)
 
     # Index by natural key.
     o_by_key: dict[str, dict[str, Any]] = {}
@@ -202,9 +214,12 @@ def merge_models(
             for field, val in l_model.items():
                 if val is not None:
                     result[field] = val
-            merged.append(_renumber_cs_es(result))
+            result = _renumber_cs_es(result)
         else:
-            merged.append(_renumber_cs_es(base))
+            result = _renumber_cs_es(base)
+        if key in former_keys:
+            result[FORMER_KEYS_FIELD] = sorted(former_keys[key])
+        merged.append(result)
 
     local_only = set(l_by_key.keys()) - set(o_by_key.keys()) - set(m_by_key.keys())
     log.info(

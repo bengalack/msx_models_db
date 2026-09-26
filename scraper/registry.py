@@ -6,6 +6,7 @@ import json
 import logging
 import os
 import tempfile
+from collections.abc import Collection, Iterable
 from pathlib import Path
 from typing import Any
 
@@ -91,14 +92,43 @@ class IDRegistry:
 
     # ── ID assignment ──────────────────────────────────────────────────
 
-    def assign_model_id(self, natural_key: str) -> int:
+    def assign_model_id(
+        self,
+        natural_key: str,
+        former_keys: Iterable[str] = (),
+        taken: Collection[int] = (),
+    ) -> int:
         """Return the stable ID for a model, assigning a new one if needed.
 
         Natural key format: "manufacturer|model" (lowercased, stripped).
+
+        Lookup order ("match before create"):
+
+        1. ``natural_key`` is registered → its id.
+        2. The model was renamed by ``data/aliases.json``: ``former_keys`` are its
+           pre-alias keys. The **lowest** registered, non-retired id among them
+           that no other model in this build already uses (``taken``) is adopted
+           under ``natural_key``. Former keys stay registered, so removing the
+           alias later gives the model its old id back.
+        3. Otherwise a new id is issued.
         """
         existing = self.models.get(natural_key)
         if existing is not None:
             return existing
+
+        candidates = sorted(
+            {self.models[k] for k in former_keys if k in self.models}
+            - self._retired_set
+            - set(taken)
+        )
+        if candidates:
+            adopted = candidates[0]
+            self.models[natural_key] = adopted
+            log.info(
+                "[registry:rename] Alias renamed model | key=%s id=%d former=%s",
+                natural_key, adopted, sorted(k for k in former_keys if k in self.models),
+            )
+            return adopted
 
         new_id = self.next_model_id
         if new_id == 0:

@@ -102,6 +102,46 @@ class TestAssignModelId:
             reg.assign_model_id("overflow|model")
 
 
+class TestAssignModelIdFormerKeys:
+    """An alias renames a model: its canonical key adopts an id from its former (pre-alias) keys."""
+
+    def test_canonical_key_known_wins_over_former_keys(self):
+        reg = IDRegistry(models={"sakhr|ax-170": 276, "sakhr|ax170": 5}, next_model_id=300)
+        assert reg.assign_model_id("sakhr|ax-170", former_keys=["sakhr|ax170"]) == 276
+
+    def test_former_key_id_is_adopted(self):
+        reg = IDRegistry(models={"sakhr|ax230": 346}, next_model_id=400)
+        assert reg.assign_model_id("sakhr|ax-230", former_keys=["sakhr|ax230"]) == 346
+        assert reg.models["sakhr|ax-230"] == 346
+        assert reg.next_model_id == 400  # no id spent
+
+    def test_lowest_former_id_wins(self):
+        reg = IDRegistry(models={"a|x1": 346, "a|x-1 (note)": 281}, next_model_id=400)
+        assert reg.assign_model_id("a|x-1", former_keys=["a|x1", "a|x-1 (note)"]) == 281
+
+    def test_former_keys_stay_in_registry(self):
+        """Removing the alias later gives the model its old id back instead of a new one."""
+        reg = IDRegistry(models={"a|x1": 7}, next_model_id=10)
+        reg.assign_model_id("a|x-1", former_keys=["a|x1"])
+        assert reg.models["a|x1"] == 7
+        assert reg.assign_model_id("a|x1") == 7
+
+    def test_unknown_former_keys_fall_back_to_new_id(self):
+        reg = IDRegistry(next_model_id=10)
+        assert reg.assign_model_id("a|x-1", former_keys=["a|x1"]) == 10
+        assert reg.next_model_id == 11
+
+    def test_taken_id_is_not_adopted_twice(self):
+        """Two live models must never share an id, even if both descend from one former key."""
+        reg = IDRegistry(models={"a|x1": 7, "a|x2": 8}, next_model_id=10)
+        assert reg.assign_model_id("a|x-1", former_keys=["a|x1", "a|x2"], taken={7}) == 8
+        assert reg.assign_model_id("a|x-9", former_keys=["a|x1"], taken={7, 8}) == 10
+
+    def test_retired_former_id_is_not_adopted(self):
+        reg = IDRegistry(models={"a|x1": 7}, retired_models=[7], next_model_id=10)
+        assert reg.assign_model_id("a|x-1", former_keys=["a|x1"]) == 10
+
+
 class TestRetireModel:
     """Retirement tests."""
 

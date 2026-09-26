@@ -99,6 +99,7 @@ applied to local data as well, so a curated entry can never resurrect an exclude
 ## Invariants — do not break
 
 - **Stable IDs**: column IDs (in `columns.py`), group IDs, and model IDs (in `id-registry.json`) are permanent. Never renumber or reuse. Column ID 0 is reserved (sort "none" in codec). Remove columns via `retired=True`, not deletion.
+- **Never hand-edit `data/id-registry.json`.** To rename or merge models, add a rule to `data/aliases.json`: the build carries the id across (lowest registered id among the pre-alias keys wins; former keys stay registered). See `IDRegistry.assign_model_id` and Key Flow step 8 in technical-design.md.
 - **Shared URLs are forever**: any change to the URL codec needs a version bump and backward-compatible decoding.
 - `docs/` is committed build output. After changing `src/`, run `npm run build`; after scraper changes affecting output, rerun the scraper. Commit rebuilt output separately (existing convention: `chore: rebuild bundle and data`).
 - ROM files in `systemroms/` are copyrighted and never committed; only `systemroms/machines/all_sha1s.txt` is tracked. Code that needs ROMs must degrade gracefully when they are absent.

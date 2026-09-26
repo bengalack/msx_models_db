@@ -125,6 +125,8 @@ The ID registry is maintained by the scraper and committed to the repository. It
 - Retired IDs are recorded in `retired_models` but **never reused**.
 - `next_model_id` only ever increases.
 - The scraper must attempt to **match before create**: match incoming data to an existing registry entry (by natural key) before assigning a new ID.
+- **Renames keep ids.** When `data/aliases.json` changes a model's name, the build adopts the lowest registered id among the model's pre-alias keys (skipping retired ids and ids used by another model in the same build). Former keys stay registered.
+- The file is generated: never edit it by hand. To rename or merge models, add an alias.
 
 ---
 
