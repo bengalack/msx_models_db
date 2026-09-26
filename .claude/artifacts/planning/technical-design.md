@@ -116,6 +116,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 - Link-Shares LUT
   - Type: File artifact (JSON), maintainer-controlled
   - Responsibilities: Allow models with no msx.org page of their own to inherit the `links` entry from a donor model. Keys and values are natural keys (`"manufacturer|model"`, lowercase). Applied in the build step after per-model `links` are computed and before the models list is sorted.
+  - Data too: in the build, after the merge (and after adaptations), each recipient's **missing fields** are filled from the donor's row (`fill_from_link_shares`), with the same rules as adaptations — `scraper/inherit.py` (`fill_blanks`, `NEVER_INHERITED`): never identity, `openmsx_id` or the BIOS-derived character set / keyboard type; the slot map only when the recipient has none. Chains resolve regardless of order.
   - Depends On: -
   - Data Stores: `data/link-shares.json`
 
@@ -624,7 +625,7 @@ else → removeAttribute('title')
 
 ## Feature Design: Adaptations
 
-An msx.org page that says its model *is the adaptation of* another ("The Fenner FPC-900 is the adaptation of the Sanyo MPC-25FD computer …") records the donor page as `_adapted_from` (`adapted_from` in `scraper/msxorg.py`; forward statements about the page's own model only — "has been adapted for … - see Y", prototypes and category links are not donors; "the second version of X" picks revision 2). In the build, after the merge and before derived columns, `fill_from_donors` fills **every field the adaptation lacks** from the donor's final merged row — nested through donors of donors — except identity, `openmsx_id` and the BIOS-derived `character_set` / `keyboard_type`. The slot map (with Memory Mapper) is copied as a unit only when the adaptation has none.
+An msx.org page that says its model *is the adaptation of* another ("The Fenner FPC-900 is the adaptation of the Sanyo MPC-25FD computer …") records the donor page as `_adapted_from` (`adapted_from` in `scraper/msxorg.py`; forward statements about the page's own model only — "has been adapted for … - see Y", prototypes and category links are not donors; "the second version of X" picks revision 2). In the build, after the merge and before derived columns, `fill_from_donors` (rules shared with link-shares in `scraper/inherit.py`) fills **every field the adaptation lacks** from the donor's final merged row — nested through donors of donors — except identity, `openmsx_id` and the BIOS-derived `character_set` / `keyboard_type`. The slot map (with Memory Mapper) is copied as a unit only when the adaptation has none.
 
 Rules and results: `.claude/artifacts/planning/2026-09-26-adaptations-design.md`.
 

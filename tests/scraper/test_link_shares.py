@@ -177,3 +177,92 @@ def test_apply_link_shares_multiple_recipients_share_same_donor():
     apply_link_shares(records, natural_keys, shares)
     assert records[1]["links"] == donor_links
     assert records[2]["links"] == donor_links
+
+
+# ---------------------------------------------------------------------------
+# Data from the donor: a link-share recipient fills its blanks from the donor row
+# ---------------------------------------------------------------------------
+
+from scraper.link_shares import fill_from_link_shares  # noqa: E402
+
+
+def _row(key: str, **fields) -> dict:
+    manufacturer, model = key.split("|")
+    return {"manufacturer": manufacturer.title(), "model": model.upper(), **fields}
+
+
+def _slots(value: str) -> dict:
+    return {f"slotmap_{ms}_{ss}_{p}": value for ms in range(4) for ss in range(4) for p in range(4)}
+
+
+class TestFillFromLinkShares:
+    SHARES = {"philips|vg 8000/00": "philips|vg-8000"}
+
+    @staticmethod
+    def _key(model: dict) -> str:
+        return f"{model['manufacturer'].lower()}|{model['model'].lower()}"
+
+    def test_missing_fields_filled_from_the_donor(self):
+        donor = _row("philips|vg-8000", vram_kb=16, msxorg_title="Philips VG-8000")
+        recipient = _row("philips|vg 8000/00", openmsx_id="Philips_VG_8000", main_ram_kb=16)
+        filled = fill_from_link_shares([donor, recipient], self.SHARES, self._key)
+        assert filled == 1
+        assert recipient["vram_kb"] == 16
+        assert recipient["main_ram_kb"] == 16
+        assert recipient["openmsx_id"] == "Philips_VG_8000"
+
+    def test_own_values_identity_and_bios_fields_are_kept(self):
+        donor = _row("philips|vg-8000", vram_kb=16, main_ram_kb=32, msxorg_title="Philips VG-8000",
+                     openmsx_id="X", character_set="International", keyboard_type="International")
+        recipient = _row("philips|vg 8000/00", main_ram_kb=16)
+        fill_from_link_shares([donor, recipient], self.SHARES, self._key)
+        assert recipient["main_ram_kb"] == 16
+        for field in ("msxorg_title", "openmsx_id", "character_set", "keyboard_type"):
+            assert field not in recipient, field
+        assert (recipient["manufacturer"], recipient["model"]) == ("Philips", "VG 8000/00")
+
+    def test_slot_map_only_when_the_recipient_has_none(self):
+        donor = _row("philips|vg-8000", mapper="No", **_slots("MAIN"))
+        own = _row("philips|vg 8000/00", mapper="Yes", **_slots("RAM"))
+        fill_from_link_shares([donor, own], self.SHARES, self._key)
+        assert own["slotmap_0_0_0"] == "RAM" and own["mapper"] == "Yes"
+        empty = _row("philips|vg 8000/00")
+        fill_from_link_shares([donor, empty], self.SHARES, self._key)
+        assert empty["slotmap_0_0_0"] == "MAIN" and empty["mapper"] == "No"
+
+    def test_missing_donor_or_recipient_is_ignored(self):
+        recipient = _row("philips|vg 8000/00", main_ram_kb=16)
+        before = dict(recipient)
+        assert fill_from_link_shares([recipient], self.SHARES, self._key) == 0
+        assert recipient == before
+
+    def test_chains_resolve_regardless_of_order(self):
+        shares = {"a|x3": "a|x2", "a|x2": "a|x1"}
+        x1, x2, x3 = _row("a|x1", vram_kb=16), _row("a|x2"), _row("a|x3")
+        fill_from_link_shares([x3, x2, x1], shares, self._key)
+        assert x3["vram_kb"] == x2["vram_kb"] == 16
+
+
+def test_build_fills_link_share_recipients(tmp_path, monkeypatch):
+    """End to end: the openMSX row sharing msx.org's VG-8000 page gets its VRAM."""
+    from scraper import build as build_module
+
+    shares = tmp_path / "link-shares.json"
+    shares.write_text(json.dumps({"philips|vg 8000/00": "philips|vg-8000"}), encoding="utf-8")
+    monkeypatch.setattr(build_module, "LINK_SHARES_PATH", shares)
+    (tmp_path / "openmsx.json").write_text(json.dumps([
+        {"manufacturer": "Philips", "model": "VG 8000/00", "generation": "MSX1", "openmsx_id": "Philips_VG_8000"}]))
+    (tmp_path / "msxorg.json").write_text(json.dumps([
+        {"manufacturer": "Philips", "model": "VG-8000", "generation": "MSX1", "vram_kb": 16,
+         "msxorg_title": "Philips VG-8000"}]))
+    build_module.build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
+                       local_path=tmp_path / "local.json", registry_path=tmp_path / "registry.json",
+                       output_path=tmp_path / "data.js")
+    content = (tmp_path / "data.js").read_text(encoding="utf-8")
+    data = json.loads(content[content.index("{"):content.rindex(";")])
+    keys = [c["key"] for c in data["columns"]]
+    rows = {dict(zip(keys, m["values"]))["model"]: (dict(zip(keys, m["values"])), m) for m in data["models"]}
+    row, record = rows["VG 8000/00"]
+    assert row["vram_kb"] == 16
+    assert row["openmsx_id"] == "Philips_VG_8000"                                  # its own
+    assert record["links"]["model"] == "https://www.msx.org/wiki/Philips_VG-8000"  # link still shared

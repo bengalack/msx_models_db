@@ -12,6 +12,7 @@ import requests
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 from .aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD
+from .inherit import fill_blanks
 from .exclude import ExcludeList
 from .revisions import REVISION_FIELD, revision_name, revision_numbers
 from .mirror import LivePageSource, MirrorPageSource, PageSource, slug_to_filename
@@ -432,17 +433,7 @@ def known_as_names(page: bytes | BeautifulSoup, model: str, brand: str) -> list[
 # Internal field on an msx.org record: {"title": donor page title, "revision": N}.
 ADAPTED_FROM_FIELD = "_adapted_from"
 
-# Never copied from a donor: the adaptation's identity, the donor's emulator
-# machine (openmsx_id would claim — and link to — a machine the adaptation is
-# not), and the character set / keyboard type read from the donor's BIOS ROM,
-# which the adaptation replaced with a localised one. Everything else missing
-# is filled.
-_NEVER_INHERITED = {
-    "manufacturer", "model", "generation", "msxorg_title",
-    "openmsx_id", "character_set", "keyboard_type",
-    "mapper",  # derived from the slot map, so it travels with it
-    KNOWN_AS_FIELD, ADAPTED_FROM_FIELD, REVISION_FIELD,
-}
+# Which fields travel from a donor is shared with link-shares: see scraper/inherit.py.
 
 _LINK_START, _LINK_END = "\x01", "\x02"
 _NOT_A_MODEL_PAGE = re.compile(r"^(?:Category|File|Image|Special|Template|Help|User):|index\.php", re.IGNORECASE)
@@ -522,7 +513,7 @@ def fill_from_donors(
     """Fill each adaptation's blanks from its donor's record (in place).
 
     A field the adaptation lacks is copied, except identity and market fields
-    (``_NEVER_INHERITED``). The slot map is copied as a unit (with its Memory
+    (``scraper.inherit.NEVER_INHERITED``). The slot map is copied as a unit (with its Memory
     Mapper) and only when the adaptation has none. The donor's own blanks are
     filled from *its* donor first (nesting; cycle-safe, depth-limited). Donor
     pages outside ``records`` are fetched with ``load(title)``.
@@ -566,19 +557,7 @@ def fill_from_donors(
             return
         if id(donor) not in active and len(active) < max_depth:
             fill(donor, active | {id(record)})
-        changed = False
-        for key, value in donor.items():
-            if key in _NEVER_INHERITED or key.startswith("slotmap_") or value is None:
-                continue
-            if record.get(key) is None:
-                record[key] = value
-                changed = True
-        donor_slots = {k: v for k, v in donor.items() if k.startswith("slotmap_")}
-        if donor_slots and not any(k.startswith("slotmap_") for k in record):
-            record.update(donor_slots)
-            if donor.get("mapper") is not None:
-                record["mapper"] = donor["mapper"]
-            changed = True
+        changed = fill_blanks(record, donor)
         if changed:
             filled += 1
             log.info("[msxorg:adaptation] %s filled from %s", record.get("msxorg_title"), donor.get("msxorg_title"))

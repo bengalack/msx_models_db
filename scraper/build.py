@@ -19,7 +19,7 @@ from .columns import (
 from .exclude import load_excludes
 from .mirror import FallbackPageSource, MirrorPageSource
 from .openmsx_source import FallbackXMLSource, LiveXMLSource, MirrorXMLSource
-from .link_shares import apply_link_shares, load_link_shares
+from .link_shares import apply_link_shares, fill_from_link_shares, load_link_shares
 from .registry import IDRegistry
 from .slotmap import load_sha1_index
 from .slotmap_lut import compact_lut, load_slotmap_lut
@@ -40,6 +40,7 @@ SYSTEMROMS_ROOT = Path("systemroms/machines")
 DATA_JS_PATH = Path("docs/data.js")
 SUBSTITUTIONS_PATH = Path("data/substitutions.json")
 SCRAPER_CONFIG_PATH = Path("data/scraper-config.json")
+LINK_SHARES_PATH = Path("data/link-shares.json")
 
 
 def load_scraper_config(path: Path = SCRAPER_CONFIG_PATH) -> dict:
@@ -291,6 +292,12 @@ def build(
     adapted = msxorg.fill_from_donors(merged, load=lambda title: None)
     if adapted:
         log.info("[adaptation] %d models filled from the model they were adapted from", adapted)
+    # Link-shares: a recipient described by the donor's msx.org page takes the
+    # donor's data too (missing fields only; same rules as adaptations).
+    if LINK_SHARES_PATH.exists():
+        shared = fill_from_link_shares(merged, load_link_shares(LINK_SHARES_PATH), merge.natural_key)
+        if shared:
+            log.info("[link-shares] %d models filled from their link-share donor", shared)
 
     # Step 4: Derive computed columns
     derive_cols = [c for c in COLUMNS if c.derive is not None]
@@ -406,9 +413,8 @@ def build(
         js_models.append(record)
 
     # Apply link-shares: back-fill missing links from a donor model
-    link_shares_path = Path("data/link-shares.json")
-    if link_shares_path.exists():
-        shares = load_link_shares(link_shares_path)
+    if LINK_SHARES_PATH.exists():
+        shares = load_link_shares(LINK_SHARES_PATH)
         natural_keys = [merge.natural_key(m) for m in merged]
         apply_link_shares(js_models, natural_keys, shares)
 

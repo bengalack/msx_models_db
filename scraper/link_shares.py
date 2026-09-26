@@ -14,6 +14,9 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
+from typing import Any, Callable
+
+from .inherit import fill_blanks
 
 log = logging.getLogger(__name__)
 
@@ -95,3 +98,42 @@ def apply_link_shares(
             continue
         records[i].setdefault("links", {})["model"] = donor_links["model"]
         log.debug("link-shares: '%s' inherited model link from '%s'", nk, donor_nk)
+
+
+def fill_from_link_shares(
+    models: list[dict[str, Any]],
+    shares: dict[str, str],
+    key: Callable[[dict[str, Any]], str],
+) -> int:
+    """Fill each recipient's missing fields from its donor's row (in place).
+
+    A link-share says the recipient is described by the donor's msx.org page, so
+    the donor's data applies too — with the same rules as adaptations
+    (scraper/inherit.py): only missing fields, never identity, the openMSX
+    machine or BIOS-derived fields; the slot map only when the recipient has
+    none. Chains (A <- B <- C) resolve regardless of order.
+    Returns the number of recipients that gained data.
+    """
+    by_key = {key(m): m for m in models}
+    done: set[str] = set()
+    filled = 0
+
+    def fill(recipient_key: str, active: frozenset[str]) -> None:
+        nonlocal filled
+        if recipient_key in done:
+            return
+        done.add(recipient_key)
+        donor_key = shares.get(recipient_key)
+        recipient, donor = by_key.get(recipient_key), by_key.get(donor_key) if donor_key else None
+        if recipient is None or donor is None:
+            return
+        if donor_key in shares and donor_key not in active:
+            fill(donor_key, active | {recipient_key})
+        if fill_blanks(recipient, donor):
+            filled += 1
+            log.info("[link-shares] %s filled from %s", recipient_key, donor_key)
+
+    for recipient_key in shares:
+        fill(recipient_key, frozenset())
+    return filled
+

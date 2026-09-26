@@ -17,6 +17,7 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Link-shares carry data too: recipients fill missing fields from the donor row (24 models, e.g. Philips VG 80x0 VRAM)
   - msx.org Model values: editorial notes dropped (Pioneer PX-7(HB)); the model keeps its id
   - Chip links in the Engine columns
     - links map in data/engine-chips.json; each known chip in the cell is its own link, the rest of the cell selects

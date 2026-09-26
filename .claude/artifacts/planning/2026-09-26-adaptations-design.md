@@ -42,6 +42,8 @@ Recorded on the msx.org record as `_adapted_from = {"title": <donor page title>,
 
 Values the adaptation states itself are never overwritten; local-raw overrides still win.
 
+The copy rules live in `scraper/inherit.py` (`fill_blanks`, `NEVER_INHERITED`) and are shared with link-shares: a `data/link-shares.json` recipient fills its missing fields from its donor's row the same way (e.g. Philips VG 8000/00 takes VRAM from msx.org's VG-8000).
+
 ## Result (2026-09-26 data)
 
 - 67 adaptation links recognised; 34 rows gain data (10 full slot maps, HIMEM on 32, CPU/RTC/Z80-turbo on 30, RAM, year, VDP, Memory Mapper).
