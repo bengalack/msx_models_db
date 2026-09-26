@@ -576,6 +576,31 @@ def _strip_model_note(name: str) -> str:
     return _MODEL_NOTE_RE.sub("", name).strip() or name
 
 
+# A country tag closing a regional page title: "Panasonic CF-2700 (GE)".
+_REGIONAL_TAG_RE = re.compile(r"\s*\((?P<tag>[A-Z]{2,3})\)\s*$")
+
+
+def regional_name(page_title: str, model: str) -> tuple[str, str] | None:
+    """(brand, model) for a regional page whose specs table names the base model.
+
+    msx.org gives some regional versions a page of their own titled with a
+    country tag while the specs table repeats the base model: the page
+    "Panasonic CF-2700 (GE)" says Brand "National", Model "CF-2700". The tagged
+    name — with the title's brand, the one the regional version was sold
+    under — tells the versions apart. None when the title is not such a
+    regional variant of *model*.
+    """
+    title = page_title.strip()
+    m = _REGIONAL_TAG_RE.search(title)
+    if not m:
+        return None
+    base = title[:m.start()]
+    if not base.lower().endswith(" " + model.lower()):
+        return None
+    brand = base[: -len(model)].strip()
+    return (brand, f"{model} ({m.group('tag')})") if brand else None
+
+
 def _record_from_specs(
     specs: dict[str, str],
     *,
@@ -772,8 +797,15 @@ def parse_model_page(
                      for k, v in specs.items() if not revision_numbers(v) or k in base_specs}
             slot_page = None if slot_table is not None else soup
 
-    def build(spec: dict[str, str], table: Tag | None, model: str = model_names[0]) -> dict[str, Any]:
-        return _record_from_specs(spec, brand=brand, model=model, standard=standard, page_title=page_title,
+    # A regional page ("Panasonic CF-2700 (GE)") is named after its title.
+    name_brand, name_model = brand, model_names[0]
+    regional = regional_name(page_title, model_names[0]) if len(model_names) == 1 else None
+    if regional:
+        name_brand, name_model = regional
+        log.info("[msxorg:regional] %s named %s %s", page_title, name_brand, name_model)
+
+    def build(spec: dict[str, str], table: Tag | None, model: str = name_model) -> dict[str, Any]:
+        return _record_from_specs(spec, brand=name_brand, model=model, standard=standard, page_title=page_title,
                                   sections=sections, slot_table=table, slot_page=None if table else slot_page)
 
     result = build(specs, slot_table)

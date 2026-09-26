@@ -28,10 +28,19 @@
     "CPC-61 Zemmix Super V": ["CPC-61"],
     "CPC-51 Zemmix V": ["CPC-51"]
   },
+  "variant_tag": {
+    "DE": ["GE"],
+    "ES": ["SP"],
+    "GB": ["UK"]
+  },
   "region": {
     "Korea": ["South Korea (original version)"]
   },
   "composite": [
+    {
+      "match":     {"manufacturer": "Canon", "model": "V-20"},
+      "canonical": {"manufacturer": "Canon", "model": "V-20 (JP)"}
+    },
     {
       "match":     {"manufacturer": "Sakhr",  "model": "AX-350IIF"},
       "canonical": {"manufacturer": "Yamaha", "model": "AX-350IIF"}

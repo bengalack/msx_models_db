@@ -406,3 +406,60 @@ def test_build_keeps_lowest_former_id_when_alias_renames_a_model(tmp_path, monke
     reg = IDRegistry.load(registry_path)
     assert reg.models["yamaha|ax-150"] == 275
     assert reg.next_model_id == 400
+
+
+# ---------------------------------------------------------------------------
+# variant_tag — country tag closing a model name
+# ---------------------------------------------------------------------------
+
+def _tag_lut(tmp_path, tags, **extra):
+    lut_file = tmp_path / "aliases.json"
+    lut_file.write_text(json.dumps({"variant_tag": tags, **extra}), encoding="utf-8")
+    return load_aliases(lut_file)
+
+
+def test_variant_tag_canonicalises_closing_tag(tmp_path):
+    lut = _tag_lut(tmp_path, {"DE": ["GE"], "GB": ["UK"]})
+    record = {"manufacturer": "Maker", "model": "M-1 (GE)"}
+    apply_aliases(record, lut)
+    assert record["model"] == "M-1 (DE)"
+
+
+def test_variant_tag_keeps_spacing_and_ignores_case(tmp_path):
+    lut = _tag_lut(tmp_path, {"GB": ["UK"]})
+    record = {"manufacturer": "Maker", "model": "M-7(uk)"}
+    apply_aliases(record, lut)
+    assert record["model"] == "M-7(GB)"
+
+
+def test_variant_tag_leaves_other_tags_and_inner_text(tmp_path):
+    lut = _tag_lut(tmp_path, {"DE": ["GE"]})
+    for model in ["M-1 (FR)", "GE-100", "M-1 (GE) mk2", "M-1"]:
+        record = {"manufacturer": "Maker", "model": model}
+        apply_aliases(record, lut)
+        assert record["model"] == model
+
+
+def test_variant_tag_applies_before_model_rules(tmp_path):
+    lut = _tag_lut(tmp_path, {"DE": ["GE"]}, model={"M-2 (DE)": ["M-1 (DE)"]})
+    record = {"manufacturer": "Maker", "model": "M-1 (GE)"}
+    apply_aliases(record, lut)
+    assert record["model"] == "M-2 (DE)"
+
+
+@pytest.mark.parametrize("tags", [
+    ["GE"],                      # not an object
+    {"DE": "GE"},                # aliases not a list
+    {"GERMANY": ["GE"]},         # canonical not a 2-3 letter tag
+    {"DE": ["GE"], "GB": ["GE"]},  # one alias, two tags
+])
+def test_variant_tag_rejects_malformed(tmp_path, tags):
+    with pytest.raises(ValueError):
+        _tag_lut(tmp_path, tags)
+
+
+def test_committed_variant_tags_map_to_distinct_canonicals():
+    lut = load_aliases(Path("data/aliases.json"))
+    for alias, canonical in lut.variant_tag.items():
+        assert alias != canonical.lower()
+        assert canonical.lower() not in lut.variant_tag

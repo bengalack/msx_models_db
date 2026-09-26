@@ -107,7 +107,8 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Responsibilities: Normalize known name variants to canonical forms before merge so that cross-source records differing only in spelling share the same natural key and are deduplicated. Two rule types:
     - **Single-column** — top-level field-name key → `{ canonical: [alias, ...] }`. Applied field-by-field, case-insensitively.
     - **Composite** — top-level `"composite"` array of `{ "match": {col: val, ...}, "canonical": {col: val, ...} }` objects. Fires only when *all* match fields agree simultaneously (AND semantics); first matching rule wins. Evaluated after single-column rules so single-column canonicalization can feed composite matching.
-  - Runtime type: `AliasLUT` dataclass (`scraper/aliases.py`) with `single: dict[str, dict[str, str]]` and `composite: list[CompositeRule]` fields.
+    - **Variant tag** — top-level `"variant_tag"` object `{ canonical: [alias, ...] }` of 2–3 letter country tags. The tag closing a model name — `(TAG)`, with or without a space before it — is rewritten to its canonical form (case-insensitive; spacing kept). Applied **first**, so model and composite rules see the canonical tag. Canonical tags are ISO 3166-1 alpha-2 (`DE`, `ES`, `GB`), openMSX's convention; msx.org writes `GE`, `SP`, `UK`. See *Feature Design: Regional Variants*.
+  - Runtime type: `AliasLUT` dataclass (`scraper/aliases.py`) with `single: dict[str, dict[str, str]]`, `composite: list[CompositeRule]` and `variant_tag: dict[str, str]` fields.
   - **Parser-cleaned names carry ids too.** The msx.org parser drops an editorial note from a Model value ("PX-7(HB) - note: to not be confused with …", "X (note: …)") and records the original in `_former_model` (`FORMER_MODEL_FIELD`); `merge_models` adds it to the model's former keys, so the id registered under the note-laden name carries over.
   - **Aliases carry ids.** `merge_models` records each record's natural key before aliasing; a merged model whose key changed carries those *former keys* (`_former_keys`, internal, never shipped). The registry adopts an id from them — see Key Flow step 8. So adding an alias renames or merges models without losing their ids, and removing it later restores the old key's id.
   - Depends On: -
@@ -638,6 +639,17 @@ msx.org sometimes names the same machine differently from openMSX and says so: "
 - Only sentences whose subject is the page's own model count: "The [brand] <model> [computer], (also | more commonly) known (simply) as (the) X", "This model is also known as X". Sentences about another computer ("the adaptation of the MPC-25FD computer, also known as Wavy 25"), a revision ("the second version (also known as SPC-800A)"), software, chips or companies are not aliases. An *adaptation* is a different model, not an alias.
 - `merge_models`: an msx.org record with no openMSX machine under its own name, whose "known as" name (after `data/aliases.json`) is an openMSX machine, joins that machine (`[merge:known_as]`). The row takes openMSX's name and id; the msx.org link is kept. Not applied when msx.org has its own page under that name.
 - Result (2026-09-26): Toshiba HX-51 → HX-51I, Toshiba HX-10P → HX-10. Names matching no openMSX machine (HX-52I, Wavy35, SPC Super) change nothing.
+
+---
+
+## Feature Design: Regional Variants
+
+A regional version of a model is `<model> (<TAG>)` with a country tag (openMSX: `Panasonic CF-2700 (DE)`, `Canon V-20 (FR)`). Two rules let msx.org's regional pages join those machines without per-model configuration:
+
+- **Title names the variant** (`regional_name` in `scraper/msxorg.py`). msx.org gives some regional versions a page of their own titled `<brand> <model> (<TAG>)` whose specs table repeats the base model ("Panasonic CF-2700 (GE)": Brand *National*, Model *CF-2700*). When the title is exactly `<brand> <specs model> (<TAG>)` (2–3 capital letters), the record is named `<model> (<TAG>)` with the **title's brand** — the name the regional version was sold under (`[msxorg:regional]`). Other pages keep the specs name. Without this the regional pages collapsed onto the base model's key and overwrote each other.
+- **Tags are canonicalised** through the `variant_tag` section of `data/aliases.json` (ISO 3166-1 alpha-2: `GE`→`DE`, `SP`→`ES`, `UK`→`GB`), for every source, so msx.org's `CF-2700 (GE)` and openMSX's `CF-2700 (DE)` share a key. Like any alias, a renamed model keeps its id (former keys).
+- An untagged msx.org page describing one regional version that openMSX tags (msx.org "Canon V-20" = openMSX "V-20 (JP)") needs an ordinary composite alias.
+- Result (2026-09-26): Panasonic CF-2700 (DE)/(GB) and Canon V-20 (EU)/(FR)/(JP) joined their msx.org pages (link + missing data); Panasonic CF-2700 (CU) is a new msx.org-only row; National CF-2700 keeps only the Japanese page; Sanyo PHC-28P (DE)/(ES), PHC-30N (DE) and Pioneer PX-7(GB) renamed with their ids.
 
 ---
 

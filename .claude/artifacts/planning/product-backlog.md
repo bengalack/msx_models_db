@@ -17,6 +17,7 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Regional variants: msx.org regional pages (CF-2700 GE/UK/CU, V-20 EU/FR) named after their title; country tags canonicalised to ISO (GE→DE, SP→ES, UK→GB)
   - Link-shares carry data too: recipients fill missing fields from the donor row (24 models, e.g. Philips VG 80x0 VRAM)
   - msx.org Model values: editorial notes dropped (Pioneer PX-7(HB)); the model keeps its id
   - Chip links in the Engine columns

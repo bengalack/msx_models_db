@@ -794,3 +794,80 @@ def test_cleaned_name_keeps_its_registry_id(tmp_path):
     reg = IDRegistry.load(tmp_path / "registry.json")
     assert reg.models["pioneer|px-7(hb)"] == 269
     assert reg.next_model_id == 500
+
+
+# ---------------------------------------------------------------------------
+# Regional pages — "Panasonic CF-2700 (GE)" whose specs name the base model
+# ---------------------------------------------------------------------------
+
+class TestRegionalPages:
+    @staticmethod
+    def _page(brand: str, model: str) -> bytes:
+        return (f'<html><body><table class="wikitable"><tr><th>Brand</th><td>{brand}</td></tr>'
+                f'<tr><th>Model</th><td>{model}</td></tr></table></body></html>').encode()
+
+    def test_named_after_the_title(self):
+        [record] = parse_model_page(self._page("Maker A", "M-1"), "MSX1", "Maker B M-1 (GE)")
+        assert (record["manufacturer"], record["model"]) == ("Maker B", "M-1 (GE)")
+        assert record["msxorg_title"] == "Maker B M-1 (GE)"
+
+    def test_multi_word_brand(self):
+        [record] = parse_model_page(self._page("Maker", "M-1"), "MSX1", "Big Maker M-1 (UK)")
+        assert (record["manufacturer"], record["model"]) == ("Big Maker", "M-1 (UK)")
+
+    @pytest.mark.parametrize("model,title", [
+        ("M-1", "Maker M-1"),              # no tag
+        ("M-1 (GE)", "Maker M-1 (GE)"),    # specs already carry the tag
+        ("M-1", "Maker M-10 (GE)"),        # title names another model
+        ("M-1", "Maker M-1 (v2)"),         # not a country tag
+        ("M-1", "M-1 (GE)"),               # no brand in the title
+    ])
+    def test_other_pages_keep_the_specs_name(self, model, title):
+        [record] = parse_model_page(self._page("Maker", model), "MSX1", title)
+        assert (record["manufacturer"], record["model"]) == ("Maker", model)
+
+
+def _build_with_aliases(tmp_path, monkeypatch, aliases, openmsx, msxorg, registry=None):
+    import json
+    import scraper.build as build_module
+    from scraper.build import build
+    from scraper.registry import IDRegistry
+
+    (tmp_path / "aliases.json").write_text(json.dumps(aliases))
+    monkeypatch.setattr(build_module, "ALIASES_PATH", tmp_path / "aliases.json")
+    if registry is not None:
+        (tmp_path / "registry.json").write_text(json.dumps(registry))
+    (tmp_path / "openmsx.json").write_text(json.dumps(openmsx))
+    (tmp_path / "msxorg.json").write_text(json.dumps(msxorg))
+    build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
+          local_path=tmp_path / "local.json", registry_path=tmp_path / "registry.json",
+          output_path=tmp_path / "data.js")
+    text = (tmp_path / "data.js").read_text(encoding="utf-8")
+    data = json.loads(text[text.index("{"):text.rindex("}") + 1])
+    return data, IDRegistry.load(tmp_path / "registry.json")
+
+
+def test_regional_page_joins_the_openmsx_machine(tmp_path, monkeypatch):
+    """msx.org "(GE)" page + openMSX "(DE)" machine are one row with the page's data."""
+    data, _ = _build_with_aliases(
+        tmp_path, monkeypatch, {"variant_tag": {"DE": ["GE"]}},
+        openmsx=[{"manufacturer": "Maker B", "model": "M-1 (DE)", "generation": "MSX1",
+                  "openmsx_id": "Maker_B_M-1_DE"}],
+        msxorg=[{"manufacturer": "Maker B", "model": "M-1 (GE)", "generation": "MSX1",
+                 "msxorg_title": "Maker B M-1 (GE)", "vram_kb": 16}],
+    )
+    keys = [c["key"] for c in data["columns"]]
+    rows = [dict(zip(keys, m["values"])) for m in data["models"]]
+    assert [(r["manufacturer"], r["model"]) for r in rows] == [("Maker B", "M-1 (DE)")]
+    assert rows[0]["vram_kb"] == 16
+
+
+def test_canonicalised_tag_keeps_its_registry_id(tmp_path, monkeypatch):
+    _, reg = _build_with_aliases(
+        tmp_path, monkeypatch, {"variant_tag": {"GB": ["UK"]}},
+        openmsx=[{"manufacturer": "Maker", "model": "M-7(UK)", "generation": "MSX1"}],
+        msxorg=[],
+        registry={"version": 2, "models": {"maker|m-7(uk)": 42}, "retired_models": [], "next_model_id": 500},
+    )
+    assert reg.models["maker|m-7(gb)"] == 42
+    assert reg.next_model_id == 500

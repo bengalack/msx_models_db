@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -12,6 +13,10 @@ log = logging.getLogger(__name__)
 CompositeRule = tuple[dict[str, str], dict[str, str]]
 
 _RESERVED = "composite"
+_VARIANT_TAG = "variant_tag"
+
+# A variant tag closing a model name: "CF-2700 (GE)", "PX-7(UK)".
+_TAG_RE = re.compile(r"\((?P<tag>[A-Za-z]{2,3})\)$")
 
 
 @dataclass
@@ -21,6 +26,8 @@ class AliasLUT:
     """Single-column rules: {column: {alias_lower: canonical}}."""
     composite: list[CompositeRule] = field(default_factory=list)
     """Multi-column rules: [(match_lower, canonical), ...]."""
+    variant_tag: dict[str, str] = field(default_factory=dict)
+    """Country tags closing a model name: {alias_lower: canonical} ("ge" -> "DE")."""
 
 
 def load_aliases(path: str | Path) -> AliasLUT:
@@ -47,6 +54,9 @@ def load_aliases(path: str | Path) -> AliasLUT:
     for column, value in raw.items():
         if column == _RESERVED:
             lut.composite = _parse_composite(path, value)
+            continue
+        if column == _VARIANT_TAG:
+            lut.variant_tag = _parse_variant_tags(path, value)
             continue
 
         if not isinstance(value, dict):
@@ -76,6 +86,26 @@ def load_aliases(path: str | Path) -> AliasLUT:
         path,
     )
     return lut
+
+
+def _parse_variant_tags(path: Path, raw: object) -> dict[str, str]:
+    """Parse the ``"variant_tag"`` section: ``{canonical: [alias, ...]}``."""
+    if not isinstance(raw, dict):
+        raise ValueError(f"{path}: '{_VARIANT_TAG}' must be an object")
+    tags: dict[str, str] = {}
+    for canonical, aliases in raw.items():
+        if not isinstance(aliases, list) or not all(isinstance(a, str) for a in aliases):
+            raise ValueError(f"{path}: '{_VARIANT_TAG}' aliases for '{canonical}' must be a list of strings")
+        if not _TAG_RE.fullmatch(f"({canonical})"):
+            raise ValueError(f"{path}: '{_VARIANT_TAG}' tag '{canonical}' must be 2-3 letters")
+        for alias in aliases:
+            key = alias.lower()
+            if key in tags and tags[key] != canonical:
+                raise ValueError(
+                    f"{path}: duplicate variant tag '{alias}': maps to both '{tags[key]}' and '{canonical}'"
+                )
+            tags[key] = canonical
+    return tags
 
 
 def _parse_composite(path: Path, raw: object) -> list[CompositeRule]:
@@ -114,9 +144,19 @@ def _parse_composite(path: Path, raw: object) -> list[CompositeRule]:
 def apply_aliases(record: dict, lut: AliasLUT) -> None:
     """Replace alias values in *record* with their canonical names (in-place).
 
-    Single-column rules are applied first, then composite rules.  The first
-    matching composite rule wins; subsequent rules are skipped.
+    The variant tag closing the model name is canonicalised first
+    ("CF-2700 (GE)" -> "CF-2700 (DE)"), then single-column rules, then
+    composite rules.  The first matching composite rule wins; subsequent rules
+    are skipped.
     """
+    # Pass 0 — country tag closing the model name
+    model = record.get("model")
+    if lut.variant_tag and isinstance(model, str):
+        m = _TAG_RE.search(model)
+        canonical_tag = lut.variant_tag.get(m.group("tag").lower()) if m else None
+        if m and canonical_tag:
+            record["model"] = f"{model[:m.start()]}({canonical_tag})"
+
     # Pass 1 — single-column aliases
     for column, alias_map in lut.single.items():
         value = record.get(column)
