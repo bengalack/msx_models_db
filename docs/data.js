@@ -122,7 +122,8 @@ window.MSX_DATA = {
       "label": "Generation",
       "groupId": 12,
       "type": "string",
-      "shortLabel": "Gen"
+      "shortLabel": "Gen",
+      "chipLinks": true
     },
     {
       "id": 7,
@@ -233,14 +234,16 @@ window.MSX_DATA = {
       "key": "cpu",
       "label": "CPU",
       "groupId": 5,
-      "type": "string"
+      "type": "string",
+      "chipLinks": true
     },
     {
       "id": 24,
       "key": "sub_cpu",
       "label": "Sub-CPU",
       "groupId": 5,
-      "type": "string"
+      "type": "string",
+      "chipLinks": true
     },
     {
       "id": 97,
@@ -43607,6 +43610,12 @@ window.MSX_DATA = {
     "⏺": "Empty page — slot confirmed, no device mapped"
   },
   "chip_links": {
+    "MSX1": "https://www.msx.org/wiki/MSX1",
+    "MSX2": "https://www.msx.org/wiki/MSX2",
+    "MSX2+": "https://www.msx.org/wiki/MSX2%2B",
+    "turbo R": "https://www.msx.org/wiki/MSX_turbo_R",
+    "Z80": "https://www.msx.org/wiki/Category:Z80",
+    "R800": "https://www.msx.org/wiki/ASCII_R800",
     "HD62003": "https://www.msx.org/wiki/Hitachi_HD62003",
     "T7775": "https://www.msx.org/wiki/Toshiba_T7775",
     "T7937": "https://www.msx.org/wiki/Toshiba_T7937A",
