@@ -74,6 +74,14 @@ describe('chip links', () => {
     expect(engineCell(element, 1).querySelectorAll('a.cell-link')).toHaveLength(0);
   });
 
+  it('prefers the longest id (MSX2+ over MSX2)', () => {
+    const data = makeData(['MSX2+']);
+    data.chip_links = { MSX2: 'https://example.org/MSX2', 'MSX2+': 'https://example.org/MSX2plus' };
+    const { element } = buildGrid(data);
+    const links = Array.from(engineCell(element, 1).querySelectorAll('a.cell-link')) as HTMLAnchorElement[];
+    expect(links.map(a => [a.textContent, a.href])).toEqual([['MSX2+', 'https://example.org/MSX2plus']]);
+  });
+
   it('leaves columns without chipLinks alone', () => {
     const { element } = buildGrid(makeData(['T9769'], false));
     expect(engineCell(element, 1).querySelectorAll('a.cell-link')).toHaveLength(0);

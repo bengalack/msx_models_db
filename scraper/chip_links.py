@@ -1,7 +1,7 @@
-"""Chip links — the page each chip id in a cell links to.
+"""Chip links — the page each chip id (or MSX generation) in a cell links to.
 
 One table for every column flagged ``chip_links`` in scraper/columns.py (the
-Engine and VDP columns): the web page turns each whole chip id it finds in such
+Generation, CPU, Sub-CPU, Engine and VDP columns): the web page turns each whole chip id it finds in such
 a cell into a link. Every spelling that occurs in the data is listed on its own
 ("TMS9918A" and "TMS9918" both point at the TMS9918 page), so nothing is
 guessed from suffixes.

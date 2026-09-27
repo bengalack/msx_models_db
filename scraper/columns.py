@@ -180,7 +180,7 @@ COLUMNS: list[Column] = [
     # Release
     Column(id=3,  key="year",              label="Year",                group="release",  type="number"),
     Column(id=4,  key="region",            label="Region",              group="release",  type="string", max_width=107),
-    Column(id=5,  key="generation",        label="Generation",          group="release",  type="string", short_label="Gen"),
+    Column(id=5,  key="generation",        label="Generation",          group="release",  type="string", short_label="Gen", chip_links=True),
     # Memory
     Column(id=7,  key="main_ram_kb",       label="Main RAM (KB)",       group="memory",   type="number", short_label="Main RAM",    tooltip="Main RAM (KB)"),
     Column(id=10, key="mapper",            label="Memory Mapper",       group="memory",   type="string"),
@@ -202,9 +202,9 @@ COLUMNS: list[Column] = [
            derive=lambda m: _count_slotmap(m, "ES")),
     Column(id=20, key="tape_interface",   label="Tape Interface",       group="media",    type="string", short_label="Tape I/F",     tooltip="Tape Interface"),
     # CPU/Chipsets
-    Column(id=22, key="cpu",              label="CPU",                  group="cpu",      type="string"),
+    Column(id=22, key="cpu",              label="CPU",                  group="cpu",      type="string", chip_links=True),
     Column(id=23, key="cpu_speed_mhz",    label="CPU Speed (MHz)",      group="cpu",      type="number", retired=True),
-    Column(id=24, key="sub_cpu",          label="Sub-CPU",              group="cpu",      type="string"),
+    Column(id=24, key="sub_cpu",          label="Sub-CPU",              group="cpu",      type="string", chip_links=True),
     Column(id=97, key="nmos_cmos",        label="NMOS/CMOS",            group="cpu",      type="string", short_label="NMOS/\u200bCMOS",
            derive=lambda m: "CMOS" if "T976" in (m.get("engine_raw") or "") else "NMOS"),
     Column(id=98, key="rtc",              label="RTC",                  group="cpu",      type="string"),

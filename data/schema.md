@@ -41,7 +41,7 @@ Optional fields are only serialised when set (non-empty / `true` / `> 0`), to ke
 | `shaded` | `true?` | Cells render with a tinted background and bold text. |
 | `maxWidth` | `number?` | Max width of data cells in px; overflow is ellipsised with a hover tooltip. Absent = the shared stylesheet cap (160px). |
 | `sortLast` | `string[]?` | Values that sort after all other values (but before blanks), in both directions — e.g. `"None"` in the Engine columns. |
-| `chipLinks` | `true?` | Known chip ids in the cell text link to `MSXData.chip_links` (the Engine and VDP columns); clicking the chip follows the link, clicking elsewhere selects the cell. |
+| `chipLinks` | `true?` | Known chip ids in the cell text link to `MSXData.chip_links` (Generation, CPU, Sub-CPU, Engine and VDP columns); clicking the chip follows the link, clicking elsewhere selects the cell. |
 | `defaultOff` | `true?` | Column ships and is toggleable, but starts hidden on a fresh load (and after "Reset view"). Absent = starts visible. |
 
 ### Column catalogue
