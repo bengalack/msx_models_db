@@ -354,9 +354,9 @@ def _extract_media(devices: etree._Element, out: dict[str, Any]) -> None:
     if cart_count:
         out["scraped_cart_slots"] = cart_count
 
-    # Tape interface
-    if root is not None and root.find("CassettePort") is not None:
-        out["tape_interface"] = "Yes"
+    # Tape interface: "Yes" when the machine XML has a <CassettePort>, else "No"
+    doc = devices.getroottree().getroot()
+    out["tape_interface"] = "Yes" if next(doc.iter("CassettePort"), None) is not None else "No"
 
 
 def _extract_cpu(

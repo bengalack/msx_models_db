@@ -85,6 +85,10 @@ def _normalise_keyboard(val: str) -> str:
 # Fields where msx.org generally has richer info.
 _PREFER_MSXORG: set[str] = {"keyboard_layout", "region"}
 
+# msx.org values more specific than any openMSX value for the field: openMSX
+# emulates a tape adapter as a plain cassette port, msx.org says one is needed.
+_MSXORG_SPECIFIC: dict[str, set[str]] = {"tape_interface": {"Adapter"}}
+
 # Fields where openMSX is more reliable (hardware-level).
 _PREFER_OPENMSX: set[str] = {"scraped_cart_slots", "vdp", "vram_kb", "main_ram_kb", "psg"}
 
@@ -379,6 +383,9 @@ def _merge_single(
             continue
 
         # Apply preference rules.
+        if mv in _MSXORG_SPECIFIC.get(field, ()):
+            result[field] = mv
+            continue
         if field in _PREFER_OPENMSX:
             result[field] = ov
             continue

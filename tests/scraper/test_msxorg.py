@@ -384,7 +384,7 @@ class TestParseConnections:
     def test_no_cassette_bullet_suppresses_tape(self):
         soup = _connections_soup(["No cassette port", "Printer port"])
         result = _parse_connections(soup)
-        assert "tape_interface" not in result
+        assert result["tape_interface"] == "No"
         assert result["printer_port"] == "Yes"
 
     def test_without_printer_suppresses_printer(self):
@@ -401,6 +401,19 @@ class TestParseConnections:
     def test_no_connections_section_leaves_printer_port_unknown(self):
         result = _parse_connections(BeautifulSoup("<html><body><p>Nothing</p></body></html>", "lxml"))
         assert "printer_port" not in result
+        assert "tape_interface" not in result
+
+    def test_tape_connector_needing_an_adapter(self):
+        soup = _connections_soup(["MT/IF connector (requires the FA-32 CMT I/F package to connect a tape recorder)"])
+        assert _parse_connections(soup)["tape_interface"] == "Adapter"
+
+    def test_plain_cassette_port_beats_adapter(self):
+        soup = _connections_soup(["Cassette port", "CMT I/F adapter port"])
+        assert _parse_connections(soup)["tape_interface"] == "Yes"
+
+    def test_connections_without_cassette_means_no_tape(self):
+        result = _parse_connections(_connections_soup(["Printer port", "RGB output"]))
+        assert result["tape_interface"] == "No"
 
     def test_connections_without_printer_means_no(self):
         result = _parse_connections(_connections_soup(["Cassette port", "RGB output"]))
@@ -984,3 +997,28 @@ def test_localised_products_join_only_openmsx_machines(tmp_path, monkeypatch):
     assert rows["MX5U"][0]["vram_kb"] == 16
     assert rows["MX5U"][1]["model"] == rows["MX5"][1]["model"]
     assert rows["MX5C"][0]["vram_kb"] == 32                # its own page wins
+
+
+class TestBuiltInDataRecorder:
+    @staticmethod
+    def _page(media: str, extras: str, connections: list[str]) -> bytes:
+        items = "".join(f"<li>{c}</li>" for c in connections)
+        return (f'<html><body><table class="wikitable"><tr><th>Brand</th><td>Maker</td></tr>'
+                f'<tr><th>Model</th><td>M-1</td></tr><tr><th>Media</th><td>{media}</td></tr>'
+                f'<tr><th>Extras</th><td>{extras}</td></tr></table>'
+                f'<h3>Connections</h3><ul>{items}</ul></body></html>').encode()
+
+    def test_media_cassette_tapes_means_yes(self):
+        page = self._page("MSX cartridges, cassette tapes", "reset button", ["Note: No Data Recorder connector!"])
+        [record] = parse_model_page(page, "MSX1", "Maker M-1")
+        assert record["tape_interface"] == "Yes"
+
+    def test_extras_built_in_data_recorder_means_yes(self):
+        page = self._page("MSX cartridges", "reset button, built-in data recorder", ["RF output"])
+        [record] = parse_model_page(page, "MSX1", "Maker M-1")
+        assert record["tape_interface"] == "Yes"
+
+    def test_negated_extras_item_does_not_count(self):
+        page = self._page("MSX cartridges", "no data recorder", ["RF output"])
+        [record] = parse_model_page(page, "MSX1", "Maker M-1")
+        assert record["tape_interface"] == "No"

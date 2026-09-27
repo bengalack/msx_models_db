@@ -45,6 +45,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
   - Sticky Columns: The left gutter (row numbers, hide/unhide) is implemented as a sticky column, always visible regardless of horizontal scroll. The Identity group columns (Manufacturer, Model) are also frozen/sticky during horizontal scroll, pinned immediately to the right of the gutter. The Identity group header is likewise frozen. Gap indicator rows include frozen cells in the frozen panel so the dashed line remains visible. Sticky slot map columns may be considered in future versions if user need arises.
   - Slot Map Columns: Renders all 64 slot map columns (4 groups × 16 columns) for every model, with group headers and tooltips as defined in the requirements. Cells outside a model's confirmed slot configuration display the `absent` symbol; empty pages of a confirmed slot display the `empty_page` symbol (see *Slot map cell semantics*). Mirror cells display `<abbr>*` and are visually distinct. All slot map columns are scrollable horizontally, but their group headers and column headers remain sticky.
   - Group Filter Indicator: Each group header `<th>` contains a FontAwesome `fas fa-filter` icon element (hidden by default). When any column in the group has a non-empty filter value, the header gets class `group-header--filtered` which reveals the icon. The `recalcGroupHeader()` function handles this alongside its existing `group-header--partial` logic. The indicator is visible in both expanded and collapsed states.
+  - Group Hidden-Columns Indicator: each group header also holds a `span.hidden-indicator` (⊘, hidden by default). While any column of the group is hidden the header gets `group-header--partial`, which reveals it, and `recalcGroupHeader()` sets its `title` to "Hidden column: <label>" or "Hidden columns: <label>, <label>, …" (column order); the title is cleared when nothing is hidden. Visible in expanded and collapsed states.
   - Depends On: `window.MSX_DATA` (set by data.js before app script runs)
   - Data Stores: In-memory only (no localStorage except theme preference)
 
@@ -1000,6 +1001,15 @@ Column id 27 (group Other, same place) was "Connectivity/Ports" (`connectivity`,
 - msx.org (`_parse_connections` in `scraper/msxorg.py`): `Yes` when a Connections item that is not negated ("No printer port!", "without printer") mentions a printer, parallel or Centronics port, else `No`; **unknown (empty)** when the page has no Connections section, so another source, an adaptation donor or a link-share donor can fill it.
 - Normal merge precedence (local-raw > openMSX > msx.org). Cassette detection still sets Tape Interface; the comma list and the grid's comma-list sorting/display for this column are gone. Column id and URL codec are unchanged (the codec stores ids).
 - Result (2026-09-27): 357 Yes, 39 No, 2 unknown (Haesung Super Free Kick, Fort II Games Pesadelo: msx.org only, no Connections section).
+
+### Tape Interface (same three values)
+
+Column id 20 (`tape_interface`) follows the same rules: `Yes`, `No` or empty (unknown), plus `Adapter`.
+
+- openMSX (`scraper/openmsx.py`): `Yes` when the machine XML has a `<CassettePort>`, else `No`.
+- msx.org: `Yes` when the specs Media mentions cassette tapes or an Extras item (not negated) mentions a data recorder / cassette — a **built-in** data recorder (Sanyo PHC-30, Sony HB-501F), whose Connections section often says "No Data Recorder connector!" (no socket for an external one). Otherwise `Yes` when a non-negated Connections item mentions a cassette or data recorder, `No` when the page has a Connections section without one, empty when it has none.
+- `Adapter`: the only tape connector needs an adapter — a non-negated Connections item mentioning `MT/IF` or `CMT` (Casio "MT/IF connector (requires the FA-32 or FA-33 CMT I/F package …)"). openMSX emulates the adapter as a plain `<CassettePort>`, so msx.org's `Adapter` wins over openMSX's `Yes` (`_MSXORG_SPECIFIC` in `scraper/merge.py`); every other conflict keeps openMSX's value.
+- Result (2026-09-27): 370 Yes, 22 No, 4 Adapter (Casio MX-10, MX-101, PV-7, Sanno SPCmk-II), 2 unknown.
 
 ---
 

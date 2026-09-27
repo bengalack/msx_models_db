@@ -456,3 +456,19 @@ class TestNaturalKey:
 
     def test_absent_keys_do_not_crash(self):
         assert natural_key({}) == "|"
+
+
+class TestTapeAdapter:
+    """msx.org's "Adapter" is more specific than openMSX's cassette port."""
+
+    def _merge(self, o_value, m_value):
+        openmsx = [{"manufacturer": "Maker", "model": "M-1", "tape_interface": o_value}]
+        msxorg = [{"manufacturer": "Maker", "model": "M-1", "tape_interface": m_value}]
+        [row] = merge_models(openmsx, msxorg)
+        return row["tape_interface"]
+
+    def test_adapter_beats_openmsx_yes(self):
+        assert self._merge("Yes", "Adapter") == "Adapter"
+
+    def test_openmsx_still_wins_other_conflicts(self):
+        assert self._merge("Yes", "No") == "Yes"

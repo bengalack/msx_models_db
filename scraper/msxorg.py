@@ -352,23 +352,29 @@ def _connection_items(sibling: Any) -> list[str]:
 
 # Negation words that, when present in the same bullet as a port keyword,
 # indicate the port is absent rather than present.
+# A tape connector that needs an adapter: "MT/IF connector (requires the FA-32 CMT I/F package ...)".
+_TAPE_ADAPTER_RE = re.compile(r"\bCMT\b|\bMT/IF\b", re.IGNORECASE)
 _NEGATION_RE = re.compile(r"\b(no|not|without|none)\b", re.IGNORECASE)
 
 
 def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
     """Tape interface, printer port and cartridge slots from the Connections section.
 
-    PRN Port is "Yes" when a (not negated) item mentions a printer, parallel or
-    Centronics port, else "No"; unknown (not set) when the page has no
-    Connections section.
+    Tape Interface is "Yes" when a (not negated) item mentions a cassette or
+    data recorder, "Adapter" when the only tape connector needs one (Casio
+    "MT/IF connector", CMT I/F package); PRN Port is "Yes" when an item
+    mentions a printer, parallel or Centronics port. Each is "No" otherwise,
+    and unknown (not set) when the page has no Connections section.
     """
     result: dict[str, Any] = {}
     printer: bool | None = None
+    tape: bool | None = None
+    tape_adapter = False
 
     # Look for "Connections" section.
     for heading in soup.find_all(["h2", "h3"]):
         if "connection" in _text_content(heading).lower():
-            printer = False
+            printer = tape = False
             # Get the list after this heading.
             sibling = heading.find_next_sibling()
             while sibling and sibling.name not in ("h2", "h3"):
@@ -376,9 +382,10 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
                     text = item_text.lower()
                     negated = bool(_NEGATION_RE.search(text))
                     if not negated:
-                        if "data recorder" in text or "cassette" in text:
-                            if "tape_interface" not in result:
-                                result["tape_interface"] = "Yes"
+                        if _TAPE_ADAPTER_RE.search(item_text):
+                            tape_adapter = True
+                        elif "data recorder" in text or "cassette" in text:
+                            tape = True
                         if "printer" in text or "parallel" in text or "centronics" in text:
                             printer = True
                     # Cartridge slot count is structural — not negation-sensitive.
@@ -393,6 +400,8 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
 
     if printer is not None:
         result["printer_port"] = "Yes" if printer else "No"
+    if tape is not None:
+        result["tape_interface"] = "Yes" if tape else "Adapter" if tape_adapter else "No"
     return result
 
 
@@ -724,6 +733,14 @@ def _record_from_specs(
     kb = specs.get("Keyboard layout", "")
     if kb:
         result["keyboard_layout"] = kb
+
+    # A built-in data recorder: Media "cassette tapes" or an Extras item
+    # "built-in data recorder" (the Connections section then often says
+    # "No Data Recorder connector!" — no socket for an external one).
+    extras = [item for item in specs.get("Extras", "").split(",") if not _NEGATION_RE.search(item)]
+    if "cassette" in specs.get("Media", "").lower() or any(
+            "data recorder" in item.lower() or "cassette" in item.lower() for item in extras):
+        result["tape_interface"] = "Yes"
 
     # Connections section for tape, printer, cartridge slots.
     conn = _parse_connections(sections)

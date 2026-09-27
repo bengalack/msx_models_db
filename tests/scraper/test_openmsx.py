@@ -782,3 +782,13 @@ class TestPrinterPort:
     def test_no_printer_port_element_means_no(self):
         xml = _xml(_info(), "", extra_root="<CassettePort/>")
         assert parse_machine_xml(xml, "Sony_HB-75P.xml")["printer_port"] == "No"
+
+
+class TestTapeInterface:
+    def test_cassette_port_means_yes(self):
+        xml = _xml(_info(), "", extra_root="<CassettePort/>")
+        assert parse_machine_xml(xml, "Sony_HB-75P.xml")["tape_interface"] == "Yes"
+
+    def test_no_cassette_port_means_no(self):
+        xml = _xml(_info(), '<PrinterPort id="p"/>')
+        assert parse_machine_xml(xml, "Sony_HB-75P.xml")["tape_interface"] == "No"
