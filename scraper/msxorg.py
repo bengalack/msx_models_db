@@ -356,13 +356,19 @@ _NEGATION_RE = re.compile(r"\b(no|not|without|none)\b", re.IGNORECASE)
 
 
 def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
-    """Look for connectivity info in the Connections section."""
+    """Tape interface, printer port and cartridge slots from the Connections section.
+
+    PRN Port is "Yes" when a (not negated) item mentions a printer, parallel or
+    Centronics port, else "No"; unknown (not set) when the page has no
+    Connections section.
+    """
     result: dict[str, Any] = {}
-    ports: list[str] = []
+    printer: bool | None = None
 
     # Look for "Connections" section.
     for heading in soup.find_all(["h2", "h3"]):
         if "connection" in _text_content(heading).lower():
+            printer = False
             # Get the list after this heading.
             sibling = heading.find_next_sibling()
             while sibling and sibling.name not in ("h2", "h3"):
@@ -371,13 +377,10 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
                     negated = bool(_NEGATION_RE.search(text))
                     if not negated:
                         if "data recorder" in text or "cassette" in text:
-                            if "Cassette" not in ports:
-                                ports.append("Cassette")
                             if "tape_interface" not in result:
                                 result["tape_interface"] = "Yes"
                         if "printer" in text or "parallel" in text or "centronics" in text:
-                            if "Printer" not in ports:
-                                ports.append("Printer")
+                            printer = True
                     # Cartridge slot count is structural — not negation-sensitive.
                     if "cartridge slot" in text:
                         m = re.search(r"(\d+)\s*(?:×|x)?\s*cartridge", text)
@@ -388,8 +391,8 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
                 sibling = sibling.find_next_sibling()
             break
 
-    if ports:
-        result["connectivity"] = ", ".join(ports)
+    if printer is not None:
+        result["printer_port"] = "Yes" if printer else "No"
     return result
 
 

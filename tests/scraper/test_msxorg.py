@@ -347,7 +347,6 @@ class TestParseConnections:
         soup = _connections_soup(["Cassette port"])
         result = _parse_connections(soup)
         assert result.get("tape_interface") == "Yes"
-        assert "Cassette" in result.get("connectivity", "")
 
     def test_data_recorder_bullet_sets_tape_interface(self):
         soup = _connections_soup(["Data Recorder port"])
@@ -357,7 +356,7 @@ class TestParseConnections:
     def test_printer_bullet_sets_printer(self):
         soup = _connections_soup(["Centronics printer port"])
         result = _parse_connections(soup)
-        assert "Printer" in result.get("connectivity", "")
+        assert result["printer_port"] == "Yes"
 
     def test_no_printer_port_note_suppresses_printer(self):
         """Regression: 1chipMSX — 'Note: No printer port!' must not set Printer."""
@@ -366,13 +365,13 @@ class TestParseConnections:
             note="Note: No printer port!",
         )
         result = _parse_connections(soup)
-        assert "Printer" not in result.get("connectivity", "")
+        assert result["printer_port"] == "No"
 
     def test_no_printer_bullet_suppresses_printer(self):
         """A bullet explicitly saying 'no printer' must not set Printer."""
         soup = _connections_soup(["No printer port", "Cassette port"])
         result = _parse_connections(soup)
-        assert "Printer" not in result.get("connectivity", "")
+        assert result["printer_port"] == "No"
         assert result.get("tape_interface") == "Yes"
 
     def test_negation_in_one_bullet_does_not_suppress_other_ports(self):
@@ -380,25 +379,32 @@ class TestParseConnections:
         soup = _connections_soup(["Cassette port", "No printer interface"])
         result = _parse_connections(soup)
         assert result.get("tape_interface") == "Yes"
-        assert "Printer" not in result.get("connectivity", "")
+        assert result["printer_port"] == "No"
 
     def test_no_cassette_bullet_suppresses_tape(self):
         soup = _connections_soup(["No cassette port", "Printer port"])
         result = _parse_connections(soup)
         assert "tape_interface" not in result
-        assert "Printer" in result.get("connectivity", "")
+        assert result["printer_port"] == "Yes"
 
     def test_without_printer_suppresses_printer(self):
         soup = _connections_soup(["RGB video output", "Without printer"])
         result = _parse_connections(soup)
-        assert "Printer" not in result.get("connectivity", "")
+        assert result["printer_port"] == "No"
 
     def test_both_cassette_and_printer_present(self):
         soup = _connections_soup(["Cassette connector", "Parallel printer port"])
         result = _parse_connections(soup)
         assert result.get("tape_interface") == "Yes"
-        assert "Printer" in result.get("connectivity", "")
-        assert "Cassette" in result.get("connectivity", "")
+        assert result["printer_port"] == "Yes"
+
+    def test_no_connections_section_leaves_printer_port_unknown(self):
+        result = _parse_connections(BeautifulSoup("<html><body><p>Nothing</p></body></html>", "lxml"))
+        assert "printer_port" not in result
+
+    def test_connections_without_printer_means_no(self):
+        result = _parse_connections(_connections_soup(["Cassette port", "RGB output"]))
+        assert result["printer_port"] == "No"
 
     def test_cartridge_slots_stored_as_scraped_cart_slots(self):
         """msxorg parser stores raw slot count under scraped_cart_slots, not cartridge_slots."""

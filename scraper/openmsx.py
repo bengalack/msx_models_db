@@ -174,7 +174,7 @@ def parse_machine_xml(
     _extract_media(devices, result)
     _extract_cpu(devices, result, msx_type)
     _extract_keyboard(devices, result)
-    _extract_connectivity(devices, result)
+    _extract_printer_port(devices, result)
     _extract_rtc(devices, result)
     _extract_z80_turbo(devices, result)
     _extract_bios_rom_info(root, result, sha1_index, systemroms_root, filename)
@@ -538,17 +538,10 @@ def _extract_bios_rom_info(
         out[field] = mapped
 
 
-def _extract_connectivity(devices: etree._Element, out: dict[str, Any]) -> None:
-    ports: list[str] = []
-    root = devices.getparent()
-    if root is not None and root.find("CassettePort") is not None:
-        ports.append("Cassette")
-    for el in devices.iter("PrinterPort"):
-        ports.append("Printer")
-        break
-    # Joystick ports are implicit on MSX (always 2)
-    if ports:
-        out["connectivity"] = ", ".join(ports)
+def _extract_printer_port(devices: etree._Element, out: dict[str, Any]) -> None:
+    """PRN Port: "Yes" when the machine XML has a ``<PrinterPort>`` element, else "No"."""
+    root = devices.getroottree().getroot()
+    out["printer_port"] = "Yes" if next(root.iter("PrinterPort"), None) is not None else "No"
 
 
 def fetch_all(

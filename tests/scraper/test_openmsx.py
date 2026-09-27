@@ -764,3 +764,21 @@ class TestBiosRomExtraction:
         result = parse_machine_xml(xml, "test.xml", sha1_index={}, systemroms_root=tmp_path)
         assert "character_set" not in result
         assert "No <PanasonicRom>" in caplog.text
+
+
+# ---------------------------------------------------------------------------
+# PRN Port — <PrinterPort> anywhere in the machine XML
+# ---------------------------------------------------------------------------
+
+class TestPrinterPort:
+    def test_printer_port_element_means_yes(self):
+        xml = _xml(_info(), '<PrinterPort id="Printer Port"><io base="0x90" num="2"/></PrinterPort>')
+        assert parse_machine_xml(xml, "Sony_HB-75P.xml")["printer_port"] == "Yes"
+
+    def test_nested_printer_port_counts(self):
+        xml = _xml(_info(), '<primary slot="3"><secondary slot="0"><PrinterPort id="p"/></secondary></primary>')
+        assert parse_machine_xml(xml, "Sony_HB-75P.xml")["printer_port"] == "Yes"
+
+    def test_no_printer_port_element_means_no(self):
+        xml = _xml(_info(), "", extra_root="<CassettePort/>")
+        assert parse_machine_xml(xml, "Sony_HB-75P.xml")["printer_port"] == "No"

@@ -992,6 +992,17 @@ msx.org side (`_parse_vdp` in `scraper/msxorg.py`): the "Video" field is matched
 
 ---
 
+## Feature Design: PRN Port Column
+
+Column id 27 (group Other, same place) was "Connectivity/Ports" (`connectivity`, a comma list such as "Cassette, Printer"); it is now **PRN Port** (`printer_port`, header "PRN" / "Port" on two lines, no `max_width` — the column fits its content). Values are `Yes`, `No` or empty (unknown):
+
+- openMSX (`_extract_printer_port` in `scraper/openmsx.py`): `Yes` when the machine XML has a `<PrinterPort>` element anywhere, else `No`.
+- msx.org (`_parse_connections` in `scraper/msxorg.py`): `Yes` when a Connections item that is not negated ("No printer port!", "without printer") mentions a printer, parallel or Centronics port, else `No`; **unknown (empty)** when the page has no Connections section, so another source, an adaptation donor or a link-share donor can fill it.
+- Normal merge precedence (local-raw > openMSX > msx.org). Cassette detection still sets Tape Interface; the comma list and the grid's comma-list sorting/display for this column are gone. Column id and URL codec are unchanged (the codec stores ids).
+- Result (2026-09-27): 357 Yes, 39 No, 2 unknown (Haesung Super Free Kick, Fort II Games Pesadelo: msx.org only, no Connections section).
+
+---
+
 ## Feature Design: RTC Column Extraction from openMSX XML
 
 ### Overview

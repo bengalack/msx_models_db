@@ -17,6 +17,7 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - PRN Port column (id 27, was Conn/Ports): Yes/No from openMSX <PrinterPort> or msx.org Connections "printer"
   - VDP chip links: data/chip-links.json holds every chip link (Engine + VDP), used by any column flagged chip_links
   - Several models / localised products on one msx.org page (CX5M, CX5MII, YIS-805, FM-X): per-model values; localised products (CX5MU) join openMSX machines with their table row
   - Regional variants: msx.org regional pages (CF-2700 GE/UK/CU, V-20 EU/FR) named after their title; country tags canonicalised to ISO (GE→DE, SP→ES, UK→GB)

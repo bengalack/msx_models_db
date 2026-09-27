@@ -6,24 +6,9 @@ export const FROZEN_COL_COUNT = 2;
 /** Width of the row-number gutter in pixels — must match .gutter { width } in grid.css. */
 const GUTTER_WIDTH = 52;
 
-// Normalize (sort) comma-separated string values (e.g., for Conn/Ports)
-function normalizeCommaList(value: string): string {
-  // Split by comma, trim, sort, and join
-  return value
-    .split(',')
-    .map(s => s.trim())
-    .filter(Boolean)
-    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
-    .join(', ');
-}
-
-function cellText(value: string | number | boolean | null | undefined, col?: ColumnDef): string {
+function cellText(value: string | number | boolean | null | undefined): string {
   if (value === null || value === undefined || value === '') return '\u2014'; // em dash
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-  // Normalize Conn/Ports column for display
-  if (col && col.key === 'connectivity' && typeof value === 'string') {
-    return normalizeCommaList(value);
-  }
   return String(value);
 }
 
@@ -155,11 +140,7 @@ function sortModels(
       const bLast = typeof bv === 'string' && sortLast.includes(bv);
       if (aLast !== bLast) return aLast ? 1 : -1;
     }
-    if (col && col.key === 'connectivity' && typeof av === 'string' && typeof bv === 'string') {
-      const nav = normalizeCommaList(av);
-      const nbv = normalizeCommaList(bv);
-      cmp = nav.localeCompare(nbv, undefined, { sensitivity: 'base' });
-    } else if (typeof av === 'number' && typeof bv === 'number') {
+    if (typeof av === 'number' && typeof bv === 'number') {
       cmp = av - bv;
     } else if (typeof av === 'boolean' && typeof bv === 'boolean') {
       cmp = av === bv ? 0 : av ? 1 : -1;
@@ -280,7 +261,7 @@ function buildDataRow(
     const rawValue = i < model.values.length ? model.values[i] : null;
     const col = columns[i];
     const td = document.createElement('td');
-    const text = cellText(rawValue, col);
+    const text = cellText(rawValue);
 
     // Apply truncation when the column has a positive truncateLimit
     const limit = col.truncateLimit ?? 0;
