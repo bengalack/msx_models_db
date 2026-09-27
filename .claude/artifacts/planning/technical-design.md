@@ -704,7 +704,7 @@ Summary: normalise whitespace; `?`/`???` are unknown (blank, rendered as an em-d
 
 ### Chip links
 
-`data/engine-chips.json` has a `links` map (chip id → msx.org page); links for chips not in the dictionary are rejected at load. The build ships it as `MSXData.chip_links` and flags both Engine columns `chipLinks` (`Column.chip_links`). The grid (`renderChipLinks` in `src/grid.ts`) turns every whole-token occurrence of a linked chip id in the cell text into its own `a.cell-link` (new tab); the rest stays text — so "T9769 (C) and S1990" links T9769 only. Clicking a chip follows it (the selection handler ignores `a.cell-link`), clicking elsewhere in the cell selects it, and the cell keeps its source-text tooltip.
+`data/chip-links.json` (`scraper/chip_links.py`, `load_chip_links`) maps chip ids to their msx.org page, for **every** column flagged `Column.chip_links` — the two Engine columns and VDP. Every spelling that occurs is listed on its own (`TMS9918A` and `TMS9918` both point at the TMS9918 page; `T6950A` at T6950); nothing is inferred from suffixes, and ids with no page (openMSX's generic `TMS99X8A`) stay plain text. The loader rejects a non-https URL or an empty id. The build ships the map as `MSXData.chip_links` and flags those columns `chipLinks`. Adding a chip or a linked column is config only (the JSON file, or `chip_links=True` in `scraper/columns.py`). The grid (`renderChipLinks` in `src/grid.ts`) turns every whole-token occurrence of a linked chip id in the cell text into its own `a.cell-link` (new tab); the rest stays text — so "T9769 (C) and S1990" links T9769 only. Clicking a chip follows it (the selection handler ignores `a.cell-link`), clicking elsewhere in the cell selects it, and the cell keeps its source-text tooltip.
 
 ### Cell tooltips (new `ModelRecord.tooltips`)
 
@@ -715,6 +715,7 @@ A hidden column may declare `tooltip_for=(<column key>, …)`. The build then em
 | Path | Change |
 |---|---|
 | `data/engine-chips.json` | New maintainer-editable vocabulary (semi/full chip ids, vendors, filler, explanatory parentheticals) |
+| `data/chip-links.json` | Chip id → msx.org page for every `chip_links` column (Engine, VDP) |
 | `scraper/engine.py` | New: `load_chip_dictionary()`, `parse_engine()` |
 | `scraper/columns.py` | `engine_raw` hidden (`tooltip_for`); `engine` and `engine_semi_custom` derived; `wait_cycles`, `nmos_cmos`, `fpga_support` derives read `engine_raw`; `Column.tooltip_for` field |
 | `scraper/msxorg.py` | Scrapes the chipset text into `engine_raw` |

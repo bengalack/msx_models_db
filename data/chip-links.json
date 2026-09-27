@@ -1,0 +1,31 @@
+{
+  "_comment": "Page each chip id links to, in every column flagged chip_links in scraper/columns.py (Engine, VDP). List every spelling that occurs in the data (TMS9918A and TMS9918 both point at the TMS9918 page). Add chips here — no code change needed.",
+  "links": {
+    "HD62003": "https://www.msx.org/wiki/Hitachi_HD62003",
+    "T7775": "https://www.msx.org/wiki/Toshiba_T7775",
+    "T7937": "https://www.msx.org/wiki/Toshiba_T7937",
+    "T9769": "https://www.msx.org/wiki/Toshiba_T9769",
+    "S1985": "https://www.msx.org/wiki/Yamaha_S1985",
+    "S3527": "https://www.msx.org/wiki/Yamaha_S3527",
+    "DW64MX1": "https://www.msx.org/wiki/Daewoo_DW64MX1",
+    "MB64H131": "https://www.msx.org/wiki/Fujitsu_MB64H131",
+    "HD61J209F": "https://www.msx.org/wiki/General_HD61J209F",
+    "HG61H06": "https://www.msx.org/wiki/Hitachi_HG61H06",
+    "M50014": "https://www.msx.org/wiki/Mitsubishi_M50014",
+    "TMS9118": "https://www.msx.org/wiki/Texas_Instruments_TMS9118",
+    "TMS9128": "https://www.msx.org/wiki/Texas_Instruments_TMS9128",
+    "TMS9129": "https://www.msx.org/wiki/Texas_Instruments_TMS9129",
+    "TMS9129A": "https://www.msx.org/wiki/Texas_Instruments_TMS9129",
+    "TMS9918": "https://www.msx.org/wiki/Texas_Instruments_TMS9918",
+    "TMS9918A": "https://www.msx.org/wiki/Texas_Instruments_TMS9918",
+    "TMS9928": "https://www.msx.org/wiki/Texas_Instruments_TMS9928A",
+    "TMS9928A": "https://www.msx.org/wiki/Texas_Instruments_TMS9928A",
+    "TMS9929": "https://www.msx.org/wiki/Texas_Instruments_TMS9929A",
+    "TMS9929A": "https://www.msx.org/wiki/Texas_Instruments_TMS9929A",
+    "T6950": "https://www.msx.org/wiki/T6950",
+    "T6950A": "https://www.msx.org/wiki/T6950",
+    "V9938": "https://www.msx.org/wiki/Category:Yamaha_V9938",
+    "V9958": "https://www.msx.org/wiki/Category:Yamaha_V9958",
+    "YM2220": "https://www.msx.org/wiki/Yamaha_YM2220"
+  }
+}

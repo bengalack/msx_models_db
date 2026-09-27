@@ -73,7 +73,7 @@ class Column:
     shaded: bool = False                  # when True, cells render with a tinted background and bold text
     max_width: int | None = None          # px cap for data cells; None = shared stylesheet cap
     sort_last: tuple[str, ...] = ()       # values that sort after all others (before blanks)
-    chip_links: bool = False              # link known chip ids in the cell text (data/engine-chips.json links)
+    chip_links: bool = False              # link known chip ids in the cell text (data/chip-links.json)
     hidden: bool = False                  # scraped, available to derive, not shipped to browser
     tooltip_for: tuple[str, ...] = ()     # hidden column whose text ships as the cell tooltip
                                           # of these column keys
@@ -187,7 +187,7 @@ COLUMNS: list[Column] = [
     Column(id=94, key="sram_kb",           label="SRAM",                group="memory",   type="string"),
     Column(id=95, key="himem_addr",        label="HIMEM Addr",          group="memory",   type="string"),
     # Video
-    Column(id=11, key="vdp",              label="VDP",                  group="video",    type="string"),
+    Column(id=11, key="vdp",              label="VDP",                  group="video",    type="string", chip_links=True),
     Column(id=8,  key="vram_kb",           label="VRAM (KB)",           group="video",    type="number", short_label="VRAM",         tooltip="VRAM (KB)"),
     Column(id=96, key="wait_cycles",       label="Wait Cycles",         group="video",    type="string",
            derive=lambda m: "1" if "T976" in (m.get("engine_raw") or "") else None),

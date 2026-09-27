@@ -17,12 +17,13 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - VDP chip links: data/chip-links.json holds every chip link (Engine + VDP), used by any column flagged chip_links
   - Several models / localised products on one msx.org page (CX5M, CX5MII, YIS-805, FM-X): per-model values; localised products (CX5MU) join openMSX machines with their table row
   - Regional variants: msx.org regional pages (CF-2700 GE/UK/CU, V-20 EU/FR) named after their title; country tags canonicalised to ISO (GE→DE, SP→ES, UK→GB)
   - Link-shares carry data too: recipients fill missing fields from the donor row (24 models, e.g. Philips VG 80x0 VRAM)
   - msx.org Model values: editorial notes dropped (Pioneer PX-7(HB)); the model keeps its id
   - Chip links in the Engine columns
-    - links map in data/engine-chips.json; each known chip in the cell is its own link, the rest of the cell selects
+    - links map in data/chip-links.json (shared with VDP); each known chip in the cell is its own link, the rest of the cell selects
   - Adaptations fill their blanks from the model they were adapted from
     - "X is the adaptation of Y" on msx.org; every missing field copied from Y's merged row, nested; 34 models gain data
   - "Also known as" aliases from msx.org
