@@ -81,9 +81,16 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
     chevron.className = 'chevron fas fa-chevron-down';
     chevron.setAttribute('aria-hidden', 'true');
 
+    // Hidden-columns indicator: shown (with a tooltip naming the columns) while
+    // any column of the group is hidden — see recalcGroupHeader.
+    const hiddenIcon = document.createElement('span');
+    hiddenIcon.className = 'hidden-indicator';
+    hiddenIcon.textContent = '\u2298'; // ⊘
+
     th.appendChild(label);
     th.appendChild(filterIcon);
     th.appendChild(chevron);
+    th.appendChild(hiddenIcon);
     tr.appendChild(th);
   }
 
@@ -635,7 +642,13 @@ export function buildGrid(data: MSXData, opts?: {
     const th = thead.querySelector<HTMLTableCellElement>(`th.group-header[data-group-id="${groupId}"]`);
     if (!th) return;
     const groupCols = data.columns.map((c, i) => ({ col: c, idx: i })).filter(({ col }) => col.groupId === groupId);
-    const hiddenInGroup = groupCols.filter(({ idx }) => hiddenCols.has(idx)).length;
+    const hiddenNames = groupCols.filter(({ idx }) => hiddenCols.has(idx)).map(({ col }) => col.label);
+    const hiddenInGroup = hiddenNames.length;
+    const hiddenIcon = th.querySelector<HTMLElement>('.hidden-indicator');
+    if (hiddenIcon) {
+      hiddenIcon.title = hiddenInGroup === 0 ? ''
+        : `Hidden column${hiddenInGroup > 1 ? 's' : ''}: ${hiddenNames.join(', ')}`;
+    }
     const totalCols = groupCols.length;
     const visibleCount = totalCols - hiddenInGroup;
 

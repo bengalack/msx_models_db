@@ -132,10 +132,17 @@
   border-color: var(--color-text-muted);
 }
 
-.group-header--partial::after {
-  content: ' \2298'; /* ⊘ */
+/* Hidden-columns indicator (⊘) — revealed via group-header--partial; its title names the hidden columns */
+.group-header .hidden-indicator {
+  display: none;
+  margin-left: 0.3em;
   font-size: 10px;
   opacity: 0.6;
+  cursor: help;
+}
+
+.group-header--partial .hidden-indicator {
+  display: inline;
 }
 
 /* Filter indicator icon — hidden by default, revealed via group-header--filtered */
