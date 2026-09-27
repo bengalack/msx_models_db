@@ -751,7 +751,7 @@ Used by the two Engine columns, whose headers read "Engine" / "(semi-custom ASIC
 
 Data cells share a stylesheet cap (`.grid tbody td { max-width: 160px }`, border-box) and otherwise size to content. A column may declare `max_width` (px) in `scraper/columns.py` to cap its data cells narrower (or wider) than the shared cap. Overflow uses the existing ellipsis styling and the `mouseenter` overflow tooltip — no new tooltip path.
 
-First use: Region (`max_width=107`, one third narrower than the 160px it rendered at); both Engine columns use `max_width=130`.
+First use: Region (`max_width=107`, one third narrower than the 160px it rendered at); Engine (semi-custom ASIC) uses `max_width=130`, Engine (full-custom ASIC) `max_width=150` (3 characters more).
 
 ### Sentinel sort order — `sort_last`
 

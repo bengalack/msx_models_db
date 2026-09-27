@@ -212,7 +212,7 @@ COLUMNS: list[Column] = [
            short_label="Engine\n(semi-custom ASIC)", max_width=130, sort_last=("None",), chip_links=True,
            derive=lambda m: _parse_engine_field(m, 0)),
     Column(id=99,  key="engine",           label="Engine (full-custom ASIC)", group="cpu", type="string",
-           short_label="Engine\n(full-custom ASIC)", max_width=130, sort_last=("None",), chip_links=True,
+           short_label="Engine\n(full-custom ASIC)", max_width=150, sort_last=("None",), chip_links=True,
            derive=lambda m: _parse_engine_field(m, 1)),
     Column(id=100, key="z80_turbo",        label="Z80 Turbo",            group="cpu",      type="string", short_label="Z80 Turbo", tooltip="Z80 turbo mode supported (from openMSX XML)"),
     # Other
