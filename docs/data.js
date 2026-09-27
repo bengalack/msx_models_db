@@ -277,7 +277,7 @@ window.MSX_DATA = {
       "groupId": 5,
       "type": "string",
       "shortLabel": "Engine\n(full-custom ASIC)",
-      "maxWidth": 130,
+      "maxWidth": 150,
       "sortLast": [
         "None"
       ],
