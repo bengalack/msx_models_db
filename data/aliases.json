@@ -38,6 +38,10 @@
   },
   "composite": [
     {
+      "match":     {"manufacturer": "Eurohard/Radofin", "model": "Dragon MSX"},
+      "canonical": {"manufacturer": "Dragon",           "model": "MSX-64"}
+    },
+    {
       "match":     {"manufacturer": "Canon", "model": "V-20"},
       "canonical": {"manufacturer": "Canon", "model": "V-20 (JP)"}
     },
