@@ -166,6 +166,8 @@ def parse_machine_xml(
     status = status_from_description(_text(info.find("description")))
     if status:
         result["market_status"] = status
+    if _has_modem(root, _text(info.find("description"))):
+        result["modem"] = "Yes"
 
     # ── Hardware extraction (from <devices>) ─────────────────────────
     devices = root.find("devices")
@@ -540,6 +542,24 @@ def _extract_bios_rom_info(
             log.warning("Unknown %s value %d in BIOS ROM for %s", field, nibble, filename)
             continue
         out[field] = mapped
+
+
+_MODEM_RE = re.compile(r"\bmodem\b", re.IGNORECASE)
+
+
+def _has_modem(root: etree._Element, description: str | None) -> bool:
+    """Built-in modem: a device element named for it (``<MSX-Modem>``), a device
+    whose id names it (``<ROM id="Modem ROM">``), or the description ("with a
+    built in modem"). XML comments do not count.
+    """
+    if description and _MODEM_RE.search(description):
+        return True
+    for el in root.iter():
+        if not isinstance(el.tag, str):
+            continue   # comments / processing instructions
+        if "modem" in el.tag.lower() or _MODEM_RE.search(el.get("id", "")):
+            return True
+    return False
 
 
 def _extract_printer_port(devices: etree._Element, out: dict[str, Any]) -> None:

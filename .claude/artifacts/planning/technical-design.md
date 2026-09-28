@@ -1008,6 +1008,16 @@ Column id 107 **Market status** (`market_status`, group Release, right of Region
 
 ---
 
+## Feature Design: Modem Column
+
+Column id 108 **Modem** (`modem`, group Other, left of PRN Port): `Yes` for a **built-in** modem, otherwise empty — never `No`, since an external modem can always be added. The pages give speeds (300/1200 bps, 75/4800 bps), not types, so the value is just `Yes`.
+
+- **msx.org** (`scraper/msxorg.py`): a specs Extras item (not negated) naming a modem (`modem_from_specs`: "Modem", "built-in modem …", "non-standard modem"); a Connections item that is a telephone-line socket — RJ11 / modular connector (`_parse_connections`; an RS-232C port "with switch for terminal/modem operation" is for an external modem and does not count); or a description sentence whose subject is the page's model saying it has / comes with a modem (`modem_in_description`, same subject rule as Market status). Side notes about other versions or machines ("a special version for Home Banking", "the FS-CM1 modem") do not count; every record parsed from the page carries the value.
+- **openMSX** (`_has_modem` in `scraper/openmsx.py`): a device element named for it (`<MSX-Modem>`), a device whose `id` names it (`<ROM id="Modem ROM">`), or the `<description>` ("with a built in modem"). XML comments do not count.
+- Result (2026-09-28): 12 models — Aucnet NIA-2001, Misawa-Van CX-5, Mitsubishi ML-TS1, ML-TS2, NTT Captain Multi-Station, Panasonic FS-A1FM, Philips NMS 8245 Home Banking, Sanyo MPC-2300, MPC-2500FD, PCT-100, Sony HB-T600, HB-T7.
+
+---
+
 ## Feature Design: PRN Port Column
 
 Column id 27 (group Other, same place) was "Connectivity/Ports" (`connectivity`, a comma list such as "Cassette, Printer"); it is now **PRN Port** (`printer_port`, header "PRN" / "Port" on two lines, no `max_width` — the column fits its content). Values are `Yes`, `No` or empty (unknown):

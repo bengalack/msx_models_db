@@ -792,3 +792,22 @@ class TestTapeInterface:
     def test_no_cassette_port_means_no(self):
         xml = _xml(_info(), '<PrinterPort id="p"/>')
         assert parse_machine_xml(xml, "Sony_HB-75P.xml")["tape_interface"] == "No"
+
+
+class TestModem:
+    @pytest.mark.parametrize("devices,description", [
+        ('<primary slot="3"><MSX-Modem id="HB-T600 modem"/></primary>', ""),
+        ('<primary slot="3"><ROM id="Modem ROM"/></primary>', ""),
+        ("", "This is the FS-A1F but with a built in modem (which is not emulated)."),
+    ])
+    def test_modem_means_yes(self, devices, description):
+        xml = _xml(_info() + f"<description>{description}</description>", devices)
+        assert parse_machine_xml(xml, "Sony_HB-75P.xml")["modem"] == "Yes"
+
+    @pytest.mark.parametrize("devices", [
+        '<!-- modem (there seems to be more than a simple RS-232C) --><primary slot="3"/>',
+        '<primary slot="3"><ROM id="Main ROM"/></primary>',
+    ])
+    def test_no_modem_means_no_value(self, devices):
+        xml = _xml(_info(), devices)
+        assert "modem" not in parse_machine_xml(xml, "Sony_HB-75P.xml")

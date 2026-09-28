@@ -1103,3 +1103,68 @@ class TestMarketStatus:
         records = parse_model_page(page, "MSX1", "Maker MX-1")
         assert {r["market_status"] for r in records} == {MARKET_UNRELEASED}
         assert all("region" not in r for r in records)
+
+
+# ---------------------------------------------------------------------------
+# Modem — built-in modem only ("Yes"); never "No"
+# ---------------------------------------------------------------------------
+
+from scraper.msxorg import MODEM_YES, modem_from_specs, modem_in_description
+
+
+class TestModem:
+    @pytest.mark.parametrize("extras,expected", [
+        ("Telecom firmware, Modem, probably MSX-Modem BASIC", True),
+        ("floppy disk drive, built-in modem with access to The LINKS network", True),
+        ("Kanji-ROM, non-standard modem, remote controller", True),
+        ("reset button, RS-232C interface", False),
+        ("no modem, reset button", False),
+        ("", False),
+    ])
+    def test_extras(self, extras, expected):
+        assert modem_from_specs({"Extras": extras}) is expected
+
+    @pytest.mark.parametrize("items,expected", [
+        (["RJ11 modular connector (telephone line)"], True),
+        (["Two RJ11 modular connectors for modem (line in and telephone out)"], True),
+        (["RS-232C connector (DB-25) with switch for terminal/modem operation"], False),
+        (["Printer port", "Cassette port"], False),
+    ])
+    def test_connections(self, items, expected):
+        result = _parse_connections(_connections_soup(items))
+        assert (result.get("modem") == MODEM_YES) is expected
+
+    @staticmethod
+    def _desc(sentences: list[str]) -> bytes:
+        return ("<html><body><div id='bodyContent'>" + "".join(f"<p>{s}</p>" for s in sentences)
+                + "</div></body></html>").encode()
+
+    @pytest.mark.parametrize("sentence", [
+        "The Maker MX-1 is similar to the MX-2 but has a built-in modem.",
+        "It has a Russian keyboard and a non-standard modem with switch (CALL COMINI does not work).",
+        "This computer comes with a modem and a telephone handset.",
+    ])
+    def test_description_about_the_model(self, sentence):
+        assert modem_in_description(self._desc([sentence]), ["MX-1"], "Maker")
+
+    @pytest.mark.parametrize("sentence", [
+        "There is also a special version of the MX-1 with a built-in modem.",
+        "The firmware can also be found in the FS-CM1 modem.",
+        "The modem speed is 300/1200bps.",
+        "The Maker MX-9 has a built-in modem.",
+    ])
+    def test_description_side_notes_do_not_count(self, sentence):
+        assert not modem_in_description(self._desc([sentence]), ["MX-1"], "Maker")
+
+    def test_page_records_carry_the_modem(self):
+        page = (b'<html><body><div id="bodyContent"><p>The MX-1 has a built-in modem.</p></div>'
+                b'<table class="wikitable"><tr><th>Brand</th><td>Maker</td></tr>'
+                b'<tr><th>Model</th><td>MX-1 / MX-1F</td></tr></table></body></html>')
+        assert {r.get("modem") for r in parse_model_page(page, "MSX1", "Maker MX-1")} == {MODEM_YES}
+
+    def test_no_modem_means_no_value(self):
+        page = (b'<html><body><table class="wikitable"><tr><th>Brand</th><td>Maker</td></tr>'
+                b'<tr><th>Model</th><td>MX-1</td></tr></table>'
+                b'<h3>Connections</h3><ul><li>Printer port</li></ul></body></html>')
+        [record] = parse_model_page(page, "MSX1", "Maker MX-1")
+        assert "modem" not in record

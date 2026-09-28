@@ -17,6 +17,7 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Modem column (Yes for a built-in modem) from msx.org and openMSX, left of PRN Port
   - Market status column (Unreleased / Rare) from msx.org, right of Region
   - Tape I/F: Yes/No/Adapter/unknown; built-in data recorders count as Yes, Casio MT/IF (CMT adapter) is Adapter
   - PRN Port column (id 27, was Conn/Ports): Yes/No from openMSX <PrinterPort> or msx.org Connections "printer"

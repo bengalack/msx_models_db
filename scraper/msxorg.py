@@ -370,6 +370,7 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
     result: dict[str, Any] = {}
     printer: bool | None = None
     tape: bool | None = None
+    modem = False
     tape_adapter = False
 
     # Look for "Connections" section.
@@ -389,6 +390,8 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
                             tape = True
                         if "printer" in text or "parallel" in text or "centronics" in text:
                             printer = True
+                        if _PHONE_JACK_RE.search(item_text):
+                            modem = True
                     # Cartridge slot count is structural — not negation-sensitive.
                     if "cartridge slot" in text:
                         m = re.search(r"(\d+)\s*(?:×|x)?\s*cartridge", text)
@@ -403,6 +406,8 @@ def _parse_connections(soup: BeautifulSoup) -> dict[str, Any]:
         result["printer_port"] = "Yes" if printer else "No"
     if tape is not None:
         result["tape_interface"] = "Yes" if tape else "Adapter" if tape_adapter else "No"
+    if modem:   # a telephone-line socket on the machine: built-in modem (RS-232C "for modem" does not count)
+        result["modem"] = MODEM_YES
     return result
 
 
@@ -470,23 +475,36 @@ _FEW_KNOWN_RE = re.compile(
 )
 
 
-def _status_patterns(names: list[str], brand: str) -> tuple[re.Pattern[str], re.Pattern[str]]:
-    """(unreleased, rare) sentence patterns whose subject is the page's own model."""
+def _page_subject(names: list[str], brand: str) -> str:
+    """Regex for a sentence subject that is the page's own model.
+
+    The model's names (with or without brand, optionally "computer"),
+    "This model/machine/computer/system/version" or "It". Shared by the
+    Market status and Modem description rules.
+    """
     named = "|".join(re.escape(n) for n in sorted({n for n in names if n}, key=len, reverse=True)) or r"(?!)"
     brand_part = rf"(?:{re.escape(brand)}\s+)?" if brand else ""
-    subject = (rf"(?:(?:The\s+)?{brand_part}(?:{named})(?:\s+computer)?"
-               rf"|This\s+(?:model|machine|computer|system|version)|It)")
-    start = r"^(?:Note\s*:\s*)?"
-    # "The Sanyo MPC-3, a.k.a Wavy3 , is ..." / "The PHC-25SK a.k.a. Wavy25SK is ..."
-    apposition = rf"(?:\s*,[^,]{{1,40}},|\s+a\.?k\.?a\.?\s+[\w+-]{{1,30}})?"
-    # Up to the phrase, no new subject: "It was planned to …, but it has never been released" is not about the model.
-    gap = r"(?:(?!\b(?:it|they)\b)[^.]){0,120}?"
+    return (rf"(?:(?:The\s+)?{brand_part}(?:{named})(?:\s+computer)?"
+            rf"|This\s+(?:model|machine|computer|system|version)|It)")
+
+
+# The subject opens the sentence (after an optional "Note:").
+_SUBJECT_START = r"^(?:Note\s*:\s*)?"
+# "The Sanyo MPC-3, a.k.a Wavy3 , is ..." / "The PHC-25SK a.k.a. Wavy25SK is ..."
+_APPOSITION = r"(?:\s*,[^,]{1,40},|\s+a\.?k\.?a\.?\s+[\w+-]{1,30})?"
+# Up to the phrase, no new subject: "It was planned to …, but it has never been released" is not about the model.
+_SUBJECT_GAP = r"(?:(?!\b(?:it|they)\b)[^.]){0,120}?"
+
+
+def _status_patterns(names: list[str], brand: str) -> tuple[re.Pattern[str], re.Pattern[str]]:
+    """(unreleased, rare) sentence patterns whose subject is the page's own model."""
+    subject = _page_subject(names, brand)
     unreleased = re.compile(
-        rf"(?:{start}{subject}|\bthis\s+(?:model|machine|computer|system))\b{gap}\b{_UNRELEASED_PHRASE}",
+        rf"(?:{_SUBJECT_START}{subject}|\bthis\s+(?:model|machine|computer|system))\b{_SUBJECT_GAP}\b{_UNRELEASED_PHRASE}",
         re.IGNORECASE,
     )
     rare = re.compile(
-        rf"{start}(?:{subject}{apposition}\s+(?:is|was|seems\s+to\s+be)\s+{_RARE_TAIL}"
+        rf"{_SUBJECT_START}(?:{subject}{_APPOSITION}\s+(?:is|was|seems\s+to\s+be)\s+{_RARE_TAIL}"
         rf"|It['’]s\s+{_RARE_TAIL}"
         rf"|This\s+(?:very\s+)?rare\b)"
         rf"|\bthis\s+(?:model|machine|computer|system)\s+(?:is|was|seems\s+to\s+be)\s+{_RARE_TAIL}",
@@ -523,6 +541,42 @@ def market_status(page: bytes | BeautifulSoup, specs: dict[str, str], names: lis
             if rare.search(sentence) or _FEW_KNOWN_RE.search(sentence):
                 found_rare = True
     return MARKET_RARE if found_rare else None
+
+# ── Modem ───────────────────────────────────────────────────────────────
+#
+# "Yes" for a built-in modem; never "No" (an external modem can always be added).
+# Design: technical-design.md, *Feature Design: Modem Column*.
+
+MODEM_YES = "Yes"
+
+_MODEM_WORD_RE = re.compile(r"\bmodem\b", re.IGNORECASE)
+# A telephone-line socket on the machine itself: "RJ11 modular connector (telephone line)".
+_PHONE_JACK_RE = re.compile(r"\bRJ-?11\b|\bmodular\s+connectors?\b", re.IGNORECASE)
+# "The FS-A1FM ... has a built-in modem", "It has a Russian keyboard and a non-standard modem".
+_HAS_MODEM = r"\b(?:has|have|had|with|includes?|comes\s+with|contains?)\b[^.]{0,80}?\bmodem\b"
+
+
+def modem_from_specs(specs: dict[str, str]) -> bool:
+    """A specs Extras item (not negated) names a modem: "Modem", "built-in modem …", "non-standard modem"."""
+    return any(_MODEM_WORD_RE.search(item) and not _NEGATION_RE.search(item)
+               for item in specs.get("Extras", "").split(","))
+
+
+def modem_in_description(page: bytes | BeautifulSoup, names: list[str], brand: str) -> bool:
+    """A sentence whose subject is the page's model says it has a modem.
+
+    Side notes about other machines or versions ("a special version with a
+    modem", "the FS-CM1 modem") do not count.
+    """
+    soup = page if isinstance(page, BeautifulSoup) else BeautifulSoup(page, "lxml")
+    body = soup.select_one("#bodyContent") or soup
+    pattern = re.compile(
+        rf"{_SUBJECT_START}{_page_subject(names, brand)}{_APPOSITION}\b{_SUBJECT_GAP}{_HAS_MODEM}", re.IGNORECASE)
+    for node in body.find_all("p"):
+        text = re.sub(r"\s+", " ", node.get_text(" ", strip=True))
+        if any(pattern.search(s) for s in _SENTENCE_SPLIT_RE.split(text)):
+            return True
+    return False
 
 # ── Adaptations ─────────────────────────────────────────────────────────
 #
@@ -825,6 +879,10 @@ def _record_from_specs(
             "data recorder" in item.lower() or "cassette" in item.lower() for item in extras):
         result["tape_interface"] = "Yes"
 
+    # Built-in modem named in Extras ("Modem", "built-in modem …", "non-standard modem").
+    if modem_from_specs(specs):
+        result["modem"] = MODEM_YES
+
     # Connections section for tape, printer, cartridge slots.
     conn = _parse_connections(sections)
     # Only set if not already found from Media or specs table.
@@ -1027,10 +1085,14 @@ def parse_model_page(
         records += _revision_records(ctx, specs, slot_table, result, build)
     if own_page:
         records += _localised_records(soup, specs, model_names, products, model_specs, build, page_title)
-    status = market_status(soup, specs, model_names + (result.get(KNOWN_AS_FIELD) or []), brand)
+    names = model_names + (result.get(KNOWN_AS_FIELD) or [])
+    status = market_status(soup, specs, names, brand)
     if status:
         for record in records:
             record["market_status"] = status
+    if modem_in_description(soup, names, brand):
+        for record in records:
+            record["modem"] = MODEM_YES
     return records
 
 
