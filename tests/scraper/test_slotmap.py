@@ -1126,3 +1126,22 @@ class TestMapptertypeOverride:
         root = _root(xml)
         sm = extract_slotmap(root, LUT_RULES)
         assert sm["slotmap_0_0_1"] == "PM"
+
+
+# ---------------------------------------------------------------------------
+# Main ROM split into BIOS + BASIC ROMs (Eurohard Dragon MSX) — real LUT
+# ---------------------------------------------------------------------------
+
+class TestSplitMainRom:
+    @pytest.fixture(scope="class")
+    def real_rules(self):
+        from scraper.slotmap_lut import load_slotmap_lut
+        return load_slotmap_lut("data/slotmap-lut.json")
+
+    @pytest.mark.parametrize("rom_id", ["MSX BIOS ROM", "MSX BASIC ROM"])
+    def test_split_main_rom_is_main(self, real_rules, rom_id):
+        assert match_lut("ROM", rom_id, real_rules) == match_lut("ROM", "MSX BIOS with BASIC ROM", real_rules)
+
+    @pytest.mark.parametrize("rom_id", ["Arabic BASIC", "Turbo BASIC ROM", "MSX-Audio BIOS", "Sakhr BASIC"])
+    def test_other_bios_or_basic_roms_are_not_main(self, real_rules, rom_id):
+        assert match_lut("ROM", rom_id, real_rules) != match_lut("ROM", "MSX BIOS with BASIC ROM", real_rules)

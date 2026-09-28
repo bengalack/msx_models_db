@@ -1,7 +1,7 @@
 [
   {
     "element": "ROM",
-    "id_pattern": "MSX BIOS with BASIC ROM|Main ROM",
+    "id_pattern": "MSX BIOS with BASIC ROM|Main ROM|^MSX BIOS ROM$|^MSX BASIC ROM$",
     "abbr": "MAIN",
     "tooltip": "MSX BIOS with BASIC ROM"
   },

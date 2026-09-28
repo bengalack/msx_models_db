@@ -993,3 +993,22 @@ class TestMirrorDetection:
         result = parse_msxorg_slotmap(html)
         assert result is not None
         assert _MIRROR_SENTINEL not in result.values()
+
+
+# ---------------------------------------------------------------------------
+# Unicode hyphens in cell text ("Main‑ROM" with U+2011) — regression
+# ---------------------------------------------------------------------------
+
+from scraper.msxorg_slotmap import _classify_cell_text
+
+
+@pytest.mark.parametrize("hyphen", ["‐", "‑", "‒", "–", "−"])
+@pytest.mark.parametrize("label", ["Main-ROM", "Sub-ROM", "Disk-ROM"])
+def test_unicode_hyphens_classify_like_ascii(label, hyphen):
+    ascii_abbr = _classify_cell_text(label)
+    assert ascii_abbr is not None
+    assert _classify_cell_text(label.replace("-", hyphen)) == ascii_abbr
+
+
+def test_main_rom_with_non_breaking_hyphen_is_not_firmware():
+    assert _classify_cell_text("Main‑ROM") == _classify_cell_text("Main ROM")

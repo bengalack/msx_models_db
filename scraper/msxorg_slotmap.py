@@ -249,6 +249,11 @@ _MIRROR_SENTINEL = "__MIRROR__"
 _MIRROR_RE = re.compile(r"^mirror$", re.IGNORECASE)
 
 
+# msx.org writes "Main-ROM" / "Sub-ROM" with a non-breaking hyphen (U+2011); patterns
+# expect ASCII "-", so every Unicode hyphen / dash / minus is read as one.
+_HYPHENS = str.maketrans({c: "-" for c in "\u2010\u2011\u2012\u2013\u2014\u2212\u00ad"})
+
+
 def _classify_cell_text(text: str) -> str | None:
     """Map a cell text string to an abbreviation, or None if unrecognised.
 
@@ -257,7 +262,7 @@ def _classify_cell_text(text: str) -> str | None:
     Returns ``None`` for unrecognised text (caller logs a warning and uses
     the raw text as a fallback).
     """
-    t = text.strip()
+    t = text.translate(_HYPHENS).strip()
     if not t:
         return None
 
