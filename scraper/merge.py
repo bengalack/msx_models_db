@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from scraper.aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, LOCALISED_FIELD, AliasLUT, apply_aliases, load_aliases
+from scraper.market_status import merged_status
 from scraper.revisions import REVISION_FIELD
 from scraper.symbols import ABSENT as _ABSENT, EMPTY_PAGE as _EMPTY_PAGE
 
@@ -383,6 +384,9 @@ def _merge_single(
             continue
 
         # Apply preference rules.
+        if field == "market_status":
+            result[field] = merged_status(ov, mv)   # Rare beats Unreleased
+            continue
         if mv in _MSXORG_SPECIFIC.get(field, ()):
             result[field] = mv
             continue

@@ -12,6 +12,7 @@ import requests
 from lxml import etree
 
 from .exclude import ExcludeList
+from .market_status import status_from_description
 from .openmsx_source import (
     GITHUB_API_URL,
     SKIP_PREFIXES,
@@ -162,6 +163,9 @@ def parse_machine_xml(
         "generation": _normalise_type(msx_type),
         "openmsx_id": openmsx_id,
     }
+    status = status_from_description(_text(info.find("description")))
+    if status:
+        result["market_status"] = status
 
     # ── Hardware extraction (from <devices>) ─────────────────────────
     devices = root.find("devices")

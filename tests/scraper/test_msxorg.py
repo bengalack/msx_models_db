@@ -1022,3 +1022,84 @@ class TestBuiltInDataRecorder:
         page = self._page("MSX cartridges", "no data recorder", ["RF output"])
         [record] = parse_model_page(page, "MSX1", "Maker M-1")
         assert record["tape_interface"] == "No"
+
+
+# ---------------------------------------------------------------------------
+# Market status — "Unreleased" / "Rare" about the page's own model
+# ---------------------------------------------------------------------------
+
+from scraper.msxorg import MARKET_RARE, MARKET_UNRELEASED, market_status
+
+
+def _status(sentences: list[str], specs: dict[str, str] | None = None,
+            names: list[str] | None = None, brand: str = "Maker") -> str | None:
+    html = "<html><body><div id='bodyContent'>" + "".join(f"<p>{s}</p>" for s in sentences) + "</div></body></html>"
+    return market_status(html.encode(), specs or {}, names or ["MX-1"], brand)
+
+
+class TestMarketStatus:
+    @pytest.mark.parametrize("field,value", [
+        ("Year", "unreleased"),
+        ("Year", "1986 (never released)"),
+        ("Region", "unreleased"),
+        ("Launch price", "unreleased"),
+        ("Year", "unreleased, the prototype was built ≥1988"),
+    ])
+    def test_unreleased_from_specs(self, field, value):
+        assert _status([], {field: value}) == MARKET_UNRELEASED
+
+    @pytest.mark.parametrize("sentence", [
+        "Although announced in several magazines, this computer has never been released.",
+        "It was announced for 2690 FF but was never released for unknown reasons.",
+        "The Maker MX-1 is a computer that has never been released onto the public market.",
+        "The MX-1 is an unreleased prototype MSX2.",
+        "It has remained at the prototype level.",
+    ])
+    def test_unreleased_from_description(self, sentence):
+        assert _status([sentence]) == MARKET_UNRELEASED
+
+    @pytest.mark.parametrize("sentence", [
+        "The Maker MX-1 is a rare MSX1 computer.",
+        "The MX-1 is a very rare computer.",
+        "This model is very rare.",
+        "This model seems to be very rare.",
+        "It's a rare version of the MX-2 and looks almost exactly the same.",
+        "This rare machine was available only in red.",
+        "Note: This version seems to be very rare.",
+        "The Maker MX-1, a.k.a Wavy1 , is a rare computer.",
+        "The MX-1 a.k.a. Wavy1SK is a very rare MSX1 computer, that seems to look like the MX-2.",
+        "The MX-1 is an extremely rare computer.",
+        "They sold a little more than 100 computers, so it means that this machine is very rare.",
+        "Very little is known about the computer, and very few units are known to exist.",
+    ])
+    def test_rare(self, sentence):
+        assert _status([sentence]) == MARKET_RARE
+
+    @pytest.mark.parametrize("sentence", [
+        "A few rare cartridges use SW1 and SW2 as GND.",
+        "A lightpen was planned in option with its dedicated cartridge, but was never released.",
+        "It was also planned to put the firmware in a model for Europe, but it has never been released.",
+        "There were plans for an European version with more RAM, but it has never been released.",
+        "The MX-1 is one of the rare MSX1 computers having a Kanji-ROM.",
+        "The SVI-728 is a MSX1 with a numeric keypad (rare for a MSX1).",
+        "There's also a rare white version - see MX-9.",
+        "A very rare version was also designed, probably as prototype.",
+        "The Maker MX-9 is a very rare computer.",          # another model
+        "This model can be upgraded with two chips (rare nowadays).",
+        "The MX-1 was released in 1984.",
+    ])
+    def test_not_about_the_model(self, sentence):
+        assert _status([sentence]) is None
+
+    def test_unreleased_wins_over_rare(self):
+        assert _status(["The MX-1 is a very rare computer, it's actually an unreleased prototype.",
+                        "This model is very rare."], {"Launch price": "unreleased"}) == MARKET_UNRELEASED
+
+    def test_page_records_carry_the_status_and_status_is_not_a_region(self):
+        page = (b'<html><body><div id="bodyContent"><p>This model is very rare.</p></div>'
+                b'<table class="wikitable"><tr><th>Brand</th><td>Maker</td></tr>'
+                b'<tr><th>Model</th><td>MX-1 / MX-1F</td></tr><tr><th>Region</th><td>unreleased</td></tr>'
+                b'</table></body></html>')
+        records = parse_model_page(page, "MSX1", "Maker MX-1")
+        assert {r["market_status"] for r in records} == {MARKET_UNRELEASED}
+        assert all("region" not in r for r in records)

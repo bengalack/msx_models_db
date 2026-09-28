@@ -993,6 +993,21 @@ msx.org side (`_parse_vdp` in `scraper/msxorg.py`): the "Video" field is matched
 
 ---
 
+## Feature Design: Market Status
+
+Column id 107 **Market status** (`market_status`, group Release, right of Region): `Unreleased`, `Rare` or empty. Values and shared rules: `scraper/market_status.py`. msx.org: `market_status` in `scraper/msxorg.py`; every record parsed from a page (split models, revisions, localised products) carries its page's status.
+
+- **openMSX** (`status_from_description`): the machine's `<info><description>`, whose subject is always the machine — `Unreleased` when it starts with "(A) prototype" or says unreleased / never released; `Rare` when it starts with "(An) (very|extremely) rare" or says "is (a) rare" ("Rare MSX that was never mass produced …", "An extremely rare Russian version of the F9P."). "First/last released …" is not a status.
+- **Merge**: a source that says nothing never clears the other's value; when openMSX and msx.org give different values, **Rare** wins (`merged_status`, `MERGE_PRECEDENCE`). Within one msx.org page, Unreleased wins over Rare.
+
+- **Unreleased** when a specs Year / Region / Launch price value says so (`unreleased`, `non-released`, `1986 (never released)`), or when a sentence whose subject is the page's model does: "This computer has never been released", "It was announced … but was never released", "The X is an unreleased prototype", "It has remained at the prototype level".
+- **Rare** when a sentence whose subject is the page's model calls it (very) rare — "The X is a (very) rare MSX1 computer", "This model (seems to be) very rare", "It's a rare version of …", "This rare machine …", "The X, a.k.a Y , is a rare computer", "… so this machine is very rare" — or says very few units / only one system is known to exist.
+- **Subject** = the page's model names (with or without brand, plus its "also known as" names, optionally followed by ", a.k.a X ," or " a.k.a. X" — the splitter does not break a sentence after "a.k.a."), "This model/machine/computer/system/version" or "It" at the start of the sentence (after an optional "Note:"). Not the model: "a few rare cartridges", "a lightpen … was never released", "… but it has never been released" (a new subject before the phrase), "one of the rare MSX1 computers having …", "(rare for a MSX1)", "rare nowadays", another model's name. Unreleased wins over Rare.
+- A status-only Region ("unreleased", Philips VG-8240) is not stored as the region.
+- Result (2026-09-28): 7 Unreleased (AVT CPC-300, Hitachi MB-H80, Laser MSX2, Nikko PC-70100, Philips NMS 8260, Philips VG-8240, Sony HB-F750), 25 Rare (incl. Sanyo PHC-25SK via "a.k.a. Wavy25SK", and from openMSX: Eurohard/Radofin Dragon MSX, Sony HB-F9P Russian, Toshiba HX-23). `local-raw.json` can set `market_status` for models no rule catches.
+
+---
+
 ## Feature Design: PRN Port Column
 
 Column id 27 (group Other, same place) was "Connectivity/Ports" (`connectivity`, a comma list such as "Cassette, Printer"); it is now **PRN Port** (`printer_port`, header "PRN" / "Port" on two lines, no `max_width` — the column fits its content). Values are `Yes`, `No` or empty (unknown):

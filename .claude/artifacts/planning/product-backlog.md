@@ -17,6 +17,7 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - Market status column (Unreleased / Rare) from msx.org, right of Region
   - Tape I/F: Yes/No/Adapter/unknown; built-in data recorders count as Yes, Casio MT/IF (CMT adapter) is Adapter
   - PRN Port column (id 27, was Conn/Ports): Yes/No from openMSX <PrinterPort> or msx.org Connections "printer"
   - VDP chip links: data/chip-links.json holds every chip link (Engine + VDP), used by any column flagged chip_links

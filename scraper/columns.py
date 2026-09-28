@@ -180,6 +180,7 @@ COLUMNS: list[Column] = [
     # Release
     Column(id=3,  key="year",              label="Year",                group="release",  type="number"),
     Column(id=4,  key="region",            label="Region",              group="release",  type="string", max_width=107),
+    Column(id=107, key="market_status",   label="Market status",       group="release",  type="string"),
     Column(id=5,  key="generation",        label="Generation",          group="release",  type="string", short_label="Gen", chip_links=True),
     # Memory
     Column(id=7,  key="main_ram_kb",       label="Main RAM (KB)",       group="memory",   type="number", short_label="Main RAM",    tooltip="Main RAM (KB)"),

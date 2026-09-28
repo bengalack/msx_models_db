@@ -14,6 +14,7 @@ from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 from .aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, LOCALISED_FIELD
 from .inherit import fill_blanks
+from .market_status import MARKET_RARE, MARKET_UNRELEASED
 from .exclude import ExcludeList
 from .revisions import REVISION_FIELD, revision_name, revision_numbers
 from .mirror import LivePageSource, MirrorPageSource, PageSource, slug_to_filename
@@ -441,6 +442,88 @@ def known_as_names(page: bytes | BeautifulSoup, model: str, brand: str) -> list[
     return names
 
 
+# ── Market status ───────────────────────────────────────────────────────
+#
+# "Unreleased" or "Rare", from what the page says about *its own* model.
+# Design: technical-design.md, *Feature Design: Market Status*.
+
+# MARKET_UNRELEASED / MARKET_RARE: scraper/market_status.py (shared with the openMSX description rule).
+
+# Specs fields msx.org fills with "unreleased" / "1986 (never released)".
+_STATUS_FIELDS = ("Year", "Region", "Launch price")
+_UNRELEASED_VALUE_RE = re.compile(r"^\s*(?:unreleased|non-released)\b|\b(?:never|not)\s+released\b", re.IGNORECASE)
+# A specs value that is only a status ("unreleased") is not a region.
+_STATUS_ONLY_RE = re.compile(r"^\s*(?:unreleased|non-released|never released)\s*$", re.IGNORECASE)
+
+_UNRELEASED_PHRASE = (
+    r"(?:(?:has|had)\s+never\s+been\s+released|was\s+never\s+released|(?:was|has)\s+not\s+been\s+released"
+    r"|(?:is|was)\s+(?:a|an)\s+(?:\w+\s+){0,2}?(?:unreleased|non-released)"
+    r"|(?:has\s+|is\s+)?remained\s+(?:at\s+the\s+prototype\s+level|a\s+prototype))"
+)
+# Sentence breaks, but not after "a.k.a." ("The PHC-25SK a.k.a. Wavy25SK is ...").
+_SENTENCE_SPLIT_RE = re.compile(r"(?<![aA]\.k\.a\.)(?<=[.!?])\s+")
+_RARE_TAIL = r"(?:(?:a|an|actually)\s+)?(?:(?:very|extremely)\s+)?rare\b(?!\s+(?:for|on|nowadays))"
+_FEW_KNOWN_RE = re.compile(
+    r"\b(?:very|only\s+a)\s+few\s+units\s+(?:are|were)\s+known\s+to\s+exist"
+    r"|\bonly\s+one\s+(?:system|unit|machine)\s+is\s+known\s+to\s+exist",
+    re.IGNORECASE,
+)
+
+
+def _status_patterns(names: list[str], brand: str) -> tuple[re.Pattern[str], re.Pattern[str]]:
+    """(unreleased, rare) sentence patterns whose subject is the page's own model."""
+    named = "|".join(re.escape(n) for n in sorted({n for n in names if n}, key=len, reverse=True)) or r"(?!)"
+    brand_part = rf"(?:{re.escape(brand)}\s+)?" if brand else ""
+    subject = (rf"(?:(?:The\s+)?{brand_part}(?:{named})(?:\s+computer)?"
+               rf"|This\s+(?:model|machine|computer|system|version)|It)")
+    start = r"^(?:Note\s*:\s*)?"
+    # "The Sanyo MPC-3, a.k.a Wavy3 , is ..." / "The PHC-25SK a.k.a. Wavy25SK is ..."
+    apposition = rf"(?:\s*,[^,]{{1,40}},|\s+a\.?k\.?a\.?\s+[\w+-]{{1,30}})?"
+    # Up to the phrase, no new subject: "It was planned to …, but it has never been released" is not about the model.
+    gap = r"(?:(?!\b(?:it|they)\b)[^.]){0,120}?"
+    unreleased = re.compile(
+        rf"(?:{start}{subject}|\bthis\s+(?:model|machine|computer|system))\b{gap}\b{_UNRELEASED_PHRASE}",
+        re.IGNORECASE,
+    )
+    rare = re.compile(
+        rf"{start}(?:{subject}{apposition}\s+(?:is|was|seems\s+to\s+be)\s+{_RARE_TAIL}"
+        rf"|It['’]s\s+{_RARE_TAIL}"
+        rf"|This\s+(?:very\s+)?rare\b)"
+        rf"|\bthis\s+(?:model|machine|computer|system)\s+(?:is|was|seems\s+to\s+be)\s+{_RARE_TAIL}",
+        re.IGNORECASE,
+    )
+    return unreleased, rare
+
+
+def market_status(page: bytes | BeautifulSoup, specs: dict[str, str], names: list[str], brand: str) -> str | None:
+    """"Unreleased", "Rare" or None for the page's model.
+
+    Unreleased: a Year / Region / Launch price value says so ("unreleased",
+    "1986 (never released)"), or a sentence whose subject is the model does
+    ("This computer has never been released", "The X is an unreleased
+    prototype", "It has remained at the prototype level").
+    Rare: a sentence whose subject is the model calls it (very) rare ("The X is
+    a very rare MSX1 computer", "This model is very rare", "It's a rare version
+    of …", "This rare machine …"), or says very few units are known to exist.
+    Sentences about something else — "a few rare cartridges", "a lightpen …
+    was never released", "one of the rare MSX1 computers having …" — do not
+    count. Unreleased wins over Rare.
+    """
+    if any(_UNRELEASED_VALUE_RE.search(specs.get(f, "")) for f in _STATUS_FIELDS):
+        return MARKET_UNRELEASED
+    soup = page if isinstance(page, BeautifulSoup) else BeautifulSoup(page, "lxml")
+    body = soup.select_one("#bodyContent") or soup
+    unreleased, rare = _status_patterns(names, brand)
+    found_rare = False
+    for node in body.find_all(["p", "li"]):
+        text = re.sub(r"\s+", " ", node.get_text(" ", strip=True))
+        for sentence in _SENTENCE_SPLIT_RE.split(text):
+            if unreleased.search(sentence):
+                return MARKET_UNRELEASED
+            if rare.search(sentence) or _FEW_KNOWN_RE.search(sentence):
+                found_rare = True
+    return MARKET_RARE if found_rare else None
+
 # ── Adaptations ─────────────────────────────────────────────────────────
 #
 # "The Fenner FPC-900 is the adaptation of the Sanyo MPC-25FD computer ..." —
@@ -686,9 +769,9 @@ def _record_from_specs(
     if year_raw:
         result["year"] = _parse_year(year_raw)
 
-    # Region
+    # Region ("unreleased" is a market status, not a region)
     region = specs.get("Region", "")
-    if region:
+    if region and not _STATUS_ONLY_RE.match(region):
         result["region"] = region
 
     # RAM
@@ -944,6 +1027,10 @@ def parse_model_page(
         records += _revision_records(ctx, specs, slot_table, result, build)
     if own_page:
         records += _localised_records(soup, specs, model_names, products, model_specs, build, page_title)
+    status = market_status(soup, specs, model_names + (result.get(KNOWN_AS_FIELD) or []), brand)
+    if status:
+        for record in records:
+            record["market_status"] = status
     return records
 
 
