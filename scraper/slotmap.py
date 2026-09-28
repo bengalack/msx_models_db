@@ -539,17 +539,27 @@ def _apply_mirror_elements(
             )
             continue
 
-        # Use the most common abbr in the origin slot as the mirror label
-        # (typically all pages in the origin have the same abbr)
-        abbrs = [a for a in origin_pages.values() if not a.endswith(_MIRROR_SUFFIX) and a not in (_EMPTY_PAGE, _ABSENT)]
+        def real(abbr: str | None) -> bool:
+            return bool(abbr) and not abbr.endswith(_MIRROR_SUFFIX) and abbr not in (_EMPTY_PAGE, _ABSENT)
+
+        # Fallback label: the most common device in the origin slot, ties going
+        # to the lowest page (a list, not a set — set order varies per run).
+        abbrs = [origin_pages[p] for p in sorted(origin_pages) if real(origin_pages[p])]
         if not abbrs:
             continue
-        origin_abbr = max(set(abbrs), key=abbrs.count)
+        fallback = max(abbrs, key=abbrs.count)
 
-        mirror_pages = _pages_for_mem(base, size)
-        for p in mirror_pages:
-            key = f"slotmap_{host_ms}_{host_ss}_{p}"
-            result[key] = f"{origin_abbr}{_MIRROR_SUFFIX}"
+        host_pages = slot_abbrs.get(host_ms, {}).get(host_ss, {})
+        for p in _pages_for_mem(base, size):
+            # A mirror never hides a real device in its host page: a register
+            # mirror of a few bytes (Victor HC-9x: FDC / system control) shares
+            # a page with a ROM, and the first device wins, as for any overlap.
+            if real(host_pages.get(p)):
+                continue
+            # A mirror shows the same addresses of the origin slot, so the label
+            # is the origin's device on that page.
+            origin_abbr = origin_pages.get(p) if real(origin_pages.get(p)) else fallback
+            result[f"slotmap_{host_ms}_{host_ss}_{p}"] = f"{origin_abbr}{_MIRROR_SUFFIX}"
 
 
 def _find_mirror_host(

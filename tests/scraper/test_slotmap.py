@@ -726,6 +726,12 @@ class TestMirrorMethod2RomFileSize:
 # Mirror detection — Method 3: <Mirror> element two-pass (T-027)
 # ---------------------------------------------------------------------------
 
+# Labels the LUT gives the devices of the Victor HC-9x mirror tests.
+_SUB = match_lut("ROM", "MSX Sub ROM", LUT_RULES)
+_RS = match_lut("MSX-RS232", "MSX RS-232", LUT_RULES)
+_DSK = match_lut("WD2793", "Memory Mapped FDC", LUT_RULES)
+
+
 class TestMirrorMethod3Element:
     def test_mirror_element_annotates_host_page(self):
         # Sony HB-10P-like: slot 0 page 3 mirrors RAM from slot 3
@@ -784,10 +790,92 @@ class TestMirrorMethod3Element:
         </devices></msxconfig>
         """
         result = extract_slotmap(_root(xml), LUT_RULES)
-        # Mirror is at 0x7FF8 in slot 0-1 (page 1 range), origin is DSK from slot 3
-        assert result["slotmap_0_1_1"] == "DSK*"
-        # RS-232 also in page 1
-        assert result["slotmap_3_0_1"] == "DSK"
+        # The 8-byte register mirror at 0x7FF8 shares page 1 with the RS-232 ROM:
+        # a mirror never hides a real device (first device wins, as for any overlap).
+        assert result["slotmap_0_1_1"] == _RS
+        assert result["slotmap_3_0_1"] == _DSK
+
+    # Victor HC-90A / HC-95A: register mirrors in both directions between slot 0-1 and slot 3.
+    _HC9X = """
+        <msxconfig><devices>
+          <primary slot="0">
+            <secondary slot="0">
+              <ROM id="MSX BIOS with BASIC ROM"><mem base="0x0000" size="0x8000"/></ROM>
+            </secondary>
+            <secondary slot="1">
+              <ROM id="MSX Sub ROM"><mem base="0x0000" size="0x4000"/></ROM>
+              <MSX-RS232 id="MSX RS-232"><mem base="0x4000" size="0x3FF8"/></MSX-RS232>
+              <Mirror id="FDC registers"><mem base="0x7FF8" size="5"/><ps>3</ps></Mirror>
+            </secondary>
+          </primary>
+          <primary slot="3">
+            <WD2793 id="Memory Mapped FDC"><mem base="0x4000" size="0x3FFD"/></WD2793>
+            <Mirror id="System control register"><mem base="0x7FFD" size="1"/><ps>0</ps><ss>1</ss></Mirror>
+          </primary>
+        </devices></msxconfig>
+    """
+
+    def test_register_mirrors_both_ways_keep_both_roms(self):
+        result = extract_slotmap(_root(self._HC9X), LUT_RULES)
+        assert result["slotmap_0_1_0"] == _SUB
+        assert result["slotmap_0_1_1"] == _RS
+        assert result["slotmap_3_0_1"] == _DSK
+
+    def test_result_does_not_depend_on_hash_seed(self):
+        """Regression: the mirror label came from max() over a set — its order changed per Python run."""
+        import subprocess
+        import sys
+        script = (
+            "import json, sys\n"
+            "from lxml import etree\n"
+            "from scraper.slotmap import extract_slotmap\n"
+            "from tests.scraper.test_slotmap import LUT_RULES, TestMirrorMethod3Element\n"
+            "root = etree.fromstring(TestMirrorMethod3Element._HC9X.strip().encode())\n"
+            "print(json.dumps(extract_slotmap(root, LUT_RULES), sort_keys=True))\n"
+        )
+        outputs = set()
+        for seed in ("0", "1", "2", "3", "4", "5"):
+            env = {**__import__("os").environ, "PYTHONHASHSEED": seed, "PYTHONIOENCODING": "utf-8"}
+            run = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True,
+                                 encoding="utf-8", env=env, check=True)
+            outputs.add(run.stdout)
+        assert len(outputs) == 1
+
+    def test_mirror_takes_the_origin_device_on_the_same_page(self):
+        # Origin slot 0-1 has SUB on page 0 and RS on page 1 (a tie); a mirror into an
+        # empty page 1 shows page 1 of the origin.
+        xml = """
+        <msxconfig><devices>
+          <primary slot="0">
+            <secondary slot="1">
+              <ROM id="MSX Sub ROM"><mem base="0x0000" size="0x4000"/></ROM>
+              <MSX-RS232 id="MSX RS-232"><mem base="0x4000" size="0x4000"/></MSX-RS232>
+            </secondary>
+          </primary>
+          <primary slot="3">
+            <Mirror id="m"><mem base="0x4000" size="0x4000"/><ps>0</ps><ss>1</ss></Mirror>
+          </primary>
+        </devices></msxconfig>
+        """
+        result = extract_slotmap(_root(xml), LUT_RULES)
+        assert result["slotmap_3_0_1"] == f"{_RS}{_MIRROR_SYM}"
+
+    def test_mirror_page_empty_in_origin_takes_lowest_page_on_a_tie(self):
+        xml = """
+        <msxconfig><devices>
+          <primary slot="0">
+            <secondary slot="1">
+              <ROM id="MSX Sub ROM"><mem base="0x0000" size="0x4000"/></ROM>
+              <MSX-RS232 id="MSX RS-232"><mem base="0x4000" size="0x4000"/></MSX-RS232>
+            </secondary>
+          </primary>
+          <primary slot="3">
+            <Mirror id="m"><mem base="0x8000" size="0x4000"/><ps>0</ps><ss>1</ss></Mirror>
+          </primary>
+        </devices></msxconfig>
+        """
+        result = extract_slotmap(_root(xml), LUT_RULES)
+        assert result["slotmap_3_0_2"] == f"{_SUB}{_MIRROR_SYM}"
 
     def test_mirror_with_unknown_origin_warns_and_skips(self, capsys):
         # Mirror pointing to a slot that has no classified devices
