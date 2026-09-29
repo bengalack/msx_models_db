@@ -78,6 +78,12 @@
     "tooltip": "Firmware"
   },
   {
+    "element": "YamahaSKW01",
+    "id_pattern": null,
+    "abbr": "FW",
+    "tooltip": "Firmware"
+  },
+  {
     "element": "WD2793|TC8566AF",
     "id_pattern": null,
     "abbr": "DSK",
