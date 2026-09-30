@@ -1145,3 +1145,35 @@ class TestSplitMainRom:
     @pytest.mark.parametrize("rom_id", ["Arabic BASIC", "Turbo BASIC ROM", "MSX-Audio BIOS", "Sakhr BASIC"])
     def test_other_bios_or_basic_roms_are_not_main(self, real_rules, rom_id):
         assert match_lut("ROM", rom_id, real_rules) != match_lut("ROM", "MSX BIOS with BASIC ROM", real_rules)
+
+
+# ---------------------------------------------------------------------------
+# Panasonic turbo R: memory-mapped RAM vs the Panasonic ROM mapper — real LUT
+# ---------------------------------------------------------------------------
+
+class TestPanasonicRamVsRomMapper:
+    """Slot 3-0 holds PanasonicRAM (memory-mapped RAM); slot 3-3 a ROM behind the Panasonic mapper.
+    They must not share a label (they did: both "PM", so the RAM showed "Panasonic Mapper")."""
+
+    @pytest.fixture(scope="class")
+    def real_rules(self):
+        from scraper.slotmap_lut import load_slotmap_lut
+        return load_slotmap_lut("data/slotmap-lut.json")
+
+    def test_panasonic_ram_is_a_memory_mapper(self, real_rules):
+        assert match_lut("PanasonicRAM", "Main RAM", real_rules) == match_lut("MemoryMapper", "Main RAM", real_rules)
+
+    def test_ram_and_panasonic_rom_mapper_differ(self, real_rules):
+        xml = """
+        <msxconfig><devices>
+          <primary slot="0"><ROM id="MSX BIOS with BASIC ROM"><mem base="0x0000" size="0x8000"/></ROM></primary>
+          <primary slot="3">
+            <secondary slot="0"><PanasonicRAM id="Main RAM"><mem base="0x0000" size="0x10000"/></PanasonicRAM></secondary>
+            <secondary slot="3"><ROM id="Firmware"><mem base="0x0000" size="0x10000"/><mappertype>PANASONIC</mappertype></ROM></secondary>
+          </primary>
+        </devices></msxconfig>
+        """
+        result = extract_slotmap(_root(xml), real_rules)
+        ram, rom = result["slotmap_3_0_0"], result["slotmap_3_3_0"]
+        assert ram == match_lut("MemoryMapper", "Main RAM", real_rules)
+        assert rom != ram

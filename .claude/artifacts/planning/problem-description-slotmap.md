@@ -153,7 +153,7 @@ Classification is by **XML element type** and **`id` attribute** (matched case-i
 | `MSX-MUSIC` or `FMPAC` | _(any)_ | `MUS` | MSX Music |
 | `MSX-RS232` | _(any)_ | `RS2` | RS-232C Interface |
 | `MemoryMapper` | _(any)_ | `MM` | Memory Mapper |
-| `PanasonicRAM` | _(any)_ | `PM` | Panasonic Mapper |
+| `PanasonicRAM` | _(any)_ | `PM` | Panasonic Mapper — **superseded 2026-09-30:** `MM` Memory Mapper (it is memory-mapped RAM; `PM` is only the Panasonic ROM mapper — see decision log) |
 | `RAM` | _(any)_ | `RAM` | RAM (no memory mapper) |
 | _(sentinel)_ | — | `~` | Not expanded |
 | _(mirror suffix)_ | — | `<origin>*` | _(derived at scrape time — no LUT entry needed)_ |

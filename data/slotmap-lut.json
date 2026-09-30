@@ -122,8 +122,8 @@
   {
     "element": "PanasonicRAM",
     "id_pattern": null,
-    "abbr": "PM",
-    "tooltip": "Panasonic Mapper"
+    "abbr": "MM",
+    "tooltip": "Memory Mapper"
   },
   {
     "element": "ROM",

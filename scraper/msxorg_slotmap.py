@@ -218,7 +218,7 @@ def _load_text_patterns() -> list[tuple[re.Pattern[str], str]]:
     # names only).  These match the free-text device labels on msx.org pages.
     # Order: PM before MM/RAM; MM before RAM; all before the FW catch-all.
     supplemental: list[tuple[re.Pattern[str], str]] = [
-        (re.compile(r"panasonic\s+(?:mapper|ram)",            re.IGNORECASE), "PM"),
+        (re.compile(r"panasonic\s+mapper",                   re.IGNORECASE), "PM"),  # the ROM mapper, not RAM
         (re.compile(r"memory\s+mapper|\d+\s*[kmgt]b\s+memory\b", re.IGNORECASE), "MM"),
         (re.compile(r"\bram\b",                               re.IGNORECASE), "RAM"),
         # LUT "Main ROM" pattern won't match "Main-ROM" (hyphen); cover it here.

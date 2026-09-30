@@ -196,7 +196,8 @@ class TestClassifyCellText:
 
     def test_panasonic_mapper(self):
         assert _classify_cell_text("Panasonic mapper") == "PM"
-        assert _classify_cell_text("Panasonic RAM") == "PM"
+        # RAM is never the Panasonic ROM mapper (turbo R: RAM in 3-0, the mapped firmware ROM in 3-3)
+        assert _classify_cell_text("Panasonic RAM") != _classify_cell_text("Panasonic mapper")
 
     def test_memory_mapper(self):
         assert _classify_cell_text("256kB Memory Mapper") == "MM"

@@ -5,8 +5,7 @@
       "^MAIN\\+?$"
     ],
     "mapped_ram": [
-      "^MM$",
-      "^PM$"
+      "^MM$"
     ],
     "ram": [
       "^RAM$"
