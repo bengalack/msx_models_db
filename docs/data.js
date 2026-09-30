@@ -112,6 +112,17 @@ window.MSX_DATA = {
       "truncateLimit": 20
     },
     {
+      "id": 110,
+      "key": "generation_msx",
+      "label": "generation-msx",
+      "groupId": 0,
+      "type": "string",
+      "tooltip": "Link to generation-msx",
+      "filterable": false,
+      "headerIcon": "fa-external-link",
+      "linkIcon": "https://images.generation-msx.nl/img/gmsx_favicon.png"
+    },
+    {
       "id": 3,
       "key": "year",
       "label": "Year",
@@ -871,6 +882,7 @@ window.MSX_DATA = {
       "values": [
         "Sony",
         "HB-75P",
+        "HB-75P",
         1984,
         "Europe",
         null,
@@ -968,19 +980,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-75P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-75p/1227",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-75P.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-75P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-75P.xml"
       }
     },
     {
       "id": 3,
       "values": [
         "Panasonic",
+        "FS-A1",
         "FS-A1",
         1986,
         "Japan",
@@ -1079,19 +1093,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/fs-a1/406",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1.xml"
       }
     },
     {
       "id": 4,
       "values": [
         "Panasonic",
+        "FS-A1F",
         "FS-A1F",
         1987,
         "Japan",
@@ -1190,19 +1206,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1F",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/fs-a1f/407",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1F.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1F",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1F.xml"
       }
     },
     {
       "id": 5,
       "values": [
         "Toshiba",
+        "HX-33",
         "HX-33",
         1985,
         "Japan",
@@ -1301,19 +1319,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-33",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-33/949",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-33.xml"
+      },
       "tooltips": {
         "engine": "Gate arrays Toshiba TCX-1008, TCX-2001 and TCX-2002",
         "engine_semi_custom": "Gate arrays Toshiba TCX-1008, TCX-2001 and TCX-2002"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-33",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-33.xml"
       }
     },
     {
       "id": 6,
       "values": [
         "Sony",
+        "HB-F1XDJ",
         "HB-F1XDJ",
         1988,
         "Japan",
@@ -1412,19 +1432,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F1XDJ",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f1xdj/748",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XDJ.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1XDJ",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XDJ.xml"
       }
     },
     {
       "id": 7,
       "values": [
         "Panasonic",
+        "FS-A1WX",
         "FS-A1WX",
         1988,
         "Japan",
@@ -1523,19 +1545,21 @@ window.MSX_DATA = {
         "PM",
         "PM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1WX",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/fs-a1wx/414",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1WX.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T9769 model A or B and gate array Mitsubishi M50014",
         "engine_semi_custom": "Toshiba T9769 model A or B and gate array Mitsubishi M50014"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1WX",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1WX.xml"
       }
     },
     {
       "id": 8,
       "values": [
         "Panasonic",
+        "FS-A1WSX",
         "FS-A1WSX",
         1989,
         "Japan",
@@ -1634,19 +1658,21 @@ window.MSX_DATA = {
         "PM",
         "PM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1WSX",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/fs-a1wsx/413",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1WSX.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T9769 model B or C and gate array Mitsubishi M50014",
         "engine_semi_custom": "Toshiba T9769 model B or C and gate array Mitsubishi M50014"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1WSX",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1WSX.xml"
       }
     },
     {
       "id": 9,
       "values": [
         "Panasonic",
+        "FS-A1ST",
         "FS-A1ST",
         1990,
         "Japan",
@@ -1745,19 +1771,21 @@ window.MSX_DATA = {
         "PM",
         "PM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1ST",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/fs-a1st/412",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1ST.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T9769 C and ASCII S1990 bus controller",
         "engine_semi_custom": "Toshiba T9769 C and ASCII S1990 bus controller"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1ST",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1ST.xml"
       }
     },
     {
       "id": 10,
       "values": [
         "Panasonic",
+        "FS-A1GT",
         "FS-A1GT",
         1992,
         "Japan",
@@ -1856,19 +1884,21 @@ window.MSX_DATA = {
         "PM",
         "PM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1GT",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/fs-a1gt/410",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1GT.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T9769 C and ASCII S1990 bus controller",
         "engine_semi_custom": "Toshiba T9769 C and ASCII S1990 bus controller"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1GT",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1GT.xml"
       }
     },
     {
       "id": 12,
       "values": [
         "Aucnet",
+        "NIA-2001",
         "NIA-2001",
         1992,
         "Japan",
@@ -1967,19 +1997,21 @@ window.MSX_DATA = {
         "PM",
         "PM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Aucnet_NIA-2001",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/nia-2001/1641",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Aucnet_NIA-2001.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T9769 C and ASCII S1990 bus controller",
         "engine_semi_custom": "Toshiba T9769 C and ASCII S1990 bus controller"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Aucnet_NIA-2001",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Aucnet_NIA-2001.xml"
       }
     },
     {
       "id": 13,
       "values": [
         "AVT",
+        "CPC-300",
         "CPC-300",
         1987,
         "Netherlands",
@@ -2078,18 +2110,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/AVT_CPC-300",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-300-iq2000/110"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/AVT_CPC-300"
       }
     },
     {
       "id": 14,
       "values": [
         "Baraweth",
+        "Perfect MSX2 (CPC-300)",
         "Perfect MSX2 (CPC-300)",
         1987,
         "Middle East",
@@ -2188,18 +2222,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Bawareth_Perfect_MSX2",
+        "generation_msx": "https://generation-msx.nl/hardware/bawarethal-mithali/perfect-msx2/449"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Bawareth_Perfect_MSX2"
       }
     },
     {
       "id": 15,
       "values": [
         "Canon",
+        "V-25",
         "V-25",
         1985,
         "Japan",
@@ -2298,19 +2334,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Canon_V-25",
+        "generation_msx": "https://generation-msx.nl/hardware/canon/v-25/62",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-25.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Canon_V-25",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-25.xml"
       }
     },
     {
       "id": 16,
       "values": [
         "Canon",
+        "V-30F",
         "V-30F",
         1985,
         "Japan",
@@ -2409,19 +2447,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Canon_V-30F",
+        "generation_msx": "https://generation-msx.nl/hardware/canon/v-30f/64",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-30F.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527 also two chips from Toshiba  TC17G005AP-0007",
         "engine_semi_custom": "Yamaha S3527 also two chips from Toshiba  TC17G005AP-0007"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Canon_V-30F",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-30F.xml"
       }
     },
     {
       "id": 19,
       "values": [
         "Daewoo",
+        "CPC-300",
         "CPC-300",
         1986,
         "Korea",
@@ -2520,19 +2560,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-300",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-300-iq2000/110",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-300.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-300",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-300.xml"
       }
     },
     {
       "id": 20,
       "values": [
         "Daewoo",
+        "CPC-300E",
         "CPC-300E",
         1986,
         "South Korea, USSR",
@@ -2631,19 +2673,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-300E",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-300e/1469",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-300E.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-300E",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-300E.xml"
       }
     },
     {
       "id": 21,
       "values": [
         "Daewoo",
+        "CPC-330K",
         "CPC-330K",
         1988,
         "Korea",
@@ -2742,18 +2786,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-330K",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-330k-kobo/111"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-330K"
       }
     },
     {
       "id": 22,
       "values": [
         "Daewoo",
+        "CPC-400",
         "CPC-400",
         1987,
         "South Korea, USSR",
@@ -2852,18 +2898,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-400",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-400-x-ii/112"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-400"
       }
     },
     {
       "id": 23,
       "values": [
         "Daewoo",
+        "CPC-400S",
         "CPC-400S",
         1986,
         "South Korea, USSR",
@@ -2962,19 +3010,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-400S",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-400s-x-ii/113",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-400S.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-400S",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-400S.xml"
       }
     },
     {
       "id": 25,
       "values": [
         "Daewoo",
+        "CPC-61 Zemmix Super V",
         "CPC-61 Zemmix Super V",
         1990,
         "Korea",
@@ -3073,19 +3123,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-61",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-61-zemmix-super-v-victory/116",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-61_Zemmix_Super_V.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-61",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-61_Zemmix_Super_V.xml"
       }
     },
     {
       "id": 26,
       "values": [
         "Daewoo",
+        "CPG-120",
         "CPG-120",
         1991,
         "Korea",
@@ -3184,18 +3236,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPG-120",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpg-120-zemmix-turbo/119"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPG-120"
       }
     },
     {
       "id": 27,
       "values": [
         "Daisen Sangyo",
+        "MX-2021",
         "MX-2021",
         1988,
         "Japan",
@@ -3294,18 +3348,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daisen_Sangyo_MX-2021",
+        "generation_msx": "https://generation-msx.nl/hardware/daisen-sangyo/mx-2021/1588"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daisen_Sangyo_MX-2021"
       }
     },
     {
       "id": 28,
       "values": [
         "Fenner",
+        "FPC-900",
         "FPC-900",
         1986,
         "Italy",
@@ -3404,18 +3460,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Fenner_FPC-900",
+        "generation_msx": "https://generation-msx.nl/hardware/fenner/fpc-900/190"
+      },
       "tooltips": {
         "engine": "Yamaha  S3527",
         "engine_semi_custom": "Yamaha  S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Fenner_FPC-900"
       }
     },
     {
       "id": 30,
       "values": [
         "Hitachi",
+        "MB-H3",
         "MB-H3",
         1985,
         "Japan",
@@ -3514,19 +3572,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H3",
+        "generation_msx": "https://generation-msx.nl/hardware/hitachi/mb-h3/236",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H3.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H3",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H3.xml"
       }
     },
     {
       "id": 31,
       "values": [
         "Hitachi",
+        "MB-H70",
         "MB-H70",
         1985,
         "Japan",
@@ -3625,19 +3685,21 @@ window.MSX_DATA = {
         "ES3!",
         "ES3!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H70",
+        "generation_msx": "https://generation-msx.nl/hardware/hitachi/hb-h70/229",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H70.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H70",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H70.xml"
       }
     },
     {
       "id": 32,
       "values": [
         "Kawai",
+        "KMC-5000",
         "KMC-5000",
         1987,
         "Japan",
@@ -3736,18 +3798,20 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Kawai_KMC-5000",
+        "generation_msx": "https://generation-msx.nl/hardware/kawai/kmc-5000/290"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Kawai_KMC-5000"
       }
     },
     {
       "id": 33,
       "values": [
         "Kimoan",
+        "KimoHachi",
         "KimoHachi",
         2018,
         "Japan",
@@ -3846,18 +3910,19 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Kimoan_KimoHachi"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Kimoan_KimoHachi"
       }
     },
     {
       "id": 34,
       "values": [
         "Laser",
+        "MSX2",
         "MSX2",
         1986,
         "France, Germany",
@@ -3956,18 +4021,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Laser_MSX2",
+        "generation_msx": "https://generation-msx.nl/hardware/laser-fr/laser-msx2/295"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Laser_MSX2"
       }
     },
     {
       "id": 35,
       "values": [
         "Mitsubishi",
+        "ML-G1",
         "ML-G1",
         1986,
         "Spain",
@@ -4066,19 +4133,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G1",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-g1/333",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G1_ES.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G1",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G1_ES.xml"
       }
     },
     {
       "id": 37,
       "values": [
         "Mitsubishi",
+        "ML-G10",
         "ML-G10",
         1985,
         "Japan",
@@ -4177,19 +4246,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G10",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-g10/332",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G10.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G10",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G10.xml"
       }
     },
     {
       "id": 38,
       "values": [
         "Mitsubishi",
+        "ML-G3",
         "ML-G3",
         1986,
         "Spain",
@@ -4288,19 +4359,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G3",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-g3/336",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G3_ES.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G3",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G3_ES.xml"
       }
     },
     {
       "id": 40,
       "values": [
         "Mitsubishi",
+        "ML-G30 Model 1",
         "ML-G30 Model 1",
         1985,
         "Japan",
@@ -4399,19 +4472,21 @@ window.MSX_DATA = {
         "ES3!",
         "ES3!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G30_Model_1",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-g30-model-1/1195",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G30_model_1.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G30_Model_1",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G30_model_1.xml"
       }
     },
     {
       "id": 41,
       "values": [
         "Mitsubishi",
+        "ML-G30 Model 2",
         "ML-G30 Model 2",
         1985,
         "Japan",
@@ -4510,19 +4585,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G30_Model_2",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-g30-model-2/334",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G30_model_2.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-G30_Model_2",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-G30_model_2.xml"
       }
     },
     {
       "id": 46,
       "values": [
         "Mitsubishi",
+        "ML-TS2",
         "ML-TS2",
         1987,
         "Japan",
@@ -4621,18 +4698,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-TS2",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-ts2h/339"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-TS2"
       }
     },
     {
       "id": 47,
       "values": [
         "Mygodess",
+        "MSX Minime",
         "MSX Minime",
         2020,
         "Korea",
@@ -4731,18 +4810,19 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mygodess_MSX_Minime"
+      },
       "tooltips": {
         "engine": "Altera Cyclone EP1C12Q240C8N FPGA chip",
         "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mygodess_MSX_Minime"
       }
     },
     {
       "id": 48,
       "values": [
         "National",
+        "FS-4500",
         "FS-4500",
         1986,
         "Japan",
@@ -4841,19 +4921,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_FS-4500",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/fs-4500/357",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4500.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_FS-4500",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4500.xml"
       }
     },
     {
       "id": 49,
       "values": [
         "National",
+        "FS-4600F",
         "FS-4600F",
         1986,
         "Japan",
@@ -4952,19 +5034,21 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_FS-4600F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/fs-4600f/358",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4600F.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_FS-4600F",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4600F.xml"
       }
     },
     {
       "id": 51,
       "values": [
         "National",
+        "FS-4700F",
         "FS-4700F",
         1986,
         "Japan",
@@ -5063,19 +5147,21 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_FS-4700F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/fs-4700f/359",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4700F.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_FS-4700F",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4700F.xml"
       }
     },
     {
       "id": 52,
       "values": [
         "National",
+        "FS-5000F2",
         "FS-5000F2",
         1985,
         "Japan",
@@ -5174,19 +5260,21 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_FS-5000F2",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/fs-5000f2/1647",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-5000F2.xml"
+      },
       "tooltips": {
         "engine": "Probably Yamaha S1985",
         "engine_semi_custom": "Probably Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_FS-5000F2",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-5000F2.xml"
       }
     },
     {
       "id": 53,
       "values": [
         "National",
+        "FS-5500F1",
         "FS-5500F1",
         1985,
         "Japan",
@@ -5285,19 +5373,21 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_FS-5500F1",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/fs-5500f1/361",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-5500F1.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_FS-5500F1",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-5500F1.xml"
       }
     },
     {
       "id": 54,
       "values": [
         "National",
+        "FS-5500F2",
         "FS-5500F2",
         1985,
         "Japan",
@@ -5396,19 +5486,21 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_FS-5500F2",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/fs-5500f2/362",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-5500F2.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_FS-5500F2",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-5500F2.xml"
       }
     },
     {
       "id": 57,
       "values": [
         "NTT",
+        "Captain Multi-Station",
         "Captain Multi-Station",
         1987,
         "Japan",
@@ -5507,18 +5599,20 @@ window.MSX_DATA = {
         "MM",
         "MM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/NTT_Captain_Multi-Station",
+        "generation_msx": "https://generation-msx.nl/hardware/ntt/captain-multi-station/380"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/NTT_Captain_Multi-Station"
       }
     },
     {
       "id": 58,
       "values": [
         "Panasonic",
+        "FS-A1FM",
         "FS-A1FM",
         1987,
         "Japan",
@@ -5617,19 +5711,21 @@ window.MSX_DATA = {
         "PM",
         "PM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1FM",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/fs-a1fm/408",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1FM.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T9769",
         "engine_semi_custom": "Toshiba T9769"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1FM",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1FM.xml"
       }
     },
     {
       "id": 59,
       "values": [
         "Panasonic",
+        "FS-A1FX",
         "FS-A1FX",
         1988,
         "Japan",
@@ -5728,19 +5824,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1FX",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/fs-a1fx/409",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1FX.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T9769 model A or B and gate array Mitsubishi M50014",
         "engine_semi_custom": "Toshiba T9769 model A or B and gate array Mitsubishi M50014"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1FX",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1FX.xml"
       }
     },
     {
       "id": 61,
       "values": [
         "Panasonic",
+        "FS-A1mkII",
         "FS-A1mkII",
         1987,
         "Japan",
@@ -5839,19 +5937,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_FS-A1mkII",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/fs-a1mkii/411",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1MK2.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-A1mkII",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_FS-A1MK2.xml"
       }
     },
     {
       "id": 62,
       "values": [
         "Philips",
+        "HCS 280",
         "HCS 280",
         1990,
         "Europe",
@@ -5950,18 +6050,19 @@ window.MSX_DATA = {
         "DSK*",
         "DSK*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_HCS_280"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_HCS_280"
       }
     },
     {
       "id": 63,
       "values": [
         "Philips",
+        "NMS 8220",
         "NMS 8220",
         1986,
         "Belgium, France, the Netherlands and Spain",
@@ -6060,19 +6161,21 @@ window.MSX_DATA = {
         "FW*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_NMS_8220",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8220/581",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8220.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8220",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8220.xml"
       }
     },
     {
       "id": 64,
       "values": [
         "Philips",
+        "NMS 8245",
         "NMS 8245",
         1987,
         "Belgium, France, the Netherlands and Spain",
@@ -6171,19 +6274,21 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_NMS_8245",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8245/536",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8245.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8245",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8245.xml"
       }
     },
     {
       "id": 65,
       "values": [
         "Philips",
+        "NMS 8245 Home Banking",
         "NMS 8245 Home Banking",
         1987,
         "Italy",
@@ -6282,18 +6387,21 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips/Phonola_NMS_8245_Home_Banking",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8245/536"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips/Phonola_NMS_8245_Home_Banking"
+        "engine_semi_custom": "Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8245/536 (family)"
       }
     },
     {
       "id": 66,
       "values": [
         "Philips",
+        "NMS 8245/16",
         "NMS 8245/16",
         1987,
         "Spain",
@@ -6392,19 +6500,22 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8245/536",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8245-16.xml",
         "model": "https://www.msx.org/wiki/Philips_NMS_8245"
+      },
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8245/536 (family)"
       }
     },
     {
       "id": 67,
       "values": [
         "Philips",
+        "NMS 8245/19",
         "NMS 8245/19",
         1987,
         "France",
@@ -6503,19 +6614,22 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8245/536",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8245-19.xml",
         "model": "https://www.msx.org/wiki/Philips_NMS_8245"
+      },
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8245/536 (family)"
       }
     },
     {
       "id": 68,
       "values": [
         "Philips",
+        "NMS 8250",
         "NMS 8250",
         1986,
         "Belgium, France, the Netherlands and Spain",
@@ -6614,19 +6728,21 @@ window.MSX_DATA = {
         "DSK*",
         "DSK*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_NMS_8250",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8250/537",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8250.xml"
+      },
       "tooltips": {
         "engine": "Yamaha  S3527",
         "engine_semi_custom": "Yamaha  S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8250",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8250.xml"
       }
     },
     {
       "id": 69,
       "values": [
         "Philips",
+        "NMS 8250/16",
         "NMS 8250/16",
         1986,
         "Spain",
@@ -6725,19 +6841,22 @@ window.MSX_DATA = {
         "DSK*",
         "DSK*"
       ],
-      "tooltips": {
-        "engine": "Yamaha  S3527",
-        "engine_semi_custom": "Yamaha  S3527"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8250/537",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8250-16.xml",
         "model": "https://www.msx.org/wiki/Philips_NMS_8250"
+      },
+      "tooltips": {
+        "engine": "Yamaha  S3527",
+        "engine_semi_custom": "Yamaha  S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8250/537 (family)"
       }
     },
     {
       "id": 70,
       "values": [
         "Philips",
+        "NMS 8250/19",
         "NMS 8250/19",
         1986,
         "France",
@@ -6836,19 +6955,22 @@ window.MSX_DATA = {
         "DSK*",
         "DSK*"
       ],
-      "tooltips": {
-        "engine": "Yamaha  S3527",
-        "engine_semi_custom": "Yamaha  S3527"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8250/537",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8250-19.xml",
         "model": "https://www.msx.org/wiki/Philips_NMS_8250"
+      },
+      "tooltips": {
+        "engine": "Yamaha  S3527",
+        "engine_semi_custom": "Yamaha  S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8250/537 (family)"
       }
     },
     {
       "id": 71,
       "values": [
         "Philips",
+        "NMS 8255",
         "NMS 8255",
         1986,
         "Belgium, France, the Netherlands and Spain",
@@ -6947,19 +7069,21 @@ window.MSX_DATA = {
         "DSK*",
         "DSK*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_NMS_8255",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8255/538",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8255.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8255",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_8255.xml"
       }
     },
     {
       "id": 72,
       "values": [
         "Philips",
+        "NMS 8260",
         "NMS 8260",
         1987,
         null,
@@ -7058,18 +7182,20 @@ window.MSX_DATA = {
         "DSK*",
         "DSK*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_NMS_8260",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8260/451"
+      },
       "tooltips": {
         "engine": "Yamaha  S3527",
         "engine_semi_custom": "Yamaha  S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8260"
       }
     },
     {
       "id": 73,
       "values": [
         "Philips",
+        "NMS 8280",
         "NMS 8280",
         1987,
         "Belgium, France, Germany, the Netherlands and Spain",
@@ -7168,18 +7294,20 @@ window.MSX_DATA = {
         "DSK*",
         "DSK*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_NMS_8280",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8280/539"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_8280"
       }
     },
     {
       "id": 74,
       "values": [
         "Philips",
+        "VG 8230",
         "VG 8230",
         1986,
         "Netherlands",
@@ -7278,19 +7406,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_VG-8230",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8230/582",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8230.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8230",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8230.xml"
       }
     },
     {
       "id": 75,
       "values": [
         "Philips",
+        "VG 8235/00",
         "VG 8235/00",
         1986,
         "Europe",
@@ -7389,19 +7519,22 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-00.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8235"
+      },
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583 (family)"
       }
     },
     {
       "id": 76,
       "values": [
         "Philips",
+        "VG 8235/02",
         "VG 8235/02",
         1986,
         "Germany",
@@ -7500,19 +7633,22 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-02.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8235"
+      },
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583 (family)"
       }
     },
     {
       "id": 77,
       "values": [
         "Philips",
+        "VG 8235/19",
         "VG 8235/19",
         1986,
         "France",
@@ -7611,19 +7747,22 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-19.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8235"
+      },
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583 (family)"
       }
     },
     {
       "id": 78,
       "values": [
         "Philips",
+        "VG 8235/20",
         "VG 8235/20",
         1986,
         "Europe",
@@ -7722,19 +7861,22 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-20.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8235"
+      },
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583 (family)"
       }
     },
     {
       "id": 79,
       "values": [
         "Philips",
+        "VG 8235/39",
         "VG 8235/39",
         1986,
         "France",
@@ -7833,19 +7975,22 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8235-39.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8235"
+      },
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583 (family)"
       }
     },
     {
       "id": 81,
       "values": [
         "Philips",
+        "VG-8235",
         "VG-8235",
         1986,
         "Belgium, France, Germany, the Netherlands and Spain",
@@ -7944,18 +8089,20 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_VG-8235",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8235"
       }
     },
     {
       "id": 82,
       "values": [
         "Philips",
+        "VG-8240",
         "VG-8240",
         1986,
         null,
@@ -8054,18 +8201,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_VG-8240",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8240/584"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8240"
       }
     },
     {
       "id": 83,
       "values": [
         "Phonola",
+        "NMS 8245",
         "NMS 8245",
         1987,
         "Italy",
@@ -8164,18 +8313,20 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Phonola_NMS_8245",
+        "generation_msx": "https://generation-msx.nl/hardware/phonola/nms-8245/605"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Phonola_NMS_8245"
       }
     },
     {
       "id": 84,
       "values": [
         "Phonola",
+        "NMS 8280",
         "NMS 8280",
         1987,
         "Italy",
@@ -8274,18 +8425,20 @@ window.MSX_DATA = {
         "DSK*",
         "DSK*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Phonola_NMS_8280",
+        "generation_msx": "https://generation-msx.nl/hardware/phonola/nms-8280/1312"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Phonola_NMS_8280"
       }
     },
     {
       "id": 85,
       "values": [
         "Phonola",
+        "VG-8235",
         "VG-8235",
         1986,
         "Italy",
@@ -8384,18 +8537,20 @@ window.MSX_DATA = {
         "DSK*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Phonola_VG-8235",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Phonola_VG-8235"
       }
     },
     {
       "id": 86,
       "values": [
         "Pioneer",
+        "UC-V102",
         "UC-V102",
         1987,
         "Europe, Japan, US",
@@ -8494,19 +8649,21 @@ window.MSX_DATA = {
         "ES6!",
         "ES6!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Pioneer_UC-V102",
+        "generation_msx": "https://generation-msx.nl/hardware/pioneer/uc-v102/1171",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Pioneer_UC-V102.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Pioneer_UC-V102",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Pioneer_UC-V102.xml"
       }
     },
     {
       "id": 87,
       "values": [
         "PTC",
+        "MSX PC",
         "MSX PC",
         1990,
         "Netherlands",
@@ -8605,18 +8762,19 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/PTC_MSX_PC"
+      },
       "tooltips": {
         "engine": "Yamaha  S3527",
         "engine_semi_custom": "Yamaha  S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/PTC_MSX_PC"
       }
     },
     {
       "id": 88,
       "values": [
         "Sakhr",
+        "AX-350",
         "AX-350",
         1987,
         "Middle East",
@@ -8715,18 +8873,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-350",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-350/646"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-350"
       }
     },
     {
       "id": 90,
       "values": [
         "Sakhr",
+        "AX-370",
         "AX-370",
         1988,
         "Middle East",
@@ -8825,19 +8985,21 @@ window.MSX_DATA = {
         "MM",
         "MM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-370",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-370/647",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Al_Alamiah_AX370.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T9769 B",
         "engine_semi_custom": "Toshiba T9769 B"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-370",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Al_Alamiah_AX370.xml"
       }
     },
     {
       "id": 91,
       "values": [
         "Yamaha",
+        "AX-500",
         "AX-500",
         1986,
         "Middle East",
@@ -8936,19 +9098,21 @@ window.MSX_DATA = {
         "ES1!",
         "ES1!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-500",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-500/648",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX500.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-500",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX500.xml"
       }
     },
     {
       "id": 92,
       "values": [
         "Sanyo",
+        "MPC-2300",
         "MPC-2300",
         1987,
         "USSR",
@@ -9047,18 +9211,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-2300",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-2300/703"
+      },
       "tooltips": {
         "engine": "Yamaha S1985 + Sanyo CF77099AFT",
         "engine_semi_custom": "Yamaha S1985 + Sanyo CF77099AFT"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-2300"
       }
     },
     {
       "id": 93,
       "values": [
         "Sanyo",
+        "MPC-2500FD",
         "MPC-2500FD",
         1987,
         "USSR",
@@ -9157,18 +9323,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-2500FD",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-2500fd/705"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-2500FD"
       }
     },
     {
       "id": 94,
       "values": [
         "Sanyo",
+        "MPC-25F",
         "MPC-25F",
         1985,
         "Japan",
@@ -9267,18 +9435,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-25F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-25f-wavy25/677"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-25F"
       }
     },
     {
       "id": 95,
       "values": [
         "Sanyo",
+        "MPC-25FD",
         "MPC-25FD",
         1985,
         "Japan",
@@ -9377,19 +9547,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-25FD",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-25fd-wavy25/678",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-25FD.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-25FD",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-25FD.xml"
       }
     },
     {
       "id": 96,
       "values": [
         "Sanyo",
+        "MPC-25FK",
         "MPC-25FK",
         1986,
         "Japan",
@@ -9488,18 +9660,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-25FK",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-25fk-wavy25/679"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-25FK"
       }
     },
     {
       "id": 97,
       "values": [
         "Sanyo",
+        "MPC-25FS",
         "MPC-25FS",
         1985,
         "Japan",
@@ -9598,19 +9772,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-25FS",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-25fs-wavy25/680",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-25FS.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-25FS",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-25FS.xml"
       }
     },
     {
       "id": 98,
       "values": [
         "Sanyo",
+        "MPC-27",
         "MPC-27",
         1985,
         "Japan",
@@ -9709,18 +9885,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-27",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-27-wavy27/704"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-27"
       }
     },
     {
       "id": 99,
       "values": [
         "Sanyo",
+        "PCT-100",
         "PCT-100",
         1986,
         "Japan",
@@ -9819,18 +9997,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PCT-100",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/pct-100/1359"
+      },
       "tooltips": {
         "engine": "?",
         "engine_semi_custom": "?"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PCT-100"
       }
     },
     {
       "id": 100,
       "values": [
         "Sanyo",
+        "PHC-23",
         "PHC-23",
         1986,
         "Japan",
@@ -9929,19 +10109,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-23",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-23-wavy23/1581",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-23.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-23",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-23.xml"
       }
     },
     {
       "id": 101,
       "values": [
         "Sanyo",
+        "PHC-23J",
         "PHC-23J",
         1987,
         "Japan",
@@ -10040,19 +10222,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-23J",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-23j-wavy23/707",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-23J.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985 or Yamaha S3527",
         "engine_semi_custom": "Yamaha S1985 or Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-23J",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-23J.xml"
       }
     },
     {
       "id": 103,
       "values": [
         "Sanyo",
+        "PHC-23J(B)",
         "PHC-23J(B)",
         1987,
         "Japan",
@@ -10151,19 +10335,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "Yamaha S1985 or Yamaha S3527",
-        "engine_semi_custom": "Yamaha S1985 or Yamaha S3527"
-      },
       "links": {
         "model": "https://www.msx.org/wiki/Sanyo_PHC-23J",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-23JB.xml"
+      },
+      "tooltips": {
+        "engine": "Yamaha S1985 or Yamaha S3527",
+        "engine_semi_custom": "Yamaha S1985 or Yamaha S3527"
       }
     },
     {
       "id": 104,
       "values": [
         "Sanyo",
+        "PHC-35J",
         "PHC-35J",
         1989,
         "Japan",
@@ -10262,19 +10447,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-35J",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-35j-wavy35/708",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-35J.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T9769x (A or B)",
         "engine_semi_custom": "Toshiba T9769x (A or B)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-35J",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-35J.xml"
       }
     },
     {
       "id": 105,
       "values": [
         "Sanyo",
+        "PHC-50FD2",
         "PHC-50FD2",
         1986,
         "Japan",
@@ -10373,18 +10560,20 @@ window.MSX_DATA = {
         "DSK*",
         "DSK*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-50FD2",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-50fd2/1649"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-50FD2"
       }
     },
     {
       "id": 106,
       "values": [
         "Sanyo",
+        "PHC-55FD2",
         "PHC-55FD2",
         1988,
         "Japan",
@@ -10483,18 +10672,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-55FD2",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-55fd2-wavy55fd2/1077"
+      },
       "tooltips": {
         "engine": "Toshiba T9763",
         "engine_semi_custom": "Toshiba T9763"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-55FD2"
       }
     },
     {
       "id": 107,
       "values": [
         "Sanyo",
+        "PHC-70FD",
         "PHC-70FD",
         1988,
         "Japan",
@@ -10593,19 +10784,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-70FD",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-70fd-wavy70fd/710",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-70FD.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T9769x (A or B)",
         "engine_semi_custom": "Toshiba T9769x (A or B)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-70FD",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-70FD.xml"
       }
     },
     {
       "id": 108,
       "values": [
         "Sanyo",
+        "PHC-70FD2",
         "PHC-70FD2",
         1988,
         "Japan",
@@ -10704,19 +10897,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-70FD2",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-70fd2-wavy70fd2/709",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-70FD2.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T9769x (A or B)",
         "engine_semi_custom": "Toshiba T9769x (A or B)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-70FD2",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-70FD2.xml"
       }
     },
     {
       "id": 109,
       "values": [
         "Sanyo",
+        "PHC-77",
         "PHC-77",
         1987,
         "Japan",
@@ -10815,19 +11010,21 @@ window.MSX_DATA = {
         "RAM",
         "RAM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-77",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-77-wavy77/706",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-77.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-77",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-77.xml"
       }
     },
     {
       "id": 110,
       "values": [
         "Sony",
+        "HB-F1",
         "HB-F1",
         1986,
         "Japan",
@@ -10926,19 +11123,21 @@ window.MSX_DATA = {
         "RAM",
         "RAM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F1",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f1/745",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1.xml"
       }
     },
     {
       "id": 111,
       "values": [
         "Sony",
+        "HB-F1II",
         "HB-F1II",
         1987,
         "Japan",
@@ -11037,19 +11236,21 @@ window.MSX_DATA = {
         "RAM",
         "RAM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F1II",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f1ii/746",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1II.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1II",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1II.xml"
       }
     },
     {
       "id": 112,
       "values": [
         "Sony",
+        "HB-F1XD",
         "HB-F1XD",
         1987,
         "Japan",
@@ -11148,19 +11349,21 @@ window.MSX_DATA = {
         "RAM",
         "RAM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F1XD",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f1xd/747",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XD.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1XD",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XD.xml"
       }
     },
     {
       "id": 113,
       "values": [
         "Sony",
+        "HB-F1XDmk2",
         "HB-F1XDmk2",
         1988,
         "Japan",
@@ -11259,19 +11462,21 @@ window.MSX_DATA = {
         "RAM",
         "RAM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F1XDmk2",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f1xdmk2/750",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XDmk2.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1XDmk2",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XDmk2.xml"
       }
     },
     {
       "id": 114,
       "values": [
         "Sony",
+        "HB-F1XV",
         "HB-F1XV",
         1989,
         "Japan",
@@ -11370,19 +11575,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F1XV",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f1xv/751",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XV.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F1XV",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F1XV.xml"
       }
     },
     {
       "id": 115,
       "values": [
         "Sony",
+        "HB-F5",
         "HB-F5",
         1985,
         "Japan",
@@ -11481,19 +11688,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F5",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f5/753",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F5.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F5",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F5.xml"
       }
     },
     {
       "id": 116,
       "values": [
         "Sony",
+        "HB-F500",
         "HB-F500",
         1985,
         "Japan",
@@ -11592,19 +11801,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F500",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f500/752",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F500.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F500",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F500.xml"
       }
     },
     {
       "id": 117,
       "values": [
         "Sony",
+        "HB-F500 (v2)",
         "HB-F500 (v2)",
         1985,
         "Japan",
@@ -11703,19 +11914,22 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
-      },
       "links": {
         "model": "https://www.msx.org/wiki/Sony_HB-F500",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f500/752",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F500_v2.xml"
+      },
+      "tooltips": {
+        "engine": "Yamaha S3527",
+        "engine_semi_custom": "Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f500/752 (family)"
       }
     },
     {
       "id": 118,
       "values": [
         "Sony",
+        "HB-F500P",
         "HB-F500P",
         1985,
         "Europe",
@@ -11814,19 +12028,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F500P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f500p/1416",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F500P.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F500P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F500P.xml"
       }
     },
     {
       "id": 119,
       "values": [
         "Sony",
+        "HB-F700D",
         "HB-F700D",
         1985,
         "Germany",
@@ -11925,19 +12141,21 @@ window.MSX_DATA = {
         "MM",
         "MM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F700D",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f700d/1263",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700D.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F700D",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700D.xml"
       }
     },
     {
       "id": 120,
       "values": [
         "Sony",
+        "HB-F700F",
         "HB-F700F",
         1985,
         "France",
@@ -12036,19 +12254,21 @@ window.MSX_DATA = {
         "MM",
         "MM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F700F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f700f/1264",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700F.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F700F",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700F.xml"
       }
     },
     {
       "id": 121,
       "values": [
         "Sony",
+        "HB-F700P",
         "HB-F700P",
         1986,
         "Europe",
@@ -12147,19 +12367,21 @@ window.MSX_DATA = {
         "MM",
         "MM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F700P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f700p/754",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700P.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F700P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700P.xml"
       }
     },
     {
       "id": 122,
       "values": [
         "Sony",
+        "HB-F700S",
         "HB-F700S",
         1985,
         "Spain",
@@ -12258,19 +12480,21 @@ window.MSX_DATA = {
         "MM",
         "MM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F700S",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f700s/1265",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700S.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F700S",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F700S.xml"
       }
     },
     {
       "id": 123,
       "values": [
         "Sony",
+        "HB-F750",
         "HB-F750",
         1986,
         "Japan",
@@ -12369,18 +12593,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F750",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f750/1579"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F750"
       }
     },
     {
       "id": 124,
       "values": [
         "Sony",
+        "HB-F900",
         "HB-F900",
         1986,
         "Japan",
@@ -12479,19 +12705,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F900",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f900/755",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F900.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F900",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F900.xml"
       }
     },
     {
       "id": 125,
       "values": [
         "Sony",
+        "HB-F9P",
         "HB-F9P",
         1986,
         "Europe",
@@ -12590,19 +12818,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F9P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f9p/756",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F9P.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F9P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F9P.xml"
       }
     },
     {
       "id": 126,
       "values": [
         "Sony",
+        "HB-F9P Russian",
         "HB-F9P Russian",
         1985,
         "Russia",
@@ -12701,19 +12931,22 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f9p/756",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F9P_Russian.xml",
         "model": "https://www.msx.org/wiki/Sony_HB-F9P"
+      },
+      "tooltips": {
+        "engine": "Yamaha S1985",
+        "engine_semi_custom": "Yamaha S1985",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f9p/756 (family)"
       }
     },
     {
       "id": 127,
       "values": [
         "Sony",
+        "HB-F9S",
         "HB-F9S",
         1985,
         "Spain",
@@ -12812,19 +13045,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F9S",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f9s/1375",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F9S.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F9S",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-F9S.xml"
       }
     },
     {
       "id": 128,
       "values": [
         "Sony",
+        "HB-G900AP",
         "HB-G900AP",
         1986,
         "France, Germany, the Netherlands and Spain",
@@ -12923,19 +13158,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-G900AP",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-g900ap/759",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-G900AP.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-G900AP",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-G900AP.xml"
       }
     },
     {
       "id": 129,
       "values": [
         "Sony",
+        "HB-G900D",
         "HB-G900D",
         1986,
         "Germany",
@@ -13034,19 +13271,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-G900D",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-g900d/1725",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-G900D.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-G900D",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-G900D.xml"
       }
     },
     {
       "id": 130,
       "values": [
         "Sony",
+        "HB-G900F",
         "HB-G900F",
         1986,
         "France",
@@ -13145,18 +13384,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-G900F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-g900f/1677"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-G900F"
       }
     },
     {
       "id": 131,
       "values": [
         "Sony",
+        "HB-G900P",
         "HB-G900P",
         1986,
         "Europe",
@@ -13255,19 +13496,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-G900P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-g900/758",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-G900P.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-G900P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-G900P.xml"
       }
     },
     {
       "id": 132,
       "values": [
         "Sony",
+        "HB-T600",
         "HB-T600",
         1987,
         "Japan",
@@ -13366,19 +13609,21 @@ window.MSX_DATA = {
         "MM",
         "MM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-T600",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-t600/760",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-T600.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-T600",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-T600.xml"
       }
     },
     {
       "id": 133,
       "values": [
         "Sony",
+        "HB-T7",
         "HB-T7",
         1987,
         "Japan",
@@ -13477,18 +13722,20 @@ window.MSX_DATA = {
         "RAM",
         "RAM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-T7",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-t7/761"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-T7"
       }
     },
     {
       "id": 134,
       "values": [
         "Talent",
+        "DPC-300",
         "DPC-300",
         1987,
         "Chile and Uruguay",
@@ -13587,18 +13834,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Talent_DPC-300",
+        "generation_msx": "https://generation-msx.nl/hardware/telematicatalent/dpc-300/1065"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Talent_DPC-300"
       }
     },
     {
       "id": 135,
       "values": [
         "Talent",
+        "TPC-310",
         "TPC-310",
         1988,
         "Argentina, Chile, Uruguay",
@@ -13697,19 +13946,21 @@ window.MSX_DATA = {
         "EXP",
         "EXP"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Talent_TPC-310",
+        "generation_msx": "https://generation-msx.nl/hardware/telematicatalent/tpc-310/908",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Talent_TPC-310.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Talent_TPC-310",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Talent_TPC-310.xml"
       }
     },
     {
       "id": 136,
       "values": [
         "Talent",
+        "TPP-311",
         "TPP-311",
         1987,
         "Argentina",
@@ -13808,18 +14059,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Talent_TPP-311",
+        "generation_msx": "https://generation-msx.nl/hardware/telematicatalent/tpp-311/912"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Talent_TPP-311"
       }
     },
     {
       "id": 137,
       "values": [
         "Talent",
+        "TPS-312",
         "TPS-312",
         1987,
         "Argentina",
@@ -13918,18 +14171,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Talent_TPS-312",
+        "generation_msx": "https://generation-msx.nl/hardware/telematicatalent/tps-312/913"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Talent_TPS-312"
       }
     },
     {
       "id": 138,
       "values": [
         "Team Neo",
+        "Mini IQ-3000",
         "Mini IQ-3000",
         2014,
         "Korea",
@@ -14028,18 +14283,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Team_Neo_Mini_IQ-3000",
+        "generation_msx": "https://generation-msx.nl/hardware/retroteam-neo/iq-3000/1340"
+      },
       "tooltips": {
         "engine": "Altera Cyclone EP1C12Q240C8N FPGA chip",
         "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Team_Neo_Mini_IQ-3000"
       }
     },
     {
       "id": 139,
       "values": [
         "Team Neo",
+        "Zemmix Neo",
         "Zemmix Neo",
         2013,
         "Korea",
@@ -14138,18 +14395,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Team_Neo_Zemmix_Neo",
+        "generation_msx": "https://generation-msx.nl/hardware/retroteam-neo/zemmix-neo/1112"
+      },
       "tooltips": {
         "engine": "Altera Cyclone EP1C12Q240C8N FPGA chip",
         "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Team_Neo_Zemmix_Neo"
       }
     },
     {
       "id": 140,
       "values": [
         "Toshiba",
+        "FS-TM1",
         "FS-TM1",
         1986,
         "Italy",
@@ -14248,19 +14507,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_FS-TM1",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/fs-tm1/932",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_FS-TM1.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_FS-TM1",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_FS-TM1.xml"
       }
     },
     {
       "id": 141,
       "values": [
         "Toshiba",
+        "HX-23",
         "HX-23",
         1985,
         "Japan",
@@ -14359,19 +14620,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-23",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-23/944",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-23.xml"
+      },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1012",
         "engine_semi_custom": "Gate array Toshiba TCX-1012"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-23",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-23.xml"
       }
     },
     {
       "id": 142,
       "values": [
         "Toshiba",
+        "HX-23F",
         "HX-23F",
         1985,
         "Japan",
@@ -14470,19 +14733,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-23F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-23f/945",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-23F.xml"
+      },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1012",
         "engine_semi_custom": "Gate array Toshiba TCX-1012"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-23F",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-23F.xml"
       }
     },
     {
       "id": 143,
       "values": [
         "Toshiba",
+        "HX-34",
         "HX-34",
         1985,
         "Japan",
@@ -14581,19 +14846,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-34",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-34/950",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-34.xml"
+      },
       "tooltips": {
         "engine": "Gate arrays (Toshiba TCX-1008, TCX-2001 and TCX-2002)",
         "engine_semi_custom": "Gate arrays (Toshiba TCX-1008, TCX-2001 and TCX-2002)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-34",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-34.xml"
       }
     },
     {
       "id": 144,
       "values": [
         "Toshiba",
+        "HX-54",
         "HX-54",
         1986,
         "Japan",
@@ -14692,18 +14959,20 @@ window.MSX_DATA = {
         "FW",
         "FW"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-54",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-54/1851"
+      },
       "tooltips": {
         "engine": "???",
         "engine_semi_custom": "???"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-54"
       }
     },
     {
       "id": 145,
       "values": [
         "Victor",
+        "HC-80",
         "HC-80",
         1986,
         "Japan",
@@ -14802,19 +15071,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Victor_HC-80",
+        "generation_msx": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-80/265",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-80.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Victor_HC-80",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-80.xml"
       }
     },
     {
       "id": 146,
       "values": [
         "Victor",
+        "HC-90",
         "HC-90",
         1986,
         "Japan",
@@ -14913,18 +15184,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Victor_HC-90",
+        "generation_msx": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-90/266"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Victor_HC-90"
       }
     },
     {
       "id": 147,
       "values": [
         "Victor",
+        "HC-90A",
         "HC-90A",
         1988,
         "Japan",
@@ -15023,19 +15296,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-90A.xml",
         "model": "https://www.msx.org/wiki/Victor_HC-90"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)"
       }
     },
     {
       "id": 148,
       "values": [
         "Victor",
+        "HC-95",
         "HC-95",
         1986,
         "Japan",
@@ -15134,18 +15408,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Victor_HC-95",
+        "generation_msx": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-95/267"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Victor_HC-95"
       }
     },
     {
       "id": 149,
       "values": [
         "Victor",
+        "HC-95A",
         "HC-95A",
         1988,
         "Japan",
@@ -15244,19 +15520,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-95A.xml",
         "model": "https://www.msx.org/wiki/Victor_HC-95"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)"
       }
     },
     {
       "id": 150,
       "values": [
         "Wandy",
+        "CPC-300 (WANDY 2)",
         "CPC-300 (WANDY 2)",
         1989,
         "Thailand",
@@ -15355,18 +15632,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Wandy_CPC-300"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Wandy_CPC-300"
       }
     },
     {
       "id": 151,
       "values": [
         "Yamaha",
+        "AX-350II",
         "AX-350II",
         1987,
         "Middle East",
@@ -15465,19 +15743,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-350II",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-350ii/978",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX350II.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-350II",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX350II.xml"
       }
     },
     {
       "id": 152,
       "values": [
         "Yamaha",
+        "AX-350IIF",
         "AX-350IIF",
         1987,
         "Middle East",
@@ -15576,19 +15856,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
-      },
       "links": {
         "model": "https://www.msx.org/wiki/Sakhr_AX-350II",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX350IIF.xml"
+      },
+      "tooltips": {
+        "engine": "Yamaha S1985",
+        "engine_semi_custom": "Yamaha S1985"
       }
     },
     {
       "id": 154,
       "values": [
         "Yamaha",
+        "CX7/128",
         "CX7/128",
         1985,
         "Japan",
@@ -15687,19 +15968,21 @@ window.MSX_DATA = {
         "ES1!",
         "ES1!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_CX7/128",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cx7128/990",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX7-128.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_CX7/128",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX7-128.xml"
       }
     },
     {
       "id": 155,
       "values": [
         "Yamaha",
+        "CX7M/128",
         "CX7M/128",
         1985,
         "Japan",
@@ -15798,19 +16081,21 @@ window.MSX_DATA = {
         "SFG5*",
         "SFG5*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_CX7M/128",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cx7m128/991",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX7M-128.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_CX7M/128",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX7M-128.xml"
       }
     },
     {
       "id": 156,
       "values": [
         "Yamaha",
+        "YIS-503IIIR",
         "YIS-503IIIR",
         1986,
         "USSR",
@@ -15909,19 +16194,21 @@ window.MSX_DATA = {
         "ES1!",
         "ES1!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-503IIIR",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-503iiir/1025",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-503IIIR.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-503IIIR",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-503IIIR.xml"
       }
     },
     {
       "id": 157,
       "values": [
         "Yamaha",
+        "YIS-604/128",
         "YIS-604/128",
         1985,
         "Japan",
@@ -16020,19 +16307,21 @@ window.MSX_DATA = {
         "ES1!",
         "ES1!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-604/128",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-604128/1031",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-604-128.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-604/128",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-604-128.xml"
       }
     },
     {
       "id": 158,
       "values": [
         "Yamaha",
+        "YIS-805/128",
         "YIS-805/128",
         1986,
         "Japan",
@@ -16131,18 +16420,21 @@ window.MSX_DATA = {
         "ES2!",
         "ES2!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-805",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-805/1034"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-805"
+        "engine_semi_custom": "Yamaha S1985",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-805/1034 (family)"
       }
     },
     {
       "id": 159,
       "values": [
         "Yamaha",
+        "YIS-805/128R2",
         "YIS-805/128R2",
         1986,
         "USSR",
@@ -16241,19 +16533,21 @@ window.MSX_DATA = {
         "ES1!",
         "ES1!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-805/128R2",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-805128r2/1033",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-805-128R2.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-805/128R2",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-805-128R2.xml"
       }
     },
     {
       "id": 169,
       "values": [
         "ESE",
+        "One chip MSX",
         "One chip MSX",
         2006,
         "Japan",
@@ -16352,18 +16646,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/D4_Enterprise_1chipMSX",
+        "generation_msx": "https://generation-msx.nl/hardware/ese-artists-factory/1chipmsx/1106"
+      },
       "tooltips": {
         "engine": "Altera Cyclone EP1C12Q240C8N FPGA chip",
         "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/D4_Enterprise_1chipMSX"
       }
     },
     {
       "id": 171,
       "values": [
         "Haesung",
+        "Super Free Kick",
         "Super Free Kick",
         1988,
         "Korea",
@@ -16462,18 +16758,19 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Haesung_Super_Free_Kick_/_Spinkick"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Haesung_Super_Free_Kick_/_Spinkick"
       }
     },
     {
       "id": 174,
       "values": [
         "Sanyo",
+        "PHC-23(GR)",
         "PHC-23(GR)",
         1987,
         "Japan",
@@ -16572,18 +16869,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-23J",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-23-wavy23/1581"
+      },
       "tooltips": {
         "engine": "Yamaha S1985 or Yamaha S3527",
-        "engine_semi_custom": "Yamaha S1985 or Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-23J"
+        "engine_semi_custom": "Yamaha S1985 or Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-23-wavy23/1581 (family)"
       }
     },
     {
       "id": 175,
       "values": [
         "CIEL",
+        "Expert Turbo",
         "Expert Turbo",
         1996,
         "Brazil",
@@ -16682,19 +16982,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
       "links": {
         "model": "https://www.msx.org/wiki/CIEL_Expert_2+_Turbo",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/CIEL_Expert-Turbo.xml"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)"
       }
     },
     {
       "id": 177,
       "values": [
         null,
+        "Omega MSX",
         "Omega MSX",
         2019,
         "U.S.A.",
@@ -16793,18 +17094,19 @@ window.MSX_DATA = {
         "FW",
         "FW"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/MSXmakers_Omega_MSX"
+      },
       "tooltips": {
         "engine": "none",
         "engine_semi_custom": "none"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/MSXmakers_Omega_MSX"
       }
     },
     {
       "id": 178,
       "values": [
         "Al Fateh",
+        "100",
         "100",
         1986,
         "Libya",
@@ -16903,18 +17205,20 @@ window.MSX_DATA = {
         "CS2!",
         "CS2!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Al_Fateh_100",
+        "generation_msx": "https://generation-msx.nl/hardware/al-fateh/100/1350"
+      },
       "tooltips": {
         "engine": "Toshiba  T7937A",
         "engine_semi_custom": "Toshiba  T7937A"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Al_Fateh_100"
       }
     },
     {
       "id": 179,
       "values": [
         "Al Fateh",
+        "123",
         "123",
         1986,
         "Libya",
@@ -17013,18 +17317,20 @@ window.MSX_DATA = {
         "FW",
         "FW"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Al_Fateh_123",
+        "generation_msx": "https://generation-msx.nl/hardware/al-fateh/123/639"
+      },
       "tooltips": {
         "engine": "Toshiba  T7937A",
         "engine_semi_custom": "Toshiba  T7937A"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Al_Fateh_123"
       }
     },
     {
       "id": 180,
       "values": [
         "AVT",
+        "DPC-200",
         "DPC-200",
         1985,
         "Belgium and the Netherlands",
@@ -17123,19 +17429,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/AVT_DPC-200",
+        "generation_msx": "https://generation-msx.nl/hardware/avt/dpc-200/1231",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/AVT_DPC-200.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/AVT_DPC-200",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/AVT_DPC-200.xml"
       }
     },
     {
       "id": 181,
       "values": [
         "AVT",
+        "FC-200",
         "FC-200",
         1984,
         "Netherlands",
@@ -17234,18 +17542,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/AVT_FC-200"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/AVT_FC-200"
       }
     },
     {
       "id": 182,
       "values": [
         "Bawareth",
+        "Perfect MSX1 (DPC-200CD)",
         "Perfect MSX1 (DPC-200CD)",
         1986,
         "Middle East",
@@ -17344,18 +17653,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Bawareth_Perfect_MSX1"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Bawareth_Perfect_MSX1"
       }
     },
     {
       "id": 183,
       "values": [
         "Canon",
+        "V-10",
         "V-10",
         1984,
         "Japan",
@@ -17454,19 +17764,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Canon_V-10",
+        "generation_msx": "https://generation-msx.nl/hardware/canon/v-10/60",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-10.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Canon_V-10",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-10.xml"
       }
     },
     {
       "id": 185,
       "values": [
         "Canon",
+        "V-8",
         "V-8",
         1985,
         "Japan",
@@ -17565,19 +17877,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Canon_V-8",
+        "generation_msx": "https://generation-msx.nl/hardware/canon/v-8/66",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-8.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Canon_V-8",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-8.xml"
       }
     },
     {
       "id": 186,
       "values": [
         "Casio",
+        "MX-10",
         "MX-10",
         1986,
         "Japan",
@@ -17676,19 +17990,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Casio_MX-10",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mx-10/80",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Casio_MX-10.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Hitachi HG61H06 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HG61H06 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Casio_MX-10",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Casio_MX-10.xml"
       }
     },
     {
       "id": 187,
       "values": [
         "Casio",
+        "MX-101",
         "MX-101",
         1987,
         "Japan",
@@ -17787,18 +18103,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Casio_MX-101",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mx-101/79"
+      },
       "tooltips": {
         "engine": "Hitachi HD62003",
         "engine_semi_custom": "Hitachi HD62003"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Casio_MX-101"
       }
     },
     {
       "id": 188,
       "values": [
         "Casio",
+        "MX-15",
         "MX-15",
         1986,
         "Spain, Thailand",
@@ -17897,19 +18215,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Casio_MX-15",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mx-15/81",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Casio_MX-15.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Hitachi HG61H06 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HG61H06 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Casio_MX-15",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Casio_MX-15.xml"
       }
     },
     {
       "id": 189,
       "values": [
         "Casio",
+        "PV-16",
         "PV-16",
         1984,
         "Japan",
@@ -18008,19 +18328,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Casio_PV-16",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/pv-16/85",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Casio_PV-16.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Casio_PV-16",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Casio_PV-16.xml"
       }
     },
     {
       "id": 190,
       "values": [
         "Casio",
+        "PV-7",
         "PV-7",
         1984,
         "Japan",
@@ -18119,19 +18441,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Casio_PV-7",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/pv-7/86",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Casio_PV-7.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Casio_PV-7",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Casio_PV-7.xml"
       }
     },
     {
       "id": 191,
       "values": [
         "CE-TEC",
+        "MPC-80",
         "MPC-80",
         1985,
         "Germany",
@@ -18230,18 +18554,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/CE-TEC_MPC-80",
+        "generation_msx": "https://generation-msx.nl/hardware/ce-tec/mpc-80/91"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/CE-TEC_MPC-80"
       }
     },
     {
       "id": 192,
       "values": [
         "Daewoo",
+        "CPC-200",
         "CPC-200",
         1986,
         "Korea",
@@ -18340,18 +18666,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-200",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-200/109"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-200"
       }
     },
     {
       "id": 193,
       "values": [
         "Daewoo",
+        "CPC-50",
         "CPC-50",
         1985,
         "Korea",
@@ -18450,18 +18778,19 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-50"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-50"
       }
     },
     {
       "id": 194,
       "values": [
         "Daewoo",
+        "CPC-50A",
         "CPC-50A",
         1986,
         "Korea",
@@ -18560,18 +18889,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-50A",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-50a-zemmix/114"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-50A"
       }
     },
     {
       "id": 195,
       "values": [
         "Daewoo",
+        "CPC-50B",
         "CPC-50B",
         1987,
         "Korea",
@@ -18670,18 +19001,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-50B",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-50b-zemmix/1111"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-50B"
       }
     },
     {
       "id": 197,
       "values": [
         "Daewoo",
+        "CPC-88",
         "CPC-88",
         1984,
         "Korea",
@@ -18780,18 +19113,19 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-88"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-88"
       }
     },
     {
       "id": 198,
       "values": [
         "Daewoo",
+        "DPC-100",
         "DPC-100",
         1984,
         "Korea",
@@ -18890,19 +19224,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_DPC-100",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/dpc-100/124",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_DPC-100.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_DPC-100",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_DPC-100.xml"
       }
     },
     {
       "id": 199,
       "values": [
         "Daewoo",
+        "DPC-180",
         "DPC-180",
         1984,
         "Korea",
@@ -19001,19 +19337,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_DPC-180",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/dpc-180/1648",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_DPC-180.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_DPC-180",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_DPC-180.xml"
       }
     },
     {
       "id": 200,
       "values": [
         "Daewoo",
+        "DPC-200",
         "DPC-200",
         1985,
         "Korea",
@@ -19112,19 +19450,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_DPC-200",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/dpc-200-iq-1000/125",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_DPC-200_FR.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_DPC-200",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_DPC-200_FR.xml"
       }
     },
     {
       "id": 201,
       "values": [
         "Daewoo",
+        "DPC-200 (FR)",
         "DPC-200 (FR)",
         1985,
         "Belgium",
@@ -19223,18 +19563,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_DPC-200_(FR)",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/dpc-200-iq-1000/125"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_DPC-200_(FR)"
       }
     },
     {
       "id": 202,
       "values": [
         "Daewoo",
+        "DPC-200 (NL)",
         "DPC-200 (NL)",
         1985,
         "Belgium and the Netherlands",
@@ -19333,18 +19675,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_DPC-200_(NL)",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/dpc-200-iq-1000/125"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_DPC-200_(NL)"
       }
     },
     {
       "id": 203,
       "values": [
         "Daewoo",
+        "DPC-200S",
         "DPC-200S",
         1984,
         "Korea",
@@ -19443,18 +19787,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_DPC-200S"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_DPC-200S"
       }
     },
     {
       "id": 204,
       "values": [
         "Daewoo",
+        "DTX-1493FW (SuperBoy)",
         "DTX-1493FW (SuperBoy)",
         1989,
         "Korea",
@@ -19553,18 +19898,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_DTX-1493FW",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/dtx-1493fw-zemmix-superboy/134"
+      },
       "tooltips": {
         "engine": "? none (separate IC's)",
         "engine_semi_custom": "? none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_DTX-1493FW"
       }
     },
     {
       "id": 205,
       "values": [
         "Dragon",
+        "MSX-64",
         "MSX-64",
         1985,
         "Spain",
@@ -19663,19 +20010,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Dragon_MSX-64",
+        "generation_msx": "https://generation-msx.nl/hardware/dragon/msx-64/166",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Eurohard_Dragon_MSX.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Dragon_MSX-64",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Eurohard_Dragon_MSX.xml"
       }
     },
     {
       "id": 206,
       "values": [
         "Dynadata",
+        "DPC-200",
         "DPC-200",
         1985,
         "Spain",
@@ -19774,18 +20123,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Dynadata_DPC-200",
+        "generation_msx": "https://generation-msx.nl/hardware/dynadata/dpc-200/168"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Dynadata_DPC-200"
       }
     },
     {
       "id": 207,
       "values": [
         "Fenner",
+        "DPC-200",
         "DPC-200",
         1985,
         "Italy",
@@ -19884,18 +20235,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Fenner_DPC-200",
+        "generation_msx": "https://generation-msx.nl/hardware/fenner/dpc-200/1447"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Fenner_DPC-200"
       }
     },
     {
       "id": 208,
       "values": [
         "Fenner",
+        "FPC-500",
         "FPC-500",
         1985,
         "Italy",
@@ -19994,18 +20347,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Fenner_FPC-500",
+        "generation_msx": "https://generation-msx.nl/hardware/fenner/fpc-500/189"
+      },
       "tooltips": {
         "engine": "Toshiba T7775",
         "engine_semi_custom": "Toshiba T7775"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Fenner_FPC-500"
       }
     },
     {
       "id": 209,
       "values": [
         "Fenner",
+        "SPC-800",
         "SPC-800",
         1985,
         "Italy",
@@ -20104,19 +20459,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Fenner_SPC-800",
+        "generation_msx": "https://generation-msx.nl/hardware/fenner/spc-800/193",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Fenner_SPC-800.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Fenner_SPC-800",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Fenner_SPC-800.xml"
       }
     },
     {
       "id": 210,
       "values": [
         "Fort II Games",
+        "Pesadelo",
         "Pesadelo",
         1989,
         "Brazil",
@@ -20215,18 +20572,19 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Fort_II_Games_Pesadelo"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Fort_II_Games_Pesadelo"
       }
     },
     {
       "id": 211,
       "values": [
         "Frael",
+        "BRUC 100",
         "BRUC 100",
         1987,
         "Italy",
@@ -20325,19 +20683,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Frael_Bruc_100",
+        "generation_msx": "https://generation-msx.nl/hardware/frael/bruc-100/1090",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Frael_Bruc_100_1.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Frael_Bruc_100",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Frael_Bruc_100_1.xml"
       }
     },
     {
       "id": 213,
       "values": [
         "General",
+        "PCT-50",
         "PCT-50",
         1983,
         "Japan",
@@ -20436,18 +20796,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/General_PCT-50",
+        "generation_msx": "https://generation-msx.nl/hardware/fujitsu-general-paxon/paxon-pct-50/197"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array General HD61J209F )",
         "engine_semi_custom": "None (separate ICs whose a gate array General HD61J209F )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/General_PCT-50"
       }
     },
     {
       "id": 214,
       "values": [
         "General",
+        "PCT-55",
         "PCT-55",
         1984,
         "Japan",
@@ -20546,18 +20908,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/General_PCT-55"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array General HD61J209F )",
         "engine_semi_custom": "None (separate ICs whose a gate array General HD61J209F )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/General_PCT-55"
       }
     },
     {
       "id": 215,
       "values": [
         "Goldstar",
+        "FC-200",
         "FC-200",
         1984,
         "France, the Netherlands, Turkey and the United Kingdom",
@@ -20656,19 +21019,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Goldstar_FC-200",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/fc-200/200",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Goldstar_FC-200.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Goldstar_FC-200",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Goldstar_FC-200.xml"
       }
     },
     {
       "id": 216,
       "values": [
         "Goldstar",
+        "FC-80",
         "FC-80",
         1984,
         "Korea",
@@ -20767,18 +21132,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Goldstar_FC-80",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/fc-80/201"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Goldstar_FC-80"
       }
     },
     {
       "id": 217,
       "values": [
         "Goldstar",
+        "FC-80U",
         "FC-80U",
         1984,
         "Korea",
@@ -20877,19 +21244,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
       "links": {
         "model": "https://www.msx.org/wiki/Goldstar_FC-80U",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Goldstar_FC-80U.xml"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)"
       }
     },
     {
       "id": 218,
       "values": [
         "Goldstar",
+        "GFC-1080",
         "GFC-1080",
         1985,
         "Korea",
@@ -20988,18 +21356,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Goldstar_GFC-1080",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/gfc-1080/203"
+      },
       "tooltips": {
         "engine": "?",
         "engine_semi_custom": "?"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Goldstar_GFC-1080"
       }
     },
     {
       "id": 219,
       "values": [
         "Goldstar",
+        "GFC-1080A",
         "GFC-1080A",
         1985,
         "Korea",
@@ -21098,18 +21468,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Goldstar_GFC-1080A"
+      },
       "tooltips": {
         "engine": "?",
         "engine_semi_custom": "?"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Goldstar_GFC-1080A"
       }
     },
     {
       "id": 220,
       "values": [
         "Gradiente",
+        "Expert DDPlus",
         "Expert DDPlus",
         1989,
         "Brazil",
@@ -21118,7 +21489,7 @@ window.MSX_DATA = {
         64,
         "No",
         null,
-        null,
+        "0xDF93",
         "T6950",
         16,
         null,
@@ -21128,21 +21499,21 @@ window.MSX_DATA = {
         2,
         null,
         "Yes",
-        null,
+        "Z80",
         null,
         "NMOS",
-        null,
+        "No",
         "None",
         "T7937A",
-        null,
+        "No",
         "QWERTY with a \"ç\" key + numeric keypad",
-        null,
-        null,
+        "International",
+        "International",
         null,
         "Yes",
+        "Gradiente_Expert_DD_Plus",
         null,
-        null,
-        "3000F000F000F002",
+        "3000F000F000F006",
         "MAIN",
         "MAIN",
         "⏺",
@@ -21205,21 +21576,24 @@ window.MSX_DATA = {
         "⏺",
         "⏺",
         "DSK",
-        "⏺",
+        "DSK*",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Gradiente_Expert_DDPlus",
+        "generation_msx": "https://generation-msx.nl/hardware/gradiente/expert-dd-plus/212",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Gradiente_Expert_DD_Plus.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T7937A",
         "engine_semi_custom": "Toshiba T7937A"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Gradiente_Expert_DDPlus"
       }
     },
     {
       "id": 221,
       "values": [
         "Gradiente",
+        "Expert GPC-1",
         "Expert GPC-1",
         1987,
         "Brazil",
@@ -21318,19 +21692,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Gradiente_Expert_GPC-1",
+        "generation_msx": "https://generation-msx.nl/hardware/gradiente/expert-gpc1/222",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Gradiente_Expert_GPC-1.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Gradiente_Expert_GPC-1",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Gradiente_Expert_GPC-1.xml"
       }
     },
     {
       "id": 222,
       "values": [
         "Gradiente",
+        "Expert Plus",
         "Expert Plus",
         1989,
         "Brazil",
@@ -21429,19 +21805,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Gradiente_Expert_Plus",
+        "generation_msx": "https://generation-msx.nl/hardware/gradiente/expert-plus/213",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Gradiente_Expert_Plus.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T7937A",
         "engine_semi_custom": "Toshiba T7937A"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Gradiente_Expert_Plus",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Gradiente_Expert_Plus.xml"
       }
     },
     {
       "id": 223,
       "values": [
         "Gradiente",
+        "Expert XP-800",
         "Expert XP-800",
         1985,
         "Brazil",
@@ -21540,19 +21918,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Gradiente_Expert_XP-800",
+        "generation_msx": "https://generation-msx.nl/hardware/gradiente/expert-xp-800-10/221",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Gradiente_Expert_XP-800.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Gradiente_Expert_XP-800",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Gradiente_Expert_XP-800.xml"
       }
     },
     {
       "id": 224,
       "values": [
         "Hitachi",
+        "MB-H1",
         "MB-H1",
         1983,
         "Japan",
@@ -21651,19 +22031,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H1",
+        "generation_msx": "https://generation-msx.nl/hardware/hitachi/mb-h1-humanicatio/231",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H1.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H1",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H1.xml"
       }
     },
     {
       "id": 225,
       "values": [
         "Hitachi",
+        "MB-H1E",
         "MB-H1E",
         1984,
         "Japan",
@@ -21762,18 +22144,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H1E",
+        "generation_msx": "https://generation-msx.nl/hardware/hitachi/mb-h1e/232"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H1E"
       }
     },
     {
       "id": 226,
       "values": [
         "Hitachi",
+        "MB-H2",
         "MB-H2",
         1985,
         "Japan",
@@ -21872,19 +22256,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H2",
+        "generation_msx": "https://generation-msx.nl/hardware/hitachi/mb-h2/235",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H2.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H2",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H2.xml"
       }
     },
     {
       "id": 227,
       "values": [
         "Hitachi",
+        "MB-H21",
         "MB-H21",
         1984,
         "Japan",
@@ -21983,19 +22369,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H21",
+        "generation_msx": "https://generation-msx.nl/hardware/hitachi/mb-h21/233",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H21.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H21",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H21.xml"
       }
     },
     {
       "id": 228,
       "values": [
         "Hitachi",
+        "MB-H25",
         "MB-H25",
         1986,
         "Japan",
@@ -22094,18 +22482,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H25",
+        "generation_msx": "https://generation-msx.nl/hardware/hitachi/mb-h25/234"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H25"
       }
     },
     {
       "id": 229,
       "values": [
         "Hitachi",
+        "MB-H25M",
         "MB-H25M",
         1986,
         "Japan",
@@ -22204,18 +22594,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H25"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H25"
       }
     },
     {
       "id": 230,
       "values": [
         "Hitachi",
+        "MB-H50",
         "MB-H50",
         1986,
         "Japan",
@@ -22314,19 +22705,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H50",
+        "generation_msx": "https://generation-msx.nl/hardware/hitachi/mb-h50/237",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H50.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H50",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Hitachi_MB-H50.xml"
       }
     },
     {
       "id": 231,
       "values": [
         "Hitachi",
+        "MB-H50N",
         "MB-H50N",
         1986,
         "Japan",
@@ -22425,18 +22818,19 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H50"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H50"
       }
     },
     {
       "id": 232,
       "values": [
         "Hitachi",
+        "MB-H50S",
         "MB-H50S",
         1986,
         "Japan",
@@ -22535,18 +22929,19 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H50"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H50"
       }
     },
     {
       "id": 233,
       "values": [
         "Hitachi",
+        "MB-H80",
         "MB-H80",
         1983,
         "France, United Kingdom",
@@ -22645,18 +23040,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Hitachi_MB-H80",
+        "generation_msx": "https://generation-msx.nl/hardware/hitachi/mb-h80/238"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Hitachi_MB-H80"
       }
     },
     {
       "id": 234,
       "values": [
         "In Tensai",
+        "DPC-200CD",
         "DPC-200CD",
         1986,
         "Brazil",
@@ -22755,18 +23152,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/In_Tensai_DPC-200CD"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/In_Tensai_DPC-200CD"
       }
     },
     {
       "id": 235,
       "values": [
         "Jotan",
+        "Holland Bingo",
         "Holland Bingo",
         1986,
         "Norway",
@@ -22865,18 +23263,19 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Jotan_Holland_Bingo"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Jotan_Holland_Bingo"
       }
     },
     {
       "id": 236,
       "values": [
         "JVC",
+        "HC-7E",
         "HC-7E",
         1985,
         "Europe",
@@ -22975,18 +23374,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/JVC_HC-7E",
+        "generation_msx": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-7e/263"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Hitachi HD27L019)",
         "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/JVC_HC-7E"
       }
     },
     {
       "id": 237,
       "values": [
         "JVC",
+        "HC-7GB",
         "HC-7GB",
         1985,
         "United Kingdom",
@@ -23085,19 +23486,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/JVC_HC-7GB",
+        "generation_msx": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-7gb/264",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/JVC_HC-7GB.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Hitachi HD27L019)",
         "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/JVC_HC-7GB",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/JVC_HC-7GB.xml"
       }
     },
     {
       "id": 238,
       "values": [
         "Misawa-Van",
+        "CX-5",
         "CX-5",
         1986,
         "Japan",
@@ -23196,18 +23599,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Misawa-Van_CX-5",
+        "generation_msx": "https://generation-msx.nl/hardware/misawa-van/cx-5/1574"
+      },
       "tooltips": {
         "engine": "probably Yamaha S1985",
         "engine_semi_custom": "probably Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Misawa-Van_CX-5"
       }
     },
     {
       "id": 239,
       "values": [
         "Mitsubishi",
+        "ML-8000",
         "ML-8000",
         1983,
         "Japan",
@@ -23306,19 +23711,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-8000",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-8000/325",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-8000.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-8000",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-8000.xml"
       }
     },
     {
       "id": 240,
       "values": [
         "Mitsubishi",
+        "ML-F110",
         "ML-F110",
         1984,
         "Japan",
@@ -23417,19 +23824,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-F110",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-f110/326",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-F110.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-F110",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-F110.xml"
       }
     },
     {
       "id": 241,
       "values": [
         "Mitsubishi",
+        "ML-F120",
         "ML-F120",
         1984,
         "Japan",
@@ -23528,19 +23937,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-F120",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-f120/327",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-F120.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-F120",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-F120.xml"
       }
     },
     {
       "id": 242,
       "values": [
         "Mitsubishi",
+        "ML-F120D",
         "ML-F120D",
         1984,
         "Japan",
@@ -23639,18 +24050,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-F120D",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-f120d/1351"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-F120D"
       }
     },
     {
       "id": 243,
       "values": [
         "Mitsubishi",
+        "ML-F48",
         "ML-F48",
         1984,
         "United Kingdom",
@@ -23749,18 +24162,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-F48",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-f48/328"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-F48"
       }
     },
     {
       "id": 244,
       "values": [
         "Mitsubishi",
+        "ML-F80",
         "ML-F80",
         1984,
         "France, United Kingdom",
@@ -23859,19 +24274,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-F80",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-f80/329",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-F80.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-F80",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-F80.xml"
       }
     },
     {
       "id": 245,
       "values": [
         "Mitsubishi",
+        "ML-FX1",
         "ML-FX1",
         1986,
         "Spain",
@@ -23970,19 +24387,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-FX1",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-fx1/330",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-FX1.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-FX1",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Mitsubishi_ML-FX1.xml"
       }
     },
     {
       "id": 246,
       "values": [
         "Mitsubishi",
+        "ML-FX2",
         "ML-FX2",
         1986,
         "Spain",
@@ -24081,18 +24500,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-FX2",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-fx2/331"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-FX2"
       }
     },
     {
       "id": 247,
       "values": [
         "National",
+        "CF-1200",
         "CF-1200",
         1985,
         "Japan",
@@ -24191,19 +24612,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_CF-1200",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cf-1200/342",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_CF-1200.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_CF-1200",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_CF-1200.xml"
       }
     },
     {
       "id": 248,
       "values": [
         "National",
+        "CF-2000",
         "CF-2000",
         1983,
         "Japan",
@@ -24302,19 +24725,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_CF-2000",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cf-2000/343",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_CF-2000.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_CF-2000",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_CF-2000.xml"
       }
     },
     {
       "id": 249,
       "values": [
         "National",
+        "CF-2700",
         "CF-2700",
         1984,
         "Japan",
@@ -24413,19 +24838,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_CF-2700",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cf-2700/401",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_CF-2700.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_CF-2700",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_CF-2700.xml"
       }
     },
     {
       "id": 250,
       "values": [
         "National",
+        "CF-3000",
         "CF-3000",
         1984,
         "Japan",
@@ -24524,19 +24951,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_CF-3000",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cf-3000/351",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_CF-3000.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_CF-3000",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_CF-3000.xml"
       }
     },
     {
       "id": 251,
       "values": [
         "National",
+        "CF-3300",
         "CF-3300",
         1985,
         "Japan",
@@ -24635,19 +25064,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_CF-3300",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cf-3300/352",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_CF-3300.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_CF-3300",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_CF-3300.xml"
       }
     },
     {
       "id": 252,
       "values": [
         "National",
+        "FS-1300",
         "FS-1300",
         1985,
         "Japan",
@@ -24746,19 +25177,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_FS-1300",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/fs-1300/355",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-1300.xml"
+      },
       "tooltips": {
         "engine": "?",
         "engine_semi_custom": "?"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_FS-1300",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-1300.xml"
       }
     },
     {
       "id": 253,
       "values": [
         "National",
+        "FS-4000",
         "FS-4000",
         1985,
         "Japan",
@@ -24857,19 +25290,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/National_FS-4000",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/fs-4000/356",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4000.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/National_FS-4000",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/National_FS-4000.xml"
       }
     },
     {
       "id": 254,
       "values": [
         "Network",
+        "DPC-200",
         "DPC-200",
         1985,
         "United Kingdom",
@@ -24968,18 +25403,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Network_DPC-200",
+        "generation_msx": "https://generation-msx.nl/hardware/network-uk/dpc-200/1222"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Network_DPC-200"
       }
     },
     {
       "id": 255,
       "values": [
         "Nikko",
+        "PC-70100",
         "PC-70100",
         1988,
         "Probably Japan",
@@ -25078,19 +25515,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Nikko_PC-70100",
+        "generation_msx": "https://generation-msx.nl/hardware/nikko/pc-70100/1701",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Nikko_PC-70100.xml"
+      },
       "tooltips": {
         "engine": "Toshiba  T7937A",
         "engine_semi_custom": "Toshiba  T7937A"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Nikko_PC-70100",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Nikko_PC-70100.xml"
       }
     },
     {
       "id": 256,
       "values": [
         "Olympia",
+        "DPC-200",
         "DPC-200",
         1985,
         "Italy, Spain",
@@ -25189,18 +25628,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Olympia_DPC-200"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Olympia_DPC-200"
       }
     },
     {
       "id": 257,
       "values": [
         "Olympia",
+        "PHC-2",
         "PHC-2",
         1985,
         "France",
@@ -25299,19 +25739,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Olympia_PHC-2",
+        "generation_msx": "https://generation-msx.nl/hardware/olympia/phc-2/382",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Olympia_PHC-2.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Olympia_PHC-2",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Olympia_PHC-2.xml"
       }
     },
     {
       "id": 258,
       "values": [
         "Olympia",
+        "PHC-28",
         "PHC-28",
         1984,
         "France",
@@ -25410,18 +25852,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Olympia_PHC-28",
+        "generation_msx": "https://generation-msx.nl/hardware/olympia/phc-28/381"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Olympia_PHC-28"
       }
     },
     {
       "id": 259,
       "values": [
         "Panasonic",
+        "FS-3900",
         "FS-3900",
         1986,
         "Germany",
@@ -25520,18 +25964,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_FS-3900",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/fs-3900/405"
+      },
       "tooltips": {
         "engine": "probably Yamaha S3527",
         "engine_semi_custom": "probably Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_FS-3900"
       }
     },
     {
       "id": 260,
       "values": [
         "Philips",
+        "NMS 800",
         "NMS 800",
         1989,
         "Italy",
@@ -25630,18 +26076,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_NMS_800",
+        "generation_msx": "https://generation-msx.nl/hardware/philips-italy/nms-800/1212"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_800"
       }
     },
     {
       "id": 261,
       "values": [
         "Philips",
+        "NMS 801",
         "NMS 801",
         1989,
         "Italy",
@@ -25740,19 +26188,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_NMS_801",
+        "generation_msx": "https://generation-msx.nl/hardware/philips-italy/nms-801/535",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_801.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_NMS_801",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_NMS_801.xml"
       }
     },
     {
       "id": 262,
       "values": [
         "Philips",
+        "VG-8000",
         "VG-8000",
         1984,
         "Belgium, Finland, Germany",
@@ -25851,18 +26301,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_VG-8000",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8000/575"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8000"
       }
     },
     {
       "id": 263,
       "values": [
         "Philips",
+        "VG-8010",
         "VG-8010",
         1985,
         "Belgium, Germany, France and the Netherlands",
@@ -25961,18 +26413,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_VG-8010",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8010/576"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8010"
       }
     },
     {
       "id": 264,
       "values": [
         "Philips",
+        "VG-8020",
         "VG-8020",
         1985,
         "Belgium, France, Germany, the Netherlands",
@@ -26071,18 +26525,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Philips_VG-8020",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8020/577"
+      },
       "tooltips": {
         "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
         "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Philips_VG-8020"
       }
     },
     {
       "id": 265,
       "values": [
         "Phonola",
+        "VG-8000",
         "VG-8000",
         1984,
         "Italy",
@@ -26181,18 +26637,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Phonola_VG-8000",
+        "generation_msx": "https://generation-msx.nl/hardware/phonola/vg-8000/606"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Phonola_VG-8000"
       }
     },
     {
       "id": 266,
       "values": [
         "Phonola",
+        "VG-8010",
         "VG-8010",
         1985,
         "Italy",
@@ -26291,18 +26749,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Phonola_VG-8010",
+        "generation_msx": "https://generation-msx.nl/hardware/phonola/vg-8010/1075"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Phonola_VG-8010"
       }
     },
     {
       "id": 267,
       "values": [
         "Phonola",
+        "VG-8020",
         "VG-8020",
         1985,
         "Italy",
@@ -26401,18 +26861,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Phonola_VG-8020",
+        "generation_msx": "https://generation-msx.nl/hardware/phonola/vg-8020/607"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Phonola_VG-8020"
       }
     },
     {
       "id": 268,
       "values": [
         "Pioneer",
+        "PX-7",
         "PX-7",
         1984,
         "Japan",
@@ -26511,19 +26973,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Pioneer_PX-7",
+        "generation_msx": "https://generation-msx.nl/hardware/pioneer/px-7-palcom/612",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Pioneer_PX-7.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Pioneer_PX-7",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Pioneer_PX-7.xml"
       }
     },
     {
       "id": 269,
       "values": [
         "Pioneer",
+        "PX-7(HB)",
         "PX-7(HB)",
         1985,
         "United Kingdom",
@@ -26622,18 +27086,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Pioneer_PX-7(HB)",
+        "generation_msx": "https://generation-msx.nl/hardware/pioneer/px-7-palcom/612"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Pioneer_PX-7(HB)"
+        "engine_semi_custom": "none (separate IC's)",
+        "generation_msx": "https://generation-msx.nl/hardware/pioneer/px-7-palcom/612 (family)"
       }
     },
     {
       "id": 270,
       "values": [
         "Pioneer",
+        "PX-V60",
         "PX-V60",
         1986,
         "Japan",
@@ -26732,19 +27199,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Pioneer_PX-V60",
+        "generation_msx": "https://generation-msx.nl/hardware/pioneer/px-v60/617",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Pioneer_PX-V60.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Pioneer_PX-V60",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Pioneer_PX-V60.xml"
       }
     },
     {
       "id": 271,
       "values": [
         "Pioneer",
+        "PX-V7",
         "PX-V7",
         1984,
         "Japan",
@@ -26843,18 +27312,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Pioneer_PX-V7",
+        "generation_msx": "https://generation-msx.nl/hardware/pioneer/px-v7/1170"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Pioneer_PX-V7"
       }
     },
     {
       "id": 272,
       "values": [
         "Radiola",
+        "MK 180",
         "MK 180",
         1985,
         "France",
@@ -26953,18 +27424,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Radiola_MK_180",
+        "generation_msx": "https://generation-msx.nl/hardware/radiola/mk-180/626"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Radiola_MK_180"
       }
     },
     {
       "id": 273,
       "values": [
         "Sakhr",
+        "AH-200",
         "AH-200",
         1985,
         "Middle East",
@@ -27063,18 +27536,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AH-200",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ah-200/636"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AH-200"
       }
     },
     {
       "id": 274,
       "values": [
         "Sakhr",
+        "AX-100",
         "AX-100",
         1985,
         "Middle East",
@@ -27173,18 +27648,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-100",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-100/638"
+      },
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-100"
       }
     },
     {
       "id": 275,
       "values": [
         "Yamaha",
+        "AX-150",
         "AX-150",
         1986,
         "Middle East",
@@ -27283,19 +27760,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-150",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-150/640",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX150.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-150",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX150.xml"
       }
     },
     {
       "id": 276,
       "values": [
         "Sakhr",
+        "AX-170",
         "AX-170",
         1986,
         "Middle East, Maghreb",
@@ -27394,19 +27873,21 @@ window.MSX_DATA = {
         "CS2!",
         "CS2!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-170",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-170/641",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Al_Alamiah_AX170.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T7937 or T7937A",
         "engine_semi_custom": "Toshiba T7937 or T7937A"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-170",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Al_Alamiah_AX170.xml"
       }
     },
     {
       "id": 277,
       "values": [
         "Sakhr",
+        "AX-170 (TH)",
         "AX-170 (TH)",
         1988,
         "Thailand",
@@ -27505,18 +27986,20 @@ window.MSX_DATA = {
         "CS2!",
         "CS2!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-170_(TH)",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-170-th/1849"
+      },
       "tooltips": {
         "engine": "Toshiba T7937A",
         "engine_semi_custom": "Toshiba T7937A"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-170_(TH)"
       }
     },
     {
       "id": 278,
       "values": [
         "Sakhr",
+        "AX-170F",
         "AX-170F",
         1986,
         "Middle East, Maghreb",
@@ -27615,18 +28098,19 @@ window.MSX_DATA = {
         "CS2!",
         "CS2!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-170"
+      },
       "tooltips": {
         "engine": "Toshiba T7937 or T7937A",
         "engine_semi_custom": "Toshiba T7937 or T7937A"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-170"
       }
     },
     {
       "id": 279,
       "values": [
         "Yamaha",
+        "AX-200",
         "AX-200",
         1986,
         "Middle East, Maghreb",
@@ -27725,19 +28209,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-200",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-200/642",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX200.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-200",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_AX200.xml"
       }
     },
     {
       "id": 280,
       "values": [
         "Sakhr",
+        "AX-200F",
         "AX-200F",
         1986,
         "Middle East, Maghreb",
@@ -27836,18 +28322,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-200"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-200"
       }
     },
     {
       "id": 281,
       "values": [
         "Sakhr",
+        "AX-230",
         "AX-230",
         1986,
         "Middle East",
@@ -27946,19 +28433,21 @@ window.MSX_DATA = {
         "FW",
         "FW"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-230",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-230/643",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Al_Alamiah_AX230.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T7937A",
         "engine_semi_custom": "Toshiba T7937A"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-230",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Al_Alamiah_AX230.xml"
       }
     },
     {
       "id": 282,
       "values": [
         "Sakhr",
+        "AX-330",
         "AX-330",
         1992,
         "Middle East",
@@ -28057,18 +28546,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-330",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-330/645"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array NEC AW100)",
         "engine_semi_custom": "None (separate ICs whose a gate array NEC AW100)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-330"
       }
     },
     {
       "id": 283,
       "values": [
         "Sakhr",
+        "AX-660",
         "AX-660",
         1992,
         "Middle East",
@@ -28167,18 +28658,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-660",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-660/649"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)",
         "engine_semi_custom": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-660"
       }
     },
     {
       "id": 284,
       "values": [
         "Sakhr",
+        "AX-990",
         "AX-990",
         1992,
         "Middle East",
@@ -28277,18 +28770,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sakhr_AX-990",
+        "generation_msx": "https://generation-msx.nl/hardware/skhr/ax-990/650"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)",
         "engine_semi_custom": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sakhr_AX-990"
       }
     },
     {
       "id": 285,
       "values": [
         "Samsung",
+        "SPC-800",
         "SPC-800",
         1984,
         "Korea",
@@ -28387,18 +28882,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Samsung_SPC-800",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/spc-800/657"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Samsung_SPC-800"
       }
     },
     {
       "id": 286,
       "values": [
         "Samsung",
+        "SPC-800U",
         "SPC-800U",
         1985,
         "Europe",
@@ -28497,18 +28994,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Samsung_SPC-800U"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Samsung_SPC-800U"
       }
     },
     {
       "id": 287,
       "values": [
         "Sanno",
+        "PHC-SPC",
         "PHC-SPC",
         1985,
         "Japan",
@@ -28607,18 +29105,19 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanno_PHC-SPC"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanno_PHC-SPC"
       }
     },
     {
       "id": 288,
       "values": [
         "Sanno",
+        "SPCmk-II",
         "SPCmk-II",
         1984,
         "Japan",
@@ -28717,18 +29216,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanno_SPCmk-II",
+        "generation_msx": "https://generation-msx.nl/hardware/sanno/spcmk-ii/1344"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanno_SPCmk-II"
       }
     },
     {
       "id": 289,
       "values": [
         "Sanno",
+        "SPCmk-III",
         "SPCmk-III",
         1985,
         "Japan",
@@ -28827,18 +29328,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanno_SPCmk-III",
+        "generation_msx": "https://generation-msx.nl/hardware/sanno/spcmk-iii/659"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanno_SPCmk-III"
       }
     },
     {
       "id": 290,
       "values": [
         "Sanyo",
+        "MPC-1",
         "MPC-1",
         1985,
         "Japan",
@@ -28847,7 +29350,7 @@ window.MSX_DATA = {
         16,
         "No",
         null,
-        null,
+        "0xF380",
         "T6950",
         16,
         null,
@@ -28857,19 +29360,19 @@ window.MSX_DATA = {
         2,
         null,
         "Yes",
-        null,
+        "Z80",
         null,
         "NMOS",
-        null,
+        "No",
         "None",
         "T7775",
-        null,
+        "No",
         "QWERTY/JP50on",
-        null,
-        null,
+        "Japanese",
+        "Japanese",
         null,
         "Yes",
-        null,
+        "Sanyo_MPC-1",
         null,
         "B000F000F0000000",
         "MAIN",
@@ -28937,18 +29440,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-1",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-1-wavy1/669",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-1.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T7775",
         "engine_semi_custom": "Toshiba T7775"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-1"
       }
     },
     {
       "id": 291,
       "values": [
         "Sanyo",
+        "MPC-10",
         "MPC-10",
         1983,
         "Japan",
@@ -28957,7 +29463,7 @@ window.MSX_DATA = {
         32,
         "No",
         null,
-        null,
+        "0xF380",
         "TMS9918A",
         16,
         null,
@@ -28967,19 +29473,19 @@ window.MSX_DATA = {
         1,
         null,
         "Yes",
-        null,
+        "Z80",
         null,
         "NMOS",
-        null,
+        "No",
         "None",
         "None",
-        null,
+        "No",
         "QWERTY/JP50on",
-        null,
-        null,
+        "Japanese",
+        "Japanese",
         null,
         "Yes",
-        null,
+        "Sanyo_MPC-10",
         null,
         "F000F000F0000000",
         "MAIN",
@@ -29047,18 +29553,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-10",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-10-wavy10/670",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-10.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-10"
       }
     },
     {
       "id": 292,
       "values": [
         "Sanyo",
+        "MPC-100",
         "MPC-100",
         1985,
         "United Kingdom",
@@ -29157,19 +29666,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-100",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-100/672",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-100.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
         "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-100",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-100.xml"
       }
     },
     {
       "id": 293,
       "values": [
         "Sanyo",
+        "MPC-10mkII",
         "MPC-10mkII",
         1984,
         "Japan",
@@ -29178,7 +29689,7 @@ window.MSX_DATA = {
         32,
         "No",
         null,
-        null,
+        "0xF380",
         "TMS9918A",
         16,
         null,
@@ -29188,19 +29699,19 @@ window.MSX_DATA = {
         1,
         null,
         "Yes",
-        null,
+        "Z80",
         null,
         "NMOS",
-        null,
+        "No",
         "MB64H120 and uPD65002C022",
         "None",
-        null,
+        "No",
         "QWERTY/JP50on",
-        null,
-        null,
+        "Japanese",
+        "Japanese",
         null,
         "Yes",
-        null,
+        "Sanyo_MPC-10mkII",
         null,
         "F000F000F0002000",
         "MAIN",
@@ -29268,18 +29779,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-10mkII",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-10mkii-wavy10mkii/671",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-10mkII.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose 2 gate arrays: Fujitsu MB64H120 for memory, uPD65002C022 for light pen interface)",
         "engine_semi_custom": "None (separate ICs whose 2 gate arrays: Fujitsu MB64H120 for memory, uPD65002C022 for light pen interface)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-10mkII"
       }
     },
     {
       "id": 294,
       "values": [
         "Sanyo",
+        "MPC-11",
         "MPC-11",
         1984,
         "Japan",
@@ -29288,7 +29802,7 @@ window.MSX_DATA = {
         32,
         "No",
         null,
-        null,
+        "0xF380",
         "TMS9928A",
         16,
         null,
@@ -29298,19 +29812,19 @@ window.MSX_DATA = {
         1,
         null,
         "Yes",
-        null,
+        "Z80",
         null,
         "NMOS",
-        null,
+        "No",
         "None",
         "None",
-        null,
+        "No",
         "QWERTY/JP50on + numeric keypad",
-        null,
-        null,
+        "Japanese",
+        "Japanese",
         null,
         "Yes",
-        null,
+        "Sanyo_MPC-11",
         null,
         "F000F000F0000000",
         "MAIN",
@@ -29378,18 +29892,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-11",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-11-wavy-11/673",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-11.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-11"
       }
     },
     {
       "id": 295,
       "values": [
         "Sanyo",
+        "MPC-2",
         "MPC-2",
         1985,
         "Japan",
@@ -29488,19 +30005,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-2",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-2-wavy2/675",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-2.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T7775",
         "engine_semi_custom": "Toshiba T7775"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-2",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-2.xml"
       }
     },
     {
       "id": 296,
       "values": [
         "Sanyo",
+        "MPC-3",
         "MPC-3",
         1985,
         "Japan",
@@ -29509,7 +30028,7 @@ window.MSX_DATA = {
         16,
         "No",
         null,
-        null,
+        "0xF380",
         "TMS9118",
         16,
         null,
@@ -29519,19 +30038,19 @@ window.MSX_DATA = {
         3,
         null,
         "Yes",
-        null,
+        "Z80",
         null,
         "NMOS",
-        null,
+        "No",
         "None",
         "None",
-        null,
+        "No",
         "QWERTY/JP50on",
-        null,
-        null,
+        "Japanese",
+        "Japanese",
         null,
         "No",
-        null,
+        "Sanyo_MPC-3",
         null,
         "B000F000F000F000",
         "MAIN",
@@ -29599,18 +30118,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-3",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-3-wavy3/681",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-3.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-3"
       }
     },
     {
       "id": 297,
       "values": [
         "Sanyo",
+        "MPC-5",
         "MPC-5",
         1984,
         "Japan",
@@ -29709,18 +30231,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-5",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-5-wavy5/683"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-5"
       }
     },
     {
       "id": 298,
       "values": [
         "Sanyo",
+        "MPC-6",
         "MPC-6",
         1985,
         "Japan",
@@ -29729,7 +30253,7 @@ window.MSX_DATA = {
         64,
         "No",
         null,
-        null,
+        "0xF380",
         "TMS9918A",
         16,
         null,
@@ -29739,19 +30263,19 @@ window.MSX_DATA = {
         1,
         null,
         "Yes",
-        null,
+        "Z80",
         null,
         "NMOS",
-        null,
+        "No",
         "None",
         "None",
-        null,
+        "No",
         "QWERTY/JP50on",
-        null,
-        null,
+        "Japanese",
+        "Japanese",
         null,
         "Yes",
-        null,
+        "Sanyo_MPC-6",
         null,
         "3000F000F000F000",
         "MAIN",
@@ -29819,18 +30343,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-6",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-6-wavy6/684",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-6.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-6"
       }
     },
     {
       "id": 299,
       "values": [
         "Sanyo",
+        "MPC-64",
         "MPC-64",
         1985,
         "Germany",
@@ -29929,19 +30456,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-64",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-64/685",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-64.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array VLC9001, which is a Fujitsu MB64H120 clone)",
         "engine_semi_custom": "None (separate ICs whose a gate array VLC9001, which is a Fujitsu MB64H120 clone)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-64",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-64.xml"
       }
     },
     {
       "id": 300,
       "values": [
         "Sanyo",
+        "PHC-25SK",
         "PHC-25SK",
         1986,
         "Japan",
@@ -30040,18 +30569,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-25SK",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-25sk-wavy-25sk/1912"
+      },
       "tooltips": {
         "engine": "probably Toshiba T7775",
         "engine_semi_custom": "probably Toshiba T7775"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-25SK"
       }
     },
     {
       "id": 301,
       "values": [
         "Sanyo",
+        "PHC-27",
         "PHC-27",
         1985,
         "Japan",
@@ -30150,18 +30681,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-27",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-27/694"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-27"
       }
     },
     {
       "id": 302,
       "values": [
         "Sanyo",
+        "PHC-28L",
         "PHC-28L",
         1985,
         "France",
@@ -30260,19 +30793,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-28L",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-28l/695",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-28L.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
         "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-28L",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-28L.xml"
       }
     },
     {
       "id": 303,
       "values": [
         "Sanyo",
+        "PHC-28P (DE)",
         "PHC-28P (DE)",
         1984,
         "Germany",
@@ -30371,18 +30906,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-28P_(GE)",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-28p/1383"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
-        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-28P_(GE)"
+        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-28p/1383 (family)"
       }
     },
     {
       "id": 304,
       "values": [
         "Sanyo",
+        "PHC-28P (ES)",
         "PHC-28P (ES)",
         1984,
         "Spain",
@@ -30481,18 +31019,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-28P_(SP)",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-28p/1383"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-28P_(SP)"
+        "engine_semi_custom": "none (separate IC's)",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-28p/1383 (family)"
       }
     },
     {
       "id": 305,
       "values": [
         "Sanyo",
+        "PHC-28S",
         "PHC-28S",
         1984,
         "France",
@@ -30591,19 +31132,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-28S",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-28s/696",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-28S.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
         "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-28S",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-28S.xml"
       }
     },
     {
       "id": 306,
       "values": [
         "Sanyo",
+        "PHC-30",
         "PHC-30",
         1984,
         "Japan",
@@ -30702,18 +31245,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-30",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-30/697"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
         "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-30"
       }
     },
     {
       "id": 307,
       "values": [
         "Sanyo",
+        "PHC-30N",
         "PHC-30N",
         1984,
         "Japan",
@@ -30812,19 +31357,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-30N",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-30n/698",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-30N.xml"
+      },
       "tooltips": {
         "engine": "probably Yamaha S3527",
         "engine_semi_custom": "probably Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-30N",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-30N.xml"
       }
     },
     {
       "id": 308,
       "values": [
         "Sanyo",
+        "PHC-30N (FR)",
         "PHC-30N (FR)",
         1985,
         "France",
@@ -30923,18 +31470,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-30N_(FR)",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-30n/698"
+      },
       "tooltips": {
         "engine": "probably Yamaha S3527",
-        "engine_semi_custom": "probably Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-30N_(FR)"
+        "engine_semi_custom": "probably Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-30n/698 (family)"
       }
     },
     {
       "id": 309,
       "values": [
         "Sanyo",
+        "PHC-30N (DE)",
         "PHC-30N (DE)",
         1985,
         "Germany",
@@ -31033,18 +31583,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-30N_(GE)",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-30n/698"
+      },
       "tooltips": {
         "engine": "probably Yamaha S3527",
-        "engine_semi_custom": "probably Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-30N_(GE)"
+        "engine_semi_custom": "probably Yamaha S3527",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-30n/698 (family)"
       }
     },
     {
       "id": 310,
       "values": [
         "Sanyo",
+        "PHC-33",
         "PHC-33",
         1985,
         "Japan",
@@ -31143,19 +31696,21 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_PHC-33",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-33/699",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-33.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_PHC-33",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-33.xml"
       }
     },
     {
       "id": 311,
       "values": [
         "Schneider",
+        "MC 810",
         "MC 810",
         1985,
         "France",
@@ -31254,18 +31809,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Schneider_MC_810",
+        "generation_msx": "https://generation-msx.nl/hardware/schneider/mc-810/711"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Schneider_MC_810"
       }
     },
     {
       "id": 312,
       "values": [
         "Sharp",
+        "HB-8000",
         "HB-8000",
         1985,
         "Brazil",
@@ -31364,18 +31921,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sharp_HB-8000",
+        "generation_msx": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-1011/724"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sharp_HB-8000"
       }
     },
     {
       "id": 313,
       "values": [
         "Sincorp",
+        "SBX",
         "SBX",
         1985,
         "Argentina",
@@ -31474,18 +32033,19 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sincorp_SBX"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sincorp_SBX"
       }
     },
     {
       "id": 314,
       "values": [
         "Sony",
+        "HB-11",
         "HB-11",
         1986,
         "Japan",
@@ -31584,19 +32144,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-11",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-11/735",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-11.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-11",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-11.xml"
       }
     },
     {
       "id": 315,
       "values": [
         "Sony",
+        "HB-701",
         "HB-701",
         1984,
         "Japan",
@@ -31695,19 +32257,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-701",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-701/740",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-701.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-701",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-701.xml"
       }
     },
     {
       "id": 316,
       "values": [
         "Sony",
+        "HB-701FD",
         "HB-701FD",
         1984,
         "Japan",
@@ -31806,19 +32370,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-701FD",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-701fd/741",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-701FD.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-701FD",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-701FD.xml"
       }
     },
     {
       "id": 317,
       "values": [
         "Spectravideo",
+        "SVI-728",
         "SVI-728",
         1984,
         "Europe, Middle East",
@@ -31917,19 +32483,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Spectravideo_SVI-728",
+        "generation_msx": "https://generation-msx.nl/hardware/spectravideo-svi/svi-728/838",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-728.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Spectravideo_SVI-728",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-728.xml"
       }
     },
     {
       "id": 318,
       "values": [
         "Spectravideo",
+        "SVI-738",
         "SVI-738",
         1985,
         "Europe, Middle East",
@@ -32028,18 +32596,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Spectravideo_SVI-738",
+        "generation_msx": "https://generation-msx.nl/hardware/spectravideo-svi/svi-738/840"
+      },
       "tooltips": {
         "engine": "2 ULA and standard logic",
         "engine_semi_custom": "2 ULA and standard logic"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Spectravideo_SVI-738"
       }
     },
     {
       "id": 319,
       "values": [
         "Spectravideo",
+        "SVI-811",
         "SVI-811",
         1986,
         null,
@@ -32147,6 +32717,7 @@ window.MSX_DATA = {
       "values": [
         "Talent",
         "DPC-200",
+        "DPC-200",
         1986,
         "Argentina",
         null,
@@ -32244,19 +32815,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Talent_DPC-200",
+        "generation_msx": "https://generation-msx.nl/hardware/telematicatalent/dpc-200/893",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Talent_DPC-200.xml"
+      },
       "tooltips": {
         "engine": "Daewoo DW64MX1",
         "engine_semi_custom": "Daewoo DW64MX1"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Talent_DPC-200",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Talent_DPC-200.xml"
       }
     },
     {
       "id": 321,
       "values": [
         "Talent",
+        "DPC-200A",
         "DPC-200A",
         1988,
         "Argentina",
@@ -32355,18 +32928,20 @@ window.MSX_DATA = {
         "EXP",
         "EXP"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Talent_DPC-200A",
+        "generation_msx": "https://generation-msx.nl/hardware/telematicatalent/dpc-200a/894"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Talent_DPC-200A"
       }
     },
     {
       "id": 322,
       "values": [
         "Talent",
+        "DPS-201",
         "DPS-201",
         1987,
         "Argentina",
@@ -32465,18 +33040,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Talent_DPS-201",
+        "generation_msx": "https://generation-msx.nl/hardware/telematicatalent/dps-201/900"
+      },
       "tooltips": {
         "engine": "Daewoo DW64MX1",
         "engine_semi_custom": "Daewoo DW64MX1"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Talent_DPS-201"
       }
     },
     {
       "id": 323,
       "values": [
         "Bawareth Ent. for Trade/Daewoo",
+        "Perfect MSX1",
         "Perfect MSX1",
         null,
         "Middle East",
@@ -32576,6 +33153,7 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/bawarethal-mithali/perfect-msx1/448",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Bawareth_Perfect_MSX1.xml"
       }
     },
@@ -32583,6 +33161,7 @@ window.MSX_DATA = {
       "id": 324,
       "values": [
         "Canon",
+        "V-20 (EU)",
         "V-20 (EU)",
         1985,
         "United Kingdom",
@@ -32681,19 +33260,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Canon_V-20_(EU)",
+        "generation_msx": "https://generation-msx.nl/hardware/canon/v-20/61",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-20.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Canon_V-20_(EU)",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-20.xml"
       }
     },
     {
       "id": 325,
       "values": [
         "Canon",
+        "V-20 (FR)",
         "V-20 (FR)",
         1985,
         "France",
@@ -32792,19 +33373,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Canon_V-20_(FR)",
+        "generation_msx": "https://generation-msx.nl/hardware/canon/v-20/61",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-20_FR.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Canon_V-20_(FR)",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-20_FR.xml"
       }
     },
     {
       "id": 326,
       "values": [
         "Canon",
+        "V-20 (JP)",
         "V-20 (JP)",
         1984,
         "Japan",
@@ -32903,19 +33486,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Canon_V-20",
+        "generation_msx": "https://generation-msx.nl/hardware/canon/v-20/61",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-20_JP.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Canon_V-20",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Canon_V-20_JP.xml"
       }
     },
     {
       "id": 328,
       "values": [
         "Daewoo",
+        "CPC-51 Zemmix V",
         "CPC-51 Zemmix V",
         1986,
         "Korea",
@@ -33014,19 +33599,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Daewoo_CPC-51",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-51-zemmix-v/115",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-51_Zemmix_V.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Daewoo_CPC-51",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-51_Zemmix_V.xml"
       }
     },
     {
       "id": 332,
       "values": [
         "Frael",
+        "BRUC 100 (v2)",
         "BRUC 100 (v2)",
         1988,
         "Italy",
@@ -33125,19 +33712,22 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
       "links": {
         "model": "https://www.msx.org/wiki/Frael_Bruc_100",
+        "generation_msx": "https://generation-msx.nl/hardware/frael/bruc-100/1090",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Frael_Bruc_100_2.xml"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)",
+        "generation_msx": "https://generation-msx.nl/hardware/frael/bruc-100/1090 (family)"
       }
     },
     {
       "id": 333,
       "values": [
         "Fujitsu",
+        "FM-X",
         "FM-X",
         1983,
         "Japan",
@@ -33236,19 +33826,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Fujitsu_FM-X",
+        "generation_msx": "https://generation-msx.nl/hardware/fujitsu/fm-x/195",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Fujitsu_FM-X.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Fujitsu_FM-X",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Fujitsu_FM-X.xml"
       }
     },
     {
       "id": 334,
       "values": [
         "General",
+        "Paxon PCT-55",
         "Paxon PCT-55",
         1984,
         "Japan",
@@ -33348,119 +33940,15 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/fujitsu-general-paxon/paxon-pct-55/198",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/General_Paxon_PCT-55.xml"
-      }
-    },
-    {
-      "id": 335,
-      "values": [
-        "Gradiente",
-        "Expert DD Plus",
-        1989,
-        "Brazil",
-        null,
-        "MSX1",
-        64,
-        "No",
-        null,
-        "0xDF93",
-        null,
-        null,
-        null,
-        "Yes",
-        null,
-        "1",
-        2,
-        null,
-        "Yes",
-        "Z80",
-        null,
-        "NMOS",
-        "No",
-        null,
-        null,
-        "No",
-        "br_gradiente_1_1",
-        "International",
-        "International",
-        null,
-        "Yes",
-        "Gradiente_Expert_DD_Plus",
-        null,
-        "3000F000F000F006",
-        "MAIN",
-        "MAIN",
-        "⏺",
-        "⏺",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS1",
-        "CS1",
-        "CS1",
-        "CS1",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS2",
-        "CS2",
-        "CS2",
-        "CS2",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "RAM",
-        "RAM",
-        "RAM",
-        "RAM",
-        "⏺",
-        "⏺",
-        "⏺",
-        "⏺",
-        "⏺",
-        "⏺",
-        "⏺",
-        "⏺",
-        "⏺",
-        "DSK",
-        "DSK*",
-        "⏺"
-      ],
-      "links": {
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Gradiente_Expert_DD_Plus.xml"
       }
     },
     {
       "id": 336,
       "values": [
         "Panasonic",
+        "CF-2700 (DE)",
         "CF-2700 (DE)",
         1985,
         "Germany",
@@ -33559,19 +34047,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_CF-2700_(GE)",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/cf-2700ge/1144",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_CF-2700_DE.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_CF-2700_(GE)",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_CF-2700_DE.xml"
       }
     },
     {
       "id": 337,
       "values": [
         "Panasonic",
+        "CF-2700 (GB)",
         "CF-2700 (GB)",
         1985,
         "Spain, The Netherlands, United Kingdom",
@@ -33670,19 +34160,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_CF-2700_(UK)",
+        "generation_msx": "https://generation-msx.nl/hardware/panasonic/cf-2700uk/1143",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_CF-2700_GB.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_CF-2700_(UK)",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Panasonic_CF-2700_GB.xml"
       }
     },
     {
       "id": 338,
       "values": [
         "Philips",
+        "VG 8000/00",
         "VG 8000/00",
         1984,
         "Europe",
@@ -33781,19 +34273,22 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8000/575",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8000.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8000"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8000/575 (family)"
       }
     },
     {
       "id": 339,
       "values": [
         "Philips",
+        "VG 8010/00",
         "VG 8010/00",
         1984,
         "Europe",
@@ -33892,19 +34387,22 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8010/576",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8010.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8010"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8010/576 (family)"
       }
     },
     {
       "id": 340,
       "values": [
         "Philips",
+        "VG 8010/19",
         "VG 8010/19",
         1984,
         "France",
@@ -34003,19 +34501,22 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8010/576",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8010F.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8010"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8010/576 (family)"
       }
     },
     {
       "id": 341,
       "values": [
         "Philips",
+        "VG 8020/00",
         "VG 8020/00",
         1985,
         "Europe",
@@ -34114,19 +34615,22 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
-        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8020/577",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8020.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8020"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8020/577 (family)"
       }
     },
     {
       "id": 342,
       "values": [
         "Philips",
+        "VG 8020/19",
         "VG 8020/19",
         1985,
         "France",
@@ -34225,19 +34729,22 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
-        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8020/577",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8020F.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8020"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8020/577 (family)"
       }
     },
     {
       "id": 343,
       "values": [
         "Philips",
+        "VG 8020/20",
         "VG 8020/20",
         1985,
         "Europe",
@@ -34336,19 +34843,22 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
-        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8020/577",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Philips_VG_8020-20.xml",
         "model": "https://www.msx.org/wiki/Philips_VG-8020"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8020/577 (family)"
       }
     },
     {
       "id": 344,
       "values": [
         "Pioneer",
+        "PX-7(GB)",
         "PX-7(GB)",
         null,
         "uk",
@@ -34448,649 +34958,15 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/pioneer/px-7uk/1169",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Pioneer_PX-7UK.xml"
-      }
-    },
-    {
-      "id": 347,
-      "values": [
-        "Sanyo",
-        "MPC-1/Wavy1",
-        1985,
-        "Japan",
-        null,
-        "MSX1",
-        16,
-        "No",
-        null,
-        "0xF380",
-        "T6950",
-        null,
-        null,
-        "Yes",
-        null,
-        null,
-        2,
-        null,
-        "Yes",
-        "Z80",
-        null,
-        "NMOS",
-        "No",
-        null,
-        null,
-        "No",
-        "Japanese (ANSI)",
-        "Japanese",
-        "Japanese",
-        null,
-        "Yes",
-        "Sanyo_MPC-1",
-        null,
-        "B000F000F0000000",
-        "MAIN",
-        "MAIN",
-        "⏺",
-        "RAM",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS1",
-        "CS1",
-        "CS1",
-        "CS1",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS2",
-        "CS2",
-        "CS2",
-        "CS2",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·"
-      ],
-      "links": {
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-1.xml"
-      }
-    },
-    {
-      "id": 348,
-      "values": [
-        "Sanyo",
-        "MPC-10/Wavy10",
-        null,
-        "Japan",
-        null,
-        "MSX1",
-        32,
-        "No",
-        null,
-        "0xF380",
-        "TMS9918A",
-        null,
-        null,
-        "Yes",
-        null,
-        null,
-        2,
-        null,
-        "Yes",
-        "Z80",
-        null,
-        "NMOS",
-        "No",
-        null,
-        null,
-        "No",
-        "Japanese (ANSI)",
-        "Japanese",
-        "Japanese",
-        null,
-        "Yes",
-        "Sanyo_MPC-10",
-        null,
-        "F000F000F0000000",
-        "MAIN",
-        "MAIN",
-        "RAM",
-        "RAM",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS1",
-        "CS1",
-        "CS1",
-        "CS1",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS2",
-        "CS2",
-        "CS2",
-        "CS2",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·"
-      ],
-      "links": {
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-10.xml"
-      }
-    },
-    {
-      "id": 349,
-      "values": [
-        "Sanyo",
-        "MPC-10/Wavy10mkII",
-        1984,
-        "Japan",
-        null,
-        "MSX1",
-        32,
-        "No",
-        null,
-        "0xF380",
-        "TMS9918A",
-        null,
-        null,
-        "Yes",
-        null,
-        null,
-        2,
-        null,
-        "Yes",
-        "Z80",
-        null,
-        "NMOS",
-        "No",
-        null,
-        null,
-        "No",
-        "Japanese (ANSI)",
-        "Japanese",
-        "Japanese",
-        null,
-        "Yes",
-        "Sanyo_MPC-10mkII",
-        null,
-        "F000F000F0002000",
-        "MAIN",
-        "MAIN",
-        "RAM",
-        "RAM",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS1",
-        "CS1",
-        "CS1",
-        "CS1",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS2",
-        "CS2",
-        "CS2",
-        "CS2",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "⏺",
-        "FW",
-        "⏺",
-        "⏺",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·"
-      ],
-      "links": {
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-10mkII.xml"
-      }
-    },
-    {
-      "id": 350,
-      "values": [
-        "Sanyo",
-        "MPC-11/Wavy11",
-        1984,
-        "Japan",
-        null,
-        "MSX1",
-        32,
-        "No",
-        null,
-        "0xF380",
-        "TMS9928A",
-        null,
-        null,
-        "Yes",
-        null,
-        null,
-        2,
-        null,
-        "Yes",
-        "Z80",
-        null,
-        "NMOS",
-        "No",
-        null,
-        null,
-        "No",
-        "Japanese (ANSI)",
-        "Japanese",
-        "Japanese",
-        null,
-        "Yes",
-        "Sanyo_MPC-11",
-        null,
-        "F000F000F0000000",
-        "MAIN",
-        "MAIN",
-        "RAM",
-        "RAM",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS1",
-        "CS1",
-        "CS1",
-        "CS1",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS2",
-        "CS2",
-        "CS2",
-        "CS2",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·"
-      ],
-      "links": {
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-11.xml"
-      }
-    },
-    {
-      "id": 352,
-      "values": [
-        "Sanyo",
-        "MPC-3/Wavy3",
-        1985,
-        "Japan",
-        null,
-        "MSX1",
-        16,
-        "No",
-        null,
-        "0xF380",
-        "TMS9118",
-        null,
-        null,
-        "Yes",
-        null,
-        null,
-        3,
-        null,
-        "Yes",
-        "Z80",
-        null,
-        "NMOS",
-        "No",
-        null,
-        null,
-        "No",
-        "Japanese (ANSI)",
-        "Japanese",
-        "Japanese",
-        null,
-        "No",
-        "Sanyo_MPC-3",
-        null,
-        "B000F000F000F000",
-        "MAIN",
-        "MAIN",
-        "⏺",
-        "RAM",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS1",
-        "CS1",
-        "CS1",
-        "CS1",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS2",
-        "CS2",
-        "CS2",
-        "CS2",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS3",
-        "CS3",
-        "CS3",
-        "CS3",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·"
-      ],
-      "links": {
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-3.xml"
-      }
-    },
-    {
-      "id": 353,
-      "values": [
-        "Sanyo",
-        "MPC-6/Wavy6",
-        null,
-        "Japan",
-        null,
-        "MSX1",
-        64,
-        "No",
-        null,
-        "0xF380",
-        "TMS9918A",
-        null,
-        null,
-        "Yes",
-        null,
-        null,
-        2,
-        null,
-        "Yes",
-        "Z80",
-        null,
-        "NMOS",
-        "No",
-        null,
-        null,
-        "No",
-        "Japanese (ANSI)",
-        "Japanese",
-        "Japanese",
-        null,
-        "Yes",
-        "Sanyo_MPC-6",
-        null,
-        "3000F000F000F000",
-        "MAIN",
-        "MAIN",
-        "⏺",
-        "⏺",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS1",
-        "CS1",
-        "CS1",
-        "CS1",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS2",
-        "CS2",
-        "CS2",
-        "CS2",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "RAM",
-        "RAM",
-        "RAM",
-        "RAM",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·"
-      ],
-      "links": {
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_MPC-6.xml"
       }
     },
     {
       "id": 354,
       "values": [
         "Sanyo",
+        "PHC-28P",
         "PHC-28P",
         null,
         "Germany",
@@ -35190,6 +35066,7 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-28p/1383",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-28P.xml"
       }
     },
@@ -35197,6 +35074,7 @@ window.MSX_DATA = {
       "id": 355,
       "values": [
         "Sanyo",
+        "PHC-SPC",
         "PHC-SPC",
         1985,
         "Japan",
@@ -35304,6 +35182,7 @@ window.MSX_DATA = {
       "values": [
         "Sharp",
         "HB-8000 v1.1",
+        "HB-8000 v1.1",
         1985,
         "Brazil",
         null,
@@ -35402,6 +35281,7 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-1011/724",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sharp_HB-8000_1.1.xml"
       }
     },
@@ -35409,6 +35289,7 @@ window.MSX_DATA = {
       "id": 357,
       "values": [
         "Sharp",
+        "HB-8000 v1.2",
         "HB-8000 v1.2",
         1987,
         "Brazil",
@@ -35508,6 +35389,7 @@ window.MSX_DATA = {
         "·"
       ],
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-12/725",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sharp_HB-8000_1.2.xml"
       }
     },
@@ -35515,6 +35397,7 @@ window.MSX_DATA = {
       "id": 358,
       "values": [
         "Sony",
+        "HB-10",
         "HB-10",
         1985,
         "Japan",
@@ -35613,19 +35496,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-10",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-10/734",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-10.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-10",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-10.xml"
       }
     },
     {
       "id": 359,
       "values": [
         "Sony",
+        "HB-101",
         "HB-101",
         1984,
         "Japan",
@@ -35724,19 +35609,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-101",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-101/733",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-101.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-101",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-101.xml"
       }
     },
     {
       "id": 360,
       "values": [
         "Sony",
+        "HB-101P",
         "HB-101P",
         1984,
         "Europe",
@@ -35835,19 +35722,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-101P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-101p/1382",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-101P.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-101P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-101P.xml"
       }
     },
     {
       "id": 361,
       "values": [
         "Sony",
+        "HB-10P",
         "HB-10P",
         1986,
         "Netherlands",
@@ -35946,19 +35835,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-10P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-10p/1158",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-10P.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-10P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-10P.xml"
       }
     },
     {
       "id": 362,
       "values": [
         "Sony",
+        "HB-201",
         "HB-201",
         1985,
         "Japan",
@@ -36057,19 +35948,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-201",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-201/1381",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-201.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-201",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-201.xml"
       }
     },
     {
       "id": 363,
       "values": [
         "Sony",
+        "HB-201P",
         "HB-201P",
         1985,
         "Europe",
@@ -36168,19 +36061,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-201P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-201p/736",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-201P.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-201P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-201P.xml"
       }
     },
     {
       "id": 364,
       "values": [
         "Sony",
+        "HB-20P",
         "HB-20P",
         1986,
         "Spain",
@@ -36279,19 +36174,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-20P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-20p/737",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-20P.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-20P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-20P.xml"
       }
     },
     {
       "id": 365,
       "values": [
         "Sony",
+        "HB-501P",
         "HB-501P",
         1984,
         "Europe",
@@ -36390,19 +36287,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-501P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-501p/738",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-501P.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-501P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-501P.xml"
       }
     },
     {
       "id": 366,
       "values": [
         "Sony",
+        "HB-55P",
         "HB-55P",
         1984,
         "Europe",
@@ -36501,19 +36400,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-55P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-55p/1374",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-55P.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-55P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-55P.xml"
       }
     },
     {
       "id": 367,
       "values": [
         "Sony",
+        "HB-75",
         "HB-75",
         1984,
         "Japan",
@@ -36612,19 +36513,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-75",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-75/743",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-75.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-75",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-75.xml"
       }
     },
     {
       "id": 368,
       "values": [
         "Sony",
+        "HB-75D",
         "HB-75D",
         1984,
         "Germany",
@@ -36723,19 +36626,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-75D",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-75d/1228",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-75D.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-75D",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-75D.xml"
       }
     },
     {
       "id": 369,
       "values": [
         "Spectravideo",
+        "SVI-728 (ES)",
         "SVI-728 (ES)",
         1983,
         "Spain",
@@ -36834,19 +36739,22 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/spectravideo-svi/svi-728/838",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-728_ES.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-728"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)",
+        "generation_msx": "https://generation-msx.nl/hardware/spectravideo-svi/svi-728/838 (family)"
       }
     },
     {
       "id": 370,
       "values": [
         "Spectravideo",
+        "SVI-728 (SE)",
         "SVI-728 (SE)",
         1984,
         "Sweden",
@@ -36945,19 +36853,22 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
       "links": {
+        "generation_msx": "https://generation-msx.nl/hardware/spectravideo-svi/svi-728/838",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-728_SE.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-728"
+      },
+      "tooltips": {
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)",
+        "generation_msx": "https://generation-msx.nl/hardware/spectravideo-svi/svi-728/838 (family)"
       }
     },
     {
       "id": 371,
       "values": [
         "Spectravideo",
+        "SVI-738 X'PRESS",
         "SVI-738 X'PRESS",
         1986,
         "Europe",
@@ -37056,19 +36967,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "2 ULA and standard logic",
-        "engine_semi_custom": "2 ULA and standard logic"
-      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-738.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-738"
+      },
+      "tooltips": {
+        "engine": "2 ULA and standard logic",
+        "engine_semi_custom": "2 ULA and standard logic"
       }
     },
     {
       "id": 372,
       "values": [
         "Spectravideo",
+        "SVI-738 X'PRESS (DE)",
         "SVI-738 X'PRESS (DE)",
         1986,
         "Germany",
@@ -37167,19 +37079,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "2 ULA and standard logic",
-        "engine_semi_custom": "2 ULA and standard logic"
-      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-738_DE.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-738"
+      },
+      "tooltips": {
+        "engine": "2 ULA and standard logic",
+        "engine_semi_custom": "2 ULA and standard logic"
       }
     },
     {
       "id": 373,
       "values": [
         "Spectravideo",
+        "SVI-738 X'PRESS (PL)",
         "SVI-738 X'PRESS (PL)",
         1986,
         "pl",
@@ -37278,19 +37191,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "2 ULA and standard logic",
-        "engine_semi_custom": "2 ULA and standard logic"
-      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-738_PL.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-738"
+      },
+      "tooltips": {
+        "engine": "2 ULA and standard logic",
+        "engine_semi_custom": "2 ULA and standard logic"
       }
     },
     {
       "id": 374,
       "values": [
         "Spectravideo",
+        "SVI-738 X'PRESS (SE)",
         "SVI-738 X'PRESS (SE)",
         1986,
         "se/fi",
@@ -37389,19 +37303,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
-      "tooltips": {
-        "engine": "2 ULA and standard logic",
-        "engine_semi_custom": "2 ULA and standard logic"
-      },
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Spectravideo_SVI-738_SE.xml",
         "model": "https://www.msx.org/wiki/Spectravideo_SVI-738"
+      },
+      "tooltips": {
+        "engine": "2 ULA and standard logic",
+        "engine_semi_custom": "2 ULA and standard logic"
       }
     },
     {
       "id": 375,
       "values": [
         "Toshiba",
+        "HX-10",
         "HX-10",
         1984,
         "uk",
@@ -37500,19 +37415,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-10P",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-10p/934",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-10.xml"
+      },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
         "engine_semi_custom": "gate array Toshiba TCX-1007"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-10P",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-10.xml"
       }
     },
     {
       "id": 376,
       "values": [
         "Toshiba",
+        "HX-10D",
         "HX-10D",
         1983,
         "Europe, Japan",
@@ -37611,19 +37528,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-10D",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-10d/935",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-10D.xml"
+      },
       "tooltips": {
         "engine": "none - separate IC's",
         "engine_semi_custom": "none - separate IC's"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-10D",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-10D.xml"
       }
     },
     {
       "id": 377,
       "values": [
         "Toshiba",
+        "HX-20E",
         "HX-20E",
         1985,
         "Spain",
@@ -37722,19 +37641,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-20E",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-20e/941",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-20E.xml"
+      },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010 or TCX-1012",
         "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-20E",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-20E.xml"
       }
     },
     {
       "id": 378,
       "values": [
         "Toshiba",
+        "HX-21",
         "HX-21",
         1984,
         "Japan",
@@ -37833,19 +37754,21 @@ window.MSX_DATA = {
         "FW*",
         "FW*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-21",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-21/942",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-21.xml"
+      },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010",
         "engine_semi_custom": "Gate array Toshiba TCX-1010"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-21",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-21.xml"
       }
     },
     {
       "id": 379,
       "values": [
         "Toshiba",
+        "HX-22",
         "HX-22",
         1984,
         "Japan",
@@ -37944,19 +37867,21 @@ window.MSX_DATA = {
         "FW*",
         "FW*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-22",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-22/943",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-22.xml"
+      },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010",
         "engine_semi_custom": "Gate array Toshiba TCX-1010"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-22",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-22.xml"
       }
     },
     {
       "id": 380,
       "values": [
         "Toshiba",
+        "HX-22I",
         "HX-22I",
         1985,
         "Italy",
@@ -38055,19 +37980,21 @@ window.MSX_DATA = {
         "FW*",
         "FW*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-22I",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-22i/1421",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-22I.xml"
+      },
       "tooltips": {
         "engine": "TCX-1012",
         "engine_semi_custom": "TCX-1012"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-22I",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-22I.xml"
       }
     },
     {
       "id": 381,
       "values": [
         "Toshiba",
+        "HX-32",
         "HX-32",
         1985,
         "Japan",
@@ -38166,19 +38093,21 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-32",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-32/948",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-32.xml"
+      },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1012/TCX-1008",
         "engine_semi_custom": "Gate array Toshiba TCX-1012/TCX-1008"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-32",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-32.xml"
       }
     },
     {
       "id": 382,
       "values": [
         "Toshiba",
+        "HX-51I",
         "HX-51I",
         1985,
         "Italy and Spain",
@@ -38277,19 +38206,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-51",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-51/951",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-51I.xml"
+      },
       "tooltips": {
         "engine": "Toshiba T7937",
         "engine_semi_custom": "Toshiba T7937"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-51",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Toshiba_HX-51I.xml"
       }
     },
     {
       "id": 383,
       "values": [
         "Victor",
+        "HC-7",
         "HC-7",
         1985,
         "Japan",
@@ -38388,19 +38319,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Victor_HC-7",
+        "generation_msx": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-7/262",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-7.xml"
+      },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Hitachi HD27L019)",
         "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Victor_HC-7",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Victor_HC-7.xml"
       }
     },
     {
       "id": 386,
       "values": [
         "Yamaha",
+        "CX11",
         "CX11",
         1985,
         "Japan",
@@ -38499,19 +38432,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_CX11",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cx11/984",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX11.xml"
+      },
       "tooltips": {
         "engine": "Yamaha X3527 (a previous version of the Yamaha S3527 )",
         "engine_semi_custom": "Yamaha X3527 (a previous version of the Yamaha S3527 )"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_CX11",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX11.xml"
       }
     },
     {
       "id": 387,
       "values": [
         "Yamaha",
+        "CX5F",
         "CX5F",
         1984,
         "Japan",
@@ -38610,19 +38545,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_CX5F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cx5f/986",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX5F.xml"
+      },
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_CX5F",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX5F.xml"
       }
     },
     {
       "id": 388,
       "values": [
         "Yamaha",
+        "CX5M",
         "CX5M",
         1984,
         "Australia, Canada, France, Germany, New Zealand, Scandinavia, United Kingdom, United States",
@@ -38721,19 +38658,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_CX5M",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cx5m/987",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX5M.xml"
+      },
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_CX5M",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX5M.xml"
       }
     },
     {
       "id": 389,
       "values": [
         "Yamaha",
+        "CX5MII",
         "CX5MII",
         1985,
         "Australia, Canada, France, Germany, Italy, New Zealand, Scandinavia, Spain, United Kingdom, United States",
@@ -38832,19 +38771,21 @@ window.MSX_DATA = {
         "SFG5*",
         "SFG5*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_CX5MII",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cx5mii/989",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX5MII.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_CX5MII",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX5MII.xml"
       }
     },
     {
       "id": 390,
       "values": [
         "Yamaha",
+        "CX5MII/128",
         "CX5MII/128",
         1985,
         "Australia, Canada, France, Germany, Italy, New Zealand, Scandinavia, Spain, United Kingdom, United States",
@@ -38943,19 +38884,21 @@ window.MSX_DATA = {
         "SFG5*",
         "SFG5*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_CX5MII",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cx5mii128/988",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX5MII-128.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_CX5MII",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX5MII-128.xml"
       }
     },
     {
       "id": 391,
       "values": [
         "Yamaha",
+        "CX5MU",
         "CX5MU",
         1984,
         "United States",
@@ -39054,19 +38997,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
-      "tooltips": {
-        "engine": "Yamaha YM5214",
-        "engine_semi_custom": "Yamaha YM5214"
-      },
       "links": {
         "model": "https://www.msx.org/wiki/Yamaha_CX5M",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_CX5MU.xml"
+      },
+      "tooltips": {
+        "engine": "Yamaha YM5214",
+        "engine_semi_custom": "Yamaha YM5214"
       }
     },
     {
       "id": 392,
       "values": [
         "Yamaha",
+        "SX-100",
         "SX-100",
         1985,
         "Japan",
@@ -39165,19 +39109,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_SX-100",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/sx-100/1014",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_SX-100.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_SX-100",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_SX-100.xml"
       }
     },
     {
       "id": 393,
       "values": [
         "Yamaha",
+        "YIS-503",
         "YIS-503",
         1984,
         "Japan",
@@ -39276,19 +39222,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-503",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-503/1021",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-503.xml"
+      },
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-503",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-503.xml"
       }
     },
     {
       "id": 394,
       "values": [
         "Yamaha",
+        "YIS-503F",
         "YIS-503F",
         1984,
         "Belgium and France",
@@ -39387,19 +39335,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-503F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-503f/1029",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-503F.xml"
+      },
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-503F",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-503F.xml"
       }
     },
     {
       "id": 395,
       "values": [
         "Yamaha",
+        "YIS-503II",
         "YIS-503II",
         1985,
         "Japan",
@@ -39498,19 +39448,21 @@ window.MSX_DATA = {
         "ES1!",
         "ES1!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-503II",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-503ii/1023",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-503II.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-503II",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-503II.xml"
       }
     },
     {
       "id": 396,
       "values": [
         "Yamaha",
+        "YIS-503IIR",
         "YIS-503IIR",
         1985,
         "USSR",
@@ -39609,19 +39561,21 @@ window.MSX_DATA = {
         "ES1!",
         "ES1!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-503IIR",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-503iir/1026",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-503IIR.xml"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-503IIR",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-503IIR.xml"
       }
     },
     {
       "id": 397,
       "values": [
         "Yashica",
+        "YC-64",
         "YC-64",
         1984,
         "France, Germany, Italy and the Netherlands",
@@ -39720,19 +39674,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yashica_YC-64",
+        "generation_msx": "https://generation-msx.nl/hardware/yashica/yc-64/1042",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yashica_YC-64.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yashica_YC-64",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yashica_YC-64.xml"
       }
     },
     {
       "id": 398,
       "values": [
         "Yeno",
+        "DPC-64",
         "DPC-64",
         1985,
         "France",
@@ -39831,19 +39787,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yeno_DPC-64",
+        "generation_msx": "https://generation-msx.nl/hardware/yeno/dpc-64/1043",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yeno_DPC-64.xml"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yeno_DPC-64",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yeno_DPC-64.xml"
       }
     },
     {
       "id": 399,
       "values": [
         "Toshiba",
+        "HX-30",
         "HX-30",
         1985,
         "Japan",
@@ -39942,18 +39900,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-30",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-30/946"
+      },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1007",
         "engine_semi_custom": "Gate array Toshiba TCX-1007"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-30"
       }
     },
     {
       "id": 400,
       "values": [
         "Toshiba",
+        "HX-31",
         "HX-31",
         1985,
         "Japan",
@@ -40052,18 +40012,20 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-31",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-31/947"
+      },
       "tooltips": {
         "engine": "? Gate array Toshiba TCX-1012/TCX-1008",
         "engine_semi_custom": "? Gate array Toshiba TCX-1012/TCX-1008"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-31"
       }
     },
     {
       "id": 402,
       "values": [
         "Toshiba",
+        "HX-52",
         "HX-52",
         1985,
         "Italy and Spain",
@@ -40162,18 +40124,20 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-52",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-52/952"
+      },
       "tooltips": {
         "engine": "Toshiba T7937",
         "engine_semi_custom": "Toshiba T7937"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-52"
       }
     },
     {
       "id": 403,
       "values": [
         "Triton",
+        "PC64",
         "PC64",
         1985,
         "UK",
@@ -40272,18 +40236,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Triton_PC64",
+        "generation_msx": "https://generation-msx.nl/hardware/radofin/triton-pc64/969"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Triton_PC64"
       }
     },
     {
       "id": 404,
       "values": [
         "Vestel",
+        "FC-200",
         "FC-200",
         1986,
         "Turkey",
@@ -40382,18 +40348,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Vestel_FC-200",
+        "generation_msx": "https://generation-msx.nl/hardware/vestel/fc-200/1406"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Vestel_FC-200"
       }
     },
     {
       "id": 405,
       "values": [
         "Victor",
+        "HC-30",
         "HC-30",
         1985,
         "Japan",
@@ -40492,18 +40460,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Victor_HC-30",
+        "generation_msx": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-30/257"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Victor_HC-30"
       }
     },
     {
       "id": 406,
       "values": [
         "Victor",
+        "HC-5",
         "HC-5",
         1983,
         "Japan",
@@ -40602,18 +40572,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Victor_HC-5",
+        "generation_msx": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-5/258"
+      },
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Victor_HC-5"
       }
     },
     {
       "id": 407,
       "values": [
         "Victor",
+        "HC-6",
         "HC-6",
         1984,
         "Japan",
@@ -40712,18 +40684,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Victor_HC-6",
+        "generation_msx": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-6/260"
+      },
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Victor_HC-6"
       }
     },
     {
       "id": 408,
       "values": [
         "Victor",
+        "HC-60",
         "HC-60",
         1985,
         "Japan",
@@ -40822,18 +40796,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Victor_HC-60",
+        "generation_msx": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-60/259"
+      },
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Victor_HC-60"
       }
     },
     {
       "id": 409,
       "values": [
         "Wandy",
+        "DPC-200",
         "DPC-200",
         1987,
         "Thailand",
@@ -40932,18 +40908,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Wandy_DPC-200"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Wandy_DPC-200"
       }
     },
     {
       "id": 410,
       "values": [
         "Yamaha",
+        "CX5",
         "CX5",
         1983,
         "Japan",
@@ -41042,18 +41019,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_CX5",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cx5/985"
+      },
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_CX5"
       }
     },
     {
       "id": 412,
       "values": [
         "Yamaha",
+        "YIS-303",
         "YIS-303",
         1983,
         "Japan",
@@ -41152,18 +41131,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-303",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-303/1020"
+      },
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-303"
       }
     },
     {
       "id": 413,
       "values": [
         "Yamaha",
+        "YIS-503FB",
         "YIS-503FB",
         1984,
         "Belgium and France",
@@ -41262,18 +41243,19 @@ window.MSX_DATA = {
         "⏺",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-503F"
+      },
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-503F"
       }
     },
     {
       "id": 414,
       "values": [
         "Yamaha",
+        "YIS-603",
         "YIS-603",
         1985,
         "Europe",
@@ -41372,18 +41354,20 @@ window.MSX_DATA = {
         "ES1!",
         "ES1!"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yamaha_YIS-603",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-603/1030"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yamaha_YIS-603"
       }
     },
     {
       "id": 415,
       "values": [
         "Yeno",
+        "MX64",
         "MX64",
         1985,
         "France",
@@ -41482,18 +41466,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Yeno_MX64",
+        "generation_msx": "https://generation-msx.nl/hardware/yeno/mx64/1044"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Yeno_MX64"
       }
     },
     {
       "id": 417,
       "values": [
         "Mitsubishi",
+        "ML-TS1",
         "ML-TS1",
         1986,
         "Japan",
@@ -41592,18 +41578,20 @@ window.MSX_DATA = {
         null,
         null
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Mitsubishi_ML-TS1",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/ml-ts1/1566"
+      },
       "tooltips": {
         "engine": "probably Yamaha S1985",
         "engine_semi_custom": "probably Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Mitsubishi_ML-TS1"
       }
     },
     {
       "id": 418,
       "values": [
         "Sanyo",
+        "MPC-200",
         "MPC-200",
         1985,
         "Spain",
@@ -41702,18 +41690,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sanyo_MPC-200",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/mpc-200/676"
+      },
       "tooltips": {
         "engine": "Toshiba T7775",
         "engine_semi_custom": "Toshiba T7775"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sanyo_MPC-200"
       }
     },
     {
       "id": 419,
       "values": [
         "Sony",
+        "HB-10B",
         "HB-10B",
         1986,
         "United Kingdom",
@@ -41812,18 +41802,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-10B",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-10b/1156"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-10B"
       }
     },
     {
       "id": 420,
       "values": [
         "Sony",
+        "HB-10D",
         "HB-10D",
         1986,
         "Germany",
@@ -41922,18 +41914,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-10D",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-10d/1157"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-10D"
       }
     },
     {
       "id": 421,
       "values": [
         "Sony",
+        "HB-20N",
         "HB-20N",
         1986,
         "Spain",
@@ -42032,18 +42026,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-20N"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-20N"
       }
     },
     {
       "id": 422,
       "values": [
         "Sony",
+        "HB-501F",
         "HB-501F",
         1984,
         "France",
@@ -42142,18 +42137,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-501F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-501f/1342"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-501F"
       }
     },
     {
       "id": 423,
       "values": [
         "Sony",
+        "HB-55",
         "HB-55",
         1983,
         "Japan",
@@ -42252,18 +42249,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-55",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-55/739"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-55"
       }
     },
     {
       "id": 424,
       "values": [
         "Sony",
+        "HB-75AS",
         "HB-75AS",
         1984,
         "Australia",
@@ -42362,18 +42361,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-75AS",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-75as/1230"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-75AS"
       }
     },
     {
       "id": 425,
       "values": [
         "Sony",
+        "HB-75B",
         "HB-75B",
         1984,
         "United Kingdom",
@@ -42472,18 +42473,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-75B",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-75b/1196"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-75B"
       }
     },
     {
       "id": 426,
       "values": [
         "Sony",
+        "HB-75F",
         "HB-75F",
         1984,
         "France",
@@ -42582,18 +42585,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-75F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-75f/1229"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-75F"
       }
     },
     {
       "id": 427,
       "values": [
         "Sony",
+        "HB-F500F",
         "HB-F500F",
         1986,
         "France",
@@ -42692,18 +42697,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F500F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f500f/1415"
+      },
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F500F"
       }
     },
     {
       "id": 428,
       "values": [
         "Sony",
+        "HB-F700B",
         "HB-F700B",
         1986,
         "United Kingdom",
@@ -42802,18 +42809,19 @@ window.MSX_DATA = {
         "MM",
         "MM"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Sony_HB-F700B"
+      },
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Sony_HB-F700B"
       }
     },
     {
       "id": 429,
       "values": [
         "Toshiba",
+        "HX-10AA",
         "HX-10AA",
         1984,
         "Belgium, Netherlands",
@@ -42912,18 +42920,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-10AA"
+      },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
         "engine_semi_custom": "gate array Toshiba TCX-1007"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-10AA"
       }
     },
     {
       "id": 430,
       "values": [
         "Toshiba",
+        "HX-10DP",
         "HX-10DP",
         1984,
         "Europe, Japan",
@@ -43022,18 +43031,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-10DP",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-10dp/936"
+      },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
         "engine_semi_custom": "gate array Toshiba TCX-1007"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-10DP"
       }
     },
     {
       "id": 431,
       "values": [
         "Toshiba",
+        "HX-10DPN",
         "HX-10DPN",
         1984,
         "Europe, Japan",
@@ -43132,18 +43143,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-10DPN",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-10dpn/937"
+      },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
         "engine_semi_custom": "gate array Toshiba TCX-1007"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-10DPN"
       }
     },
     {
       "id": 432,
       "values": [
         "Toshiba",
+        "HX-10E",
         "HX-10E",
         1984,
         "Spain",
@@ -43242,18 +43255,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-10E",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-10e/938"
+      },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
         "engine_semi_custom": "gate array Toshiba TCX-1007"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-10E"
       }
     },
     {
       "id": 433,
       "values": [
         "Toshiba",
+        "HX-10F",
         "HX-10F",
         1984,
         "France",
@@ -43352,18 +43367,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-10F",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-10f/1376"
+      },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
         "engine_semi_custom": "gate array Toshiba TCX-1007"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-10F"
       }
     },
     {
       "id": 434,
       "values": [
         "Toshiba",
+        "HX-10I",
         "HX-10I",
         1984,
         "Italy",
@@ -43462,18 +43479,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-10I"
+      },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
         "engine_semi_custom": "gate array Toshiba TCX-1007"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-10I"
       }
     },
     {
       "id": 436,
       "values": [
         "Toshiba",
+        "HX-10S",
         "HX-10S",
         1983,
         "Europe, Japan",
@@ -43572,18 +43590,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-10S",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-10s/939"
+      },
       "tooltips": {
         "engine": "none - separate IC's",
         "engine_semi_custom": "none - separate IC's"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-10S"
       }
     },
     {
       "id": 437,
       "values": [
         "Toshiba",
+        "HX-10SA",
         "HX-10SA",
         1984,
         "Europe, Japan",
@@ -43682,18 +43702,20 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-10SA",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-10sa/1368"
+      },
       "tooltips": {
         "engine": "none - separate IC's",
         "engine_semi_custom": "none - separate IC's"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-10SA"
       }
     },
     {
       "id": 438,
       "values": [
         "Toshiba",
+        "HX-10SF",
         "HX-10SF",
         1984,
         "Finland",
@@ -43792,18 +43814,19 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-10SF"
+      },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
         "engine_semi_custom": "gate array Toshiba TCX-1007"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-10SF"
       }
     },
     {
       "id": 439,
       "values": [
         "Toshiba",
+        "HX-20",
         "HX-20",
         1984,
         "Japan",
@@ -43902,18 +43925,20 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-20",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-20/940"
+      },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010 or TCX-1012",
         "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-20"
       }
     },
     {
       "id": 440,
       "values": [
         "Toshiba",
+        "HX-20AR",
         "HX-20AR",
         1986,
         "Argentina",
@@ -44012,18 +44037,20 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-20AR",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-20ar/1284"
+      },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010 or TCX-1012",
         "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-20AR"
       }
     },
     {
       "id": 441,
       "values": [
         "Toshiba",
+        "HX-20I",
         "HX-20I",
         1984,
         "Italy",
@@ -44122,18 +44149,20 @@ window.MSX_DATA = {
         "FW",
         "⏺"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-20I",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-20i/1283"
+      },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010 or TCX-1012",
         "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-20I"
       }
     },
     {
       "id": 442,
       "values": [
         "Toshiba",
+        "HX-21F",
         "HX-21F",
         1985,
         "France",
@@ -44232,18 +44261,19 @@ window.MSX_DATA = {
         "FW",
         "FW*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-21F"
+      },
       "tooltips": {
         "engine": "TCX-1012",
         "engine_semi_custom": "TCX-1012"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-21F"
       }
     },
     {
       "id": 443,
       "values": [
         "Toshiba",
+        "HX-22CH",
         "HX-22CH",
         1985,
         "Switzerland",
@@ -44342,18 +44372,19 @@ window.MSX_DATA = {
         "FW",
         "FW*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-22CH"
+      },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010",
         "engine_semi_custom": "Gate array Toshiba TCX-1010"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-22CH"
       }
     },
     {
       "id": 444,
       "values": [
         "Toshiba",
+        "HX-22GB",
         "HX-22GB",
         1985,
         "United Kingdom",
@@ -44452,18 +44483,20 @@ window.MSX_DATA = {
         "FW",
         "FW*"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Toshiba_HX-22GB",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/hx-22gb/1420"
+      },
       "tooltips": {
         "engine": "TCX-1012",
         "engine_semi_custom": "TCX-1012"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Toshiba_HX-22GB"
       }
     },
     {
       "id": 445,
       "values": [
         "Panasonic",
+        "CF-2700 (CU)",
         "CF-2700 (CU)",
         1986,
         "Cuba",
@@ -44562,18 +44595,21 @@ window.MSX_DATA = {
         "·",
         "·"
       ],
+      "links": {
+        "model": "https://www.msx.org/wiki/Panasonic_CF-2700_(CU)",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cf-2700/401"
+      },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
-      },
-      "links": {
-        "model": "https://www.msx.org/wiki/Panasonic_CF-2700_(CU)"
+        "engine_semi_custom": "none (separate IC's)",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/cf-2700/401 (family)"
       }
     },
     {
       "id": 446,
       "values": [
         "Yamaha",
+        "YIS-805/256",
         "YIS-805/256",
         1986,
         "Japan",
@@ -44672,13 +44708,15 @@ window.MSX_DATA = {
         "ES2!",
         "ES2!"
       ],
-      "tooltips": {
-        "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
-      },
       "links": {
         "model": "https://www.msx.org/wiki/Yamaha_YIS-805",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-805/1034",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Yamaha_YIS-805-256.xml"
+      },
+      "tooltips": {
+        "engine": "Yamaha S1985",
+        "engine_semi_custom": "Yamaha S1985",
+        "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-805/1034 (family)"
       }
     }
   ],
