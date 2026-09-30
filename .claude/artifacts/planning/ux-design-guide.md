@@ -130,7 +130,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
   6. **Data rows** — model data (height: 24px per row)
 - Left gutter: 32px wide strip — row number, hidden-row indicator
 - The grid body scrolls both horizontally and vertically; all 4 header rows and the left gutter remain sticky
-- The Identity group columns (Manufacturer, Model) and their group header are frozen/sticky during horizontal scroll, pinned immediately to the right of the gutter. Gap indicator rows include frozen cells so the dashed line stays aligned in the frozen panel.
+- The Identity group columns (Manufacturer, Model) and their group header are frozen/sticky during horizontal scroll, pinned immediately to the right of the gutter. Their width is static: on very wide screens the extra space goes to the other columns only. Gap indicator rows include frozen cells so the dashed line stays aligned in the frozen panel.
 - Z-index stacking order (within `.grid-wrap` scroll container, low → high):
   1. **Gap indicator line** (`gutter--gap::before`) — `z-index: 3`
   2. **Selected cells** (`cell--selected`) — `z-index: 5`

@@ -547,6 +547,11 @@ thead .gutter {
 .col--frozen {
   position: sticky;
   z-index: 6;           /* above selected non-frozen (5); below gutter (8) */
+  /* Keep the frozen columns at their content width. When the viewport is wider
+     than the table's natural width (min-width: 100%), the browser hands the
+     extra space to columns without a specified width, so a nominal 1px width
+     keeps these two static while the other columns share it. */
+  width: 1px;
 }
 
 /* Per-column left offsets — driven by CSS custom properties written in JS */
