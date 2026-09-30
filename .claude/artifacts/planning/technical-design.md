@@ -670,6 +670,16 @@ An msx.org page with its own specs table can describe more than one model. `spli
 
 ---
 
+## Feature Design: openMSX File-Name Join
+
+openMSX's display name can differ from msx.org's page name for the same machine: `Sanyo_MPC-1.xml` shows "MPC-1/Wavy1", msx.org has "MPC-1" — they never met and the grid showed two rows (the openMSX one without msx.org or generation-msx link). `merge_models` joins them by the machine **file name**: an openMSX machine whose name no msx.org record has joins the one msx.org model of the same manufacturer, with no openMSX machine of that name, whose manufacturer + model spell its `openmsx_id` (letters and digits only: `Sanyo_MPC-1` = "Sanyo" + "MPC-1"). The row takes msx.org's name; the openMSX key is kept as a former key, so the id is the msx.org model's (the openMSX row's id stays registered, unused). The file name decides, not the first part of the display name: "MPC-10/Wavy10mkII" is `Sanyo_MPC-10mkII` → MPC-10mkII, not MPC-10.
+
+- Rows the maintainer keeps separate are never joined: link-share recipients (`data/link-shares.json`, e.g. VG 8000/00 sharing msx.org's VG-8000 page) are passed in as `keep_separate`.
+- `local-raw.json` entries written under the openMSX name follow the join. `update-himem` resolves openMSX dump names the database no longer uses through the openMSX cache (`--openmsx-raw`, default `data/openmsx-raw.json`): display name → `openmsx_id` → the model holding it; existing entries are found by the database's name.
+- Result (2026-09-30): 7 duplicates joined — Sanyo MPC-1, MPC-10, MPC-10mkII, MPC-11, MPC-3, MPC-6 (openMSX "…/WavyN") and Gradiente Expert DDPlus (openMSX "Expert DD Plus"); 397 → 390 models. MPC-2/Wavy2, MX-10/MX-101 and DPC-200 (BE/FR) were already joined by aliases.
+
+---
+
 ## Feature Design: Model Revisions
 
 A revision *N* of a model is `<model> (vN)` (openMSX's convention; revision 1 is the plain name, and an openMSX `(v1)` machine is aliased onto it). msx.org marks revision-specific facts in free text ("2nd Gen HB-F500", "(HB-F500 second version)", "(version 2)", "1st version: …"); `scraper/revisions.py` holds that vocabulary.
@@ -996,6 +1006,16 @@ openMSX names some VDPs after the chip that contains them, with the video standa
 VRAM is still read from the same element.
 
 msx.org side (`_parse_vdp` in `scraper/msxorg.py`): the "Video" field is matched against V9938/V9958, TI TMS99x8/99x9 and TMS91x8/91x9 (`TMS-9118` spelling accepted), Toshiba T6950 and Yamaha YM2220. A package suffix such as `NL` is dropped (`TMS9118NL` → `TMS9118`). When several are named, V9958 > V9938 > the rest; among equals the first mentioned wins, which picks the actual chip in texts like "Toshiba T6950, Texas Instruments TMS9918/TMS9929 compatible".
+
+---
+
+## Feature Design: generation-msx Links
+
+Identity column id 110 **generation-msx** (`generation_msx`, after Model): a link to the model's page on generation-msx.nl. Header: the Font Awesome icon `fa-external-link` (`headerIcon`), tooltip "Link to generation-msx". Each cell shows the site's icon (`linkIcon`: `https://images.generation-msx.nl/img/gmsx_favicon.png` — its `/favicon.ico` is an empty file) as a link opening in a new tab, the real URL as its tooltip — for a `family` entry "<url> (family)" (shipped as `ModelRecord.tooltips.generation_msx`, which the link uses when present); models without a page stay empty. The value is the model name (derived), so the column sorts like Model; no filter input. Like every Identity column it is frozen with static width and not in the column picker — the frozen count is now `frozenColumnCount(columns)` = the leading columns of the Identity group (was a constant 2); the separator is drawn on `.col--frozen-last`.
+
+- **Map file** `data/generation-msx.json`: `{ "links": { "<our model id>": { "model", "url", "match" } } }`, keyed by our permanent model id because the two sites name models differently (manufacturers like "SANYO Electric Co., Ltd. (三洋電機株式会社)", nicknames "MPC-25F (WAVY25)", "CF-2700(GE)"). `match`: `exact` (same name after our aliases / country tags) · `variant` (theirs adds a nickname or suffix) · `family` (no page for the model; its family / base model, e.g. VG 8235 for VG 8235/00 — accepted as a replacement) · `manual` (set by hand; `"url": null` = never link). The build copies the URL into `ModelRecord.links.generation_msx` by model id.
+- **Recreating the map** (`scraper/generation_msx.py`): `python -m scraper gmsx-links [--dry-run]` crawls the four computer listings (`/hardware/result?product_type[0]=MSX 1|MSX 2|MSX 2+|MSX turbo R`, all pages, 1 s apart), matches every model of the built `docs/data.js` — exact first, then variant keys (their name without a trailing nickname and each leading run of its words), then our name with a regional / revision / sub-model suffix stripped (family) — breaking ties by a shared manufacturer word and leaving anything still ambiguous unlinked, never guessed. Existing `manual` entries are kept; everything else is regenerated. Then `python -m scraper build`. New models get a link only after a rerun (the map is keyed by id).
+- Result (2026-09-30): 338 computers listed; 349 of 397 models linked — 265 exact, 33 variant, 30 family, 21 manual (names the rules cannot pair, e.g. One chip MSX → 1chipMSX, MB-H70 → their "HB-H70", HX-10 → HX-10P rather than the HX-10 KIT, Canon V-20 (EU)/(FR) → V-20). 48 models have no page there (KimoHachi, Omega MSX, regional Hitachi / Toshiba variants, the SVI-738 family, …).
 
 ---
 

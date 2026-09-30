@@ -69,6 +69,11 @@ def _normalise_region(val: str) -> str:
     return _REGION_NORM.get(val.lower().strip(), val)
 
 
+def _squash(text: str | None) -> str:
+    """Letters and digits only, lower case: "Sanyo_MPC-1" and "Sanyo" + "MPC-1" both give "sanyompc1"."""
+    return re.sub(r"[^a-z0-9]", "", (text or "").lower())
+
+
 def _normalise_fm(val: str) -> str:
     parts = [p.strip() for p in val.split(",")]
     return ", ".join(_FM_NORM.get(p.lower(), p) for p in parts)
@@ -141,8 +146,12 @@ def merge_models(
     local: list[dict[str, Any]] | None = None,
     resolutions: dict[str, dict[str, str]] | None = None,
     alias_path: Path | None = None,
+    keep_separate: set[str] | frozenset[str] = frozenset(),
 ) -> list[dict[str, Any]]:
     """Merge models from all sources.
+
+    *keep_separate*: natural keys the maintainer keeps as rows of their own
+    (link-share recipients) — never merged into another model by name rules.
 
     Args:
         openmsx: Models from openMSX scraper.
@@ -217,6 +226,43 @@ def merge_models(
                 m["model"] = openmsx_by_key[key].get("model")
                 msxorg_keys.add(key)
                 break
+
+    # openMSX display name vs its machine file: openMSX shows "MPC-1/Wavy1" for
+    # Sanyo_MPC-1.xml while msx.org's page is "MPC-1", so the two never met.
+    # An openMSX machine whose name no msx.org record has joins the one msx.org
+    # model (same manufacturer, no openMSX machine of that name) whose
+    # manufacturer + model spell its file name; the row takes msx.org's name and
+    # the openMSX name is kept as a former key, so the registry resolves the id.
+    msxorg_by_key = {natural_key(m): m for m in msxorg}
+    openmsx_keys = {natural_key(m) for m in openmsx}
+    renamed: dict[str, str] = {}   # openMSX key before -> msx.org model name
+    for o in openmsx:
+        before = natural_key(o)
+        file_id = _squash(o.get("openmsx_id"))
+        if not file_id or before in msxorg_by_key or before in keep_separate:
+            continue   # has its msx.org page, or is curated as a row of its own (a link-share)
+        candidates = [
+            k for k, m in msxorg_by_key.items()
+            if k not in openmsx_keys
+            and _squash(m.get("manufacturer")) == _squash(o.get("manufacturer"))
+            and _squash(m.get("manufacturer")) + _squash(m.get("model")) == file_id
+        ]
+        if len(candidates) != 1:
+            continue
+        target = msxorg_by_key[candidates[0]]
+        log.info("[merge:file_name] openMSX %s (%s) is msx.org %s — merged",
+                 before, o.get("openmsx_id"), candidates[0])
+        o["model"] = target.get("model")
+        renamed[before] = target.get("model")
+        former_keys.setdefault(candidates[0], set()).add(before)
+        openmsx_keys.discard(before)
+        openmsx_keys.add(candidates[0])
+
+    # Local entries written under the openMSX name follow it (HIMEM readings are
+    # stored by openMSX display name).
+    for m in local:
+        if natural_key(m) in renamed:
+            m["model"] = renamed[natural_key(m)]
 
     # Index by natural key.
     o_by_key: dict[str, dict[str, Any]] = {}

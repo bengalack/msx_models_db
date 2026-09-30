@@ -562,7 +562,7 @@
   },
   {
     "manufacturer": "Gradiente",
-    "model": "Expert DD Plus",
+    "model": "Expert DDPlus",
     "himem_addr": "0xDF93"
   },
   {
@@ -737,17 +737,17 @@
   },
   {
     "manufacturer": "Sanyo",
-    "model": "MPC-1/Wavy1",
+    "model": "MPC-1",
     "himem_addr": "0xF380"
   },
   {
     "manufacturer": "Sanyo",
-    "model": "MPC-10/Wavy10",
+    "model": "MPC-10",
     "himem_addr": "0xF380"
   },
   {
     "manufacturer": "Sanyo",
-    "model": "MPC-10/Wavy10mkII",
+    "model": "MPC-10mkII",
     "himem_addr": "0xF380"
   },
   {
@@ -757,7 +757,7 @@
   },
   {
     "manufacturer": "Sanyo",
-    "model": "MPC-11/Wavy11",
+    "model": "MPC-11",
     "himem_addr": "0xF380"
   },
   {
@@ -767,12 +767,12 @@
   },
   {
     "manufacturer": "Sanyo",
-    "model": "MPC-3/Wavy3",
+    "model": "MPC-3",
     "himem_addr": "0xF380"
   },
   {
     "manufacturer": "Sanyo",
-    "model": "MPC-6/Wavy6",
+    "model": "MPC-6",
     "himem_addr": "0xF380"
   },
   {

@@ -479,3 +479,70 @@ def test_msx_music_aliases_normalise_to_yes(raw):
     openmsx = [{"manufacturer": "Maker", "model": "M-1", "fm_chip": raw}]
     [row] = merge_models(openmsx, [])
     assert row["fm_chip"] == "Yes"
+
+
+class TestOpenmsxFileNameJoin:
+    """openMSX "MPC-1/Wavy1" (Sanyo_MPC-1.xml) is msx.org's "MPC-1": one row, msx.org's name."""
+
+    @staticmethod
+    def _o(model: str, file_id: str, maker: str = "Sanyo") -> dict:
+        return {"manufacturer": maker, "model": model, "openmsx_id": file_id, "vdp": "V9938"}
+
+    @staticmethod
+    def _m(model: str, maker: str = "Sanyo") -> dict:
+        return {"manufacturer": maker, "model": model, "msxorg_title": f"{maker} {model}", "vram_kb": 16}
+
+    def test_joins_the_msxorg_model_named_by_the_file(self):
+        rows = merge_models([self._o("MPC-1/Wavy1", "Sanyo_MPC-1")], [self._m("MPC-1")])
+        assert len(rows) == 1
+        assert rows[0]["model"] == "MPC-1"
+        assert rows[0]["openmsx_id"] == "Sanyo_MPC-1" and rows[0]["vram_kb"] == 16
+        assert "sanyo|mpc-1/wavy1" in rows[0].get("_former_keys", [])
+
+    def test_the_file_name_decides_not_the_first_part_of_the_display_name(self):
+        rows = merge_models([self._o("MPC-10/Wavy10mkII", "Sanyo_MPC-10mkII")],
+                            [self._m("MPC-10"), self._m("MPC-10mkII")])
+        joined = [r for r in rows if r.get("openmsx_id")]
+        assert [r["model"] for r in joined] == ["MPC-10mkII"]
+
+    def test_link_share_recipients_stay_separate(self):
+        rows = merge_models([self._o("VG 8000/00", "Philips_VG_8000", "Philips")], [self._m("VG-8000", "Philips")],
+                            keep_separate={"philips|vg 8000/00"})
+        assert sorted(r["model"] for r in rows) == ["VG 8000/00", "VG-8000"]
+
+    def test_not_when_openmsx_already_has_that_model(self):
+        rows = merge_models([self._o("MPC-1/Wavy1", "Sanyo_MPC-1"), self._o("MPC-1", "Sanyo_MPC-1_alt")],
+                            [self._m("MPC-1")])
+        assert sorted(r["model"] for r in rows) == ["MPC-1", "MPC-1/Wavy1"]
+
+    def test_not_across_manufacturers(self):
+        rows = merge_models([self._o("MX/1", "Other_MX")], [self._m("MX", "Other")])
+        assert sorted(r["model"] for r in rows) == ["MX", "MX/1"]
+
+
+def test_file_name_join_keeps_the_msxorg_models_id(tmp_path):
+    from scraper.build import build
+    from scraper.registry import IDRegistry
+    (tmp_path / "registry.json").write_text(json.dumps({
+        "version": 2, "models": {"sanyo|mpc-1": 290, "sanyo|mpc-1/wavy1": 347},
+        "retired_models": [], "next_model_id": 500}))
+    (tmp_path / "openmsx.json").write_text(json.dumps([
+        {"manufacturer": "Sanyo", "model": "MPC-1/Wavy1", "generation": "MSX1", "openmsx_id": "Sanyo_MPC-1"}]))
+    (tmp_path / "msxorg.json").write_text(json.dumps([
+        {"manufacturer": "Sanyo", "model": "MPC-1", "generation": "MSX1", "msxorg_title": "Sanyo MPC-1"}]))
+    build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
+          local_path=tmp_path / "local.json", registry_path=tmp_path / "registry.json",
+          output_path=tmp_path / "data.js")
+    text = (tmp_path / "data.js").read_text(encoding="utf-8")
+    data = json.loads(text[text.index("{"):text.rindex(";")])
+    assert [m["id"] for m in data["models"]] == [290]
+    assert IDRegistry.load(tmp_path / "registry.json").next_model_id == 500
+
+
+def test_local_entries_under_the_openmsx_name_follow_the_file_name_join():
+    openmsx = [{"manufacturer": "Sanyo", "model": "MPC-1/Wavy1", "openmsx_id": "Sanyo_MPC-1"}]
+    msxorg = [{"manufacturer": "Sanyo", "model": "MPC-1", "msxorg_title": "Sanyo MPC-1"}]
+    local = [{"manufacturer": "Sanyo", "model": "MPC-1/Wavy1", "himem_addr": "0xF380"}]
+    rows = merge_models(openmsx, msxorg, local=local)
+    assert len(rows) == 1
+    assert rows[0]["model"] == "MPC-1" and rows[0]["himem_addr"] == "0xF380"

@@ -437,6 +437,8 @@ thead .gutter {
 }
 .gutter--gap-frozen[data-col-index="0"] { left: var(--frozen-col0-left, 52px); }
 .gutter--gap-frozen[data-col-index="1"] { left: var(--frozen-col1-left, 52px); }
+.gutter--gap-frozen[data-col-index="2"] { left: var(--frozen-col2-left, 52px); }
+.gutter--gap-frozen[data-col-index="3"] { left: var(--frozen-col3-left, 52px); }
 
 /* Hide frozen gap cell dashed line when under sticky header */
 .row-gap-indicator--under-header .gutter--gap-frozen::before {
@@ -527,7 +529,7 @@ thead .gutter {
 }
 
 /* ── Frozen columns (sticky left) ──────────────────────────────────────── */
-/* The first FROZEN_COL_COUNT data columns (index 0–1) are pinned during
+/* The Identity group's columns (frozenColumnCount(); index 0–n) are pinned during
    horizontal scroll.  JS writes --frozen-colN-left CSS vars on .grid-wrap
    after every render and on resize so `left` stays accurate.
 
@@ -554,17 +556,21 @@ thead .gutter {
   width: 1px;
 }
 
-/* Per-column left offsets — driven by CSS custom properties written in JS */
+/* Per-column left offsets — driven by CSS custom properties written in JS
+   (room for up to four frozen columns) */
 .col--frozen[data-col-index="0"] { left: var(--frozen-col0-left, 52px); }
 .col--frozen[data-col-index="1"] { left: var(--frozen-col1-left, 52px); }
+.col--frozen[data-col-index="2"] { left: var(--frozen-col2-left, 52px); }
+.col--frozen[data-col-index="3"] { left: var(--frozen-col3-left, 52px); }
 
-/* Stronger right-border on the last frozen column as a visual separator */
-td.col--frozen[data-col-index="1"] {
+/* Stronger right-border on the last frozen column as a visual separator.
+   .grid prefix: must out-rank `.grid tbody td` / `.filter-row td` (1px borders). */
+.grid td.col--frozen-last {
   border-right: 2px solid var(--color-border-strong);
 }
 /* Header frozen separator uses box-shadow so it survives compositing reflows
    (col-header already uses box-shadow; this overrides with the stronger value) */
-th.col--frozen[data-col-index="1"] {
+th.col--frozen-last {
   box-shadow: inset -2px 0 0 0 var(--color-border-strong);
 }
 
@@ -626,4 +632,18 @@ thead .col--frozen {
   background: var(--color-surface-alt);
   border: 1px solid var(--color-border-strong);
   border-radius: 3px;
+}
+
+/* ── Icon link cells (generation-msx) ────────────────────────────────────── */
+
+.grid tbody td.cell-link-icon {
+  padding: 0 6px;
+  text-align: center;
+}
+
+.cell-link-icon img {
+  display: block;
+  margin: 0 auto;
+  width: 16px;
+  height: 16px;
 }

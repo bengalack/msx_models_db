@@ -81,6 +81,8 @@ class Column:
     default_off: bool = False             # shipped and toggleable, but unchecked on a fresh load
     renderer: str | None = None           # cell drawn by the web page instead of text ("slotmap")
     filterable: bool = True               # False: no filter input for this column
+    header_icon: str | None = None        # Font Awesome class shown as the header instead of the label
+    link_icon: str | None = None          # image URL shown in each cell as a link to links[key]
     retired: bool = False                 # permanently removed, ID preserved, excluded entirely
     derive: Callable[[dict[str, Any]], Any] | None = None
 
@@ -207,6 +209,12 @@ COLUMNS: list[Column] = [
     # Identity
     Column(id=1,  key="manufacturer",      label="Manufacturer",        group="identity", type="string", truncate_limit=12),
     Column(id=2,  key="model",             label="Model",               group="identity", type="string", linkable=True, truncate_limit=20),
+    # Link to the model's page on generation-msx.nl (data/generation-msx.json); sorts by model name.
+    Column(id=110, key="generation_msx",   label="generation-msx",      group="identity", type="string",
+           tooltip="Link to generation-msx", header_icon="fa-external-link",
+           # the site's own page icon; its /favicon.ico is an empty file
+           link_icon="https://images.generation-msx.nl/img/gmsx_favicon.png", filterable=False,
+           derive=lambda m: m.get("model")),
     # Release
     Column(id=3,  key="year",              label="Year",                group="release",  type="number"),
     Column(id=4,  key="region",            label="Region",              group="release",  type="string", max_width=107),

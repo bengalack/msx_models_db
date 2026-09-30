@@ -157,6 +157,7 @@ def cmd_update_himem(args: argparse.Namespace) -> None:
         db_path=Path(args.db),
         aliases_path=Path(args.aliases),
         dry_run=args.dry_run,
+        openmsx_raw_path=Path(args.openmsx_raw),
     )
     dump = update_himem.parse_dump(Path(args.dump).read_text(encoding="utf-8"))
     print(update_himem.format_report(plan, dump))
@@ -166,6 +167,29 @@ def cmd_update_himem(args: argparse.Namespace) -> None:
         print(f"Wrote {len(plan.entries)} entries to {args.local}")
     else:
         print(f"Nothing to do — {args.local} left untouched.")
+
+
+def cmd_gmsx_links(args: argparse.Namespace) -> None:
+    """(Re)create data/generation-msx.json from the generation-msx.nl hardware listings."""
+    import requests
+    from . import generation_msx
+
+    session = requests.Session()
+    session.headers["User-Agent"] = "msx_models_db (https://github.com/bengalack/msx_models_db)"
+
+    def fetch(url: str) -> str:
+        response = session.get(url, timeout=30)
+        response.raise_for_status()
+        return response.text
+
+    counts = generation_msx.run(
+        output=Path(args.output), db_path=Path(args.db), aliases_path=Path(args.aliases),
+        fetch=fetch, delay=args.delay, dry_run=args.dry_run,
+    )
+    print(f"{counts['listed']} computers listed on generation-msx.nl; {counts['models']} models in {args.db}")
+    print(f"exact {counts['exact']}, variant {counts['variant']}, family {counts['family']}, "
+          f"manual {counts['manual']}; without a link: {counts['unlinked']}")
+    print(f"Dry run — {args.output} not written." if args.dry_run else f"Wrote {args.output}")
 
 
 def main() -> None:
@@ -332,10 +356,34 @@ def main() -> None:
         help="Alias LUT used to canonicalise names (default: %(default)s)",
     )
     p_himem.add_argument(
+        "--openmsx-raw", default=str(build_module.RAW_OPENMSX), metavar="FILE",
+        help="openMSX cache used to resolve openMSX names the database no longer uses,"
+             " through the machine file (default: %(default)s)",
+    )
+    p_himem.add_argument(
         "--dry-run", action="store_true",
         help="Report what would change without writing the file",
     )
     p_himem.set_defaults(func=cmd_update_himem)
+
+    # ── gmsx-links ─────────────────────────────────────────────────
+    p_gmsx = sub.add_parser(
+        "gmsx-links",
+        help="(Re)create data/generation-msx.json — links to generation-msx.nl",
+        description="Crawl the MSX computer listings on generation-msx.nl and map every model of the"
+                    " built data.js to its page (exact / variant / family). Entries marked 'manual'"
+                    " in the existing file are kept. Rebuild data.js afterwards.",
+    )
+    p_gmsx.add_argument("--output", default="data/generation-msx.json", metavar="FILE",
+                        help="Map file to write (default: %(default)s)")
+    p_gmsx.add_argument("--db", default=str(build_module.DATA_JS_PATH), metavar="FILE",
+                        help="Built data.js giving model ids and names (default: %(default)s)")
+    p_gmsx.add_argument("--aliases", default=str(build_module.ALIASES_PATH), metavar="FILE",
+                        help="Alias LUT used to canonicalise their names (default: %(default)s)")
+    p_gmsx.add_argument("--delay", type=float, default=1.0,
+                        help="Seconds between listing requests (default: %(default)s)")
+    p_gmsx.add_argument("--dry-run", action="store_true", help="Report counts without writing the file")
+    p_gmsx.set_defaults(func=cmd_gmsx_links)
 
     args = parser.parse_args()
 

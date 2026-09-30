@@ -7,7 +7,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { buildGrid, FROZEN_COL_COUNT } from '../../src/grid.js';
+import { buildGrid, frozenColumnCount } from '../../src/grid.js';
 import type { MSXData } from '../../src/types.js';
 
 // ── Minimal test fixture ───────────────────────────────────────────────────
@@ -70,11 +70,28 @@ function cellsAtIndex(wrap: HTMLElement, colIndex: number): HTMLElement[] {
   return Array.from(wrap.querySelectorAll<HTMLElement>(`:is(th, td)[data-col-index="${colIndex}"]`));
 }
 
-// ── FROZEN_COL_COUNT constant ──────────────────────────────────────────────
+// ── frozenColumnCount ─────────────────────────────────────────────────────
 
-describe('FROZEN_COL_COUNT', () => {
-  it('equals 2', () => {
-    expect(FROZEN_COL_COUNT).toBe(2);
+/** Frozen columns of the default fixture: its Identity group's columns. */
+const FROZEN_COL_COUNT = frozenColumnCount(makeData().columns);
+
+describe('frozenColumnCount', () => {
+  it('counts the leading columns of the first (Identity) group', () => {
+    const cols = makeData().columns;
+    expect(FROZEN_COL_COUNT).toBe(cols.filter(c => c.groupId === cols[0].groupId).length);
+  });
+
+  it('grows with the Identity group (e.g. the generation-msx link column)', () => {
+    const data = makeData();
+    data.columns.splice(2, 0, { id: 110, key: 'generation_msx', label: 'generation-msx', groupId: 0, type: 'string' });
+    data.models.forEach(m => m.values.splice(2, 0, m.values[1]));
+    expect(frozenColumnCount(data.columns)).toBe(FROZEN_COL_COUNT + 1);
+    const { element } = buildGrid(data);
+    const frozenIdx = new Set(Array.from(element.querySelectorAll<HTMLElement>('th.col-header.col--frozen')).map(th => th.dataset.colIndex));
+    expect(frozenIdx.size).toBe(FROZEN_COL_COUNT + 1);
+    // The separator goes on the last frozen column only
+    const last = element.querySelectorAll<HTMLElement>('.col--frozen-last');
+    expect(new Set(Array.from(last).map(c => c.dataset.colIndex))).toEqual(new Set([String(FROZEN_COL_COUNT)]));
   });
 });
 

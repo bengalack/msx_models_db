@@ -1,0 +1,1750 @@
+{
+  "_comment": "Our model id -> its page on generation-msx.nl, for the Identity column 'generation-msx'. match: exact | variant (their name adds a nickname/suffix) | family (page of the family/base model) | manual (set by hand, kept by reruns; url null = never link). Regenerate with `python -m scraper gmsx-links` (needs a built docs/data.js); see technical-design.md, Feature Design: generation-msx Links.",
+  "links": {
+    "1": {
+      "model": "Sony HB-75P",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-75p/1227",
+      "match": "exact"
+    },
+    "3": {
+      "model": "Panasonic FS-A1",
+      "url": "https://generation-msx.nl/hardware/panasonic/fs-a1/406",
+      "match": "exact"
+    },
+    "4": {
+      "model": "Panasonic FS-A1F",
+      "url": "https://generation-msx.nl/hardware/panasonic/fs-a1f/407",
+      "match": "exact"
+    },
+    "5": {
+      "model": "Toshiba HX-33",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-33/949",
+      "match": "exact"
+    },
+    "6": {
+      "model": "Sony HB-F1XDJ",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f1xdj/748",
+      "match": "exact"
+    },
+    "7": {
+      "model": "Panasonic FS-A1WX",
+      "url": "https://generation-msx.nl/hardware/panasonic/fs-a1wx/414",
+      "match": "exact"
+    },
+    "8": {
+      "model": "Panasonic FS-A1WSX",
+      "url": "https://generation-msx.nl/hardware/panasonic/fs-a1wsx/413",
+      "match": "exact"
+    },
+    "9": {
+      "model": "Panasonic FS-A1ST",
+      "url": "https://generation-msx.nl/hardware/panasonic/fs-a1st/412",
+      "match": "exact"
+    },
+    "10": {
+      "model": "Panasonic FS-A1GT",
+      "url": "https://generation-msx.nl/hardware/panasonic/fs-a1gt/410",
+      "match": "exact"
+    },
+    "12": {
+      "model": "Aucnet NIA-2001",
+      "url": "https://generation-msx.nl/hardware/unknown/nia-2001/1641",
+      "match": "exact"
+    },
+    "13": {
+      "model": "AVT CPC-300",
+      "url": "https://generation-msx.nl/hardware/unknown/cpc-300-iq2000/110",
+      "match": "variant"
+    },
+    "14": {
+      "model": "Baraweth Perfect MSX2 (CPC-300)",
+      "url": "https://generation-msx.nl/hardware/bawarethal-mithali/perfect-msx2/449",
+      "match": "manual"
+    },
+    "15": {
+      "model": "Canon V-25",
+      "url": "https://generation-msx.nl/hardware/canon/v-25/62",
+      "match": "exact"
+    },
+    "16": {
+      "model": "Canon V-30F",
+      "url": "https://generation-msx.nl/hardware/canon/v-30f/64",
+      "match": "exact"
+    },
+    "19": {
+      "model": "Daewoo CPC-300",
+      "url": "https://generation-msx.nl/hardware/unknown/cpc-300-iq2000/110",
+      "match": "variant"
+    },
+    "20": {
+      "model": "Daewoo CPC-300E",
+      "url": "https://generation-msx.nl/hardware/unknown/cpc-300e/1469",
+      "match": "exact"
+    },
+    "21": {
+      "model": "Daewoo CPC-330K",
+      "url": "https://generation-msx.nl/hardware/unknown/cpc-330k-kobo/111",
+      "match": "variant"
+    },
+    "22": {
+      "model": "Daewoo CPC-400",
+      "url": "https://generation-msx.nl/hardware/unknown/cpc-400-x-ii/112",
+      "match": "variant"
+    },
+    "23": {
+      "model": "Daewoo CPC-400S",
+      "url": "https://generation-msx.nl/hardware/unknown/cpc-400s-x-ii/113",
+      "match": "variant"
+    },
+    "25": {
+      "model": "Daewoo CPC-61 Zemmix Super V",
+      "url": "https://generation-msx.nl/hardware/unknown/cpc-61-zemmix-super-v-victory/116",
+      "match": "variant"
+    },
+    "26": {
+      "model": "Daewoo CPG-120",
+      "url": "https://generation-msx.nl/hardware/unknown/cpg-120-zemmix-turbo/119",
+      "match": "variant"
+    },
+    "27": {
+      "model": "Daisen Sangyo MX-2021",
+      "url": "https://generation-msx.nl/hardware/daisen-sangyo/mx-2021/1588",
+      "match": "exact"
+    },
+    "28": {
+      "model": "Fenner FPC-900",
+      "url": "https://generation-msx.nl/hardware/fenner/fpc-900/190",
+      "match": "exact"
+    },
+    "30": {
+      "model": "Hitachi MB-H3",
+      "url": "https://generation-msx.nl/hardware/hitachi/mb-h3/236",
+      "match": "exact"
+    },
+    "31": {
+      "model": "Hitachi MB-H70",
+      "url": "https://generation-msx.nl/hardware/hitachi/hb-h70/229",
+      "match": "manual"
+    },
+    "32": {
+      "model": "Kawai KMC-5000",
+      "url": "https://generation-msx.nl/hardware/kawai/kmc-5000/290",
+      "match": "exact"
+    },
+    "34": {
+      "model": "Laser MSX2",
+      "url": "https://generation-msx.nl/hardware/laser-fr/laser-msx2/295",
+      "match": "manual"
+    },
+    "35": {
+      "model": "Mitsubishi ML-G1",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-g1/333",
+      "match": "exact"
+    },
+    "37": {
+      "model": "Mitsubishi ML-G10",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-g10/332",
+      "match": "exact"
+    },
+    "38": {
+      "model": "Mitsubishi ML-G3",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-g3/336",
+      "match": "exact"
+    },
+    "40": {
+      "model": "Mitsubishi ML-G30 Model 1",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-g30-model-1/1195",
+      "match": "exact"
+    },
+    "41": {
+      "model": "Mitsubishi ML-G30 Model 2",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-g30-model-2/334",
+      "match": "exact"
+    },
+    "46": {
+      "model": "Mitsubishi ML-TS2",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-ts2h/339",
+      "match": "variant"
+    },
+    "48": {
+      "model": "National FS-4500",
+      "url": "https://generation-msx.nl/hardware/unknown/fs-4500/357",
+      "match": "exact"
+    },
+    "49": {
+      "model": "National FS-4600F",
+      "url": "https://generation-msx.nl/hardware/unknown/fs-4600f/358",
+      "match": "exact"
+    },
+    "51": {
+      "model": "National FS-4700F",
+      "url": "https://generation-msx.nl/hardware/unknown/fs-4700f/359",
+      "match": "exact"
+    },
+    "52": {
+      "model": "National FS-5000F2",
+      "url": "https://generation-msx.nl/hardware/unknown/fs-5000f2/1647",
+      "match": "exact"
+    },
+    "53": {
+      "model": "National FS-5500F1",
+      "url": "https://generation-msx.nl/hardware/unknown/fs-5500f1/361",
+      "match": "exact"
+    },
+    "54": {
+      "model": "National FS-5500F2",
+      "url": "https://generation-msx.nl/hardware/unknown/fs-5500f2/362",
+      "match": "exact"
+    },
+    "57": {
+      "model": "NTT Captain Multi-Station",
+      "url": "https://generation-msx.nl/hardware/ntt/captain-multi-station/380",
+      "match": "exact"
+    },
+    "58": {
+      "model": "Panasonic FS-A1FM",
+      "url": "https://generation-msx.nl/hardware/panasonic/fs-a1fm/408",
+      "match": "exact"
+    },
+    "59": {
+      "model": "Panasonic FS-A1FX",
+      "url": "https://generation-msx.nl/hardware/panasonic/fs-a1fx/409",
+      "match": "exact"
+    },
+    "61": {
+      "model": "Panasonic FS-A1mkII",
+      "url": "https://generation-msx.nl/hardware/panasonic/fs-a1mkii/411",
+      "match": "exact"
+    },
+    "63": {
+      "model": "Philips NMS 8220",
+      "url": "https://generation-msx.nl/hardware/philips/nms-8220/581",
+      "match": "exact"
+    },
+    "64": {
+      "model": "Philips NMS 8245",
+      "url": "https://generation-msx.nl/hardware/philips/nms-8245/536",
+      "match": "exact"
+    },
+    "65": {
+      "model": "Philips NMS 8245 Home Banking",
+      "url": "https://generation-msx.nl/hardware/philips/nms-8245/536",
+      "match": "family"
+    },
+    "66": {
+      "model": "Philips NMS 8245/16",
+      "url": "https://generation-msx.nl/hardware/philips/nms-8245/536",
+      "match": "family"
+    },
+    "67": {
+      "model": "Philips NMS 8245/19",
+      "url": "https://generation-msx.nl/hardware/philips/nms-8245/536",
+      "match": "family"
+    },
+    "68": {
+      "model": "Philips NMS 8250",
+      "url": "https://generation-msx.nl/hardware/philips/nms-8250/537",
+      "match": "exact"
+    },
+    "69": {
+      "model": "Philips NMS 8250/16",
+      "url": "https://generation-msx.nl/hardware/philips/nms-8250/537",
+      "match": "family"
+    },
+    "70": {
+      "model": "Philips NMS 8250/19",
+      "url": "https://generation-msx.nl/hardware/philips/nms-8250/537",
+      "match": "family"
+    },
+    "71": {
+      "model": "Philips NMS 8255",
+      "url": "https://generation-msx.nl/hardware/philips/nms-8255/538",
+      "match": "exact"
+    },
+    "72": {
+      "model": "Philips NMS 8260",
+      "url": "https://generation-msx.nl/hardware/philips/nms-8260/451",
+      "match": "exact"
+    },
+    "73": {
+      "model": "Philips NMS 8280",
+      "url": "https://generation-msx.nl/hardware/philips/nms-8280/539",
+      "match": "exact"
+    },
+    "74": {
+      "model": "Philips VG 8230",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8230/582",
+      "match": "exact"
+    },
+    "75": {
+      "model": "Philips VG 8235/00",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8235/583",
+      "match": "family"
+    },
+    "76": {
+      "model": "Philips VG 8235/02",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8235/583",
+      "match": "family"
+    },
+    "77": {
+      "model": "Philips VG 8235/19",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8235/583",
+      "match": "family"
+    },
+    "78": {
+      "model": "Philips VG 8235/20",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8235/583",
+      "match": "family"
+    },
+    "79": {
+      "model": "Philips VG 8235/39",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8235/583",
+      "match": "family"
+    },
+    "81": {
+      "model": "Philips VG-8235",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8235/583",
+      "match": "exact"
+    },
+    "82": {
+      "model": "Philips VG-8240",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8240/584",
+      "match": "exact"
+    },
+    "83": {
+      "model": "Phonola NMS 8245",
+      "url": "https://generation-msx.nl/hardware/phonola/nms-8245/605",
+      "match": "exact"
+    },
+    "84": {
+      "model": "Phonola NMS 8280",
+      "url": "https://generation-msx.nl/hardware/phonola/nms-8280/1312",
+      "match": "exact"
+    },
+    "85": {
+      "model": "Phonola VG-8235",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8235/583",
+      "match": "exact"
+    },
+    "86": {
+      "model": "Pioneer UC-V102",
+      "url": "https://generation-msx.nl/hardware/pioneer/uc-v102/1171",
+      "match": "exact"
+    },
+    "88": {
+      "model": "Sakhr AX-350",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-350/646",
+      "match": "exact"
+    },
+    "90": {
+      "model": "Sakhr AX-370",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-370/647",
+      "match": "exact"
+    },
+    "91": {
+      "model": "Yamaha AX-500",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-500/648",
+      "match": "exact"
+    },
+    "92": {
+      "model": "Sanyo MPC-2300",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-2300/703",
+      "match": "exact"
+    },
+    "93": {
+      "model": "Sanyo MPC-2500FD",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-2500fd/705",
+      "match": "exact"
+    },
+    "94": {
+      "model": "Sanyo MPC-25F",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-25f-wavy25/677",
+      "match": "variant"
+    },
+    "95": {
+      "model": "Sanyo MPC-25FD",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-25fd-wavy25/678",
+      "match": "variant"
+    },
+    "96": {
+      "model": "Sanyo MPC-25FK",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-25fk-wavy25/679",
+      "match": "variant"
+    },
+    "97": {
+      "model": "Sanyo MPC-25FS",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-25fs-wavy25/680",
+      "match": "variant"
+    },
+    "98": {
+      "model": "Sanyo MPC-27",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-27-wavy27/704",
+      "match": "variant"
+    },
+    "99": {
+      "model": "Sanyo PCT-100",
+      "url": "https://generation-msx.nl/hardware/unknown/pct-100/1359",
+      "match": "exact"
+    },
+    "100": {
+      "model": "Sanyo PHC-23",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-23-wavy23/1581",
+      "match": "variant"
+    },
+    "101": {
+      "model": "Sanyo PHC-23J",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-23j-wavy23/707",
+      "match": "variant"
+    },
+    "104": {
+      "model": "Sanyo PHC-35J",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-35j-wavy35/708",
+      "match": "variant"
+    },
+    "105": {
+      "model": "Sanyo PHC-50FD2",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-50fd2/1649",
+      "match": "exact"
+    },
+    "106": {
+      "model": "Sanyo PHC-55FD2",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-55fd2-wavy55fd2/1077",
+      "match": "variant"
+    },
+    "107": {
+      "model": "Sanyo PHC-70FD",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-70fd-wavy70fd/710",
+      "match": "variant"
+    },
+    "108": {
+      "model": "Sanyo PHC-70FD2",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-70fd2-wavy70fd2/709",
+      "match": "variant"
+    },
+    "109": {
+      "model": "Sanyo PHC-77",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-77-wavy77/706",
+      "match": "variant"
+    },
+    "110": {
+      "model": "Sony HB-F1",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f1/745",
+      "match": "exact"
+    },
+    "111": {
+      "model": "Sony HB-F1II",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f1ii/746",
+      "match": "exact"
+    },
+    "112": {
+      "model": "Sony HB-F1XD",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f1xd/747",
+      "match": "exact"
+    },
+    "113": {
+      "model": "Sony HB-F1XDmk2",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f1xdmk2/750",
+      "match": "exact"
+    },
+    "114": {
+      "model": "Sony HB-F1XV",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f1xv/751",
+      "match": "exact"
+    },
+    "115": {
+      "model": "Sony HB-F5",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f5/753",
+      "match": "exact"
+    },
+    "116": {
+      "model": "Sony HB-F500",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f500/752",
+      "match": "exact"
+    },
+    "117": {
+      "model": "Sony HB-F500 (v2)",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f500/752",
+      "match": "family"
+    },
+    "118": {
+      "model": "Sony HB-F500P",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f500p/1416",
+      "match": "exact"
+    },
+    "119": {
+      "model": "Sony HB-F700D",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f700d/1263",
+      "match": "exact"
+    },
+    "120": {
+      "model": "Sony HB-F700F",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f700f/1264",
+      "match": "exact"
+    },
+    "121": {
+      "model": "Sony HB-F700P",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f700p/754",
+      "match": "exact"
+    },
+    "122": {
+      "model": "Sony HB-F700S",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f700s/1265",
+      "match": "exact"
+    },
+    "123": {
+      "model": "Sony HB-F750",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f750/1579",
+      "match": "exact"
+    },
+    "124": {
+      "model": "Sony HB-F900",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f900/755",
+      "match": "exact"
+    },
+    "125": {
+      "model": "Sony HB-F9P",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f9p/756",
+      "match": "exact"
+    },
+    "126": {
+      "model": "Sony HB-F9P Russian",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f9p/756",
+      "match": "family"
+    },
+    "127": {
+      "model": "Sony HB-F9S",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f9s/1375",
+      "match": "exact"
+    },
+    "128": {
+      "model": "Sony HB-G900AP",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-g900ap/759",
+      "match": "exact"
+    },
+    "129": {
+      "model": "Sony HB-G900D",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-g900d/1725",
+      "match": "exact"
+    },
+    "130": {
+      "model": "Sony HB-G900F",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-g900f/1677",
+      "match": "exact"
+    },
+    "131": {
+      "model": "Sony HB-G900P",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-g900/758",
+      "match": "manual"
+    },
+    "132": {
+      "model": "Sony HB-T600",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-t600/760",
+      "match": "exact"
+    },
+    "133": {
+      "model": "Sony HB-T7",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-t7/761",
+      "match": "exact"
+    },
+    "134": {
+      "model": "Talent DPC-300",
+      "url": "https://generation-msx.nl/hardware/telematicatalent/dpc-300/1065",
+      "match": "exact"
+    },
+    "135": {
+      "model": "Talent TPC-310",
+      "url": "https://generation-msx.nl/hardware/telematicatalent/tpc-310/908",
+      "match": "exact"
+    },
+    "136": {
+      "model": "Talent TPP-311",
+      "url": "https://generation-msx.nl/hardware/telematicatalent/tpp-311/912",
+      "match": "exact"
+    },
+    "137": {
+      "model": "Talent TPS-312",
+      "url": "https://generation-msx.nl/hardware/telematicatalent/tps-312/913",
+      "match": "exact"
+    },
+    "138": {
+      "model": "Team Neo Mini IQ-3000",
+      "url": "https://generation-msx.nl/hardware/retroteam-neo/iq-3000/1340",
+      "match": "manual"
+    },
+    "139": {
+      "model": "Team Neo Zemmix Neo",
+      "url": "https://generation-msx.nl/hardware/retroteam-neo/zemmix-neo/1112",
+      "match": "exact"
+    },
+    "140": {
+      "model": "Toshiba FS-TM1",
+      "url": "https://generation-msx.nl/hardware/unknown/fs-tm1/932",
+      "match": "exact"
+    },
+    "141": {
+      "model": "Toshiba HX-23",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-23/944",
+      "match": "exact"
+    },
+    "142": {
+      "model": "Toshiba HX-23F",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-23f/945",
+      "match": "exact"
+    },
+    "143": {
+      "model": "Toshiba HX-34",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-34/950",
+      "match": "exact"
+    },
+    "144": {
+      "model": "Toshiba HX-54",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-54/1851",
+      "match": "exact"
+    },
+    "145": {
+      "model": "Victor HC-80",
+      "url": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-80/265",
+      "match": "exact"
+    },
+    "146": {
+      "model": "Victor HC-90",
+      "url": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-90/266",
+      "match": "exact"
+    },
+    "148": {
+      "model": "Victor HC-95",
+      "url": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-95/267",
+      "match": "exact"
+    },
+    "151": {
+      "model": "Yamaha AX-350II",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-350ii/978",
+      "match": "exact"
+    },
+    "154": {
+      "model": "Yamaha CX7/128",
+      "url": "https://generation-msx.nl/hardware/unknown/cx7128/990",
+      "match": "exact"
+    },
+    "155": {
+      "model": "Yamaha CX7M/128",
+      "url": "https://generation-msx.nl/hardware/unknown/cx7m128/991",
+      "match": "exact"
+    },
+    "156": {
+      "model": "Yamaha YIS-503IIIR",
+      "url": "https://generation-msx.nl/hardware/unknown/yis-503iiir/1025",
+      "match": "exact"
+    },
+    "157": {
+      "model": "Yamaha YIS-604/128",
+      "url": "https://generation-msx.nl/hardware/unknown/yis-604128/1031",
+      "match": "exact"
+    },
+    "158": {
+      "model": "Yamaha YIS-805/128",
+      "url": "https://generation-msx.nl/hardware/unknown/yis-805/1034",
+      "match": "family"
+    },
+    "159": {
+      "model": "Yamaha YIS-805/128R2",
+      "url": "https://generation-msx.nl/hardware/unknown/yis-805128r2/1033",
+      "match": "exact"
+    },
+    "169": {
+      "model": "ESE One chip MSX",
+      "url": "https://generation-msx.nl/hardware/ese-artists-factory/1chipmsx/1106",
+      "match": "manual"
+    },
+    "174": {
+      "model": "Sanyo PHC-23(GR)",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-23-wavy23/1581",
+      "match": "family"
+    },
+    "178": {
+      "model": "Al Fateh 100",
+      "url": "https://generation-msx.nl/hardware/al-fateh/100/1350",
+      "match": "exact"
+    },
+    "179": {
+      "model": "Al Fateh 123",
+      "url": "https://generation-msx.nl/hardware/al-fateh/123/639",
+      "match": "exact"
+    },
+    "180": {
+      "model": "AVT DPC-200",
+      "url": "https://generation-msx.nl/hardware/avt/dpc-200/1231",
+      "match": "exact"
+    },
+    "183": {
+      "model": "Canon V-10",
+      "url": "https://generation-msx.nl/hardware/canon/v-10/60",
+      "match": "exact"
+    },
+    "185": {
+      "model": "Canon V-8",
+      "url": "https://generation-msx.nl/hardware/canon/v-8/66",
+      "match": "exact"
+    },
+    "186": {
+      "model": "Casio MX-10",
+      "url": "https://generation-msx.nl/hardware/unknown/mx-10/80",
+      "match": "exact"
+    },
+    "187": {
+      "model": "Casio MX-101",
+      "url": "https://generation-msx.nl/hardware/unknown/mx-101/79",
+      "match": "exact"
+    },
+    "188": {
+      "model": "Casio MX-15",
+      "url": "https://generation-msx.nl/hardware/unknown/mx-15/81",
+      "match": "exact"
+    },
+    "189": {
+      "model": "Casio PV-16",
+      "url": "https://generation-msx.nl/hardware/unknown/pv-16/85",
+      "match": "exact"
+    },
+    "190": {
+      "model": "Casio PV-7",
+      "url": "https://generation-msx.nl/hardware/unknown/pv-7/86",
+      "match": "exact"
+    },
+    "191": {
+      "model": "CE-TEC MPC-80",
+      "url": "https://generation-msx.nl/hardware/ce-tec/mpc-80/91",
+      "match": "exact"
+    },
+    "192": {
+      "model": "Daewoo CPC-200",
+      "url": "https://generation-msx.nl/hardware/unknown/cpc-200/109",
+      "match": "exact"
+    },
+    "194": {
+      "model": "Daewoo CPC-50A",
+      "url": "https://generation-msx.nl/hardware/unknown/cpc-50a-zemmix/114",
+      "match": "variant"
+    },
+    "195": {
+      "model": "Daewoo CPC-50B",
+      "url": "https://generation-msx.nl/hardware/unknown/cpc-50b-zemmix/1111",
+      "match": "variant"
+    },
+    "198": {
+      "model": "Daewoo DPC-100",
+      "url": "https://generation-msx.nl/hardware/unknown/dpc-100/124",
+      "match": "exact"
+    },
+    "199": {
+      "model": "Daewoo DPC-180",
+      "url": "https://generation-msx.nl/hardware/unknown/dpc-180/1648",
+      "match": "exact"
+    },
+    "200": {
+      "model": "Daewoo DPC-200",
+      "url": "https://generation-msx.nl/hardware/unknown/dpc-200-iq-1000/125",
+      "match": "manual"
+    },
+    "201": {
+      "model": "Daewoo DPC-200 (FR)",
+      "url": "https://generation-msx.nl/hardware/unknown/dpc-200-iq-1000/125",
+      "match": "manual"
+    },
+    "202": {
+      "model": "Daewoo DPC-200 (NL)",
+      "url": "https://generation-msx.nl/hardware/unknown/dpc-200-iq-1000/125",
+      "match": "manual"
+    },
+    "204": {
+      "model": "Daewoo DTX-1493FW (SuperBoy)",
+      "url": "https://generation-msx.nl/hardware/unknown/dtx-1493fw-zemmix-superboy/134",
+      "match": "manual"
+    },
+    "205": {
+      "model": "Dragon MSX-64",
+      "url": "https://generation-msx.nl/hardware/dragon/msx-64/166",
+      "match": "exact"
+    },
+    "206": {
+      "model": "Dynadata DPC-200",
+      "url": "https://generation-msx.nl/hardware/dynadata/dpc-200/168",
+      "match": "exact"
+    },
+    "207": {
+      "model": "Fenner DPC-200",
+      "url": "https://generation-msx.nl/hardware/fenner/dpc-200/1447",
+      "match": "exact"
+    },
+    "208": {
+      "model": "Fenner FPC-500",
+      "url": "https://generation-msx.nl/hardware/fenner/fpc-500/189",
+      "match": "exact"
+    },
+    "209": {
+      "model": "Fenner SPC-800",
+      "url": "https://generation-msx.nl/hardware/fenner/spc-800/193",
+      "match": "exact"
+    },
+    "211": {
+      "model": "Frael BRUC 100",
+      "url": "https://generation-msx.nl/hardware/frael/bruc-100/1090",
+      "match": "exact"
+    },
+    "213": {
+      "model": "General PCT-50",
+      "url": "https://generation-msx.nl/hardware/fujitsu-general-paxon/paxon-pct-50/197",
+      "match": "manual"
+    },
+    "215": {
+      "model": "Goldstar FC-200",
+      "url": "https://generation-msx.nl/hardware/unknown/fc-200/200",
+      "match": "exact"
+    },
+    "216": {
+      "model": "Goldstar FC-80",
+      "url": "https://generation-msx.nl/hardware/unknown/fc-80/201",
+      "match": "exact"
+    },
+    "218": {
+      "model": "Goldstar GFC-1080",
+      "url": "https://generation-msx.nl/hardware/unknown/gfc-1080/203",
+      "match": "exact"
+    },
+    "220": {
+      "model": "Gradiente Expert DDPlus",
+      "url": "https://generation-msx.nl/hardware/gradiente/expert-dd-plus/212",
+      "match": "exact"
+    },
+    "221": {
+      "model": "Gradiente Expert GPC-1",
+      "url": "https://generation-msx.nl/hardware/gradiente/expert-gpc1/222",
+      "match": "exact"
+    },
+    "222": {
+      "model": "Gradiente Expert Plus",
+      "url": "https://generation-msx.nl/hardware/gradiente/expert-plus/213",
+      "match": "exact"
+    },
+    "223": {
+      "model": "Gradiente Expert XP-800",
+      "url": "https://generation-msx.nl/hardware/gradiente/expert-xp-800-10/221",
+      "match": "variant"
+    },
+    "224": {
+      "model": "Hitachi MB-H1",
+      "url": "https://generation-msx.nl/hardware/hitachi/mb-h1-humanicatio/231",
+      "match": "variant"
+    },
+    "225": {
+      "model": "Hitachi MB-H1E",
+      "url": "https://generation-msx.nl/hardware/hitachi/mb-h1e/232",
+      "match": "exact"
+    },
+    "226": {
+      "model": "Hitachi MB-H2",
+      "url": "https://generation-msx.nl/hardware/hitachi/mb-h2/235",
+      "match": "exact"
+    },
+    "227": {
+      "model": "Hitachi MB-H21",
+      "url": "https://generation-msx.nl/hardware/hitachi/mb-h21/233",
+      "match": "exact"
+    },
+    "228": {
+      "model": "Hitachi MB-H25",
+      "url": "https://generation-msx.nl/hardware/hitachi/mb-h25/234",
+      "match": "exact"
+    },
+    "230": {
+      "model": "Hitachi MB-H50",
+      "url": "https://generation-msx.nl/hardware/hitachi/mb-h50/237",
+      "match": "exact"
+    },
+    "233": {
+      "model": "Hitachi MB-H80",
+      "url": "https://generation-msx.nl/hardware/hitachi/mb-h80/238",
+      "match": "exact"
+    },
+    "236": {
+      "model": "JVC HC-7E",
+      "url": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-7e/263",
+      "match": "exact"
+    },
+    "237": {
+      "model": "JVC HC-7GB",
+      "url": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-7gb/264",
+      "match": "exact"
+    },
+    "238": {
+      "model": "Misawa-Van CX-5",
+      "url": "https://generation-msx.nl/hardware/misawa-van/cx-5/1574",
+      "match": "exact"
+    },
+    "239": {
+      "model": "Mitsubishi ML-8000",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-8000/325",
+      "match": "exact"
+    },
+    "240": {
+      "model": "Mitsubishi ML-F110",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-f110/326",
+      "match": "exact"
+    },
+    "241": {
+      "model": "Mitsubishi ML-F120",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-f120/327",
+      "match": "exact"
+    },
+    "242": {
+      "model": "Mitsubishi ML-F120D",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-f120d/1351",
+      "match": "exact"
+    },
+    "243": {
+      "model": "Mitsubishi ML-F48",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-f48/328",
+      "match": "exact"
+    },
+    "244": {
+      "model": "Mitsubishi ML-F80",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-f80/329",
+      "match": "exact"
+    },
+    "245": {
+      "model": "Mitsubishi ML-FX1",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-fx1/330",
+      "match": "exact"
+    },
+    "246": {
+      "model": "Mitsubishi ML-FX2",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-fx2/331",
+      "match": "exact"
+    },
+    "247": {
+      "model": "National CF-1200",
+      "url": "https://generation-msx.nl/hardware/unknown/cf-1200/342",
+      "match": "exact"
+    },
+    "248": {
+      "model": "National CF-2000",
+      "url": "https://generation-msx.nl/hardware/unknown/cf-2000/343",
+      "match": "exact"
+    },
+    "249": {
+      "model": "National CF-2700",
+      "url": "https://generation-msx.nl/hardware/unknown/cf-2700/401",
+      "match": "exact"
+    },
+    "250": {
+      "model": "National CF-3000",
+      "url": "https://generation-msx.nl/hardware/unknown/cf-3000/351",
+      "match": "exact"
+    },
+    "251": {
+      "model": "National CF-3300",
+      "url": "https://generation-msx.nl/hardware/unknown/cf-3300/352",
+      "match": "exact"
+    },
+    "252": {
+      "model": "National FS-1300",
+      "url": "https://generation-msx.nl/hardware/unknown/fs-1300/355",
+      "match": "exact"
+    },
+    "253": {
+      "model": "National FS-4000",
+      "url": "https://generation-msx.nl/hardware/unknown/fs-4000/356",
+      "match": "exact"
+    },
+    "254": {
+      "model": "Network DPC-200",
+      "url": "https://generation-msx.nl/hardware/network-uk/dpc-200/1222",
+      "match": "exact"
+    },
+    "255": {
+      "model": "Nikko PC-70100",
+      "url": "https://generation-msx.nl/hardware/nikko/pc-70100/1701",
+      "match": "exact"
+    },
+    "257": {
+      "model": "Olympia PHC-2",
+      "url": "https://generation-msx.nl/hardware/olympia/phc-2/382",
+      "match": "exact"
+    },
+    "258": {
+      "model": "Olympia PHC-28",
+      "url": "https://generation-msx.nl/hardware/olympia/phc-28/381",
+      "match": "exact"
+    },
+    "259": {
+      "model": "Panasonic FS-3900",
+      "url": "https://generation-msx.nl/hardware/panasonic/fs-3900/405",
+      "match": "exact"
+    },
+    "260": {
+      "model": "Philips NMS 800",
+      "url": "https://generation-msx.nl/hardware/philips-italy/nms-800/1212",
+      "match": "exact"
+    },
+    "261": {
+      "model": "Philips NMS 801",
+      "url": "https://generation-msx.nl/hardware/philips-italy/nms-801/535",
+      "match": "exact"
+    },
+    "262": {
+      "model": "Philips VG-8000",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8000/575",
+      "match": "exact"
+    },
+    "263": {
+      "model": "Philips VG-8010",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8010/576",
+      "match": "exact"
+    },
+    "264": {
+      "model": "Philips VG-8020",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8020/577",
+      "match": "exact"
+    },
+    "265": {
+      "model": "Phonola VG-8000",
+      "url": "https://generation-msx.nl/hardware/phonola/vg-8000/606",
+      "match": "exact"
+    },
+    "266": {
+      "model": "Phonola VG-8010",
+      "url": "https://generation-msx.nl/hardware/phonola/vg-8010/1075",
+      "match": "exact"
+    },
+    "267": {
+      "model": "Phonola VG-8020",
+      "url": "https://generation-msx.nl/hardware/phonola/vg-8020/607",
+      "match": "exact"
+    },
+    "268": {
+      "model": "Pioneer PX-7",
+      "url": "https://generation-msx.nl/hardware/pioneer/px-7-palcom/612",
+      "match": "variant"
+    },
+    "269": {
+      "model": "Pioneer PX-7(HB)",
+      "url": "https://generation-msx.nl/hardware/pioneer/px-7-palcom/612",
+      "match": "family"
+    },
+    "270": {
+      "model": "Pioneer PX-V60",
+      "url": "https://generation-msx.nl/hardware/pioneer/px-v60/617",
+      "match": "exact"
+    },
+    "271": {
+      "model": "Pioneer PX-V7",
+      "url": "https://generation-msx.nl/hardware/pioneer/px-v7/1170",
+      "match": "exact"
+    },
+    "272": {
+      "model": "Radiola MK 180",
+      "url": "https://generation-msx.nl/hardware/radiola/mk-180/626",
+      "match": "exact"
+    },
+    "273": {
+      "model": "Sakhr AH-200",
+      "url": "https://generation-msx.nl/hardware/skhr/ah-200/636",
+      "match": "exact"
+    },
+    "274": {
+      "model": "Sakhr AX-100",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-100/638",
+      "match": "exact"
+    },
+    "275": {
+      "model": "Yamaha AX-150",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-150/640",
+      "match": "exact"
+    },
+    "276": {
+      "model": "Sakhr AX-170",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-170/641",
+      "match": "exact"
+    },
+    "277": {
+      "model": "Sakhr AX-170 (TH)",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-170-th/1849",
+      "match": "exact"
+    },
+    "279": {
+      "model": "Yamaha AX-200",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-200/642",
+      "match": "exact"
+    },
+    "281": {
+      "model": "Sakhr AX-230",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-230/643",
+      "match": "exact"
+    },
+    "282": {
+      "model": "Sakhr AX-330",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-330/645",
+      "match": "exact"
+    },
+    "283": {
+      "model": "Sakhr AX-660",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-660/649",
+      "match": "exact"
+    },
+    "284": {
+      "model": "Sakhr AX-990",
+      "url": "https://generation-msx.nl/hardware/skhr/ax-990/650",
+      "match": "exact"
+    },
+    "285": {
+      "model": "Samsung SPC-800",
+      "url": "https://generation-msx.nl/hardware/unknown/spc-800/657",
+      "match": "exact"
+    },
+    "288": {
+      "model": "Sanno SPCmk-II",
+      "url": "https://generation-msx.nl/hardware/sanno/spcmk-ii/1344",
+      "match": "exact"
+    },
+    "289": {
+      "model": "Sanno SPCmk-III",
+      "url": "https://generation-msx.nl/hardware/sanno/spcmk-iii/659",
+      "match": "exact"
+    },
+    "290": {
+      "model": "Sanyo MPC-1",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-1-wavy1/669",
+      "match": "variant"
+    },
+    "291": {
+      "model": "Sanyo MPC-10",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-10-wavy10/670",
+      "match": "variant"
+    },
+    "292": {
+      "model": "Sanyo MPC-100",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-100/672",
+      "match": "exact"
+    },
+    "293": {
+      "model": "Sanyo MPC-10mkII",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-10mkii-wavy10mkii/671",
+      "match": "variant"
+    },
+    "294": {
+      "model": "Sanyo MPC-11",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-11-wavy-11/673",
+      "match": "variant"
+    },
+    "295": {
+      "model": "Sanyo MPC-2",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-2-wavy2/675",
+      "match": "variant"
+    },
+    "296": {
+      "model": "Sanyo MPC-3",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-3-wavy3/681",
+      "match": "variant"
+    },
+    "297": {
+      "model": "Sanyo MPC-5",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-5-wavy5/683",
+      "match": "variant"
+    },
+    "298": {
+      "model": "Sanyo MPC-6",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-6-wavy6/684",
+      "match": "variant"
+    },
+    "299": {
+      "model": "Sanyo MPC-64",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-64/685",
+      "match": "exact"
+    },
+    "300": {
+      "model": "Sanyo PHC-25SK",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-25sk-wavy-25sk/1912",
+      "match": "manual"
+    },
+    "301": {
+      "model": "Sanyo PHC-27",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-27/694",
+      "match": "exact"
+    },
+    "302": {
+      "model": "Sanyo PHC-28L",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-28l/695",
+      "match": "exact"
+    },
+    "303": {
+      "model": "Sanyo PHC-28P (DE)",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-28p/1383",
+      "match": "family"
+    },
+    "304": {
+      "model": "Sanyo PHC-28P (ES)",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-28p/1383",
+      "match": "family"
+    },
+    "305": {
+      "model": "Sanyo PHC-28S",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-28s/696",
+      "match": "exact"
+    },
+    "306": {
+      "model": "Sanyo PHC-30",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-30/697",
+      "match": "exact"
+    },
+    "307": {
+      "model": "Sanyo PHC-30N",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-30n/698",
+      "match": "exact"
+    },
+    "308": {
+      "model": "Sanyo PHC-30N (FR)",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-30n/698",
+      "match": "family"
+    },
+    "309": {
+      "model": "Sanyo PHC-30N (DE)",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-30n/698",
+      "match": "family"
+    },
+    "310": {
+      "model": "Sanyo PHC-33",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-33/699",
+      "match": "exact"
+    },
+    "311": {
+      "model": "Schneider MC 810",
+      "url": "https://generation-msx.nl/hardware/schneider/mc-810/711",
+      "match": "exact"
+    },
+    "312": {
+      "model": "Sharp HB-8000",
+      "url": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-1011/724",
+      "match": "manual"
+    },
+    "314": {
+      "model": "Sony HB-11",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-11/735",
+      "match": "exact"
+    },
+    "315": {
+      "model": "Sony HB-701",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-701/740",
+      "match": "exact"
+    },
+    "316": {
+      "model": "Sony HB-701FD",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-701fd/741",
+      "match": "exact"
+    },
+    "317": {
+      "model": "Spectravideo SVI-728",
+      "url": "https://generation-msx.nl/hardware/spectravideo-svi/svi-728/838",
+      "match": "exact"
+    },
+    "318": {
+      "model": "Spectravideo SVI-738",
+      "url": "https://generation-msx.nl/hardware/spectravideo-svi/svi-738/840",
+      "match": "exact"
+    },
+    "320": {
+      "model": "Talent DPC-200",
+      "url": "https://generation-msx.nl/hardware/telematicatalent/dpc-200/893",
+      "match": "exact"
+    },
+    "321": {
+      "model": "Talent DPC-200A",
+      "url": "https://generation-msx.nl/hardware/telematicatalent/dpc-200a/894",
+      "match": "exact"
+    },
+    "322": {
+      "model": "Talent DPS-201",
+      "url": "https://generation-msx.nl/hardware/telematicatalent/dps-201/900",
+      "match": "exact"
+    },
+    "323": {
+      "model": "Bawareth Ent. for Trade/Daewoo Perfect MSX1",
+      "url": "https://generation-msx.nl/hardware/bawarethal-mithali/perfect-msx1/448",
+      "match": "exact"
+    },
+    "324": {
+      "model": "Canon V-20 (EU)",
+      "url": "https://generation-msx.nl/hardware/canon/v-20/61",
+      "match": "manual"
+    },
+    "325": {
+      "model": "Canon V-20 (FR)",
+      "url": "https://generation-msx.nl/hardware/canon/v-20/61",
+      "match": "manual"
+    },
+    "326": {
+      "model": "Canon V-20 (JP)",
+      "url": "https://generation-msx.nl/hardware/canon/v-20/61",
+      "match": "exact"
+    },
+    "328": {
+      "model": "Daewoo CPC-51 Zemmix V",
+      "url": "https://generation-msx.nl/hardware/unknown/cpc-51-zemmix-v/115",
+      "match": "exact"
+    },
+    "332": {
+      "model": "Frael BRUC 100 (v2)",
+      "url": "https://generation-msx.nl/hardware/frael/bruc-100/1090",
+      "match": "family"
+    },
+    "333": {
+      "model": "Fujitsu FM-X",
+      "url": "https://generation-msx.nl/hardware/fujitsu/fm-x/195",
+      "match": "exact"
+    },
+    "334": {
+      "model": "General Paxon PCT-55",
+      "url": "https://generation-msx.nl/hardware/fujitsu-general-paxon/paxon-pct-55/198",
+      "match": "exact"
+    },
+    "335": {
+      "model": "Gradiente Expert DD Plus",
+      "url": "https://generation-msx.nl/hardware/gradiente/expert-dd-plus/212",
+      "match": "exact"
+    },
+    "336": {
+      "model": "Panasonic CF-2700 (DE)",
+      "url": "https://generation-msx.nl/hardware/panasonic/cf-2700ge/1144",
+      "match": "exact"
+    },
+    "337": {
+      "model": "Panasonic CF-2700 (GB)",
+      "url": "https://generation-msx.nl/hardware/panasonic/cf-2700uk/1143",
+      "match": "exact"
+    },
+    "338": {
+      "model": "Philips VG 8000/00",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8000/575",
+      "match": "family"
+    },
+    "339": {
+      "model": "Philips VG 8010/00",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8010/576",
+      "match": "family"
+    },
+    "340": {
+      "model": "Philips VG 8010/19",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8010/576",
+      "match": "family"
+    },
+    "341": {
+      "model": "Philips VG 8020/00",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8020/577",
+      "match": "family"
+    },
+    "342": {
+      "model": "Philips VG 8020/19",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8020/577",
+      "match": "family"
+    },
+    "343": {
+      "model": "Philips VG 8020/20",
+      "url": "https://generation-msx.nl/hardware/philips/vg-8020/577",
+      "match": "family"
+    },
+    "344": {
+      "model": "Pioneer PX-7(GB)",
+      "url": "https://generation-msx.nl/hardware/pioneer/px-7uk/1169",
+      "match": "exact"
+    },
+    "347": {
+      "model": "Sanyo MPC-1/Wavy1",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-1-wavy1/669",
+      "match": "exact"
+    },
+    "348": {
+      "model": "Sanyo MPC-10/Wavy10",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-10-wavy10/670",
+      "match": "exact"
+    },
+    "349": {
+      "model": "Sanyo MPC-10/Wavy10mkII",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-10mkii-wavy10mkii/671",
+      "match": "manual"
+    },
+    "350": {
+      "model": "Sanyo MPC-11/Wavy11",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-11-wavy-11/673",
+      "match": "exact"
+    },
+    "352": {
+      "model": "Sanyo MPC-3/Wavy3",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-3-wavy3/681",
+      "match": "exact"
+    },
+    "353": {
+      "model": "Sanyo MPC-6/Wavy6",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-6-wavy6/684",
+      "match": "exact"
+    },
+    "354": {
+      "model": "Sanyo PHC-28P",
+      "url": "https://generation-msx.nl/hardware/unknown/phc-28p/1383",
+      "match": "exact"
+    },
+    "356": {
+      "model": "Sharp HB-8000 v1.1",
+      "url": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-1011/724",
+      "match": "manual"
+    },
+    "357": {
+      "model": "Sharp HB-8000 v1.2",
+      "url": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-12/725",
+      "match": "manual"
+    },
+    "358": {
+      "model": "Sony HB-10",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-10/734",
+      "match": "exact"
+    },
+    "359": {
+      "model": "Sony HB-101",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-101/733",
+      "match": "exact"
+    },
+    "360": {
+      "model": "Sony HB-101P",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-101p/1382",
+      "match": "exact"
+    },
+    "361": {
+      "model": "Sony HB-10P",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-10p/1158",
+      "match": "exact"
+    },
+    "362": {
+      "model": "Sony HB-201",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-201/1381",
+      "match": "exact"
+    },
+    "363": {
+      "model": "Sony HB-201P",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-201p/736",
+      "match": "exact"
+    },
+    "364": {
+      "model": "Sony HB-20P",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-20p/737",
+      "match": "exact"
+    },
+    "365": {
+      "model": "Sony HB-501P",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-501p/738",
+      "match": "exact"
+    },
+    "366": {
+      "model": "Sony HB-55P",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-55p/1374",
+      "match": "exact"
+    },
+    "367": {
+      "model": "Sony HB-75",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-75/743",
+      "match": "exact"
+    },
+    "368": {
+      "model": "Sony HB-75D",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-75d/1228",
+      "match": "exact"
+    },
+    "369": {
+      "model": "Spectravideo SVI-728 (ES)",
+      "url": "https://generation-msx.nl/hardware/spectravideo-svi/svi-728/838",
+      "match": "family"
+    },
+    "370": {
+      "model": "Spectravideo SVI-728 (SE)",
+      "url": "https://generation-msx.nl/hardware/spectravideo-svi/svi-728/838",
+      "match": "family"
+    },
+    "375": {
+      "model": "Toshiba HX-10",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-10p/934",
+      "match": "manual"
+    },
+    "376": {
+      "model": "Toshiba HX-10D",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-10d/935",
+      "match": "exact"
+    },
+    "377": {
+      "model": "Toshiba HX-20E",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-20e/941",
+      "match": "exact"
+    },
+    "378": {
+      "model": "Toshiba HX-21",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-21/942",
+      "match": "exact"
+    },
+    "379": {
+      "model": "Toshiba HX-22",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-22/943",
+      "match": "exact"
+    },
+    "380": {
+      "model": "Toshiba HX-22I",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-22i/1421",
+      "match": "exact"
+    },
+    "381": {
+      "model": "Toshiba HX-32",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-32/948",
+      "match": "exact"
+    },
+    "382": {
+      "model": "Toshiba HX-51I",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-51/951",
+      "match": "manual"
+    },
+    "383": {
+      "model": "Victor HC-7",
+      "url": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-7/262",
+      "match": "exact"
+    },
+    "386": {
+      "model": "Yamaha CX11",
+      "url": "https://generation-msx.nl/hardware/unknown/cx11/984",
+      "match": "exact"
+    },
+    "387": {
+      "model": "Yamaha CX5F",
+      "url": "https://generation-msx.nl/hardware/unknown/cx5f/986",
+      "match": "exact"
+    },
+    "388": {
+      "model": "Yamaha CX5M",
+      "url": "https://generation-msx.nl/hardware/unknown/cx5m/987",
+      "match": "exact"
+    },
+    "389": {
+      "model": "Yamaha CX5MII",
+      "url": "https://generation-msx.nl/hardware/unknown/cx5mii/989",
+      "match": "exact"
+    },
+    "390": {
+      "model": "Yamaha CX5MII/128",
+      "url": "https://generation-msx.nl/hardware/unknown/cx5mii128/988",
+      "match": "exact"
+    },
+    "392": {
+      "model": "Yamaha SX-100",
+      "url": "https://generation-msx.nl/hardware/unknown/sx-100/1014",
+      "match": "exact"
+    },
+    "393": {
+      "model": "Yamaha YIS-503",
+      "url": "https://generation-msx.nl/hardware/unknown/yis-503/1021",
+      "match": "exact"
+    },
+    "394": {
+      "model": "Yamaha YIS-503F",
+      "url": "https://generation-msx.nl/hardware/unknown/yis-503f/1029",
+      "match": "exact"
+    },
+    "395": {
+      "model": "Yamaha YIS-503II",
+      "url": "https://generation-msx.nl/hardware/unknown/yis-503ii/1023",
+      "match": "exact"
+    },
+    "396": {
+      "model": "Yamaha YIS-503IIR",
+      "url": "https://generation-msx.nl/hardware/unknown/yis-503iir/1026",
+      "match": "exact"
+    },
+    "397": {
+      "model": "Yashica YC-64",
+      "url": "https://generation-msx.nl/hardware/yashica/yc-64/1042",
+      "match": "exact"
+    },
+    "398": {
+      "model": "Yeno DPC-64",
+      "url": "https://generation-msx.nl/hardware/yeno/dpc-64/1043",
+      "match": "exact"
+    },
+    "399": {
+      "model": "Toshiba HX-30",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-30/946",
+      "match": "exact"
+    },
+    "400": {
+      "model": "Toshiba HX-31",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-31/947",
+      "match": "exact"
+    },
+    "402": {
+      "model": "Toshiba HX-52",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-52/952",
+      "match": "exact"
+    },
+    "403": {
+      "model": "Triton PC64",
+      "url": "https://generation-msx.nl/hardware/radofin/triton-pc64/969",
+      "match": "manual"
+    },
+    "404": {
+      "model": "Vestel FC-200",
+      "url": "https://generation-msx.nl/hardware/vestel/fc-200/1406",
+      "match": "exact"
+    },
+    "405": {
+      "model": "Victor HC-30",
+      "url": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-30/257",
+      "match": "exact"
+    },
+    "406": {
+      "model": "Victor HC-5",
+      "url": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-5/258",
+      "match": "exact"
+    },
+    "407": {
+      "model": "Victor HC-6",
+      "url": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-6/260",
+      "match": "exact"
+    },
+    "408": {
+      "model": "Victor HC-60",
+      "url": "https://generation-msx.nl/hardware/victor-co-of-japan-jvc/hc-60/259",
+      "match": "exact"
+    },
+    "410": {
+      "model": "Yamaha CX5",
+      "url": "https://generation-msx.nl/hardware/unknown/cx5/985",
+      "match": "exact"
+    },
+    "412": {
+      "model": "Yamaha YIS-303",
+      "url": "https://generation-msx.nl/hardware/unknown/yis-303/1020",
+      "match": "exact"
+    },
+    "414": {
+      "model": "Yamaha YIS-603",
+      "url": "https://generation-msx.nl/hardware/unknown/yis-603/1030",
+      "match": "exact"
+    },
+    "415": {
+      "model": "Yeno MX64",
+      "url": "https://generation-msx.nl/hardware/yeno/mx64/1044",
+      "match": "exact"
+    },
+    "417": {
+      "model": "Mitsubishi ML-TS1",
+      "url": "https://generation-msx.nl/hardware/unknown/ml-ts1/1566",
+      "match": "exact"
+    },
+    "418": {
+      "model": "Sanyo MPC-200",
+      "url": "https://generation-msx.nl/hardware/unknown/mpc-200/676",
+      "match": "exact"
+    },
+    "419": {
+      "model": "Sony HB-10B",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-10b/1156",
+      "match": "exact"
+    },
+    "420": {
+      "model": "Sony HB-10D",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-10d/1157",
+      "match": "exact"
+    },
+    "422": {
+      "model": "Sony HB-501F",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-501f/1342",
+      "match": "exact"
+    },
+    "423": {
+      "model": "Sony HB-55",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-55/739",
+      "match": "exact"
+    },
+    "424": {
+      "model": "Sony HB-75AS",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-75as/1230",
+      "match": "exact"
+    },
+    "425": {
+      "model": "Sony HB-75B",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-75b/1196",
+      "match": "exact"
+    },
+    "426": {
+      "model": "Sony HB-75F",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-75f/1229",
+      "match": "exact"
+    },
+    "427": {
+      "model": "Sony HB-F500F",
+      "url": "https://generation-msx.nl/hardware/unknown/hb-f500f/1415",
+      "match": "exact"
+    },
+    "430": {
+      "model": "Toshiba HX-10DP",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-10dp/936",
+      "match": "exact"
+    },
+    "431": {
+      "model": "Toshiba HX-10DPN",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-10dpn/937",
+      "match": "exact"
+    },
+    "432": {
+      "model": "Toshiba HX-10E",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-10e/938",
+      "match": "exact"
+    },
+    "433": {
+      "model": "Toshiba HX-10F",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-10f/1376",
+      "match": "exact"
+    },
+    "436": {
+      "model": "Toshiba HX-10S",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-10s/939",
+      "match": "exact"
+    },
+    "437": {
+      "model": "Toshiba HX-10SA",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-10sa/1368",
+      "match": "exact"
+    },
+    "439": {
+      "model": "Toshiba HX-20",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-20/940",
+      "match": "exact"
+    },
+    "440": {
+      "model": "Toshiba HX-20AR",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-20ar/1284",
+      "match": "exact"
+    },
+    "441": {
+      "model": "Toshiba HX-20I",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-20i/1283",
+      "match": "exact"
+    },
+    "444": {
+      "model": "Toshiba HX-22GB",
+      "url": "https://generation-msx.nl/hardware/unknown/hx-22gb/1420",
+      "match": "exact"
+    },
+    "445": {
+      "model": "Panasonic CF-2700 (CU)",
+      "url": "https://generation-msx.nl/hardware/unknown/cf-2700/401",
+      "match": "family"
+    },
+    "446": {
+      "model": "Yamaha YIS-805/256",
+      "url": "https://generation-msx.nl/hardware/unknown/yis-805/1034",
+      "match": "family"
+    }
+  }
+}

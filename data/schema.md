@@ -37,6 +37,8 @@ Optional fields are only serialised when set (non-empty / `true` / `> 0`), to ke
 | `shortLabel` | `string?` | Short header text (allows 2-line wrap). Falls back to `label`. |
 | `tooltip` | `string?` | Header tooltip. Falls back to `label`. |
 | `linkable` | `true?` | Cells may render as hyperlinks via `ModelRecord.links`. |
+| `headerIcon` | `string?` | Font Awesome class shown as the column header instead of the label (the label stays the aria-label; the tooltip still applies). |
+| `linkIcon` | `string?` | Image URL shown in each cell as a link to `ModelRecord.links[key]` (new tab, the URL as tooltip); cells without a link stay empty. The value is only the sort key (generation-msx column: the model name). |
 | `truncateLimit` | `number?` | Values longer than this are clipped to `(limit − 1)` chars + `…`; full value shown in a tooltip. |
 | `shaded` | `true?` | Cells render with a tinted background and bold text. |
 | `maxWidth` | `number?` | Max width of data cells in px; overflow is ellipsised with a hover tooltip. Absent = the shared stylesheet cap (160px). |
@@ -91,8 +93,8 @@ Slot-map columns: 64 columns (4 main slots × 4 sub-slots × 4 pages) with keys 
 |---|---|---|
 | `id` | `number` | **Stable integer ID** from `data/id-registry.json`. Never reassigned or reused. |
 | `values` | `(string \| number \| boolean \| null)[]` | Field values, positionally aligned with `MSXData.columns[]`. |
-| `links` | `Record<string, string>?` | Hyperlink URLs keyed by column key (`model` → msx.org wiki page, `openmsx_id` → openMSX machine XML on GitHub). May be inherited from a donor model via `data/link-shares.json`. |
-| `tooltips` | `Record<string, string>?` | Cell tooltips keyed by column key, shown on hover whether or not the text is clipped. Emitted from hidden columns flagged `tooltip_for` in `scraper/columns.py` (e.g. the scraped Engine text behind the two parsed Engine columns). |
+| `links` | `Record<string, string>?` | Hyperlink URLs keyed by column key (`model` → msx.org wiki page, `openmsx_id` → openMSX machine XML on GitHub, `generation_msx` → the model's page on generation-msx.nl from `data/generation-msx.json`). May be inherited from a donor model via `data/link-shares.json`. |
+| `tooltips` | `Record<string, string>?` | Cell tooltips keyed by column key, shown on hover whether or not the text is clipped. Emitted from hidden columns flagged `tooltip_for` in `scraper/columns.py` (e.g. the scraped Engine text behind the two parsed Engine columns), and for a generation-msx family page `"<url> (family)"` — an icon-link cell uses it as the link tooltip. |
 
 ### values[] alignment rule
 

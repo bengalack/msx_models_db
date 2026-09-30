@@ -1,8 +1,17 @@
 import type { MSXData, GroupDef, ColumnDef, ModelRecord, ViewState } from './types.js';
 import { cellIndex, cellKind, installSlotmapPopup, slotKey, thumbnailFor, type SlotCells } from './slotmap-overview.js';
 
-/** Number of leading data columns (0-based) that are pinned during horizontal scroll. */
-export const FROZEN_COL_COUNT = 2;
+/**
+ * Number of leading data columns pinned during horizontal scroll: the columns of
+ * the first group (Identity — Manufacturer, Model, the generation-msx link).
+ */
+export function frozenColumnCount(columns: readonly ColumnDef[]): number {
+  if (columns.length === 0) return 0;
+  const first = columns[0].groupId;
+  let n = 0;
+  while (n < columns.length && columns[n].groupId === first) n++;
+  return n;
+}
 
 /** Width of the row-number gutter in pixels — must match .gutter { width } in grid.css. */
 const GUTTER_WIDTH = 52;
@@ -41,7 +50,7 @@ export function resolveSlotmapTooltip(
   return null;
 }
 
-function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTableRowElement {
+function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[], frozenCount: number): HTMLTableRowElement {
   const tr = document.createElement('tr');
 
   // Gutter corner cell
@@ -70,7 +79,7 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
 
     // Freeze group header if ALL its columns fall within the frozen range
     const startIdx = groupStartIdx.get(group.id) ?? 0;
-    if (startIdx + groupCols.length <= FROZEN_COL_COUNT) {
+    if (startIdx + groupCols.length <= frozenCount) {
       th.classList.add('group-header--frozen');
     }
 
@@ -98,7 +107,7 @@ function buildGroupHeaderRow(groups: GroupDef[], columns: ColumnDef[]): HTMLTabl
   return tr;
 }
 
-function buildColHeaderRow(columns: ColumnDef[]): HTMLTableRowElement {
+function buildColHeaderRow(columns: ColumnDef[], frozenCount: number): HTMLTableRowElement {
   const tr = document.createElement('tr');
   const groupOrder = new Map<number, number>();
   columns.forEach((col, colIndex) => {
@@ -108,7 +117,16 @@ function buildColHeaderRow(columns: ColumnDef[]): HTMLTableRowElement {
     const span = document.createElement('span');
     span.className = 'col-header__text';
     const headerText = col.shortLabel ?? col.label;
-    span.textContent = headerText;
+    if (col.headerIcon) {
+      // Icon header: the label stays available to screen readers and in the tooltip
+      const icon = document.createElement('i');
+      icon.className = `fas ${col.headerIcon}`;
+      icon.setAttribute('aria-hidden', 'true');
+      span.appendChild(icon);
+      th.setAttribute('aria-label', col.label);
+    } else {
+      span.textContent = headerText;
+    }
     // An explicit newline in the short label means "wrap exactly here" — the
     // header then sizes to its widest line instead of the narrow default cap.
     if (headerText.includes('\n')) th.classList.add('col-header--wide');
@@ -119,7 +137,8 @@ function buildColHeaderRow(columns: ColumnDef[]): HTMLTableRowElement {
     const order = groupOrder.get(col.groupId) ?? 0;
     th.dataset.colOrder = String(order);
     groupOrder.set(col.groupId, order + 1);
-    if (colIndex < FROZEN_COL_COUNT) th.classList.add('col--frozen');
+    if (colIndex < frozenCount) th.classList.add('col--frozen');
+    if (colIndex === frozenCount - 1) th.classList.add('col--frozen-last');
     tr.appendChild(th);
   });
   return tr;
@@ -159,7 +178,7 @@ function sortModels(
   });
 }
 
-function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
+function buildFilterRow(columns: ColumnDef[], frozenCount: number): HTMLTableRowElement {
   const tr = document.createElement('tr');
   tr.className = 'filter-row';
   const groupOrder = new Map<number, number>();
@@ -170,7 +189,8 @@ function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
     const order = groupOrder.get(columns[i].groupId) ?? 0;
     td.dataset.colOrder = String(order);
     groupOrder.set(columns[i].groupId, order + 1);
-    if (i < FROZEN_COL_COUNT) td.classList.add('col--frozen');
+    if (i < frozenCount) td.classList.add('col--frozen');
+    if (i === frozenCount - 1) td.classList.add('col--frozen-last');
     if (columns[i].filterable === false) {
       td.classList.add('filter-cell--none');
       tr.appendChild(td);
@@ -247,6 +267,7 @@ function buildDataRow(
   hiddenCols?: ReadonlySet<number>,
   collapsedGroups?: ReadonlySet<number>,
   slotCellsOf?: (model: ModelRecord) => SlotCells | null,
+  frozenCount = 0,
 ): HTMLTableRowElement {
   const tr = document.createElement('tr');
   tr.dataset.modelId = String(model.id);
@@ -293,7 +314,8 @@ function buildDataRow(
     const order = groupOrder.get(col.groupId) ?? 0;
     td.dataset.colOrder = String(order);
     groupOrder.set(col.groupId, order + 1);
-    if (i < FROZEN_COL_COUNT) td.classList.add('col--frozen');
+    if (i < frozenCount) td.classList.add('col--frozen');
+    if (i === frozenCount - 1) td.classList.add('col--frozen-last');
     if (col.shaded) td.classList.add('col-shaded');
     if (col.maxWidth !== undefined) td.style.maxWidth = `${col.maxWidth}px`;
 
@@ -313,7 +335,28 @@ function buildDataRow(
     const cellTooltip = model.tooltips?.[col.key];
     if (cellTooltip) td.dataset.tooltip = cellTooltip;
 
-    if (col.renderer === 'slotmap') {
+    if (col.linkIcon) {
+      // Icon link (generation-msx): the value is only the sort key.
+      td.textContent = '';
+      td.classList.add('cell-link-icon');
+      const url = model.links?.[col.key];
+      if (url) {
+        const a = document.createElement('a');
+        a.className = 'cell-link';
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.title = model.tooltips?.[col.key] ?? url;   // e.g. "<url> (family)"
+        const img = document.createElement('img');
+        img.src = col.linkIcon;
+        img.alt = col.label;
+        img.width = 16;
+        img.height = 16;
+        img.loading = 'lazy';
+        a.appendChild(img);
+        td.appendChild(a);
+      }
+    } else if (col.renderer === 'slotmap') {
       // Drawn, not text: the value is only the sort key (see slotmap-overview.ts).
       td.textContent = '';
       td.classList.add('cell-slotmap-overview');
@@ -369,6 +412,7 @@ function buildGapIndicator(
   hiddenIds: number[],
   onUnhide: (ids: number[]) => void,
   colCount: number,
+  frozenCount: number,
 ): HTMLTableRowElement {
   const tr = document.createElement('tr');
   tr.className = 'row-gap-indicator';
@@ -385,7 +429,7 @@ function buildGapIndicator(
   tr.appendChild(gutterTd);
 
   // Frozen data cells — one per frozen column, each sticky with the dashed line
-  for (let i = 0; i < FROZEN_COL_COUNT; i++) {
+  for (let i = 0; i < frozenCount; i++) {
     const frozenTd = document.createElement('td');
     frozenTd.className = 'gutter--gap gutter--gap-frozen';
     frozenTd.setAttribute('data-col-index', String(i));
@@ -395,7 +439,7 @@ function buildGapIndicator(
   // Scrollable data cell — spans remaining columns, carries the dashed line
   const dataTd = document.createElement('td');
   dataTd.className = 'gutter--gap';
-  dataTd.colSpan = colCount - FROZEN_COL_COUNT;
+  dataTd.colSpan = colCount - frozenCount;
   tr.appendChild(dataTd);
 
   return tr;
@@ -449,6 +493,9 @@ export function buildGrid(data: MSXData, opts?: {
 
   // Hidden rows — keyed by stable model ID
   const hiddenRows = new Set<number>();
+
+  // Leading columns pinned during horizontal scroll (the Identity group)
+  const frozenCount = frozenColumnCount(data.columns);
 
   // Row element cache — reused by applyRowVisibility() to avoid full DOM rebuild on hide/unhide
   const rowCache = new Map<number, HTMLTableRowElement>();
@@ -654,9 +701,9 @@ export function buildGrid(data: MSXData, opts?: {
 
   // ── thead ────────────────────────────────────────────────────────────────
   const thead = document.createElement('thead');
-  thead.appendChild(buildGroupHeaderRow(data.groups, data.columns));
-  thead.appendChild(buildColHeaderRow(data.columns));
-  thead.appendChild(buildFilterRow(data.columns));
+  thead.appendChild(buildGroupHeaderRow(data.groups, data.columns, frozenCount));
+  thead.appendChild(buildColHeaderRow(data.columns, frozenCount));
+  thead.appendChild(buildFilterRow(data.columns, frozenCount));
   table.appendChild(thead);
 
   // Gutter corner (rowSpan=3) used for the filtered indicator
@@ -778,7 +825,7 @@ export function buildGrid(data: MSXData, opts?: {
       } else {
         if (buffer.length > 0) {
           if (lastVisibleTr) lastVisibleTr.classList.add('row-before-gap');
-          const gapTr = buildGapIndicator(buffer, unhideRowsInGap, data.columns.length);
+          const gapTr = buildGapIndicator(buffer, unhideRowsInGap, data.columns.length, frozenCount);
           tr.before(gapTr);
           buffer = [];
         }
@@ -792,7 +839,7 @@ export function buildGrid(data: MSXData, opts?: {
 
     // Trailing gap (hidden rows at the end of the filtered list)
     if (buffer.length > 0) {
-      tbody.appendChild(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
+      tbody.appendChild(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length, frozenCount));
     }
 
     cachedVisibleModelIds = filtered.filter(m => !hiddenRows.has(m.id)).map(m => m.id);
@@ -853,7 +900,7 @@ export function buildGrid(data: MSXData, opts?: {
       if (hiddenRows.has(model.id)) {
         buffer.push(model.id);
         // Build the element hidden so applyRowVisibility() can reveal it without a full re-render
-        const tr = buildDataRow(model, data.columns, 0, data.slotmap_lut ?? {}, data.chip_links ?? {}, hiddenCols, collapsedGroups, slotCellsOf);
+        const tr = buildDataRow(model, data.columns, 0, data.slotmap_lut ?? {}, data.chip_links ?? {}, hiddenCols, collapsedGroups, slotCellsOf, frozenCount);
         tr.style.display = 'none';
         rowCache.set(model.id, tr);
         rows.push(tr);
@@ -861,17 +908,17 @@ export function buildGrid(data: MSXData, opts?: {
         if (buffer.length > 0) {
           // Mark the last visible row so its border-bottom doesn't overlap the dashed line
           lastVisibleRow?.classList.add('row-before-gap');
-          rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
+          rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length, frozenCount));
           buffer = [];
         }
-        const tr = buildDataRow(model, data.columns, rowNum++, data.slotmap_lut ?? {}, data.chip_links ?? {}, hiddenCols, collapsedGroups, slotCellsOf);
+        const tr = buildDataRow(model, data.columns, rowNum++, data.slotmap_lut ?? {}, data.chip_links ?? {}, hiddenCols, collapsedGroups, slotCellsOf, frozenCount);
         rowCache.set(model.id, tr);
         rows.push(tr);
         lastVisibleRow = tr;
       }
     }
     if (buffer.length > 0) {
-      rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
+      rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length, frozenCount));
     }
     cachedVisibleModelIds = filtered.filter(m => !hiddenRows.has(m.id)).map(m => m.id);
     tbody.replaceChildren(...rows);
@@ -920,7 +967,7 @@ export function buildGrid(data: MSXData, opts?: {
   // columns are shown/hidden.
   function updateFrozenOffsets(): void {
     let left = GUTTER_WIDTH; // starts just after the 52px row-number gutter
-    for (let i = 0; i < FROZEN_COL_COUNT; i++) {
+    for (let i = 0; i < frozenCount; i++) {
       wrap.style.setProperty(`--frozen-col${i}-left`, `${left}px`);
       if (!hiddenCols.has(i)) {
         // Measure the actual rendered width of any frozen header for column i

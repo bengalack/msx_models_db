@@ -90,11 +90,18 @@ def canonical_key(manufacturer: str | None, model: str | None, lut: AliasLUT) ->
     return (record["manufacturer"].strip().lower(), record["model"].strip().lower())
 
 
-def load_db_index(path: Path, lut: AliasLUT) -> dict[ModelKey, tuple[str, str]]:
+def load_db_index(
+    path: Path, lut: AliasLUT, openmsx_raw: Path | None = None
+) -> dict[ModelKey, tuple[str, str]]:
     """Index the models in a ``data.js`` file by canonical key.
 
     The value is the manufacturer/model spelling as the database has it, which
     is what new ``local-raw.json`` entries are written with.
+
+    With *openmsx_raw* (the openMSX cache), openMSX display names the database
+    no longer uses are indexed too, through the machine file: the dump says
+    "Sanyo MPC-1/Wavy1", the cache maps that to ``Sanyo_MPC-1``, and the model
+    holding that ``openmsx_id`` is msx.org's "MPC-1" (see merge's file-name join).
     """
     text = path.read_text(encoding="utf-8")
     start = text.index("{")
@@ -105,13 +112,25 @@ def load_db_index(path: Path, lut: AliasLUT) -> dict[ModelKey, tuple[str, str]]:
     i_manufacturer = keys.index("manufacturer")
     i_model = keys.index("model")
 
+    i_openmsx = keys.index("openmsx_id") if "openmsx_id" in keys else None
+
     index: dict[ModelKey, tuple[str, str]] = {}
+    by_openmsx_id: dict[str, tuple[str, str]] = {}
     for model in payload["models"]:
         values = model["values"]
         manufacturer, name = values[i_manufacturer], values[i_model]
         if not manufacturer or not name:
             continue
         index[canonical_key(manufacturer, name, lut)] = (manufacturer, name)
+        if i_openmsx is not None and values[i_openmsx]:
+            by_openmsx_id[values[i_openmsx]] = (manufacturer, name)
+
+    if openmsx_raw is not None and openmsx_raw.exists():
+        for record in json.loads(openmsx_raw.read_text(encoding="utf-8")):
+            target = by_openmsx_id.get(record.get("openmsx_id") or "")
+            key = canonical_key(record.get("manufacturer"), record.get("model"), lut)
+            if target is not None and key not in index:
+                index[key] = target
     return index
 
 
@@ -187,14 +206,16 @@ def plan_update(
             continue
 
         key = keys[0]
-        positions = by_key.get(key, [])
+        manufacturer, model = db_index[key]
+        # Entries are keyed by the database's name, which an openMSX display name
+        # resolved through its machine file ("MPC-1/Wavy1" -> "MPC-1") differs from.
+        positions = by_key.get(canonical_key(manufacturer, model, lut), [])
         if len(positions) > 1:
             plan.skipped.append(
                 (display_name, f"{len(positions)} entries in the file share this model")
             )
             continue
 
-        manufacturer, model = db_index[key]
         if positions:
             entry = plan.entries[positions[0]]
             old = entry.get("himem_addr")
@@ -248,6 +269,7 @@ def run(
     db_path: Path,
     aliases_path: Path,
     dry_run: bool = False,
+    openmsx_raw_path: Path | None = None,
 ) -> UpdatePlan:
     """Fold the HIMEM dump at *dump_path* into the local data at *json_path*.
 
@@ -256,7 +278,7 @@ def run(
     """
     lut = load_aliases(aliases_path)
     dump = parse_dump(dump_path.read_text(encoding="utf-8"))
-    db_index = load_db_index(db_path, lut)
+    db_index = load_db_index(db_path, lut, openmsx_raw_path)
     entries = local_source.load_local(json_path)
 
     plan = plan_update(entries, dump, db_index, lut)

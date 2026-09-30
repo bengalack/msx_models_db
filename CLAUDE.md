@@ -55,6 +55,10 @@ python -m scraper fetch-openmsx -o data/openmsx-raw.json [--limit N]
 python -m scraper fetch-msxorg  -o data/msxorg-raw.json  [--limit N]
 python -m scraper merge --openmsx ... --msxorg ... -o ...
 
+# generation-msx links: (re)create data/generation-msx.json from generation-msx.nl, then rebuild
+python -m scraper gmsx-links --dry-run
+python -m scraper gmsx-links
+
 # HIMEM values: run helpers/dump_himem.tcl inside openMSX (redirect stderr to data/himem-values.txt),
 # then fold the readings into data/local-raw.json:
 python -m scraper update-himem data/himem-values.txt data/local-raw.json --dry-run
@@ -74,7 +78,8 @@ User prefers `rtk`-prefixed shell commands (see global CLAUDE.md).
 - `msxorg_series.py` — member pages that defer to a series page (`Category:Sony_HB-75`) are parsed from it for their own variant (per-variant value resolution, slot map choice). See *Feature Design: msx.org Series Pages*.
 - `revisions.py` — model revisions (`HB-F500 (v2)`): vocabulary for "2nd Gen" / "second version" / "version 2". msx.org records per revision (same link, revision values override the base) are only kept when openMSX has that machine. See *Feature Design: Model Revisions*.
 - `slotmap.py` / `slotmap_lut.py` — 64 slot-map columns (`slotmap_{ms}_{ss}_{page}`), LUT classification (first match wins), mirror detection.
-- `merge.py` — natural key `manufacturer|model` (lowercase), openMSX wins over msx.org, substitutions, conflict handling. An msx.org model the page says is "also known as" an openMSX machine's name joins that machine (see *Feature Design: "Also Known As" Aliases*). Adaptations ("X is the adaptation of Y") get every missing field filled from Y's merged row in the build (see *Feature Design: Adaptations*). `data/link-shares.json` recipients fill their missing fields from the donor row the same way (shared rules in `scraper/inherit.py`). Regional msx.org pages titled `<brand> <model> (<TAG>)` are named after the title, and country tags are canonicalised to ISO codes through `variant_tag` in `data/aliases.json` (see *Feature Design: Regional Variants*). A Model value naming several models (`A / B`, `A or B`), other names (`FM-X or MB25150`) or localised product codes (`CX5M (CX5MA, … or CX5MU)`, per-product tables) is split structurally; localised products join only openMSX machines (see *Feature Design: Several Models and Localised Products on One Page*).
+- `merge.py` — natural key `manufacturer|model` (lowercase), openMSX wins over msx.org, substitutions, conflict handling. An msx.org model the page says is "also known as" an openMSX machine's name joins that machine (see *Feature Design: "Also Known As" Aliases*). An openMSX machine whose display name msx.org does not use ("MPC-1/Wavy1") joins the msx.org model its machine file names (`Sanyo_MPC-1.xml` → "MPC-1"), unless it is a link-share recipient (see *Feature Design: openMSX File-Name Join*). Adaptations ("X is the adaptation of Y") get every missing field filled from Y's merged row in the build (see *Feature Design: Adaptations*). `data/link-shares.json` recipients fill their missing fields from the donor row the same way (shared rules in `scraper/inherit.py`). Regional msx.org pages titled `<brand> <model> (<TAG>)` are named after the title, and country tags are canonicalised to ISO codes through `variant_tag` in `data/aliases.json` (see *Feature Design: Regional Variants*). A Model value naming several models (`A / B`, `A or B`), other names (`FM-X or MB25150`) or localised product codes (`CX5M (CX5MA, … or CX5MU)`, per-product tables) is split structurally; localised products join only openMSX machines (see *Feature Design: Several Models and Localised Products on One Page*).
+- `generation_msx.py` — the `gmsx-links` command: crawls generation-msx.nl, matches models (exact / variant / family, manual kept), writes `data/generation-msx.json`. See *Feature Design: generation-msx Links*.
 - `aliases.py`, `link_shares.py`, `exclude.py`, `registry.py`, `local_source.py`, `http.py`, `symbols.py`.
 - `update_himem.py` — folds a `helpers/dump_himem.tcl` run (`data/himem-values.txt`) into `data/local-raw.json`.
   Resolves each openMSX display name by trying every space as the manufacturer/model split, canonicalising through
@@ -88,11 +93,11 @@ Merge precedence: **local-raw.json > openMSX > msx.org**. `exclude.json` outrank
 applied to local data as well, so a curated entry can never resurrect an excluded model.
 
 ### Maintainer-curated data (`data/`)
-`aliases.json`, `substitutions.json`, `exclude.json`, `link-shares.json`, `slotmap-lut.json`, `local-raw.json`, `engine-chips.json`, `chip-links.json` (chip id / MSX generation → page, for the Generation/CPU/Sub-CPU/Engine/VDP links), `slotmap-colors.json` (Slotmap Overview colours; read by the web build), `scraper-config.json` (local mirror paths + slot-map symbols). `id-registry.json` is generated but committed and **append-only** — IDs are never deleted or reused.
+`aliases.json`, `substitutions.json`, `exclude.json`, `link-shares.json`, `slotmap-lut.json`, `local-raw.json`, `engine-chips.json`, `chip-links.json` (chip id / MSX generation → page, for the Generation/CPU/Sub-CPU/Engine/VDP links), `slotmap-colors.json` (Slotmap Overview colours; read by the web build), `generation-msx.json` (model id → generation-msx.nl page; regenerate with `python -m scraper gmsx-links`, which keeps `manual` entries), `scraper-config.json` (local mirror paths + slot-map symbols). `id-registry.json` is generated but committed and **append-only** — IDs are never deleted or reused.
 
 ### Web (`src/`)
 - `main.ts` — entry; wires header, toolbar, grid, column picker, URL hash sync.
-- `grid.ts` — the hand-rolled grid (~1400 lines): rendering, sort, filter (`|` = OR, `!` = NOT), selection, row hide/unhide gaps, sticky headers/gutter, frozen Identity columns, tooltips, clipboard.
+- `grid.ts` — the hand-rolled grid (~1400 lines): rendering, sort, filter (`|` = OR, `!` = NOT), selection, row hide/unhide gaps, sticky headers/gutter, frozen Identity columns (all columns of the Identity group, `frozenColumnCount`), tooltips, clipboard.
 - `url/codec.ts` — versioned binary view-state codec → URL-safe base64 in the hash. Format is documented in technical-design.md. Decoder must never throw; unknown IDs are silently dropped.
 - `slotmap-overview.ts` — the Slotmap Overview column: canvas thumbnail per row (cached per model/theme/DPR), hover popup with labelled boxes and slot map tooltips. Colours from `data/slotmap-colors.json`, compiled into the bundle. See *Feature Design: Slotmap Overview*.
 - `col-picker.ts`, `toolbar.ts`, `theme.ts`, `symbols.ts`, `types.ts` (MSXData types — keep in sync with `data/schema.md` and `scraper/build.py` serialisation).

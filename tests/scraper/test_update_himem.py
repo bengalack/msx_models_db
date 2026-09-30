@@ -467,3 +467,39 @@ class TestCli:
         cli.main()
         capsys.readouterr()
         assert local.read_bytes() == before
+
+
+# ── openMSX names the database no longer uses (file-name join) ─────────────
+
+
+class TestOpenmsxNameFallback:
+    """The dump prints "Sanyo MPC-1/Wavy1"; the grid row is msx.org's "MPC-1" holding Sanyo_MPC-1."""
+
+    @staticmethod
+    def _setup(tmp_path: Path, entries: list[dict]) -> tuple[Path, Path, Path, Path]:
+        db = tmp_path / "data.js"
+        db.write_text("window.MSX_DATA = " + json.dumps({
+            "columns": [{"key": "manufacturer"}, {"key": "model"}, {"key": "openmsx_id"}],
+            "models": [{"id": 1, "values": ["Sanyo", "MPC-1", "Sanyo_MPC-1"]}],
+        }) + ";\n", encoding="utf-8")
+        raw = tmp_path / "openmsx-raw.json"
+        raw.write_text(json.dumps([{"manufacturer": "Sanyo", "model": "MPC-1/Wavy1", "openmsx_id": "Sanyo_MPC-1"}]),
+                       encoding="utf-8")
+        local = tmp_path / "local.json"
+        local.write_text(json.dumps(entries, indent=2) + "\n", encoding="utf-8")
+        dump = tmp_path / "dump.txt"
+        dump.write_text("Sanyo MPC-1/Wavy1 - 0xF37F\n", encoding="utf-8")
+        return db, raw, local, dump
+
+    def test_resolves_through_the_machine_file_and_updates_the_existing_entry(self, tmp_path):
+        db, raw, local, dump = self._setup(tmp_path, [{"manufacturer": "Sanyo", "model": "MPC-1", "himem_addr": "0xF380"}])
+        plan = run(dump, local, db, _write_aliases(tmp_path / "aliases.json", {}), openmsx_raw_path=raw)
+        assert plan.updated == [("Sanyo", "MPC-1", "0xF380", "0xF37F")]
+        assert plan.added == []
+        assert json.loads(local.read_text(encoding="utf-8")) == [
+            {"manufacturer": "Sanyo", "model": "MPC-1", "himem_addr": "0xF37F"}]
+
+    def test_without_the_openmsx_cache_the_name_is_unknown(self, tmp_path):
+        db, _raw, local, dump = self._setup(tmp_path, [])
+        plan = run(dump, local, db, _write_aliases(tmp_path / "aliases.json", {}), dry_run=True)
+        assert plan.skipped and not plan.added

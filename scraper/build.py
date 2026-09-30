@@ -19,6 +19,7 @@ from .columns import (
 from .exclude import load_excludes
 from .mirror import FallbackPageSource, MirrorPageSource
 from .openmsx_source import FallbackXMLSource, LiveXMLSource, MirrorXMLSource
+from .generation_msx import GENERATION_MSX_PATH, load_links as load_generation_msx_links
 from .link_shares import apply_link_shares, fill_from_link_shares, load_link_shares
 from .registry import IDRegistry
 from .slotmap import load_sha1_index
@@ -272,12 +273,15 @@ def build(
         resolutions = merge.load_resolutions(resolutions_path)
 
     alias_path = ALIASES_PATH if ALIASES_PATH.exists() else None
+    # Link-share recipients are rows of their own by the maintainer's choice.
+    keep_separate = set(load_link_shares(LINK_SHARES_PATH)) if LINK_SHARES_PATH.exists() else set()
     merged = merge.merge_models(
         openmsx_data,
         msxorg_data,
         local=local_data,
         resolutions=resolutions,
         alias_path=alias_path,
+        keep_separate=keep_separate,
     )
 
     # Step 3b: Apply substitutions
@@ -331,6 +335,7 @@ def build(
 
     # Step 6: Build data.js payload
     active_cols = active_columns()
+    generation_msx_links = load_generation_msx_links(GENERATION_MSX_PATH)
     group_id_map = {g.key: g.id for g in GROUPS}
 
     js_groups = [
@@ -370,6 +375,10 @@ def build(
             entry["renderer"] = col.renderer
         if not col.filterable:
             entry["filterable"] = False
+        if col.header_icon:
+            entry["headerIcon"] = col.header_icon
+        if col.link_icon:
+            entry["linkIcon"] = col.link_icon
         js_columns.append(entry)
 
     active_keys = {c.key for c in active_cols}
@@ -398,8 +407,6 @@ def build(
             if text:
                 for target in src_col.tooltip_for:
                     tooltips[target] = str(text)
-        if tooltips:
-            record["tooltips"] = tooltips
 
         # Add links for linkable columns
         links: dict[str, str] = {}
@@ -412,8 +419,18 @@ def build(
                 oid = model.get("openmsx_id")
                 if oid:
                     links[col.key] = f"https://github.com/openMSX/openMSX/blob/master/share/machines/{oid}.xml"
+            elif col.link_icon and col.key == "generation_msx":
+                entry = generation_msx_links.get(model["_id"], {})
+                url = entry.get("url")
+                if url:
+                    links[col.key] = url
+                    # A family page stands in for the model's own page: say so in the link tooltip.
+                    if entry.get("match") == "family":
+                        tooltips[col.key] = f"{url} (family)"
         if links:
             record["links"] = links
+        if tooltips:
+            record["tooltips"] = tooltips
 
         js_models.append(record)
 
