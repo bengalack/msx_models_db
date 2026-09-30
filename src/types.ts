@@ -28,6 +28,13 @@ export interface ColumnDef {
   chipLinks?: boolean;
   /** When true, the column ships and is toggleable but starts hidden on a fresh load. */
   defaultOff?: boolean;
+  /**
+   * Cells drawn by the page instead of text. "slotmap": the model's slot map as a
+   * thumbnail with a hover popup (the cell value is only the sort key).
+   */
+  renderer?: 'slotmap';
+  /** False: the column has no filter input. */
+  filterable?: boolean;
 }
 
 /** A collapsible group of columns. */

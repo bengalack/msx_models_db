@@ -287,7 +287,7 @@ The slot map feature adds 64 columns per model, extracted exclusively from openM
 - SlotMapColumns (in data.js, part of ColumnDef)
   - Purpose: The 64 slot map columns — 4 groups × 16 columns. Each is a standard ColumnDef with a stable ID and a key of the form `slotmap_{ms}_{ss}_{p}` (main slot, sub-slot, page).
   - Key fields: same as ColumnDef (`id`, `key`, `label`, `groupId`, `type: 'string'`)
-  - Relationships: 4 GroupDefs added ("Slotmap, slot 0–3"); 16 ColumnDefs per group
+  - Relationships: 4 GroupDefs added ("Slot 0–3"); 16 ColumnDefs per group
   - Retention: IDs permanent once assigned; groups and columns defined in `scraper/columns.py`
 
 - ViewState (in-memory only, serialized to URL)
@@ -992,6 +992,20 @@ openMSX names some VDPs after the chip that contains them, with the video standa
 VRAM is still read from the same element.
 
 msx.org side (`_parse_vdp` in `scraper/msxorg.py`): the "Video" field is matched against V9938/V9958, TI TMS99x8/99x9 and TMS91x8/91x9 (`TMS-9118` spelling accepted), Toshiba T6950 and Yamaha YM2220. A package suffix such as `NL` is dropped (`TMS9118NL` → `TMS9118`). When several are named, V9958 > V9938 > the rest; among equals the first mentioned wins, which picks the actual chip in texts like "Toshiba T6950, Texas Instruments TMS9918/TMS9929 compatible".
+
+---
+
+## Feature Design: Slotmap Overview
+
+Group id 13 **Slotmap** (after Emulation, before Slot 0–3) with one column, id 109 **Overview** (`slot_overview`, `renderer: "slotmap"`, `filterable: false`): the model's slot map drawn on a canvas — a 90×21 thumbnail in the cell and a larger labelled drawing in a floating popup on hover. Drawn on the fly from the model's 64 `slotmap_{ms}_{ss}_{p}` values; nothing is stored as an image and `data.js` carries no extra per-model data.
+
+- **Layout** (`src/slotmap-overview.ts`): four 4×4 blocks, slot 0 on the left, sub-slot 0 on the left of each block, page 0 at the bottom; every slot is drawn as 4×4 whether expanded or not. Grid lines are equally thick both ways. Thumbnail: 4×4 px boxes, 1 px grid, 2 px between blocks = exactly 90×21 CSS px (fits the 24 px row). Popup: 34×18 boxes (labels are at most 5 characters), 3 px grid, "SLOT n" above each block, sub-slot numbers + "subslots" below expanded slots (a slot is expanded when any page of sub-slots 1–3 is present).
+- **Cell states**: absent (`slotmap_symbols.absent`) → transparent (page background shows); empty page (`empty_page`) → grid colour, in the popup with a 1 px inward outline (`empty_outline`; none in the thumbnail); any device → its category colour; popup boxes carry the cell label (`MAIN`, `CS1`, `RAM*`, …) in black or white, whichever contrasts better (WCAG luminance).
+- **Colours** (`data/slotmap-colors.json`): **one colour set** (`colors`) for thumbnail and popup, so both views read the same (chosen after comparing a two-scheme variant; the thumbnail shows SUB / DSK / MUS / EXP colours too). `categories` maps category → regexes on the label with the mirror suffix removed (first match wins, else `other`). A colour is `#rrggbb` or `{light, dark}`: the grid, `empty_outline`, and every dark neutral box — black `main_rom`, dark gray `other` — which is white / light gray in dark mode, where dark boxes vanish on the dark page; the popup's box text inverts with it. The empty-page outline is drawn in the popup only (the thumbnail's 4 px boxes are too small), decided by the drawing code. The JSON is imported by the TypeScript and compiled into `bundle.js` — never fetched at runtime (same pattern as `src/symbols.ts`).
+- **Performance**: rows are rebuilt on every sort / filter; each thumbnail is painted once per model, theme and `devicePixelRatio` into a cached offscreen canvas and afterwards only copied (`drawImage`). Canvases are sized by `devicePixelRatio` for sharp output. A theme switch (MutationObserver on `data-theme`) clears the cache and redraws the visible thumbnails and an open popup.
+- **Popup** (`installSlotmapPopup`): one shared `position: fixed` panel styled like the Help panel, placed below the cell (above when there is no room), heading = manufacturer + model. It stays open while the pointer is over the cell or the popup and closes `POPUP_CLOSE_DELAY_MS` after it has left both. Hovering a box shows that cell's slot map tooltip (`resolveSlotmapTooltip`, e.g. "CS2" → "Cartridge slot 2") via hit-testing.
+- **Sort value** (`slotmap_sort_key` in `scraper/columns.py`, derived at build): one bit per page, set when the page is occupied (not absent / empty); a nibble per sub-slot (page 3 = high bit, sub-slot 0 = most significant nibble), 16 bits per primary slot, `[slot0][slot1][slot2][slot3]` = 64 bits, shipped as 16 upper-case hex digits so string order equals numeric order (JS numbers hold only 53 bits). None (blank) without a slot map. The generic string sort orders it; the value is never shown.
+- **Filter / copy**: no filter input (the value is not meaningful text); copying a cell yields the sort key.
 
 ---
 

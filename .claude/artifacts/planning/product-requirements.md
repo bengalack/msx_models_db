@@ -377,10 +377,10 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - The per-scraper build summary includes an `excluded` count alongside the existing `skipped`/`errors` counts.
 
 - Slot map columns
-  - Description: Each model row exposes 64 fixed slot map columns across 4 column groups ("Slotmap, slot 0–3"), showing what occupies each page of each sub-slot. All models carry all 64 columns. Cells outside a model's physical slot configuration show `⌧`.
+  - Description: Each model row exposes 64 fixed slot map columns across 4 column groups ("Slot 0–3"), showing what occupies each page of each sub-slot. All models carry all 64 columns. Cells outside a model's physical slot configuration show `⌧`.
   - Priority: Must
   - Acceptance Criteria:
-    - Four column groups are present: "Slotmap, slot 0", "Slotmap, slot 1", "Slotmap, slot 2", "Slotmap, slot 3".
+    - Four column groups are present: "Slot 0", "Slot 1", "Slot 2", "Slot 3".
     - Each group has exactly 16 columns named by the convention `SS / Pp` (sub-slot and page, with non-breaking spaces; e.g. `0 / P0`, `1 / P3`), covering 4 sub-slots × 4 pages. The main slot is shown in the group header.
     - Page numbers 0–3 correspond to Z80 address ranges 0x0000–0x3FFF, 0x4000–0x7FFF, 0x8000–0xBFFF, 0xC000–0xFFFF respectively.
     - All 64 columns are present for every model (uniform schema — no per-model column variation).

@@ -59,17 +59,18 @@ def test_slotmap_group_ids():
     assert ids == [8, 9, 10, 11]
 
 
-def test_slotmap_group_labels():
-    label_map = {g.id: g.label for g in SLOTMAP_GROUPS}
-    assert label_map[8]  == "Slotmap, slot 0"
-    assert label_map[9]  == "Slotmap, slot 1"
-    assert label_map[10] == "Slotmap, slot 2"
-    assert label_map[11] == "Slotmap, slot 3"
-
-
-def test_slotmap_group_order_matches_id():
+def test_slotmap_group_labels_name_their_primary_slot():
+    # Each group's key is slotmap_<ms>; its label names that primary slot (wording is config).
     for g in SLOTMAP_GROUPS:
-        assert g.order == g.id + 1, f"Group {g.key}: order {g.order} != id+1 {g.id + 1}"
+        ms = g.key.rsplit("_", 1)[1]
+        assert g.label.split()[-1] == ms, f"{g.key}: label {g.label!r} does not end with slot {ms}"
+    assert len({g.label for g in SLOTMAP_GROUPS}) == len(SLOTMAP_GROUPS)
+
+
+def test_slotmap_groups_are_consecutive_in_slot_order():
+    by_slot = sorted(SLOTMAP_GROUPS, key=lambda g: int(g.key.rsplit("_", 1)[1]))
+    orders = [g.order for g in by_slot]
+    assert orders == list(range(orders[0], orders[0] + len(orders)))
 
 
 # ---------------------------------------------------------------------------
@@ -174,3 +175,58 @@ def test_non_slotmap_columns_are_not_shaded():
     non_slotmap = [c for c in COLUMNS if not c.key.startswith("slotmap_")]
     for col in non_slotmap:
         assert not col.shaded, f"Non-slotmap column {col.key!r} has shaded=True"
+
+
+# ---------------------------------------------------------------------------
+# Slotmap Overview — sort key (1 bit per page; [slot0][slot1][slot2][slot3])
+# ---------------------------------------------------------------------------
+
+from scraper.columns import slotmap_sort_key
+from scraper.symbols import ABSENT, EMPTY_PAGE
+
+
+def _model(occupied: set[tuple[int, int, int]], empty: set[tuple[int, int, int]] = frozenset()) -> dict:
+    model = {}
+    for ms in range(4):
+        for ss in range(4):
+            for p in range(4):
+                cell = (ms, ss, p)
+                model[f"slotmap_{ms}_{ss}_{p}"] = "X" if cell in occupied else EMPTY_PAGE if cell in empty else ABSENT
+    return model
+
+
+def _bit(ms: int, ss: int, p: int) -> int:
+    return 1 << (63 - (ms * 16 + ss * 4 + (3 - p)))
+
+
+def test_sort_key_sets_one_bit_per_occupied_page():
+    cells = {(0, 0, 0), (0, 0, 1), (1, 0, 3), (3, 2, 2)}
+    expected = sum(_bit(*c) for c in cells)
+    assert int(slotmap_sort_key(_model(cells)), 16) == expected
+
+
+def test_sort_key_ignores_absent_and_empty_pages():
+    assert slotmap_sort_key(_model({(0, 0, 0)}, empty={(0, 0, 1), (2, 0, 0)})) == slotmap_sort_key(_model({(0, 0, 0)}))
+
+
+def test_sort_key_orders_slot0_then_subslot0_first():
+    # A page in slot 0 outweighs any combination in slots 1-3; sub-slot 0 outweighs sub-slots 1-3.
+    slot0 = slotmap_sort_key(_model({(0, 3, 0)}))
+    rest = slotmap_sort_key(_model({(ms, ss, p) for ms in (1, 2, 3) for ss in range(4) for p in range(4)}))
+    assert slot0 > rest
+    assert slotmap_sort_key(_model({(1, 0, 0)})) > slotmap_sort_key(_model({(1, 1, 3), (1, 2, 3), (1, 3, 3)}))
+
+
+def test_sort_key_is_fixed_width_hex_and_none_without_slot_map():
+    key = slotmap_sort_key(_model({(3, 3, 0)}))
+    assert len(key) == 16 and int(key, 16) == 1          # the lowest bit: slot 3-3, page 0
+    assert int(slotmap_sort_key(_model({(3, 3, 3)})), 16) == _bit(3, 3, 3)
+    assert slotmap_sort_key({}) is None
+
+
+def test_overview_column_is_drawn_unfilterable_and_sits_in_its_own_group():
+    col = next(c for c in COLUMNS if c.renderer == "slotmap")
+    assert not col.filterable
+    assert [c.key for c in COLUMNS if c.group == col.group] == [col.key]
+    order = {g.key: g.order for g in GROUPS}
+    assert order[col.group] < min(g.order for g in SLOTMAP_GROUPS)

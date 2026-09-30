@@ -365,6 +365,10 @@ def build(
             entry["chipLinks"] = True
         if col.default_off:
             entry["defaultOff"] = True
+        if col.renderer:
+            entry["renderer"] = col.renderer
+        if not col.filterable:
+            entry["filterable"] = False
         js_columns.append(entry)
 
     active_keys = {c.key for c in active_cols}

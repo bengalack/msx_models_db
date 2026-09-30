@@ -43,6 +43,8 @@ Optional fields are only serialised when set (non-empty / `true` / `> 0`), to ke
 | `sortLast` | `string[]?` | Values that sort after all other values (but before blanks), in both directions — e.g. `"None"` in the Engine columns. |
 | `chipLinks` | `true?` | Known chip ids in the cell text link to `MSXData.chip_links` (Generation, CPU, Sub-CPU, Engine and VDP columns); clicking the chip follows the link, clicking elsewhere selects the cell. |
 | `defaultOff` | `true?` | Column ships and is toggleable, but starts hidden on a fresh load (and after "Reset view"). Absent = starts visible. |
+| `renderer` | `"slotmap"?` | The cell is drawn by the page instead of showing its value. `"slotmap"`: the model's slot map (from its `slotmap_*` values) as a thumbnail with a hover popup; the cell value is only the sort key (Overview column, 16 hex digits). |
+| `filterable` | `false?` | The column has no filter input. Absent = filterable. |
 
 ### Column catalogue
 
@@ -74,10 +76,11 @@ Slot-map columns: 64 columns (4 main slots × 4 sub-slots × 4 pages) with keys 
 | 5 | `cpu` | CPU/Chipsets | 6 |
 | 6 | `other` | Other | 7 |
 | 7 | `emulation` | Emulation | 8 |
-| 8 | `slotmap_0` | Slotmap, slot 0 | 9 |
-| 9 | `slotmap_1` | Slotmap, slot 1 | 10 |
-| 10 | `slotmap_2` | Slotmap, slot 2 | 11 |
-| 11 | `slotmap_3` | Slotmap, slot 3 | 12 |
+| 13 | `slotmap` | Slotmap | 9 |
+| 8 | `slotmap_0` | Slot 0 | 10 |
+| 9 | `slotmap_1` | Slot 1 | 11 |
+| 10 | `slotmap_2` | Slot 2 | 12 |
+| 11 | `slotmap_3` | Slot 3 | 13 |
 
 ---
 

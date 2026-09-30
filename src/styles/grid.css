@@ -575,3 +575,50 @@ th.col--frozen[data-col-index="1"] {
 thead .col--frozen {
   z-index: 11;
 }
+
+/* ── Slotmap Overview (drawn cell + hover popup) ─────────────────────────── */
+
+.grid tbody td.cell-slotmap-overview {
+  max-width: none;
+  padding: 0 6px;
+  overflow: visible;
+}
+
+.cell-slotmap-overview .slotmap-thumb {
+  display: block;       /* 21px drawing in a 24px row: ~1.5px air above and below */
+  margin: 0 auto;
+  cursor: zoom-in;
+}
+
+.slotmap-popup {
+  position: fixed;
+  z-index: 300;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  padding: 8px 8px 4px;
+}
+
+.slotmap-popup__title {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--color-text-heading);
+  padding: 0 4px 2px;
+}
+
+.slotmap-popup__canvas {
+  display: block;
+}
+
+.slotmap-popup__tip {
+  position: absolute;
+  pointer-events: none;
+  white-space: nowrap;
+  font-size: 11px;
+  padding: 2px 6px;
+  color: var(--color-text);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 3px;
+}

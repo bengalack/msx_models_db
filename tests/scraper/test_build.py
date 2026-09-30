@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from scraper.build import SLOTMAP_LUT_PATH, build, load_scraper_config
-from scraper.columns import active_columns
+from scraper.columns import GROUPS, active_columns
 from scraper.registry import IDRegistry
 from scraper.slotmap_lut import compact_lut, load_slotmap_lut
 
@@ -188,13 +188,13 @@ class TestBuildSlotmapLUT:
         for abbr, tooltip in data["slotmap_lut"].items():
             assert isinstance(tooltip, str), f"Tooltip for {abbr!r} is not a string"
 
-    def test_data_js_has_13_groups(self, tmp_path):
+    def test_data_js_has_every_group(self, tmp_path):
         output_path = self._run_build(tmp_path)
         content = output_path.read_text(encoding="utf-8")
         json_start = content.index("window.MSX_DATA = ") + len("window.MSX_DATA = ")
         json_end = content.rindex(";")
         data = json.loads(content[json_start:json_end])
-        assert len(data["groups"]) == 13
+        assert [g["id"] for g in data["groups"]] == [g.id for g in GROUPS]
 
     def test_data_js_exports_all_active_columns(self, tmp_path):
         output_path = self._run_build(tmp_path)
@@ -1077,3 +1077,17 @@ class TestBuildChipLinks:
         configured = {c.key for c in active_columns() if c.chip_links}
         assert configured, "some column links chips"
         assert {c["key"] for c in data["columns"] if c.get("chipLinks")} == configured
+
+
+def test_renderer_and_filterable_flags_reach_data_js(tmp_path):
+    raw = [{"manufacturer": "Sony", "model": "HB-75P", "generation": "MSX1"}]
+    (tmp_path / "openmsx.json").write_text(json.dumps(raw))
+    (tmp_path / "msxorg.json").write_text(json.dumps([]))
+    build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
+          registry_path=tmp_path / "registry.json", output_path=tmp_path / "data.js")
+    content = (tmp_path / "data.js").read_text(encoding="utf-8")
+    data = json.loads(content[content.index("{"):content.rindex(";")])
+    shipped = {c["key"]: c for c in data["columns"]}
+    for col in active_columns():
+        assert shipped[col.key].get("renderer") == col.renderer
+        assert shipped[col.key].get("filterable", True) == col.filterable

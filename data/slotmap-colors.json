@@ -1,0 +1,63 @@
+{
+  "_comment": "Colours of the Slotmap Overview drawing — one set for both the thumbnail in the cell and the popup on hover. Compiled into the web bundle at build time — never fetched at runtime. 'categories' maps a category to regexes matched against a slot map cell label (mirror suffix removed); the first matching category wins, anything else is 'other'. A colour is \"#rrggbb\" or {\"light\": ..., \"dark\": ...} per page theme; dark neutral boxes (black, dark gray) turn white / light gray in dark mode. Absent pages are transparent; empty pages (slot confirmed, nothing mapped) are drawn in 'grid', in the popup with a 1 px inward outline in 'empty_outline'. Box text (popup) is black or white, whichever contrasts best.",
+  "categories": {
+    "main_rom": [
+      "^MAIN\\+?$"
+    ],
+    "mapped_ram": [
+      "^MM$",
+      "^PM$"
+    ],
+    "ram": [
+      "^RAM$"
+    ],
+    "cartridge": [
+      "^CS\\d*!?$"
+    ],
+    "expansion_slot": [
+      "^ES\\d*!?$"
+    ],
+    "expansion_bus": [
+      "^EXP$"
+    ],
+    "disk_rom": [
+      "^DSK$"
+    ],
+    "sub_rom": [
+      "^SUB$"
+    ],
+    "music": [
+      "^MUS$"
+    ],
+    "sram": [
+      "^SRAM$"
+    ]
+  },
+  "colors": {
+    "grid": {
+      "light": "#e3e3e3",
+      "dark": "#43474e"
+    },
+    "empty_outline": {
+      "light": "#b0b0b0",
+      "dark": "#72777f"
+    },
+    "mapped_ram": "#0a28ff",
+    "ram": "#5aa9ff",
+    "cartridge": "#009a2e",
+    "expansion_slot": "#3cf05a",
+    "disk_rom": "#ff8c00",
+    "sub_rom": "#e02424",
+    "expansion_bus": "#f5d400",
+    "music": "#8e44d6",
+    "sram": "#ff80c0",
+    "main_rom": {
+      "light": "#000000",
+      "dark": "#ffffff"
+    },
+    "other": {
+      "light": "#5c5c5c",
+      "dark": "#c4c4c4"
+    }
+  }
+}

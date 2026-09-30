@@ -1,4 +1,5 @@
 import type { MSXData, GroupDef, ColumnDef, ModelRecord, ViewState } from './types.js';
+import { cellIndex, cellKind, installSlotmapPopup, slotKey, thumbnailFor, type SlotCells } from './slotmap-overview.js';
 
 /** Number of leading data columns (0-based) that are pinned during horizontal scroll. */
 export const FROZEN_COL_COUNT = 2;
@@ -170,6 +171,11 @@ function buildFilterRow(columns: ColumnDef[]): HTMLTableRowElement {
     td.dataset.colOrder = String(order);
     groupOrder.set(columns[i].groupId, order + 1);
     if (i < FROZEN_COL_COUNT) td.classList.add('col--frozen');
+    if (columns[i].filterable === false) {
+      td.classList.add('filter-cell--none');
+      tr.appendChild(td);
+      continue;
+    }
 
     const input = document.createElement('input');
     input.type = 'text';
@@ -240,6 +246,7 @@ function buildDataRow(
   chipLinks: Record<string, string>,
   hiddenCols?: ReadonlySet<number>,
   collapsedGroups?: ReadonlySet<number>,
+  slotCellsOf?: (model: ModelRecord) => SlotCells | null,
 ): HTMLTableRowElement {
   const tr = document.createElement('tr');
   tr.dataset.modelId = String(model.id);
@@ -306,7 +313,21 @@ function buildDataRow(
     const cellTooltip = model.tooltips?.[col.key];
     if (cellTooltip) td.dataset.tooltip = cellTooltip;
 
-    if (isNullish(rawValue)) {
+    if (col.renderer === 'slotmap') {
+      // Drawn, not text: the value is only the sort key (see slotmap-overview.ts).
+      td.textContent = '';
+      td.classList.add('cell-slotmap-overview');
+      const cells = slotCellsOf?.(model) ?? null;
+      if (cells) {
+        const canvas = thumbnailFor(model.id, cells);
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label', `Slot map of ${model.values[0] ?? ''} ${model.values[1] ?? ''}`.trim());
+        td.appendChild(canvas);
+      } else {
+        td.classList.add('cell-null');
+        td.textContent = '\u2014'; // em dash
+      }
+    } else if (isNullish(rawValue)) {
       td.classList.add('cell-null');
     } else {
       // Slot map tooltip + visual markers
@@ -429,6 +450,17 @@ export function buildGrid(data: MSXData, opts?: {
 
   // Row element cache — reused by applyRowVisibility() to avoid full DOM rebuild on hide/unhide
   const rowCache = new Map<number, HTMLTableRowElement>();
+
+  // Slotmap Overview: the 64 slot map cells of a model, read from its slotmap_* columns.
+  const slotColIdx: number[] = [];
+  for (let ms = 0; ms < 4; ms++) for (let ss = 0; ss < 4; ss++) for (let p = 0; p < 4; p++) {
+    slotColIdx[cellIndex(ms, ss, p)] = data.columns.findIndex(c => c.key === slotKey(ms, ss, p));
+  }
+  const modelsById = new Map(data.models.map(m => [m.id, m]));
+  function slotCellsOf(model: ModelRecord): SlotCells | null {
+    const cells = slotColIdx.map(i => (i >= 0 ? (model.values[i] as string | null) : null));
+    return cells.some(c => cellKind(c) !== 'absent') ? cells : null;
+  }
 
   // ── Column ID ↔ index maps (for ViewState translation) ───────────────────
   const colIdToIdx = new Map(data.columns.map((col, i) => [col.id, i]));
@@ -819,7 +851,7 @@ export function buildGrid(data: MSXData, opts?: {
       if (hiddenRows.has(model.id)) {
         buffer.push(model.id);
         // Build the element hidden so applyRowVisibility() can reveal it without a full re-render
-        const tr = buildDataRow(model, data.columns, 0, data.slotmap_lut ?? {}, data.chip_links ?? {}, hiddenCols, collapsedGroups);
+        const tr = buildDataRow(model, data.columns, 0, data.slotmap_lut ?? {}, data.chip_links ?? {}, hiddenCols, collapsedGroups, slotCellsOf);
         tr.style.display = 'none';
         rowCache.set(model.id, tr);
         rows.push(tr);
@@ -830,7 +862,7 @@ export function buildGrid(data: MSXData, opts?: {
           rows.push(buildGapIndicator(buffer, unhideRowsInGap, data.columns.length));
           buffer = [];
         }
-        const tr = buildDataRow(model, data.columns, rowNum++, data.slotmap_lut ?? {}, data.chip_links ?? {}, hiddenCols, collapsedGroups);
+        const tr = buildDataRow(model, data.columns, rowNum++, data.slotmap_lut ?? {}, data.chip_links ?? {}, hiddenCols, collapsedGroups, slotCellsOf);
         rowCache.set(model.id, tr);
         rows.push(tr);
         lastVisibleRow = tr;
@@ -1023,11 +1055,28 @@ export function buildGrid(data: MSXData, opts?: {
 
   renderRows();
 
+  // ── Slotmap Overview popup ───────────────────────────────────────────────
+  if (data.columns.some(c => c.renderer === 'slotmap')) {
+    installSlotmapPopup(tbody, {
+      cellsOf: id => {
+        const model = modelsById.get(id);
+        return model ? slotCellsOf(model) : null;
+      },
+      titleOf: id => {
+        const model = modelsById.get(id);
+        return model ? `${model.values[0] ?? ''} ${model.values[1] ?? ''}`.trim() : '';
+      },
+      tooltipOf: label => resolveSlotmapTooltip(label, data.slotmap_lut ?? {}),
+    });
+  }
+
   // ── Cell tooltip — only when text is actually truncated ──────────────────
   // Link cells manage their own title via the <a> element; skip them here.
   tbody.addEventListener('mouseenter', (e: MouseEvent) => {
     const td = (e.target as HTMLElement).closest<HTMLTableCellElement>('td[data-col-index]');
     if (!td) return;
+    // A drawn cell has its own hover popup (slotmap-overview.ts), no text tooltip.
+    if (td.classList.contains('cell-slotmap-overview')) return;
     // Whole-cell link cells manage their own title; chip-link cells keep the cell tooltip.
     if (td.querySelector('a.cell-link') && !td.dataset.tooltip) return;
     // A cell tooltip always wins: it carries information the cell text does not

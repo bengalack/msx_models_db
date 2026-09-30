@@ -78,8 +78,36 @@ class Column:
     tooltip_for: tuple[str, ...] = ()     # hidden column whose text ships as the cell tooltip
                                           # of these column keys
     default_off: bool = False             # shipped and toggleable, but unchecked on a fresh load
+    renderer: str | None = None           # cell drawn by the web page instead of text ("slotmap")
+    filterable: bool = True               # False: no filter input for this column
     retired: bool = False                 # permanently removed, ID preserved, excluded entirely
     derive: Callable[[dict[str, Any]], Any] | None = None
+
+
+def slotmap_sort_key(model: dict) -> str | None:
+    """The Overview column's sort value: which slot-map pages are occupied.
+
+    One bit per page (set = anything but absent / empty page), a nibble per
+    sub-slot (page 3 = high bit), sub-slot 0 the most significant nibble of its
+    primary slot's 16 bits, and slot 0 the most significant 16 bits:
+    ``[slot0][slot1][slot2][slot3]`` = 64 bits, as 16 hex digits so it sorts
+    exactly as a string (JS numbers hold only 53 bits). None without a slot map.
+    """
+    from .symbols import ABSENT, EMPTY_PAGE
+
+    cells = [model.get(f"slotmap_{ms}_{ss}_{p}") for ms in range(4) for ss in range(4) for p in range(4)]
+    if not any(cells):
+        return None
+    value = 0
+    for ms in range(4):
+        for ss in range(4):
+            nibble = 0
+            for p in range(4):
+                cell = model.get(f"slotmap_{ms}_{ss}_{p}")
+                if cell and cell not in (ABSENT, EMPTY_PAGE):
+                    nibble |= 1 << p
+            value = (value << 4) | nibble
+    return f"{value:016X}"
 
 
 # ---------------------------------------------------------------------------
@@ -162,10 +190,11 @@ GROUPS: list[Group] = [
     Group(id=5,  key="cpu",        label="CPU/Chipsets",     order=6),
     Group(id=6,  key="other",      label="Other",            order=7),
     Group(id=7,  key="emulation",  label="Emulation",        order=8),
-    Group(id=8,  key="slotmap_0",  label="Slotmap, slot 0",  order=9),
-    Group(id=9,  key="slotmap_1",  label="Slotmap, slot 1",  order=10),
-    Group(id=10, key="slotmap_2", label="Slotmap, slot 2",  order=11),
-    Group(id=11, key="slotmap_3", label="Slotmap, slot 3",  order=12),
+    Group(id=13, key="slotmap",    label="Slotmap",          order=9),
+    Group(id=8,  key="slotmap_0",  label="Slot 0",          order=10),
+    Group(id=9,  key="slotmap_1",  label="Slot 1",          order=11),
+    Group(id=10, key="slotmap_2", label="Slot 2",          order=12),
+    Group(id=11, key="slotmap_3", label="Slot 3",          order=13),
 ]
 
 
@@ -228,12 +257,16 @@ COLUMNS: list[Column] = [
     Column(id=29, key="fpga_support",     label="FPGA",                 group="emulation", type="string",
            derive=lambda m: "Yes" if "Altera" in (m.get("engine_raw") or "") else None),
 
+    # Slot map drawn as a picture; the value is its sort key (see slotmap_sort_key).
+    Column(id=109, key="slot_overview",    label="Overview",            group="slotmap",  type="string",
+           renderer="slotmap", filterable=False, derive=lambda m: slotmap_sort_key(m)),
+
     # Hidden scraper inputs — not shipped to browser; available to derive functions
     Column(id=102, key="scraped_cart_slots", label="Scraped Cart Slots", group="media", type="number", hidden=True),
     Column(id=106, key="engine_raw", label="Engine (scraped text)", group="cpu", type="string", hidden=True,
            tooltip_for=("engine", "engine_semi_custom")),
 
-    # Slotmap, slot 0  (IDs 30–45)  — ms=0, ss=0..3, p=0..3
+    # Slot map, slot 0  (IDs 30–45)  — ms=0, ss=0..3, p=0..3
     Column(id=30, key="slotmap_0_0_0", label="0 / P0", group="slotmap_0", type="string"),
     Column(id=31, key="slotmap_0_0_1", label="0 / P1", group="slotmap_0", type="string"),
     Column(id=32, key="slotmap_0_0_2", label="0 / P2", group="slotmap_0", type="string"),
@@ -251,7 +284,7 @@ COLUMNS: list[Column] = [
     Column(id=44, key="slotmap_0_3_2", label="3 / P2", group="slotmap_0", type="string", shaded=True),
     Column(id=45, key="slotmap_0_3_3", label="3 / P3", group="slotmap_0", type="string", shaded=True),
 
-    # Slotmap, slot 1  (IDs 46–61)  — ms=1, ss=0..3, p=0..3
+    # Slot map, slot 1  (IDs 46–61)  — ms=1, ss=0..3, p=0..3
     Column(id=46, key="slotmap_1_0_0", label="0 / P0", group="slotmap_1", type="string"),
     Column(id=47, key="slotmap_1_0_1", label="0 / P1", group="slotmap_1", type="string"),
     Column(id=48, key="slotmap_1_0_2", label="0 / P2", group="slotmap_1", type="string"),
@@ -269,7 +302,7 @@ COLUMNS: list[Column] = [
     Column(id=60, key="slotmap_1_3_2", label="3 / P2", group="slotmap_1", type="string", shaded=True),
     Column(id=61, key="slotmap_1_3_3", label="3 / P3", group="slotmap_1", type="string", shaded=True),
 
-    # Slotmap, slot 2  (IDs 62–77)  — ms=2, ss=0..3, p=0..3
+    # Slot map, slot 2  (IDs 62–77)  — ms=2, ss=0..3, p=0..3
     Column(id=62, key="slotmap_2_0_0", label="0 / P0", group="slotmap_2", type="string"),
     Column(id=63, key="slotmap_2_0_1", label="0 / P1", group="slotmap_2", type="string"),
     Column(id=64, key="slotmap_2_0_2", label="0 / P2", group="slotmap_2", type="string"),
@@ -287,7 +320,7 @@ COLUMNS: list[Column] = [
     Column(id=76, key="slotmap_2_3_2", label="3 / P2", group="slotmap_2", type="string", shaded=True),
     Column(id=77, key="slotmap_2_3_3", label="3 / P3", group="slotmap_2", type="string", shaded=True),
 
-    # Slotmap, slot 3  (IDs 78–93)  — ms=3, ss=0..3, p=0..3
+    # Slot map, slot 3  (IDs 78–93)  — ms=3, ss=0..3, p=0..3
     Column(id=78, key="slotmap_3_0_0", label="0 / P0", group="slotmap_3", type="string"),
     Column(id=79, key="slotmap_3_0_1", label="0 / P1", group="slotmap_3", type="string"),
     Column(id=80, key="slotmap_3_0_2", label="0 / P2", group="slotmap_3", type="string"),

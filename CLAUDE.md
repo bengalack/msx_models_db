@@ -88,12 +88,13 @@ Merge precedence: **local-raw.json > openMSX > msx.org**. `exclude.json` outrank
 applied to local data as well, so a curated entry can never resurrect an excluded model.
 
 ### Maintainer-curated data (`data/`)
-`aliases.json`, `substitutions.json`, `exclude.json`, `link-shares.json`, `slotmap-lut.json`, `local-raw.json`, `engine-chips.json`, `chip-links.json` (chip id / MSX generation → page, for the Generation/CPU/Sub-CPU/Engine/VDP links), `scraper-config.json` (local mirror paths + slot-map symbols). `id-registry.json` is generated but committed and **append-only** — IDs are never deleted or reused.
+`aliases.json`, `substitutions.json`, `exclude.json`, `link-shares.json`, `slotmap-lut.json`, `local-raw.json`, `engine-chips.json`, `chip-links.json` (chip id / MSX generation → page, for the Generation/CPU/Sub-CPU/Engine/VDP links), `slotmap-colors.json` (Slotmap Overview colours; read by the web build), `scraper-config.json` (local mirror paths + slot-map symbols). `id-registry.json` is generated but committed and **append-only** — IDs are never deleted or reused.
 
 ### Web (`src/`)
 - `main.ts` — entry; wires header, toolbar, grid, column picker, URL hash sync.
 - `grid.ts` — the hand-rolled grid (~1400 lines): rendering, sort, filter (`|` = OR, `!` = NOT), selection, row hide/unhide gaps, sticky headers/gutter, frozen Identity columns, tooltips, clipboard.
 - `url/codec.ts` — versioned binary view-state codec → URL-safe base64 in the hash. Format is documented in technical-design.md. Decoder must never throw; unknown IDs are silently dropped.
+- `slotmap-overview.ts` — the Slotmap Overview column: canvas thumbnail per row (cached per model/theme/DPR), hover popup with labelled boxes and slot map tooltips. Colours from `data/slotmap-colors.json`, compiled into the bundle. See *Feature Design: Slotmap Overview*.
 - `col-picker.ts`, `toolbar.ts`, `theme.ts`, `symbols.ts`, `types.ts` (MSXData types — keep in sync with `data/schema.md` and `scraper/build.py` serialisation).
 - `styles/` — all colours via CSS custom properties on `[data-theme]`; no hardcoded hex in components.
 - `vite.config.ts` builds an **IIFE** bundle and rewrites `index.html` to plain `<script>` tags (data.js then bundle.js) so it works on `file://`. Don't reintroduce `type="module"`.
