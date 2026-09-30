@@ -216,7 +216,7 @@ COLUMNS: list[Column] = [
     Column(id=7,  key="main_ram_kb",       label="Main RAM (KB)",       group="memory",   type="number", short_label="Main RAM",    tooltip="Main RAM (KB)"),
     Column(id=10, key="mapper",            label="Memory Mapper",       group="memory",   type="string"),
     Column(id=94, key="sram_kb",           label="SRAM",                group="memory",   type="string"),
-    Column(id=95, key="himem_addr",        label="HIMEM Addr",          group="memory",   type="string"),
+    Column(id=95, key="himem_addr",        label="HIMEM Addr",          group="memory",   type="string", tooltip="HIMEM value at boot time"),
     # Video
     Column(id=11, key="vdp",              label="VDP",                  group="video",    type="string", chip_links=True),
     Column(id=8,  key="vram_kb",           label="VRAM (KB)",           group="video",    type="number", short_label="VRAM",         tooltip="VRAM (KB)"),
