@@ -87,6 +87,31 @@ class Column:
     derive: Callable[[dict[str, Any]], Any] | None = None
 
 
+# Slot map labels of main RAM (the LUT's RAM, MemoryMapper and PanasonicRAM devices).
+# Mirrors ("RAM*") are the same RAM seen twice and SRAM is not main RAM: neither counts.
+RAM_SLOT_LABELS = ("RAM", "MM")
+
+
+def nonlinear_ram(model: dict) -> str | None:
+    """"Yes" when RAM is non-linear: spread over several slots / sub-slots, none of
+    which holds RAM from 0x0000 to 0xFFFF (all four pages). Else None.
+
+    E.g. the 64kB of the Toshiba HX-20 family: pages 2-3 in slot 0-0, pages 0-1 in
+    3-0 — Yes. A full 64kB in one slot plus more RAM elsewhere (a RAM expansion) is
+    linear — not Yes.
+    """
+    pages_by_slot: dict[tuple[int, int], set[int]] = {}
+    for ms in range(4):
+        for ss in range(4):
+            for p in range(4):
+                if model.get(f"slotmap_{ms}_{ss}_{p}") in RAM_SLOT_LABELS:
+                    pages_by_slot.setdefault((ms, ss), set()).add(p)
+    if len(pages_by_slot) < 2:
+        return None
+    linear = any(len(pages) == 4 for pages in pages_by_slot.values())
+    return None if linear else "Yes"
+
+
 def slotmap_sort_key(model: dict) -> str | None:
     """The Overview column's sort value: which slot-map pages are occupied.
 
@@ -222,6 +247,9 @@ COLUMNS: list[Column] = [
     Column(id=5,  key="generation",        label="Generation",          group="release",  type="string", short_label="Gen", chip_links=True),
     # Memory
     Column(id=7,  key="main_ram_kb",       label="Main RAM (KB)",       group="memory",   type="number", short_label="Main RAM",    tooltip="Main RAM (KB)"),
+    Column(id=111, key="nonlinear_ram",    label="Non-linear RAM",      group="memory",   type="string",
+           short_label="Non-linear\nRAM",
+           tooltip="RAM non-linear: spread across slots/subslots, none holding 0x0000-0xFFFF", derive=lambda m: nonlinear_ram(m)),
     Column(id=10, key="mapper",            label="Memory Mapper",       group="memory",   type="string"),
     Column(id=94, key="sram_kb",           label="SRAM",                group="memory",   type="string"),
     Column(id=95, key="himem_addr",        label="HIMEM Addr",          group="memory",   type="string", tooltip="HIMEM value at boot time"),

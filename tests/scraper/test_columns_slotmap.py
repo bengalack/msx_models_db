@@ -230,3 +230,54 @@ def test_overview_column_is_drawn_unfilterable_and_sits_in_its_own_group():
     assert [c.key for c in COLUMNS if c.group == col.group] == [col.key]
     order = {g.key: g.order for g in GROUPS}
     assert order[col.group] < min(g.order for g in SLOTMAP_GROUPS)
+
+
+# ---------------------------------------------------------------------------
+# Non-linear RAM — RAM in more than one slot / sub-slot
+# ---------------------------------------------------------------------------
+
+from scraper.columns import RAM_SLOT_LABELS, active_columns, nonlinear_ram
+from scraper.symbols import MIRROR_SUFFIX
+
+
+def _slots(cells: dict[tuple[int, int, int], str]) -> dict:
+    model = {f"slotmap_{ms}_{ss}_{p}": ABSENT for ms in range(4) for ss in range(4) for p in range(4)}
+    model.update({f"slotmap_{ms}_{ss}_{p}": v for (ms, ss, p), v in cells.items()})
+    return model
+
+
+RAM, MAPPER = RAM_SLOT_LABELS[0], RAM_SLOT_LABELS[-1]
+
+
+def test_nonlinear_ram_across_two_slots():
+    assert nonlinear_ram(_slots({(0, 0, 2): RAM, (0, 0, 3): RAM, (3, 0, 0): RAM, (3, 0, 1): RAM})) == "Yes"
+
+
+def test_nonlinear_ram_across_two_subslots_of_one_slot():
+    assert nonlinear_ram(_slots({(0, 0, 3): RAM, (0, 2, 0): RAM})) == "Yes"
+
+
+def test_full_range_in_one_slot_is_linear_even_with_more_ram_elsewhere():
+    # A 64kB memory mapper in 3-2 plus a RAM expansion in 2-2 (NMS 8245 Home Banking)
+    model = _slots({**{(3, 2, p): MAPPER for p in range(4)}, **{(2, 2, p): MAPPER for p in range(4)}})
+    assert nonlinear_ram(model) is None
+    # Full 64kB in 3-0 and one more RAM page in 0-0 (Sony HB-10B)
+    assert nonlinear_ram(_slots({**{(3, 0, p): RAM for p in range(4)}, (0, 0, 3): RAM})) is None
+
+
+def test_ram_in_one_slot_is_not_split():
+    assert nonlinear_ram(_slots({(3, 0, p): MAPPER for p in range(4)})) is None
+
+
+def test_mirrors_and_other_devices_do_not_count():
+    model = _slots({**{(3, 0, p): RAM for p in range(4)}, (0, 0, 3): RAM + MIRROR_SUFFIX, (1, 0, 0): "SRAM"})
+    assert nonlinear_ram(model) is None
+
+
+def test_no_slot_map_is_not_split():
+    assert nonlinear_ram({}) is None
+
+
+def test_nonlinear_ram_column_follows_main_ram():
+    keys = [c.key for c in active_columns()]
+    assert keys[keys.index("main_ram_kb") + 1] == "nonlinear_ram"

@@ -670,6 +670,12 @@ An msx.org page with its own specs table can describe more than one model. `spli
 
 ---
 
+## Feature Design: Non-linear RAM Column
+
+Column id 111 **Non-linear RAM** (`nonlinear_ram`, Memory group, right of Main RAM; tooltip "RAM non-linear: spread across slots/subslots, none holding 0x0000-0xFFFF"): `Yes` when the model's main RAM is **non-linear** — in more than one slot or sub-slot, and no single slot / sub-slot holds RAM on all four pages (0x0000–0xFFFF); else empty. A full 64kB in one slot plus more RAM elsewhere (a RAM expansion) is linear. Derived in the build (`nonlinear_ram` in `scraper/columns.py`) from the 64 slot map cells: a page counts when labelled `RAM` or `MM` (`RAM_SLOT_LABELS` — the LUT labels of RAM, MemoryMapper and PanasonicRAM). Mirrors (`RAM*`) are the same RAM seen twice and SRAM is not main RAM, so neither counts. Result (2026-09-30): 20 models — 64kB split between slot 0-0 (pages 2–3) and a second slot (pages 0–1): Sony HB-F500 / P / F, the Toshiba HX-20 family, HX-23 / F, HX-51I, HX-52, Yamaha AX-150 / AX-200 / YIS-503FB, Sakhr AX-200F, Victor HC-80. Linear, so not Yes: Sony HB-10B / HB-10D / HB-20N (full 64kB in 3-0) and Philips NMS 8245 Home Banking (full mapper in 3-2 plus an expansion in 2-2).
+
+---
+
 ## Feature Design: openMSX File-Name Join
 
 openMSX's display name can differ from msx.org's page name for the same machine: `Sanyo_MPC-1.xml` shows "MPC-1/Wavy1", msx.org has "MPC-1" — they never met and the grid showed two rows (the openMSX one without msx.org or generation-msx link). `merge_models` joins them by the machine **file name**: an openMSX machine whose name no msx.org record has joins the one msx.org model of the same manufacturer, with no openMSX machine of that name, whose manufacturer + model spell its `openmsx_id` (letters and digits only: `Sanyo_MPC-1` = "Sanyo" + "MPC-1"). The row takes msx.org's name; the openMSX key is kept as a former key, so the id is the msx.org model's (the openMSX row's id stays registered, unused). The file name decides, not the first part of the display name: "MPC-10/Wavy10mkII" is `Sanyo_MPC-10mkII` → MPC-10mkII, not MPC-10.
