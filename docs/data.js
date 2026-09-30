@@ -170,7 +170,8 @@ window.MSX_DATA = {
       "key": "himem_addr",
       "label": "HIMEM Addr",
       "groupId": 1,
-      "type": "string"
+      "type": "string",
+      "tooltip": "HIMEM value at boot time"
     },
     {
       "id": 11,
