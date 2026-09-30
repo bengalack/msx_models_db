@@ -1168,3 +1168,9 @@ class TestModem:
                 b'<h3>Connections</h3><ul><li>Printer port</li></ul></body></html>')
         [record] = parse_model_page(page, "MSX1", "Maker MX-1")
         assert "modem" not in record
+
+
+@pytest.mark.parametrize("audio", ["PSG (AY-3-8910)", "PSG (YM2149 integrated in MSX-Engine S3527)", "AY-3-8910"])
+def test_psg_is_yes(audio):
+    from scraper.msxorg import _parse_audio
+    assert _parse_audio(audio)["psg"] == "Yes"

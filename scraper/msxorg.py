@@ -300,7 +300,7 @@ def _parse_audio(raw: str) -> dict[str, Any]:
     result: dict[str, Any] = {}
     raw_lower = raw.lower()
     if "psg" in raw_lower or "ay-3-8910" in raw_lower or "ym2149" in raw_lower:
-        result["psg"] = "AY-3-8910"
+        result["psg"] = "Yes"   # present; which chip is not yet specified
         result["audio_channels"] = 3
     # FM chips.
     fm_chips: list[str] = []

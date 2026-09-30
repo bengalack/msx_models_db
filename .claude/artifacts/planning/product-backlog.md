@@ -17,6 +17,7 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - PSG / MSX-MUSIC columns: Yes (chip detail to be specified later)
   - Slot 0–3 groups start collapsed (group flag defaultCollapsed; Reset view restores it)
   - Slotmap Overview column: canvas thumbnail of the slot map per model, hover popup with labelled boxes and tooltips, sortable by a 64-bit occupancy key
   - Modem column (Yes for a built-in modem) from msx.org and openMSX, left of PRN Port

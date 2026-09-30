@@ -256,7 +256,7 @@ class TestParseXMLAudio:
     def test_psg_present(self):
         xml = _xml(_info(), '<PSG id="PSG"/>')
         result = parse_machine_xml(xml, "test.xml")
-        assert result["psg"] == "AY-3-8910"
+        assert result["psg"] == "Yes"
         assert result["audio_channels"] == 3
 
     def test_fm_chip_single(self):

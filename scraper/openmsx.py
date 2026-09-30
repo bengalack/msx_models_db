@@ -318,7 +318,7 @@ def _extract_audio(devices: etree._Element, out: dict[str, Any]) -> None:
     """Extract PSG and FM chip info."""
     psg = devices.find(".//PSG")
     if psg is not None:
-        out["psg"] = "AY-3-8910"
+        out["psg"] = "Yes"   # present; which chip (AY-3-8910, YM2149, engine-integrated) is not yet specified
         out["audio_channels"] = 3
 
     # FM chips — various element names in openMSX configs.

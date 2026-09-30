@@ -41,14 +41,14 @@ _REGION_NORM: dict[str, str] = {
 }
 
 _FM_NORM: dict[str, str] = {
-    # YM2413 aliases — all normalize to the chip part number
-    "msx-music": "YM2413",
-    "msx music": "YM2413",
-    "fm-pac": "YM2413",
-    "fmpac": "YM2413",
-    "fm-pak": "YM2413",
-    "fmpak": "YM2413",
-    "ym2413": "YM2413",
+    # MSX-MUSIC (YM2413) aliases — the column says whether it is present, not which chip
+    "msx-music": "Yes",
+    "msx music": "Yes",
+    "fm-pac": "Yes",
+    "fmpac": "Yes",
+    "fm-pak": "Yes",
+    "fmpak": "Yes",
+    "ym2413": "Yes",
     # Other FM chips
     "msx-audio": "MSX-AUDIO",
     "msx audio": "MSX-AUDIO",

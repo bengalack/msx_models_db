@@ -472,3 +472,10 @@ class TestTapeAdapter:
 
     def test_openmsx_still_wins_other_conflicts(self):
         assert self._merge("Yes", "No") == "Yes"
+
+
+@pytest.mark.parametrize("raw", ["MSX-MUSIC", "msx music", "FM-PAC", "fmpac", "YM2413"])
+def test_msx_music_aliases_normalise_to_yes(raw):
+    openmsx = [{"manufacturer": "Maker", "model": "M-1", "fm_chip": raw}]
+    [row] = merge_models(openmsx, [])
+    assert row["fm_chip"] == "Yes"
