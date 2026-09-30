@@ -814,6 +814,10 @@ can restore it. "Reset view" means back to the defaults, not "show every column"
 
 ---
 
+### Default-collapsed groups
+
+The same contract for groups: `Group.default_collapsed` in `scraper/columns.py` (Slot 0–3) ships as `GroupDef.defaultCollapsed`. `defaultViewState(columns, groups)` adds those groups to `collapsedGroupIds`, so a fresh load (no or unreadable hash) opens with them collapsed — the Slotmap Overview column stays visible as their summary. A readable hash always wins: its collapsed-groups bitmask is absolute, so URLs shared before the flag keep their groups expanded, and the codec needs no version bump. "Reset view" re-collapses the flagged groups and expands every other group (`showGroupCollapsedInHead` in `src/grid.ts`, shared with the initial-state seeding).
+
 ## Feature Design: Scraper Exclude List
 
 ### Overview

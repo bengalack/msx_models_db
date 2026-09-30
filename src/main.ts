@@ -53,10 +53,11 @@ if (!window.MSX_DATA) {
   const knownGroupIds = new Set(groups.map(g => g.id));
   const knownModelIds = new Set(models.map(m => m.id));
   // No hash (or an unreadable one) → the configured defaults, which start every
-  // `defaultOff` column hidden. A readable hash always wins, so URLs shared before
-  // a column gained that flag still open exactly as their author left them.
+  // `defaultOff` column hidden and every `defaultCollapsed` group collapsed. A
+  // readable hash always wins, so URLs shared before a flag was added still open
+  // exactly as their author left them.
   const initialState = decodeFromHash(
-    window.location.hash, knownColumnIds, knownGroupIds, knownModelIds, defaultViewState(columns),
+    window.location.hash, knownColumnIds, knownGroupIds, knownModelIds, defaultViewState(columns, groups),
   );
 
   // ── URL state: debounced write-back ───────────────────────────────────────

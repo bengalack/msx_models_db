@@ -334,7 +334,8 @@ def build(
     group_id_map = {g.key: g.id for g in GROUPS}
 
     js_groups = [
-        {"id": g.id, "key": g.key, "label": g.label, "order": g.order}
+        {"id": g.id, "key": g.key, "label": g.label, "order": g.order,
+         **({"defaultCollapsed": True} if g.default_collapsed else {})}
         for g in GROUPS
     ]
 

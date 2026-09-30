@@ -444,6 +444,8 @@ export function buildGrid(data: MSXData, opts?: {
   const defaultHiddenCols = new Set(
     data.columns.map((col, i) => (col.defaultOff ? i : -1)).filter(i => i >= 0),
   );
+  // Groups that start collapsed (GroupDef.defaultCollapsed) — restored by resetView() likewise.
+  const defaultCollapsedGroups = new Set(data.groups.filter(g => g.defaultCollapsed).map(g => g.id));
 
   // Hidden rows — keyed by stable model ID
   const hiddenRows = new Set<number>();
@@ -1002,22 +1004,25 @@ export function buildGrid(data: MSXData, opts?: {
     }
 
     // Collapsed groups in thead (tbody handled in renderRows)
-    for (const groupId of collapsedGroups) {
-      const th = thead.querySelector<HTMLTableCellElement>(`th.group-header[data-group-id="${groupId}"]`);
-      if (!th) continue;
-      th.colSpan = 1;
-      th.classList.add('collapsed');
-      const chevron = th.querySelector<HTMLElement>('.chevron');
-      if (chevron) { chevron.classList.remove('fa-chevron-down'); chevron.classList.add('fa-chevron-right'); }
-      thead.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
-        if (cell.dataset.colOrder === '0') {
-          cell.classList.add('col-group-stub');
-        } else {
-          cell.style.display = 'none';
-        }
-      });
-      recalcGroupHeader(groupId);
-    }
+    for (const groupId of collapsedGroups) showGroupCollapsedInHead(groupId);
+  }
+
+  /** Draw a group as collapsed in thead (group header + column headers); tbody follows in renderRows(). */
+  function showGroupCollapsedInHead(groupId: number): void {
+    const th = thead.querySelector<HTMLTableCellElement>(`th.group-header[data-group-id="${groupId}"]`);
+    if (!th) return;
+    th.colSpan = 1;
+    th.classList.add('collapsed');
+    const chevron = th.querySelector<HTMLElement>('.chevron');
+    if (chevron) { chevron.classList.remove('fa-chevron-down'); chevron.classList.add('fa-chevron-right'); }
+    thead.querySelectorAll<HTMLElement>(`[data-col-group="${groupId}"]`).forEach(cell => {
+      if (cell.dataset.colOrder === '0') {
+        cell.classList.add('col-group-stub');
+      } else {
+        cell.style.display = 'none';
+      }
+    });
+    recalcGroupHeader(groupId);
   }
 
   // ── getViewState — snapshot of current state as stable ID-based ViewState ─
@@ -1425,7 +1430,7 @@ export function buildGrid(data: MSXData, opts?: {
     // 2. Clear hidden rows
     hiddenRows.clear();
 
-    // 3. Expand all collapsed groups and restore columns to their defaults.
+    // 3. Expand all collapsed groups and restore columns and groups to their defaults.
     //    Clear both sets first so renderRows() won't re-hide anything.
     collapsedGroups.clear();
     hiddenCols.clear();
@@ -1454,6 +1459,12 @@ export function buildGrid(data: MSXData, opts?: {
     }
     for (const groupId of new Set([...defaultHiddenCols].map(i => data.columns[i].groupId))) {
       recalcGroupHeader(groupId);
+    }
+
+    // 3c. Re-collapse the default-collapsed groups (tbody follows in renderRows below).
+    for (const groupId of defaultCollapsedGroups) {
+      collapsedGroups.add(groupId);
+      showGroupCollapsedInHead(groupId);
     }
 
     // 4. Clear filters

@@ -26,7 +26,7 @@
  * Base64 encoding: URL-safe variant — replace `+`→`-`, `/`→`_`, strip `=` padding.
  */
 
-import type { ColumnDef, ViewState } from '../types.js';
+import type { ColumnDef, GroupDef, ViewState } from '../types.js';
 
 const CODEC_VERSION = 0x01;
 
@@ -190,17 +190,22 @@ export function emptyViewState(): ViewState {
 
 /**
  * The view a first-time visitor gets: empty, except that every column flagged
- * `defaultOff` in the column config starts hidden.
+ * `defaultOff` in the column config starts hidden and every group flagged
+ * `defaultCollapsed` starts collapsed.
  *
  * Defaults seed the *initial* view only — they are never folded into the hash.
  * The encoded `hidden_columns` bitset stays absolute (see the format note above),
  * so a URL shared before a column became `defaultOff` still decodes to exactly
- * what its author saw, with no codec version bump.
+ * what its author saw, with no codec version bump. Collapsed groups work the
+ * same way: the encoded bitmask is absolute.
  */
-export function defaultViewState(columns: readonly ColumnDef[]): ViewState {
+export function defaultViewState(columns: readonly ColumnDef[], groups: readonly GroupDef[] = []): ViewState {
   const state = emptyViewState();
   for (const col of columns) {
     if (col.defaultOff) state.hiddenColumnIds.add(col.id);
+  }
+  for (const group of groups) {
+    if (group.defaultCollapsed) state.collapsedGroupIds.add(group.id);
   }
   return state;
 }
@@ -345,7 +350,7 @@ export function encodeToHash(state: ViewState): string {
 /**
  * Decode a URL hash string (e.g. `window.location.hash`) to a ViewState.
  * Returns `fallback` (default: emptyViewState()) for empty/absent/corrupt
- * hashes — never throws. Pass defaultViewState(columns) as the fallback so a
+ * hashes — never throws. Pass defaultViewState(columns, groups) as the fallback so a
  * first-time visitor lands on the configured defaults.
  */
 export function decodeFromHash(

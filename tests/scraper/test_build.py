@@ -1091,3 +1091,15 @@ def test_renderer_and_filterable_flags_reach_data_js(tmp_path):
     for col in active_columns():
         assert shipped[col.key].get("renderer") == col.renderer
         assert shipped[col.key].get("filterable", True) == col.filterable
+
+
+def test_default_collapsed_groups_reach_data_js(tmp_path):
+    raw = [{"manufacturer": "Sony", "model": "HB-75P", "generation": "MSX1"}]
+    (tmp_path / "openmsx.json").write_text(json.dumps(raw))
+    (tmp_path / "msxorg.json").write_text(json.dumps([]))
+    build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
+          registry_path=tmp_path / "registry.json", output_path=tmp_path / "data.js")
+    content = (tmp_path / "data.js").read_text(encoding="utf-8")
+    data = json.loads(content[content.index("{"):content.rindex(";")])
+    shipped = {g["id"]: g.get("defaultCollapsed", False) for g in data["groups"]}
+    assert shipped == {g.id: g.default_collapsed for g in GROUPS}

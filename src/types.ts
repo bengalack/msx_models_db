@@ -47,6 +47,8 @@ export interface GroupDef {
   label: string;
   /** Render order (ascending). */
   order: number;
+  /** When true, the group starts collapsed on a fresh load (and after "Reset view"). */
+  defaultCollapsed?: boolean;
 }
 
 /** One row in the grid — one MSX model. */

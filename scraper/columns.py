@@ -57,6 +57,7 @@ class Group:
     key: str
     label: str
     order: int
+    default_collapsed: bool = False    # starts collapsed on a fresh load (and after "Reset view")
 
 
 @dataclass
@@ -191,10 +192,10 @@ GROUPS: list[Group] = [
     Group(id=6,  key="other",      label="Other",            order=7),
     Group(id=7,  key="emulation",  label="Emulation",        order=8),
     Group(id=13, key="slotmap",    label="Slotmap",          order=9),
-    Group(id=8,  key="slotmap_0",  label="Slot 0",          order=10),
-    Group(id=9,  key="slotmap_1",  label="Slot 1",          order=11),
-    Group(id=10, key="slotmap_2", label="Slot 2",          order=12),
-    Group(id=11, key="slotmap_3", label="Slot 3",          order=13),
+    Group(id=8,  key="slotmap_0",  label="Slot 0",          order=10, default_collapsed=True),
+    Group(id=9,  key="slotmap_1",  label="Slot 1",          order=11, default_collapsed=True),
+    Group(id=10, key="slotmap_2", label="Slot 2",          order=12, default_collapsed=True),
+    Group(id=11, key="slotmap_3", label="Slot 3",          order=13, default_collapsed=True),
 ]
 
 

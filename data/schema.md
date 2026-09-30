@@ -62,6 +62,7 @@ Slot-map columns: 64 columns (4 main slots × 4 sub-slots × 4 pages) with keys 
 | `key` | `string` | Machine-readable key. |
 | `label` | `string` | Display label shown in the group header strip. |
 | `order` | `number` | Render order (ascending). |
+| `defaultCollapsed` | `true?` | Group starts collapsed on a fresh load (and after "Reset view"). Absent = starts expanded. Slot 0–3. |
 
 ### Canonical Group IDs
 
