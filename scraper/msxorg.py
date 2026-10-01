@@ -15,6 +15,7 @@ from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 from .aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, LOCALISED_FIELD
 from .inherit import fill_blanks
 from .market_status import MARKET_RARE, MARKET_UNRELEASED
+from .families import FAMILY_LINKS_FIELD, SERIES_FIELD, VARIANT_NAMES_FIELD
 from .exclude import ExcludeList
 from .revisions import REVISION_FIELD, revision_name, revision_numbers
 from .mirror import LivePageSource, MirrorPageSource, PageSource, slug_to_filename
@@ -31,6 +32,7 @@ from .msxorg_series import (
     series_slug,
 )
 from .msxorg_slotmap import (
+    _flatten_table,
     mapper_from_table,
     parse_mapper_from_soup,
     parse_slotmap_from_soup,
@@ -795,6 +797,100 @@ def regional_name(page_title: str, model: str) -> tuple[str, str] | None:
     return (brand, f"{model} ({m.group('tag')})") if brand else None
 
 
+
+# ── Families ────────────────────────────────────────────────────────────
+#
+# Which other models a page says belong with its own (scraper/families.py turns
+# them into the Series / Rebrand columns). A bare "see X" is not enough — it also
+# points at threads, disks, sections and other machines' keyboards — so a link
+# counts only after "see" in a sentence that states a localisation / version /
+# brand relation, after "sold … as the X", or in a list item under a lead such as
+# "This model has been localised for:" ("Germany - see HB-75D").
+
+# Before "see": the sentence says the linked model is a version / localisation / rebrand.
+_FAMILY_REL_RE = re.compile(
+    r"locali[sz]|adapt(?:ed|ations?)\b"
+    r"|\b(?:also|special|specific|other|downgraded|white|rare|first)\s+(?:\w+\s+)?(?:versions?|models?)\b"
+    r"|\b(?:european|french|german|spanish|italian|dutch|arabic|japanese|korean|russian|brazilian)\s+versions?\b"
+    r"|\bversions?\s+(?:for|aimed)\b|\bsame model was available\b"
+    r"|\bunder\s+(?:the|another)\s+(?:\w+\s+)?(?:brand|trademark|name)\b",
+    re.IGNORECASE,
+)
+# The page states the linked model is its own version: the relation is directed.
+_FAMILY_DIRECTED_RE = re.compile(r"locali[sz]|adapted\s+for|under\s+(?:the|another)|same model was available|"
+                                 r"(?:special|downgraded|white|rare)\s+(?:\w+\s+)?version", re.IGNORECASE)
+_FAMILY_EXCLUDE_RE = re.compile(r"\b(?:previous|successor|predecessor|thread|section|below|above)\b|\bdisk\s+\d",
+                                re.IGNORECASE)
+_FAMILY_LEAD_RE = re.compile(r"locali[sz]|adapted\s+for|versions?\s+for", re.IGNORECASE)
+_SEE_RE = re.compile(r"\bsee\b", re.IGNORECASE)
+# "was also sold in Italy as the <link>", "released under the <link>"
+_SOLD_AS_RE = re.compile(r"\b(?:sold|released|marketed)\b[^.\x01]{0,60}?\b(?:as|under)\s+(?:the\s+)?$", re.IGNORECASE)
+
+
+def _link_titles(text: str, page_title: str) -> list[str]:
+    titles = []
+    for m in _LINK_RE.finditer(text):
+        slug = m.group("slug")
+        title = slug.replace("_", " ").strip()
+        if title and not _NOT_A_MODEL_PAGE.search(slug) and title != page_title and title not in titles:
+            titles.append(title)
+    return titles
+
+
+def family_links(page: bytes | BeautifulSoup, page_title: str) -> list[dict[str, Any]]:
+    """Models the page's text names as versions / localisations / rebrands of its model.
+
+    ``[{"title": page title, "via": "see" | "list" | "sold as", "directed": bool}]``;
+    *directed*: the page says the linked model is a version of its own.
+    """
+    soup = page if isinstance(page, BeautifulSoup) else BeautifulSoup(page, "lxml")
+    body = soup.select_one("#bodyContent") or soup
+    found: dict[str, dict[str, Any]] = {}
+
+    def add(titles: list[str], via: str, directed: bool) -> None:
+        for t in titles:
+            found.setdefault(t, {"title": t, "via": via, "directed": directed})
+
+    for node in body.find_all(["p", "li"]):
+        if node.find_parent("table") or node.find(["p", "li"]):
+            continue
+        text = _text_with_links(node)
+        if node.name == "li":
+            lst = node.find_parent(["ul", "ol"])
+            lead_el = lst.find_previous_sibling(["p", "h2", "h3", "h4"]) if lst is not None else None
+            lead = lead_el.get_text(" ", strip=True) if lead_el is not None else ""
+            see = _SEE_RE.search(text)
+            if see and _FAMILY_LEAD_RE.search(lead) and not _FAMILY_EXCLUDE_RE.search(text):
+                add(_link_titles(text[see.end():], page_title), "list", directed=True)
+                continue
+        for sentence in _SENTENCE_SPLIT_RE.split(text):
+            if _FAMILY_EXCLUDE_RE.search(sentence):
+                continue
+            see = _SEE_RE.search(sentence)
+            if see and _FAMILY_REL_RE.search(sentence[:see.start()]):
+                directed = bool(_FAMILY_DIRECTED_RE.search(sentence[:see.start()]))
+                add(_link_titles(sentence[see.end():], page_title), "see", directed)
+            for m in _LINK_RE.finditer(sentence):
+                if _SOLD_AS_RE.search(sentence[:m.start()]):
+                    add(_link_titles(m.group(0), page_title), "sold as", directed=True)
+    return list(found.values())
+
+
+def variant_table_names(page: bytes | BeautifulSoup) -> list[str]:
+    """Model names in the page's variant table(s): first column headed "Product" or "Version"."""
+    soup = page if isinstance(page, BeautifulSoup) else BeautifulSoup(page, "lxml")
+    names: list[str] = []
+    for table in soup.find_all("table"):
+        grid = _flatten_table(table)
+        if not grid or not grid[0] or grid[0][0].strip().lower() not in ("product", "version"):
+            continue
+        for row in grid[1:]:
+            name = re.sub(r"\s+", " ", row[0]).strip() if row else ""
+            if name and name not in names:
+                names.append(name)
+    return names
+
+
 def _record_from_specs(
     specs: dict[str, str],
     *,
@@ -1093,6 +1189,17 @@ def parse_model_page(
     if modem_in_description(soup, names, brand):
         for record in records:
             record["modem"] = MODEM_YES
+    # Family relations (scraper/families.py): the series page this page defers to,
+    # the models its text names as versions / rebrands, its variant table.
+    links = family_links(soup, page_title)
+    variants = variant_table_names(soup)
+    for record in records:
+        if series:
+            record[SERIES_FIELD] = series
+        if links:
+            record[FAMILY_LINKS_FIELD] = links
+        if variants:
+            record[VARIANT_NAMES_FIELD] = variants
     return records
 
 

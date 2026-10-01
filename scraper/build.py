@@ -19,6 +19,7 @@ from .columns import (
 from .exclude import load_excludes
 from .mirror import FallbackPageSource, MirrorPageSource
 from .openmsx_source import FallbackXMLSource, LiveXMLSource, MirrorXMLSource
+from .families import FAMILIES_PATH, REBRAND_KEY, SERIES_KEY, compute_families, write_families
 from .generation_msx import GENERATION_MSX_PATH, load_links as load_generation_msx_links
 from .link_shares import apply_link_shares, fill_from_link_shares, load_link_shares
 from .registry import IDRegistry
@@ -148,8 +149,13 @@ def build(
     local_openmsx_only: bool = False,
     mirror_path: Path | None = None,
     local_only: bool = False,
+    families_path: Path | None = None,
 ) -> None:
-    """Run the full build pipeline."""
+    """Run the full build pipeline.
+
+    *families_path*: where to write the generated family groups (data/families.json);
+    None (tests) writes nothing.
+    """
     _t_start = time.perf_counter()
 
     # Step 0: Load config files (fail fast before any I/O if files are malformed)
@@ -333,6 +339,21 @@ def build(
         )
         taken.add(model["_id"])
 
+    # Step 5b: Families — Series (same brand) / Rebrand (other brands) groups
+    families = compute_families(merged, load_link_shares(LINK_SHARES_PATH) if LINK_SHARES_PATH.exists() else {})
+    family_urls: dict[tuple[int, str], str] = {}
+    for kind, key in (("series", SERIES_KEY), ("rebrand", REBRAND_KEY)):
+        groups = families.value_of(kind)
+        for model in merged:
+            group = groups.get(model["_id"])
+            if group is not None:
+                model[key] = group.name
+                if group.url:
+                    family_urls[(model["_id"], key)] = group.url
+    log.info("[families] %d series, %d rebrand groups", len(families.series), len(families.rebrands))
+    if families_path is not None:
+        write_families(families_path, families, {m["_id"]: m for m in merged})
+
     # Step 6: Build data.js payload
     active_cols = active_columns()
     generation_msx_links = load_generation_msx_links(GENERATION_MSX_PATH)
@@ -419,6 +440,8 @@ def build(
                 oid = model.get("openmsx_id")
                 if oid:
                     links[col.key] = f"https://github.com/openMSX/openMSX/blob/master/share/machines/{oid}.xml"
+            elif col.linkable and (model["_id"], col.key) in family_urls:
+                links[col.key] = family_urls[(model["_id"], col.key)]
             elif col.link_icon and col.key == "generation_msx":
                 entry = generation_msx_links.get(model["_id"], {})
                 url = entry.get("url")

@@ -71,19 +71,20 @@ Slot-map columns: 64 columns (4 main slots × 4 sub-slots × 4 pages) with keys 
 | id | key | label | order |
 |---|---|---|---|
 | 0 | `identity` | Identity | 0 |
-| 12 | `release` | Release | 1 |
-| 1 | `memory` | Memory | 2 |
-| 2 | `video` | Video | 3 |
-| 3 | `audio` | Audio | 4 |
-| 4 | `media` | Media | 5 |
-| 5 | `cpu` | CPU/Chipsets | 6 |
-| 6 | `other` | Other | 7 |
-| 7 | `emulation` | Emulation | 8 |
-| 13 | `slotmap` | Slotmap | 9 |
-| 8 | `slotmap_0` | Slot 0 | 10 |
-| 9 | `slotmap_1` | Slot 1 | 11 |
-| 10 | `slotmap_2` | Slot 2 | 12 |
-| 11 | `slotmap_3` | Slot 3 | 13 |
+| 14 | `family` | Family | 1 |
+| 12 | `release` | Release | 2 |
+| 1 | `memory` | Memory | 3 |
+| 2 | `video` | Video | 4 |
+| 3 | `audio` | Audio | 5 |
+| 4 | `media` | Media | 6 |
+| 5 | `cpu` | CPU/Chipsets | 7 |
+| 6 | `other` | Other | 8 |
+| 7 | `emulation` | Emulation | 9 |
+| 13 | `slotmap` | Slotmap | 10 |
+| 8 | `slotmap_0` | Slot 0 | 11 |
+| 9 | `slotmap_1` | Slot 1 | 12 |
+| 10 | `slotmap_2` | Slot 2 | 13 |
+| 11 | `slotmap_3` | Slot 3 | 14 |
 
 ---
 
@@ -93,7 +94,7 @@ Slot-map columns: 64 columns (4 main slots × 4 sub-slots × 4 pages) with keys 
 |---|---|---|
 | `id` | `number` | **Stable integer ID** from `data/id-registry.json`. Never reassigned or reused. |
 | `values` | `(string \| number \| boolean \| null)[]` | Field values, positionally aligned with `MSXData.columns[]`. |
-| `links` | `Record<string, string>?` | Hyperlink URLs keyed by column key (`model` → msx.org wiki page, `openmsx_id` → openMSX machine XML on GitHub, `generation_msx` → the model's page on generation-msx.nl from `data/generation-msx.json`). May be inherited from a donor model via `data/link-shares.json`. |
+| `links` | `Record<string, string>?` | Hyperlink URLs keyed by column key (`model` → msx.org wiki page, `openmsx_id` → openMSX machine XML on GitHub, `generation_msx` → the model's page on generation-msx.nl from `data/generation-msx.json`, `family_series` / `family_rebrand` → the series page or base model / the original's msx.org page). May be inherited from a donor model via `data/link-shares.json`. |
 | `tooltips` | `Record<string, string>?` | Cell tooltips keyed by column key, shown on hover whether or not the text is clipped. Emitted from hidden columns flagged `tooltip_for` in `scraper/columns.py` (e.g. the scraped Engine text behind the two parsed Engine columns), and for a generation-msx family page `"<url> (family)"` — an icon-link cell uses it as the link tooltip. |
 
 ### values[] alignment rule

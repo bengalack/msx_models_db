@@ -112,6 +112,7 @@ def cmd_build(args: argparse.Namespace) -> None:
         local_openmsx_only=args.local_only or args.local_openmsx_only,
         mirror_path=mirror_path,
         local_only=args.local_only or args.local_msxorg_only,
+        families_path=build_module.FAMILIES_PATH,
     )
 
 

@@ -210,19 +210,20 @@ def validate_config(groups: list[Group], columns: list[Column]) -> None:
 
 GROUPS: list[Group] = [
     Group(id=0,  key="identity",   label="Identity",        order=0),
-    Group(id=12, key="release",    label="Release",         order=1),
-    Group(id=1,  key="memory",     label="Memory",           order=2),
-    Group(id=2,  key="video",      label="Video",            order=3),
-    Group(id=3,  key="audio",      label="Audio",            order=4),
-    Group(id=4,  key="media",      label="Media",            order=5),
-    Group(id=5,  key="cpu",        label="CPU/Chipsets",     order=6),
-    Group(id=6,  key="other",      label="Other",            order=7),
-    Group(id=7,  key="emulation",  label="Emulation",        order=8),
-    Group(id=13, key="slotmap",    label="Slotmap",          order=9),
-    Group(id=8,  key="slotmap_0",  label="Slot 0",          order=10, default_collapsed=True),
-    Group(id=9,  key="slotmap_1",  label="Slot 1",          order=11, default_collapsed=True),
-    Group(id=10, key="slotmap_2", label="Slot 2",          order=12, default_collapsed=True),
-    Group(id=11, key="slotmap_3", label="Slot 3",          order=13, default_collapsed=True),
+    Group(id=14, key="family",     label="Family",           order=1),
+    Group(id=12, key="release",    label="Release",         order=2),
+    Group(id=1,  key="memory",     label="Memory",           order=3),
+    Group(id=2,  key="video",      label="Video",            order=4),
+    Group(id=3,  key="audio",      label="Audio",            order=5),
+    Group(id=4,  key="media",      label="Media",            order=6),
+    Group(id=5,  key="cpu",        label="CPU/Chipsets",     order=7),
+    Group(id=6,  key="other",      label="Other",            order=8),
+    Group(id=7,  key="emulation",  label="Emulation",        order=9),
+    Group(id=13, key="slotmap",    label="Slotmap",          order=10),
+    Group(id=8,  key="slotmap_0",  label="Slot 0",          order=11, default_collapsed=True),
+    Group(id=9,  key="slotmap_1",  label="Slot 1",          order=12, default_collapsed=True),
+    Group(id=10, key="slotmap_2", label="Slot 2",          order=13, default_collapsed=True),
+    Group(id=11, key="slotmap_3", label="Slot 3",          order=14, default_collapsed=True),
 ]
 
 
@@ -240,6 +241,11 @@ COLUMNS: list[Column] = [
            # the site's own page icon; its /favicon.ico is an empty file
            link_icon="https://images.generation-msx.nl/img/gmsx_favicon.png", filterable=False,
            derive=lambda m: m.get("model")),
+    # Family (scraper/families.py): values and links are set by the build, not derived per model.
+    Column(id=112, key="family_series",    label="Series",              group="family",   type="string",
+           linkable=True, tooltip="Series: related models of the same brand (link: series page or base model)"),
+    Column(id=113, key="family_rebrand",   label="Rebrand",             group="family",   type="string",
+           linkable=True, tooltip="Rebrand: the original model this one was sold as under other brands"),
     # Release
     Column(id=3,  key="year",              label="Year",                group="release",  type="number"),
     Column(id=4,  key="region",            label="Region",              group="release",  type="string", max_width=107),
