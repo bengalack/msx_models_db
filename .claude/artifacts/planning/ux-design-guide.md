@@ -211,7 +211,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - Left: "MSX Models DB" title (H1)
 - Right: `[⊞ Columns]` button (opens column picker panel), `[≡ Filters]` toggle, `[↻ Reset view]` button, `[+ Include headers on copy]` toggle, `[↑ Share]` button, `[? Help]` button, `[◑]` dark/light mode toggle
 - Column picker panel: a floating panel listing all toggleable columns grouped by group, each with a checkbox; positioned directly below the Columns button (left-aligned). The Identity group (Manufacturer, Model) is excluded — those columns are always visible and are never listed in the picker.
-- Help panel: a floating panel (300×200px) positioned directly below the Help button (left-aligned); opens on `[? Help]` click
+- Help panel: a floating panel (300×200px) positioned directly below the Help button (left-aligned); opens on `[? Help]` click. Its links use the accent colour of link cells (no underline until hover), not the browser blue.
 - Both Columns and Help buttons show active state (inverted colors) while their respective panel is open
 - Clicking outside a floating panel (anywhere on the grid, header, or page) dismisses it and restores the button to normal state; Escape also dismisses
 - Only one floating panel (Columns or Help) can be open at a time — opening one closes the other

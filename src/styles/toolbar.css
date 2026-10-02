@@ -126,6 +126,16 @@
   margin: 0;
 }
 
+/* Links like the grid's link cells (.cell-link): the browser's default blue is
+   hard to read on the dark theme. */
+.help-panel a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.help-panel a:hover {
+  text-decoration: underline;
+}
+
 /* ── Share toast pill ────────────────────────────────────────────────────── */
 
 .share-toast {
