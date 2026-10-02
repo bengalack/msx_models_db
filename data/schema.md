@@ -37,6 +37,7 @@ Optional fields are only serialised when set (non-empty / `true` / `> 0`), to ke
 | `shortLabel` | `string?` | Short header text (allows 2-line wrap). Falls back to `label`. |
 | `tooltip` | `string?` | Header tooltip. Falls back to `label`. |
 | `linkable` | `true?` | Cells may render as hyperlinks via `ModelRecord.links`. |
+| `displayValues` | `Record<string, string>?` | What the cell shows for a value (Region: `"Belgium, France"` → its flags). The value stays the sort key, the cell tooltip and the copied text; the filter matches the value or the shown text. |
 | `labelIcon` | `string?` | Font Awesome class shown after the header label, separated by a space (Model: `fa-external-link` — the cells link to documentation). |
 | `headerIcon` | `string?` | Font Awesome class shown as the column header instead of the label (the label stays the aria-label; the tooltip still applies). |
 | `linkIcon` | `string?` | Image URL shown in each cell as a link to `ModelRecord.links[key]` (new tab, the URL as tooltip); cells without a link stay empty. The value is only the sort key (generation-msx column: the model name). |

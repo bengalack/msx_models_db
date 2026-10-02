@@ -19,6 +19,7 @@ from .columns import (
 from .exclude import load_excludes
 from .mirror import FallbackPageSource, MirrorPageSource
 from .openmsx_source import FallbackXMLSource, LiveXMLSource, MirrorXMLSource
+from .regions import REGIONS_PATH, load_regions
 from .slotmap_details import slot_details
 from .families import FAMILIES_PATH, REBRAND_KEY, SERIES_KEY, compute_families, write_families
 from .generation_msx import GENERATION_MSX_PATH, load_links as load_generation_msx_links
@@ -141,6 +142,7 @@ def build(
     registry_path: Path = REGISTRY_PATH,
     exclude_path: Path = EXCLUDE_PATH,
     slotmap_lut_path: Path = SLOTMAP_LUT_PATH,
+    regions_path: Path = REGIONS_PATH,
     sha1_index_path: Path = SHA1_INDEX_PATH,
     systemroms_root: Path = SYSTEMROMS_ROOT,
     output_path: Path = DATA_JS_PATH,
@@ -318,6 +320,30 @@ def build(
             if model.get(col.key) is None:
                 model[col.key] = col.derive(model)
 
+    # Step 4b: Region flags — the value becomes the region names, the cell shows their flags
+    regions = load_regions(regions_path)
+    display_values: dict[str, dict[str, str]] = {}
+    for col in (c for c in COLUMNS if c.flags):
+        shown = display_values.setdefault(col.key, {})
+        for model in merged:
+            value = model.get(col.key)
+            if not isinstance(value, str) or not value.strip():
+                continue
+            if col.flags == "language":
+                # The value stays ("French (AZERTY)"): it is the tooltip; the cell shows the flag.
+                flags = regions.language_display(value)
+                if flags:
+                    shown[value] = flags
+                elif value not in shown:
+                    log.info("[regions] No flag for %s %r (add its language to %s)", col.key, value, regions_path)
+                continue
+            parsed = regions.parse(value)
+            model[col.key] = ", ".join(parsed.names)
+            shown[model[col.key]] = parsed.display
+            for part in parsed.unknown:
+                log.warning("[regions] No flag for %r (add it to %s) | model=%s|%s",
+                            part, regions_path, model.get("manufacturer"), model.get("model"))
+
     # Step 5: Assign model IDs
     # Two passes: models already registered under their own key keep their ids
     # first, so a model renamed by an alias (pass 2) can only adopt an id from
@@ -401,6 +427,8 @@ def build(
             entry["headerIcon"] = col.header_icon
         if col.label_icon:
             entry["labelIcon"] = col.label_icon
+        if col.flags:
+            entry["displayValues"] = dict(sorted(display_values.get(col.key, {}).items()))
         if col.link_icon:
             entry["linkIcon"] = col.link_icon
         js_columns.append(entry)

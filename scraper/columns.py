@@ -83,6 +83,8 @@ class Column:
     filterable: bool = True               # False: no filter input for this column
     header_icon: str | None = None        # Font Awesome class shown as the header instead of the label
     label_icon: str | None = None         # Font Awesome class shown after the header label ("MODEL <icon>")
+    flags: str | None = None              # cell shows flags (scraper/regions.py): "region" = region names
+                                          # (value rewritten to the names), "language" = a language (value kept)
     link_icon: str | None = None          # image URL shown in each cell as a link to links[key]
     retired: bool = False                 # permanently removed, ID preserved, excluded entirely
     derive: Callable[[dict[str, Any]], Any] | None = None
@@ -251,7 +253,9 @@ COLUMNS: list[Column] = [
            linkable=True, tooltip="Rebrand: the original model this one was sold as under other brands"),
     # Release
     Column(id=3,  key="year",              label="Year",                group="release",  type="number"),
-    Column(id=4,  key="region",            label="Region",              group="release",  type="string", max_width=107),
+    # The cell shows flags; the value is the region names (data/regions.json).
+    Column(id=4,  key="region",            label="Region",              group="release",  type="string", max_width=70,
+           flags="region"),
     Column(id=107, key="market_status",   label="Market status",       group="release",  type="string"),
     Column(id=5,  key="generation",        label="Generation",          group="release",  type="string", short_label="Gen", chip_links=True),
     # Memory
@@ -293,8 +297,10 @@ COLUMNS: list[Column] = [
     Column(id=100, key="z80_turbo",        label="Z80 Turbo",            group="cpu",      type="string", short_label="Z80 Turbo", tooltip="Z80 turbo mode supported (from openMSX XML)"),
     # Other
     Column(id=25,  key="keyboard_layout",  label="Keyboard Layout",      group="other",    type="string", short_label="KB Layout",  tooltip="Keyboard Layout", default_off=True),
-    Column(id=103, key="character_set",   label="Character Set",        group="other",    type="string", short_label="Char Set",    tooltip="Character set encoded in the main BIOS ROM (byte 0x002B, lower nibble)"),
-    Column(id=104, key="keyboard_type",   label="Keyboard Type",        group="other",    type="string", short_label="KB Type",     tooltip="Keyboard type encoded in the main BIOS ROM (byte 0x002C, lower nibble)"),
+    Column(id=103, key="character_set",   label="Character Set",        group="other",    type="string", short_label="Char\nSet",   tooltip="Character set encoded in the main BIOS ROM (byte 0x002B, lower nibble)",
+           flags="language"),
+    Column(id=104, key="keyboard_type",   label="Keyboard Type",        group="other",    type="string", short_label="KB\nType",    tooltip="Keyboard type encoded in the main BIOS ROM (byte 0x002C, lower nibble)",
+           flags="language"),
     Column(id=108, key="modem",           label="Modem",                group="other",    type="string"),
     Column(id=27,  key="printer_port",    label="PRN Port",             group="other",    type="string", short_label="PRN\nPort", tooltip="Printer port"),
     # Emulation

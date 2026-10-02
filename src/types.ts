@@ -40,6 +40,11 @@ export interface ColumnDef {
   /** Font Awesome icon class shown after the header label, separated by a space ("MODEL <icon>"). */
   labelIcon?: string;
   /**
+   * What the cell shows for a value ("Belgium, France" → "🇧🇪🇫🇷"); the value stays the
+   * sort key and the cell tooltip, and the filter matches either (Region column).
+   */
+  displayValues?: Record<string, string>;
+  /**
    * Image URL shown as each cell's content, linking to ModelRecord.links[key] (new tab,
    * the URL as tooltip). Cells without a link stay empty. The value is only the sort key.
    */

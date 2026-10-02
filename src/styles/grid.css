@@ -351,6 +351,18 @@ thead .gutter {
   white-space: nowrap;
 }
 
+/* Region flags: larger than the 12px text (a Twemoji flag is ~0.72em tall, so
+   18px draws it ~4px taller) with a tight line box, so the 24px row keeps its
+   height; a small gap between neighbouring flags. */
+.cell-flag {
+  font-size: 18px;
+  line-height: 16px;
+  vertical-align: -2px;
+}
+.cell-flag + .cell-flag {
+  margin-left: 3px;
+}
+
 .grid tbody tr:nth-child(even) td {
   background: var(--color-surface-alt);
 }

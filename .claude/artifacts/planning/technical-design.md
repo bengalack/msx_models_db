@@ -670,6 +670,18 @@ An msx.org page with its own specs table can describe more than one model. `spli
 
 ---
 
+## Feature Design: Region Flags
+
+The Region cell shows the flags of the regions it names ("🇧🇪🇫🇷🇳🇱🇪🇸"); the value is the region names ("Belgium, France, Netherlands, Spain"), which the page sorts on, shows as the cell tooltip, copies, and filters on — together with the flags.
+
+- **`data/regions.json`** (curated) — regions with `name`, `flags` (ISO 3166 alpha-2 codes, plus `EU` / `UN`) and optional `aliases`. Areas expand to country flags: Middle East → SA KW AE QA BH OM, Maghreb → MA DZ TN, Scandinavia → SE NO DK, USSR → RU; Europe → EU, International → UN. "Probably Japan" is its own region, "Japan (probably)", with the JP flag.
+- **Parsing** (`scraper/regions.py`, `RegionTable.parse`) — the whole value is looked up first ("South Korea (original version)"), else it is split on `,` `/` `;` and ` and `. Each part is matched case-insensitively against names and aliases, ignoring a leading "the", and then against the ISO code of single-flag regions ("pl", "se/fi"); a code never overrides a name or alias, and one name claimed by two regions is an error. Repeated regions and flags are shown once. A part that matches nothing stays text (in the value and the cell) and the build logs `[regions] No flag for …`.
+- **Build** (step 4b, after derive) — every column with `flags` (`scraper/columns.py`) ships `displayValues` {value: shown text}. `flags="region"` (Region): the value becomes `", ".join(names)`. `flags="language"` (Character Set, Keyboard Type): the value is kept ("French (AZERTY)") and `RegionTable.language_display` gives its flags — the language without a closing "(…)" note, looked up in `languages` of `data/regions.json` (Japanese → Japan, French → France, …), else as a region name or alias ("UK", "International" → 🇺🇳); values without a flag ("Code 8") stay text.
+- **Page** — `ColumnDef.displayValues`: a cell whose value has an entry shows it (`.cell-flags`) with the value as `data-tooltip`; each flag is its own `.cell-flag` span — 18 px (≈4 px taller than at the 12 px text size) with a 16 px line box so the 24 px row keeps its height, 3 px apart. The filter searches `filterHaystack(col, value)`: the value plus the shown text with every flag as its own word, so "🇯🇵", "Japan" and "japan" match the same rows and a flag never matches across two neighbours ("🇧🇪🇸🇪" holds the code points of "🇪🇸"). Sorting and copying use the value.
+- **Flag font** — Windows has no flag emojis (it shows the letters). `src/styles/base.css` declares "Twemoji Country Flags" (`country-flag-emoji-polyfill`'s woff2, 78 KB, emitted next to `bundle.js` like Font Awesome's font) with `unicode-range: U+1F1E6-1F1FF` first in the body font stack, so only flag characters use it, on every OS. The Twemoji art is CC BY 4.0, credited in the Help panel.
+
+---
+
 ## Feature Design: Slot Map Tooltip Details
 
 A slot map cell's tooltip is the LUT tooltip of its label ("FW" → "Firmware"), shipped once in `MSXData.slotmap_lut`. Some labels cover many different devices, so a LUT rule may ask for a per-cell **detail**: the page then shows `<tooltip>: <detail>` ("Firmware: Painter ROM") in the slot map cell tooltip and in the Slotmap Overview popup's box tooltip.
@@ -804,7 +816,7 @@ Used by the two Engine columns, whose headers read "Engine" / "(semi-custom ASIC
 
 Data cells share a stylesheet cap (`.grid tbody td { max-width: 160px }`, border-box) and otherwise size to content. A column may declare `max_width` (px) in `scraper/columns.py` to cap its data cells narrower (or wider) than the shared cap. Overflow uses the existing ellipsis styling and the `mouseenter` overflow tooltip — no new tooltip path.
 
-First use: Region (`max_width=107`, one third narrower than the 160px it rendered at); Engine (semi-custom ASIC) uses `max_width=130`, Engine (full-custom ASIC) `max_width=150` (3 characters more).
+First use: Region (`max_width=107`, one third narrower than the 160px it rendered at; 70 since it shows flags — 65% of 107); Engine (semi-custom ASIC) uses `max_width=130`, Engine (full-custom ASIC) `max_width=150` (3 characters more).
 
 ### Sentinel sort order — `sort_last`
 

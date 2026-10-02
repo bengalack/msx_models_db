@@ -112,7 +112,8 @@ if (!window.MSX_DATA) {
   helpPanel.innerHTML = `
 <h3>Dataset</h3>
 <p>
-Main sources: <a href=\"https://openmsx.org/wiki\" >openmsx</a> and <a href=\"https://msx.org/wiki\" >msx.org</a>. The dataset is not complete. Maybe one day😊
+Main sources: <a href=\"https://openmsx.org/wiki\" >openmsx</a> and <a href=\"https://msx.org/wiki\" >msx.org</a>. The dataset is not complete. Maybe one day😊<br/>
+Flag images: <a href=\"https://github.com/twitter/twemoji\" >Twemoji</a> (<a href=\"https://creativecommons.org/licenses/by/4.0/\" >CC BY 4.0</a>).
 </p><br/>
 <h3>Symbols</h3>
 <p>
@@ -132,7 +133,8 @@ When filters are enabled you can filter on a substring, and benefit from these s
 | means "or".<br/>
 ! means "not".<br/>
 — means empty (em dash).<br/>
-Example for "Engine": "Toshiba|!T9763" for Toshibas excluding the T9763.
+Example for "Engine": "Toshiba|!T9763" for Toshibas excluding the T9763.<br/>
+Columns showing flags (Region, Char Set, KB Type) filter on the text or the flag: "Japan" and "🇯🇵" give the same rows.
 <p>
 </p><br/>
 <h3>Selections</h3>

@@ -16,6 +16,37 @@ export function frozenColumnCount(columns: readonly ColumnDef[]): number {
 /** Width of the row-number gutter in pixels — must match .gutter { width } in grid.css. */
 const GUTTER_WIDTH = 52;
 
+/** Two regional indicator symbols: one flag emoji. */
+const FLAG_RE = /\p{Regional_Indicator}{2}/gu;
+
+/**
+ * The lower-case text a column filter searches: the cell value, plus what the cell
+ * shows instead (its flags, one per word so "🇪🇸" never matches across "🇧🇪🇸🇪").
+ */
+export function filterHaystack(col: ColumnDef | undefined, raw: string | number | boolean | null | undefined): string {
+  const text = cellText(raw);
+  const shown = col?.displayValues?.[text];
+  if (!shown) return text.toLowerCase();
+  const spaced = shown.replace(FLAG_RE, flag => ` ${flag} `);
+  return `${text}
+${spaced}`.toLowerCase();
+}
+
+/** Shown text into *td*: each flag in its own span (larger, spaced — see .cell-flag), other text as is. */
+function renderFlags(td: HTMLElement, shown: string): void {
+  td.textContent = '';
+  let last = 0;
+  for (const m of shown.matchAll(FLAG_RE)) {
+    if (m.index > last) td.append(shown.slice(last, m.index));
+    const span = document.createElement('span');
+    span.className = 'cell-flag';
+    span.textContent = m[0];
+    td.appendChild(span);
+    last = m.index + m[0].length;
+  }
+  if (last < shown.length) td.append(shown.slice(last));
+}
+
 function cellText(value: string | number | boolean | null | undefined): string {
   if (value === null || value === undefined || value === '') return '\u2014'; // em dash
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
@@ -354,6 +385,14 @@ function buildDataRow(
     // parsed value) — shown on hover whether or not the cell text is clipped.
     const cellTooltip = model.tooltips?.[col.key];
     if (cellTooltip) td.dataset.tooltip = cellTooltip;
+
+    // A shown form of the value (Region: its flags); the value becomes the tooltip.
+    const shown = typeof rawValue === 'string' ? col.displayValues?.[rawValue] : undefined;
+    if (shown) {
+      renderFlags(td, shown);
+      td.classList.add('cell-flags');
+      td.dataset.tooltip = cellTooltip ?? rawValue as string;
+    }
 
     if (col.linkIcon) {
       // Icon link (generation-msx): the value is only the sort key.
@@ -819,7 +858,7 @@ export function buildGrid(data: MSXData, opts?: {
     const filtered = filters.size === 0 ? sorted : sorted.filter(model =>
       [...filters.entries()].every(([colIdx, term]) => {
         const raw = colIdx < model.values.length ? model.values[colIdx] : null;
-        const value = cellText(raw).toLowerCase();
+        const value = filterHaystack(data.columns[colIdx], raw);
         const parts = term.split('|').map(p => p.trim()).filter(p => p.length > 0);
         if (parts.length === 0) return true;
         const positive = parts.filter(p => !p.startsWith('!'));
@@ -898,7 +937,7 @@ export function buildGrid(data: MSXData, opts?: {
     const filtered = filters.size === 0 ? sorted : sorted.filter(model =>
       [...filters.entries()].every(([colIdx, term]) => {
         const raw = colIdx < model.values.length ? model.values[colIdx] : null;
-        const value = cellText(raw).toLowerCase();
+        const value = filterHaystack(data.columns[colIdx], raw);
         // Split on '|' for OR semantics; leading '!' negates a term
         const parts = term.split('|').map(p => p.trim()).filter(p => p.length > 0);
         if (parts.length === 0) return true;
