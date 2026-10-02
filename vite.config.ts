@@ -79,6 +79,7 @@ export default defineConfig({
   root: 'src',
   base: './',
   publicDir: false,
+  server: { host: true },
   plugins: [preserveDataJs(), fileProtocolCompat(), devDataJs()],
   build: {
     outDir: path.resolve(OUT_DIR),
