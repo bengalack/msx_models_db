@@ -115,7 +115,8 @@ window.MSX_DATA = {
       "groupId": 0,
       "type": "string",
       "linkable": true,
-      "truncateLimit": 20
+      "truncateLimit": 20,
+      "labelIcon": "fa-external-link"
     },
     {
       "id": 110,
