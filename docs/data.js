@@ -238,7 +238,7 @@ window.MSX_DATA = {
       "label": "Main RAM (KB)",
       "groupId": 1,
       "type": "number",
-      "shortLabel": "Main RAM",
+      "shortLabel": "Main\nRAM",
       "tooltip": "Main RAM (KB)"
     },
     {
@@ -325,7 +325,7 @@ window.MSX_DATA = {
       "label": "Cartridge Slots",
       "groupId": 4,
       "type": "number",
-      "shortLabel": "Cart Slots",
+      "shortLabel": "Cart\nSlots",
       "tooltip": "Cartridge Slots"
     },
     {
@@ -334,7 +334,7 @@ window.MSX_DATA = {
       "label": "Expansion Slots",
       "groupId": 4,
       "type": "number",
-      "shortLabel": "Exp Slots",
+      "shortLabel": "Exp\nSlots",
       "tooltip": "Expansion Slots"
     },
     {
@@ -360,6 +360,7 @@ window.MSX_DATA = {
       "label": "Sub-CPU",
       "groupId": 5,
       "type": "string",
+      "shortLabel": "Sub-\nCPU",
       "chipLinks": true
     },
     {
@@ -368,7 +369,7 @@ window.MSX_DATA = {
       "label": "NMOS/CMOS",
       "groupId": 5,
       "type": "string",
-      "shortLabel": "NMOS/​CMOS"
+      "shortLabel": "NMOS/\nCMOS"
     },
     {
       "id": 98,
