@@ -10,7 +10,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import colorConfig from '../../data/slotmap-colors.json';
 import { buildGrid } from '../../src/grid.js';
 import {
-  drawPopup, drawThumbnail, THUMB, POPUP, POPUP_CLOSE_DELAY_MS, boxRect, canvasSize, categoryOf, cellIndex, clearThumbnailCache,
+  drawPopup, drawThumbnail, THUMB, POPUP, POPUP_CELL_OVERLAP, POPUP_CLOSE_DELAY_MS, boxRect, canvasSize, categoryOf, cellIndex, clearThumbnailCache,
   colorFor, hitTest, isExpanded, slotKey, textColorOn, type SlotCells,
 } from '../../src/slotmap-overview.js';
 import { SLOTMAP_ABSENT, SLOTMAP_EMPTY_PAGE, SLOTMAP_MIRROR_SUFFIX } from '../../src/symbols.js';
@@ -240,6 +240,26 @@ describe('popup', () => {
     td.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, relatedTarget: document.body }));
     vi.advanceTimersByTime(POPUP_CLOSE_DELAY_MS + 1);
     expect(popup().hidden).toBe(true);
+  });
+
+  it('starts at the edge of the cell, leaving no gap to cross', () => {
+    const { element } = buildGrid(makeData(models));
+    document.body.appendChild(element);
+    const td = overviewCell(element, 1);
+    vi.spyOn(td, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 50, 80, 20));
+    td.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+    expect(parseFloat(popup().style.top)).toBe(70 - POPUP_CELL_OVERLAP);
+    expect(parseFloat(popup().style.left)).toBe(100);
+  });
+
+  it('opens above the cell, touching it, when there is no room below', () => {
+    const { element } = buildGrid(makeData(models));
+    document.body.appendChild(element);
+    const td = overviewCell(element, 1);
+    vi.spyOn(td, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 600, 80, 20));
+    vi.spyOn(popup(), 'offsetHeight', 'get').mockReturnValue(300);
+    td.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+    expect(parseFloat(popup().style.top) + 300).toBe(600 + POPUP_CELL_OVERLAP);
   });
 
   it('stays open while the pointer moves from the cell into the popup', () => {

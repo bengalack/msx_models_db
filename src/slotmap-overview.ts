@@ -294,6 +294,8 @@ export interface SlotmapPopupOptions {
   tooltipOf: (label: string, modelId: number, cellKey: string) => string | null;
 }
 
+/** Pixels the popup overlaps the edge of its cell, so no gap opens between them. */
+export const POPUP_CELL_OVERLAP = 1;
 /** Delay before the popup closes once the pointer has left both the cell and the popup. */
 export const POPUP_CLOSE_DELAY_MS = 120;
 
@@ -339,9 +341,11 @@ export function installSlotmapPopup(root: HTMLElement, options: SlotmapPopupOpti
     const w = popup.offsetWidth;
     const h = popup.offsetHeight;
     let left = cell.left;
-    let top = cell.bottom + 4;
+    // Touch the cell (1px overlap, no gap): the pointer moving into the popup
+    // must never cross the next row's Overview cell, which would switch popups.
+    let top = cell.bottom - POPUP_CELL_OVERLAP;
     if (left + w > window.innerWidth - 8) left = Math.max(8, window.innerWidth - 8 - w);
-    if (top + h > window.innerHeight - 8) top = Math.max(8, cell.top - 4 - h);
+    if (top + h > window.innerHeight - 8) top = Math.max(8, cell.top + POPUP_CELL_OVERLAP - h);
     popup.style.left = `${left}px`;
     popup.style.top = `${top}px`;
   }
