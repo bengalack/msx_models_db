@@ -46821,7 +46821,7 @@ window.MSX_DATA = {
     "MM": "Memory Mapper",
     "PM": "Panasonic Mapper",
     "RAM": "RAM (no memory mapper)",
-    "BUN": "Bunsetsu Bunsetsu (文節), Henkan (変換), Jukugo (熟語)",
+    "BUN": "Bunsetsu (文節), Henkan (変換), Jukugo (熟語)",
     "SFG5": "Yamaha SFG-05",
     "SFG1": "Yamaha SFG-01",
     "CS1": "Cartridge slot 1",
