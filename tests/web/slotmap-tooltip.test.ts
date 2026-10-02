@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { resolveSlotmapTooltip } from '../../src/grid.js';
+import { resolveSlotmapTooltip, slotmapCellTooltip } from '../../src/grid.js';
 import { SLOTMAP_ABSENT, SLOTMAP_EMPTY_PAGE } from '../../src/symbols.js';
 
 const STARTER_LUT: Record<string, string> = {
@@ -99,5 +99,21 @@ describe('resolveSlotmapTooltip', () => {
       expect(resolveSlotmapTooltip(SLOTMAP_EMPTY_PAGE, {})).toBeNull();
       expect(resolveSlotmapTooltip('SUB*', {})).toBeNull();
     });
+  });
+});
+
+describe('slotmapCellTooltip', () => {
+  it('joins the LUT tooltip and the cell detail with a colon', () => {
+    expect(slotmapCellTooltip('FW', STARTER_LUT, 'Painter ROM')).toBe(`${STARTER_LUT.FW}: Painter ROM`);
+  });
+
+  it('is the LUT tooltip alone without a detail', () => {
+    expect(slotmapCellTooltip('FW', STARTER_LUT, undefined)).toBe(STARTER_LUT.FW);
+    expect(slotmapCellTooltip('FW', STARTER_LUT, '')).toBe(STARTER_LUT.FW);
+  });
+
+  it('is the detail alone when the label has no LUT tooltip', () => {
+    expect(slotmapCellTooltip('ZZZ', STARTER_LUT, 'Something')).toBe('Something');
+    expect(slotmapCellTooltip('ZZZ', STARTER_LUT, undefined)).toBeNull();
   });
 });

@@ -64,7 +64,13 @@ def _parse_hex_or_int(s: str | None) -> int | None:
 
 
 def match_lut(element_tag: str, element_id: str | None, rules: list[dict]) -> str | None:
-    """Return the abbr for the first matching LUT rule, or None if no match.
+    """Return the abbr for the first matching LUT rule, or None if no match (see ``match_rule``)."""
+    rule = match_rule(element_tag, element_id, rules)
+    return rule["abbr"] if rule else None
+
+
+def match_rule(element_tag: str, element_id: str | None, rules: list[dict]) -> dict | None:
+    """Return the first matching LUT rule, or None if no match.
 
     Matching logic:
       - rule["element"] is a pipe-separated list of element tag names
@@ -87,7 +93,7 @@ def match_lut(element_tag: str, element_id: str | None, rules: list[dict]) -> st
             id_str = element_id or ""
             if not re.search(id_pattern, id_str, re.IGNORECASE):
                 continue
-        return rule["abbr"]
+        return rule
     return None
 
 
@@ -111,6 +117,7 @@ def _classify_tcx_wrapper(
     wrapper_el: etree._Element,
     lut_rules: list[dict],
     filename: str,
+    elements: dict[int, list] | None = None,
 ) -> dict[int, str]:
     """Classify sub-devices inside a <ToshibaTCX-200x> compound device.
 
@@ -167,6 +174,8 @@ def _classify_tcx_wrapper(
         for p in pages:
             if p not in page_map:
                 page_map[p] = abbr
+                if elements is not None:
+                    elements[p] = [lut_tag, element_id]
 
         offset += win_size  # advance by full window size for packing
 
@@ -177,8 +186,11 @@ def _classify_devices(
     slot_el: etree._Element,
     lut_rules: list[dict],
     filename: str,
+    elements: dict[int, list] | None = None,
 ) -> dict[int, str]:
     """Classify all direct device children of *slot_el* into a {page: abbr} map.
+
+    With *elements*, the device behind each page is added to it: ``{page: [tag, id]}``.
 
     Returns a page map (pages 0-3). Devices with no <mem> child are skipped.
     Overlapping pages: first assignment wins; [WARN] logged for subsequent.
@@ -192,10 +204,13 @@ def _classify_devices(
 
         # Compound wrapper — sub-devices use <window>, not <mem>
         if tag == "ToshibaTCX-200x":
-            tcx_map = _classify_tcx_wrapper(child, lut_rules, filename)
+            tcx_elements: dict[int, list] = {}
+            tcx_map = _classify_tcx_wrapper(child, lut_rules, filename, tcx_elements)
             for p, abbr in tcx_map.items():
                 if p not in page_map:
                     page_map[p] = abbr
+                    if elements is not None and p in tcx_elements:
+                        elements[p] = tcx_elements[p]
             continue
 
         mem_el = child.find("mem")
@@ -240,6 +255,8 @@ def _classify_devices(
                 )
             else:
                 page_map[p] = abbr
+                if elements is not None:
+                    elements[p] = [tag, element_id]
 
     return page_map
 
@@ -255,8 +272,12 @@ def extract_slotmap(
     filename: str = "<unknown>",
     sha1_index: dict[str, Path] | None = None,
     systemroms_root: Path | None = None,
+    devices_out: dict[str, list] | None = None,
 ) -> dict[str, str | None]:
     """Extract all 64 slot map cell values from an openMSX machine XML root.
+
+    With *devices_out*, the device element behind each device cell is added to
+    it: ``{cell key: [element tag, id attribute]}`` (slot map tooltip details).
 
     Returns a dict with all 64 keys (slotmap_{ms}_{ss}_{p}), each valued as:
     ABSENT     — slot/sub-slot not declared in the XML (non-expanded SS1-3, cartridge SS1-3)
@@ -325,12 +346,15 @@ def extract_slotmap(
 
         if not secondaries:
             # Non-expanded primary: classify direct device children into sub-slot 0
-            page_map = _classify_devices(primary, lut_rules, filename)
+            elements: dict[int, list] = {}
+            page_map = _classify_devices(primary, lut_rules, filename, elements)
             page_map = _apply_rom_visibility(primary, page_map, lut_rules, filename,
                                              sha1_index, systemroms_root)
             for p, abbr in page_map.items():
                 result[f"slotmap_{ms}_0_{p}"] = abbr
                 slot_abbrs[ms][0][p] = abbr
+                if devices_out is not None and p in elements:
+                    devices_out[f"slotmap_{ms}_0_{p}"] = elements[p]
             # Sub-slot 0: pages with no device → • (real page, nothing mapped)
             for p in range(4):
                 if result[f"slotmap_{ms}_0_{p}"] == _ABSENT:
@@ -363,12 +387,15 @@ def extract_slotmap(
                         slot_abbrs[ms][ss][p] = abbr
                     continue
 
-                page_map = _classify_devices(secondary, lut_rules, filename)
+                elements = {}
+                page_map = _classify_devices(secondary, lut_rules, filename, elements)
                 page_map = _apply_rom_visibility(secondary, page_map, lut_rules,
                                                  filename, sha1_index, systemroms_root)
                 for p, abbr in page_map.items():
                     result[f"slotmap_{ms}_{ss}_{p}"] = abbr
                     slot_abbrs[ms][ss][p] = abbr
+                    if devices_out is not None and p in elements:
+                        devices_out[f"slotmap_{ms}_{ss}_{p}"] = elements[p]
                 # Unmapped pages within a secondary (including empty secondaries) → •.
                 # openMSX XML cannot express whether an empty secondary is a
                 # cartridge slot, expansion bus, etc. — leave that to msx.org.

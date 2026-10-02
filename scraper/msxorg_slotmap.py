@@ -223,7 +223,7 @@ def _load_text_patterns() -> list[tuple[re.Pattern[str], str]]:
         (re.compile(r"\bram\b",                               re.IGNORECASE), "RAM"),
         # LUT "Main ROM" pattern won't match "Main-ROM" (hyphen); cover it here.
         (re.compile(r"main[\s\-]rom",                         re.IGNORECASE), "MAIN"),
-        (re.compile(r"disk\s+rom|floppy",                     re.IGNORECASE), "DSK"),
+        (re.compile(r"disk[\s\-]+rom|floppy",                re.IGNORECASE), "DSK"),
         (re.compile(r"msx[\s\-]*music|fmpac|fm\s+(?:voicing|music)", re.IGNORECASE), "MUS"),
         (re.compile(r"\brs[\s\-]?232\b",                      re.IGNORECASE), "RS"),
         (re.compile(r"\bmodem\b",                             re.IGNORECASE), "MOD"),
@@ -288,10 +288,13 @@ def _classify_cell_text(text: str) -> str | None:
 # ── Core table parser ─────────────────────────────────────────────────────
 
 
-def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
+def _parse_slotmap_table(table: Tag, page_title: str,
+                         texts: dict[str, list[str]] | None = None) -> dict[str, str]:
     """Parse a single msx.org slot-map HTML table.
 
-    Returns a dict of all 64 ``slotmap_{ms}_{ss}_{p}`` keys.
+    Returns a dict of all 64 ``slotmap_{ms}_{ss}_{p}`` keys. With *texts*, every
+    device cell's ``[label, cell text]`` is added to it ("Painter ROM" behind
+    "FW") — the per-cell detail of the slot map tooltips.
     """
     grid = _flatten_table(table)
     if not grid:
@@ -401,6 +404,8 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
                     result[key] = abbr_out
                 else:
                     result[key] = abbr
+                    if texts is not None:
+                        texts[key] = [abbr, re.sub(r"\s+", " ", raw)]
 
     # ── Resolve mirror sentinels → <origin_abbr>* ───────────────────────
     # Build a lookup: (ms, ss) → list of real abbreviations across all 4 pages.
@@ -433,7 +438,7 @@ def _parse_slotmap_table(table: Tag, page_title: str) -> dict[str, str]:
                 candidates.extend(_real_abbrs_in_subslot(other_ms, other_ss))
 
         if candidates:
-            origin_abbr = max(set(candidates), key=candidates.count)
+            origin_abbr = max(candidates, key=candidates.count)   # a list: ties go to the first, every run
             for p in mirrors:
                 result[f"slotmap_{ms}_{ss}_{p}"] = f"{origin_abbr}{_MIRROR_SUFFIX}"
         else:
@@ -587,6 +592,7 @@ def _find_slotmap_table(
 def parse_slotmap_from_soup(
     soup: BeautifulSoup,
     page_title: str = "<unknown>",
+    texts: dict[str, list[str]] | None = None,
 ) -> dict[str, str] | None:
     """Extract the slot map from an already-parsed msx.org wiki page.
 
@@ -596,7 +602,7 @@ def parse_slotmap_from_soup(
     table = _find_slotmap_table(soup, page_title)
     if table is None:
         return None
-    return _parse_slotmap_table(table, page_title)
+    return _parse_slotmap_table(table, page_title, texts)
 
 
 # A memory mapper cell: "128kB Memory Mapper", "Memory<br>Mapper", ...
@@ -628,9 +634,10 @@ def mapper_from_table(table: Tag) -> str:
     return "Yes" if any(_MAPPER_CELL_RE.search(c) for c in cells) else "No"
 
 
-def parse_slotmap_table(table: Tag, page_title: str = "<unknown>") -> dict[str, str]:
+def parse_slotmap_table(table: Tag, page_title: str = "<unknown>",
+                        texts: dict[str, list[str]] | None = None) -> dict[str, str]:
     """Parse an already-chosen slot map *table* into the 64 ``slotmap_*`` cells."""
-    return _parse_slotmap_table(table, page_title)
+    return _parse_slotmap_table(table, page_title, texts)
 
 
 def parse_msxorg_slotmap(

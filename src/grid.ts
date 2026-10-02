@@ -258,6 +258,20 @@ function renderChipLinks(td: HTMLTableCellElement, text: string, links: Record<s
   nodes.forEach(n => td.appendChild(n));
 }
 
+/**
+ * A slot map cell's tooltip: the LUT text for its label, followed by the cell's
+ * own detail when the model ships one ("Firmware: Painter ROM").
+ */
+export function slotmapCellTooltip(
+  value: string,
+  lut: Record<string, string>,
+  detail: string | undefined,
+): string | null {
+  const tooltip = resolveSlotmapTooltip(value, lut);
+  if (tooltip === null) return detail ?? null;
+  return detail ? `${tooltip}: ${detail}` : tooltip;
+}
+
 function buildDataRow(
   model: ModelRecord,
   columns: ColumnDef[],
@@ -375,7 +389,7 @@ function buildDataRow(
     } else {
       // Slot map tooltip + visual markers
       if (col.key.startsWith('slotmap_') && typeof rawValue === 'string') {
-        const tooltip = resolveSlotmapTooltip(rawValue, slotmapLut);
+        const tooltip = slotmapCellTooltip(rawValue, slotmapLut, model.slot_details?.[col.key]);
         if (tooltip !== null) td.dataset.tooltip = tooltip;
         if (rawValue === '\u2327') {
           td.classList.add('cell-slotmap-empty');
@@ -1118,7 +1132,8 @@ export function buildGrid(data: MSXData, opts?: {
         const model = modelsById.get(id);
         return model ? `${model.values[0] ?? ''} ${model.values[1] ?? ''}`.trim() : '';
       },
-      tooltipOf: label => resolveSlotmapTooltip(label, data.slotmap_lut ?? {}),
+      tooltipOf: (label, modelId, cellKey) =>
+        slotmapCellTooltip(label, data.slotmap_lut ?? {}, modelsById.get(modelId)?.slot_details?.[cellKey]),
     });
   }
 

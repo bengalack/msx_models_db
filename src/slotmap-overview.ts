@@ -287,8 +287,11 @@ export interface SlotmapPopupOptions {
   cellsOf: (modelId: number) => SlotCells | null;
   /** Heading of the popup ("Sony HB-F1XD"). */
   titleOf: (modelId: number) => string;
-  /** Tooltip of a slot map cell label ("CS2" → "Cartridge slot 2"), or null. */
-  tooltipOf: (label: string) => string | null;
+  /**
+   * Tooltip of one slot map cell of a model ("CS2" → "Cartridge slot 2",
+   * "FW" → "Firmware: Painter ROM" with a per-cell detail), or null.
+   */
+  tooltipOf: (label: string, modelId: number, cellKey: string) => string | null;
 }
 
 /** Delay before the popup closes once the pointer has left both the cell and the popup. */
@@ -379,7 +382,8 @@ export function installSlotmapPopup(root: HTMLElement, options: SlotmapPopupOpti
     const rect = canvas.getBoundingClientRect();
     const box = hitTest(POPUP, e.clientX - rect.left, e.clientY - rect.top);
     const value = box ? cells[cellIndex(box.ms, box.ss, box.page)] : null;
-    const text = value && cellKind(value) !== 'absent' ? options.tooltipOf(value) : null;
+    const text = value && box && modelId !== null && cellKind(value) !== 'absent'
+      ? options.tooltipOf(value, modelId, slotKey(box.ms, box.ss, box.page)) : null;
     if (!text) {
       tip.hidden = true;
       return;

@@ -16,6 +16,7 @@ from .aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, LOCALISED_FIELD
 from .inherit import fill_blanks
 from .market_status import MARKET_RARE, MARKET_UNRELEASED
 from .families import FAMILY_LINKS_FIELD, SERIES_FIELD, VARIANT_NAMES_FIELD
+from .slotmap_details import SLOT_TEXT_FIELD
 from .exclude import ExcludeList
 from .revisions import REVISION_FIELD, revision_name, revision_numbers
 from .mirror import LivePageSource, MirrorPageSource, PageSource, slug_to_filename
@@ -989,17 +990,21 @@ def _record_from_specs(
     # Remove None values.
     result = {k: v for k, v in result.items() if v is not None}
 
-    # Slot map and the Memory Mapper derived from it.
+    # Slot map and the Memory Mapper derived from it; the device cells' text is
+    # kept for the slot map tooltips (SLOT_TEXT_FIELD, scraper/slotmap_details.py).
+    texts: dict[str, list[str]] = {}
     if slot_table is not None:
-        result.update(parse_slotmap_table(slot_table, page_title))
+        result.update(parse_slotmap_table(slot_table, page_title, texts))
         result["mapper"] = mapper_from_table(slot_table)
     elif slot_page is not None:
-        slotmap = parse_slotmap_from_soup(slot_page, page_title)
+        slotmap = parse_slotmap_from_soup(slot_page, page_title, texts)
         if slotmap is not None:
             result.update(slotmap)
         mapper = parse_mapper_from_soup(slot_page, page_title)
         if mapper is not None:
             result["mapper"] = mapper
+    if texts:
+        result[SLOT_TEXT_FIELD] = texts
     return result
 
 

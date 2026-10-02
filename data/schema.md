@@ -95,6 +95,7 @@ Slot-map columns: 64 columns (4 main slots × 4 sub-slots × 4 pages) with keys 
 | `id` | `number` | **Stable integer ID** from `data/id-registry.json`. Never reassigned or reused. |
 | `values` | `(string \| number \| boolean \| null)[]` | Field values, positionally aligned with `MSXData.columns[]`. |
 | `links` | `Record<string, string>?` | Hyperlink URLs keyed by column key (`model` → msx.org wiki page, `openmsx_id` → openMSX machine XML on GitHub, `generation_msx` → the model's page on generation-msx.nl from `data/generation-msx.json`, `family_series` / `family_rebrand` → the series page or base model / the original's msx.org page). May be inherited from a donor model via `data/link-shares.json`. |
+| `slot_details` | `Record<string, string>?` | Per-cell slot map tooltip details keyed by slot map column key (`slotmap_3_0_1` → `Painter ROM`), for cells whose LUT rule has `"detail"` (`"text"`: the msx.org cell text; `"element"`: the openMSX device element, `WD2793`); the page shows `<slotmap_lut tooltip>: <detail>`. Omitted when the model has none. |
 | `tooltips` | `Record<string, string>?` | Cell tooltips keyed by column key, shown on hover whether or not the text is clipped. Emitted from hidden columns flagged `tooltip_for` in `scraper/columns.py` (e.g. the scraped Engine text behind the two parsed Engine columns), and for a generation-msx family page `"<url> (family)"` — an icon-link cell uses it as the link tooltip. |
 
 ### values[] alignment rule

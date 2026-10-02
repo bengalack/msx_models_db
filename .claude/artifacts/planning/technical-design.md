@@ -670,6 +670,21 @@ An msx.org page with its own specs table can describe more than one model. `spli
 
 ---
 
+## Feature Design: Slot Map Tooltip Details
+
+A slot map cell's tooltip is the LUT tooltip of its label ("FW" → "Firmware"), shipped once in `MSXData.slotmap_lut`. Some labels cover many different devices, so a LUT rule may ask for a per-cell **detail**: the page then shows `<tooltip>: <detail>` ("Firmware: Painter ROM") in the slot map cell tooltip and in the Slotmap Overview popup's box tooltip.
+
+- **Config** — `"detail"` on a rule in `data/slotmap-lut.json`, one of `DETAIL_KINDS` in `scraper/slotmap_lut.py` (anything else is an error):
+  - `"text"` — the msx.org slot map's own text for the cell ("Painter ROM"). msx.org text is classified without the LUT (`_TEXT_PATTERNS`), so the flag applies to every cell with the rule's **label**.
+  - `"element"` — the openMSX device element behind the cell ("WD2793"). The device is matched against the LUT again at build time (`slotmap.match_rule`), so the flag applies only to cells **that rule** classified.
+- **Capture** — the msx.org parser (`scraper/msxorg_slotmap.py`) keeps every device cell's `[label, text]` (whitespace collapsed) in `_slot_text` (`SLOT_TEXT_FIELD`); the openMSX parser (`extract_slotmap(devices_out=…)`) keeps every device cell's `[element tag, id]` in `_slot_devices` (`SLOT_DEVICES_FIELD`). Both survive the merge like other `_` fields. A change of kind or flag needs only `python -m scraper build`; the captured fields are new in the raw caches, so the first build after this feature needs `--fetch -l`.
+- **Choice** (`scraper/slotmap_details.py`, `slot_details`) — a cell gets a detail when its final (merged) label is the one its source gave it (a cell another source filled with another device never borrows the text), and the detail says more than the tooltip ("Disk-ROM" for "Disk ROM" does not). An `"element"` detail wins over a `"text"` one. A trailing footnote mark is dropped ("Network*" → "Network").
+- **Shipping** — sparse `ModelRecord.slot_details` (`{cell key: detail}`), only on models with at least one detail; the client composes the string (`slotmapCellTooltip` in `src/grid.ts`, also used by the popup's `tooltipOf(label, modelId, cellKey)`).
+- **Current flags** (2026-10-02): `"text"` on the firmware rules (ROM FW, Pioneer LD control, Yamaha SKW-01), Kanji, Hangul, MSX-JE and RS-232/FW; `"element"` on the WD2793 / TC8566AF disk ROM rule ("Disk ROM: WD2793"). msx.org writes "Disk ROM" / "MSX-JE" for every such cell, which only repeats the tooltip; msx.org-only models have no element, so their DSK cells show no detail.
+- Related fixes: the msx.org mirror origin is the most frequent candidate (deterministic), and "Disk-ROM" is classified as DSK rather than firmware.
+
+---
+
 ## Feature Design: Families
 
 Group id 14 **Family** (right after Identity) with two linkable columns: **Series** (id 112, `family_series`) — related models of the *same* brand — and **Rebrand** (id 113, `family_rebrand`) — related models spanning *more than one* brand. Every member, base / original included, carries its group's value, so sorting or filtering on it shows the whole group. Only existing models get values; variants named on msx.org that are not grid rows are not created.

@@ -77,6 +77,11 @@ export interface ModelRecord {
    * whether the cell text is clipped (e.g. the scraped text behind a parsed value).
    */
   tooltips?: Record<string, string>;
+  /**
+   * Per-cell detail of a slot map tooltip, keyed by slot map column key
+   * ("slotmap_3_0_1" -> "Painter ROM"): the page shows "<LUT tooltip>: <detail>".
+   */
+  slot_details?: Record<string, string>;
 }
 
 /** The full dataset consumed by the web page at load time. */

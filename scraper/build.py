@@ -19,6 +19,7 @@ from .columns import (
 from .exclude import load_excludes
 from .mirror import FallbackPageSource, MirrorPageSource
 from .openmsx_source import FallbackXMLSource, LiveXMLSource, MirrorXMLSource
+from .slotmap_details import slot_details
 from .families import FAMILIES_PATH, REBRAND_KEY, SERIES_KEY, compute_families, write_families
 from .generation_msx import GENERATION_MSX_PATH, load_links as load_generation_msx_links
 from .link_shares import apply_link_shares, fill_from_link_shares, load_link_shares
@@ -452,6 +453,9 @@ def build(
                         tooltips[col.key] = f"{url} (family)"
         if links:
             record["links"] = links
+        details = slot_details(model, slotmap_rules, slotmap_lut_compact)
+        if details:
+            record["slot_details"] = details
         if tooltips:
             record["tooltips"] = tooltips
 

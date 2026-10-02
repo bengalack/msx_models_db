@@ -22,6 +22,7 @@ from .openmsx_source import (
     XMLSource,
 )
 from .slotmap import extract_slotmap, load_sha1_index
+from .slotmap_details import SLOT_DEVICES_FIELD
 
 log = logging.getLogger(__name__)
 
@@ -187,14 +188,18 @@ def parse_machine_xml(
 
     # Slot map extraction (only when LUT rules are provided)
     if lut_rules is not None:
+        slot_devices: dict[str, list] = {}
         slotmap = extract_slotmap(
             root,
             lut_rules,
             filename=filename,
             sha1_index=sha1_index,
             systemroms_root=systemroms_root,
+            devices_out=slot_devices,
         )
         result.update(slotmap)
+        if slot_devices:
+            result[SLOT_DEVICES_FIELD] = slot_devices
 
     return result
 

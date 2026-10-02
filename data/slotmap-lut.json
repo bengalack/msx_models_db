@@ -27,19 +27,22 @@
     "element": "ROM",
     "id_pattern": "Kanji",
     "abbr": "KAN",
-    "tooltip": "Kanji driver"
+    "tooltip": "Kanji driver",
+    "detail": "text"
   },
   {
     "element": "ROM",
     "id_pattern": "Hangul",
     "abbr": "HAN",
-    "tooltip": "Hangul driver"
+    "tooltip": "Hangul driver",
+    "detail": "text"
   },
   {
     "element": "ROM",
     "id_pattern": "MSX-JE",
     "abbr": "JE",
-    "tooltip": "MSX-JE"
+    "tooltip": "MSX-JE",
+    "detail": "text"
   },
   {
     "element": "ROM",
@@ -69,25 +72,29 @@
     "element": "ROM",
     "id_pattern": "Pasocalc|Lightpen|EJDIC|Personal|DataBank|JWP|Logo|Plan|Accessories|Hot Paper|Network*|BASIC|Cockpit|Designer|Desk Pac|DESKPAC|Firmware|Memovision|MSX JUSHO|NIA-2001|Painter|Program|ROM|Sakhr|Set-Up|Super Impose|Utility|Word|Word Font|wordpro|Write",
     "abbr": "FW",
-    "tooltip": "Firmware"
+    "tooltip": "Firmware",
+    "detail": "text"
   },
   {
     "element": "PioneerLDControl",
     "id_pattern": "PBASIC",
     "abbr": "FW",
-    "tooltip": "Firmware"
+    "tooltip": "Firmware",
+    "detail": "text"
   },
   {
     "element": "YamahaSKW01",
     "id_pattern": null,
     "abbr": "FW",
-    "tooltip": "Firmware"
+    "tooltip": "Firmware",
+    "detail": "text"
   },
   {
     "element": "WD2793|TC8566AF",
     "id_pattern": null,
     "abbr": "DSK",
-    "tooltip": "Disk ROM"
+    "tooltip": "Disk ROM",
+    "detail": "element"
   },
   {
     "element": "MSX-MUSIC|FMPAC|MSX-MUSIC-WX|MSX- MUSIC",
@@ -141,7 +148,7 @@
     "element": "Bunsetsu",
     "id_pattern": null,
     "abbr": "BUN",
-    "tooltip": "Bunsetsu Henkan - Hiragana text ðŸ † Kanji Japanese"
+    "tooltip": "Bunsetsu Bunsetsu (文節), Henkan (変換), Jukugo (熟語)"
   },
   {
     "element": "YamahaSFG",

@@ -271,6 +271,33 @@ describe('popup', () => {
     expect(tip.hidden).toBe(true);
   });
 
+  it("joins a cell's own detail to the box tooltip", () => {
+    const data = makeData(models);
+    data.models[0].slot_details = { [slotKey(1, 0, 0)]: 'Painter ROM' };
+    const { element } = buildGrid(data);
+    document.body.appendChild(element);
+    overviewCell(element, 1).dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+    const canvas = popup().querySelector('canvas')!;
+    vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 900, 200));
+    const tip = popup().querySelector<HTMLElement>('.slotmap-popup__tip')!;
+    const r = boxRect(POPUP, 1, 0, 0);
+    canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: r.x + 2, clientY: r.y + 2 }));
+    expect(tip.textContent).toBe(`${data.slotmap_lut!.CS1}: Painter ROM`);
+    const main = boxRect(POPUP, 0, 0, 0);      // no detail for this cell
+    canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: main.x + 2, clientY: main.y + 2 }));
+    expect(tip.textContent).toBe(data.slotmap_lut!.MAIN);
+  });
+
+  it("a slot map cell's tooltip carries its detail too", () => {
+    const data = makeData(models);
+    data.models[0].slot_details = { [slotKey(1, 0, 0)]: 'Painter ROM' };
+    const { element } = buildGrid(data);
+    const col = (ms: number, ss: number, p: number) => data.columns.findIndex(c => c.key === slotKey(ms, ss, p));
+    const td = (i: number) => element.querySelector<HTMLElement>(`tbody tr[data-model-id="1"] td[data-col-index="${i}"]`)!;
+    expect(td(col(1, 0, 0)).dataset.tooltip).toBe(`${data.slotmap_lut!.CS1}: Painter ROM`);
+    expect(td(col(0, 0, 0)).dataset.tooltip).toBe(data.slotmap_lut!.MAIN);
+  });
+
   it('redraws thumbnails when the theme switches', async () => {
     const { element } = buildGrid(makeData(models));
     document.body.appendChild(element);

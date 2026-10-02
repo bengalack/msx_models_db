@@ -30,6 +30,10 @@ from pathlib import Path
 log = logging.getLogger(__name__)
 
 
+# Per-cell tooltip details a rule can ask for (scraper/slotmap_details.py).
+DETAIL_KINDS = ("text", "element")
+
+
 def load_slotmap_lut(path: str | Path) -> list[dict]:
     """Load and validate the slot map LUT from *path*.
 
@@ -70,6 +74,11 @@ def load_slotmap_lut(path: str | Path) -> list[dict]:
                 )
         else:
             abbr_tooltips[abbr] = tooltip
+
+        detail = rule.get("detail")
+        if detail not in (None, *DETAIL_KINDS):
+            raise ValueError(f"Slot map LUT rule {i} (abbr={abbr!r}): detail must be one of "
+                             f"{', '.join(DETAIL_KINDS)} or absent, got {detail!r}")
 
         id_pattern = rule.get("id_pattern")
         if id_pattern is not None:
