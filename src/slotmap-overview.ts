@@ -194,7 +194,7 @@ function paintBlocks(ctx: CanvasRenderingContext2D, g: Geometry, cells: SlotCell
   const b = blockSize(g);
   const grid = colorFor('grid', theme);
   const outline = detailed ? colorFor('empty_outline', theme) : null;
-  ctx.font = `10px ${FONT}`;
+  ctx.font = `bold 10px ${FONT}`;   // bold: the fallback monospace fonts on phones are thin
   for (let ms = 0; ms < 4; ms++) {
     ctx.fillStyle = grid;
     ctx.fillRect(g.pad + ms * (b.w + g.gap), g.pad + g.titleH, b.w, b.h);
