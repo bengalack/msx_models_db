@@ -72,7 +72,7 @@ function filterOn(el: HTMLElement, text: string): void {
 describe('display values (Region flags)', () => {
   it('the cell shows the flags and the value as its tooltip', () => {
     const { element } = buildGrid(makeData());
-    expect(cell(element, 2).textContent).toBe(REGION.displayValues!['Belgium, Sweden']);
+    expect(cell(element, 2).textContent!.replace(/\u2009/g, '')).toBe(REGION.displayValues!['Belgium, Sweden']);
     expect(cell(element, 2).dataset.tooltip).toBe('Belgium, Sweden');
     expect(cell(element, 4).classList.contains('cell-null')).toBe(true);
   });
@@ -83,6 +83,7 @@ describe('display values (Region flags)', () => {
     const { element } = buildGrid(data);
     expect(Array.from(cell(element, 2).querySelectorAll('.cell-flag')).map(f => f.textContent))
       .toEqual([flag('BE'), flag('SE')]);
+    expect(cell(element, 2).querySelectorAll('.cell-flag + .cell-flag-gap').length).toBe(2);   // a gap after every flag
     expect(cell(element, 4).querySelectorAll('.cell-flag').length).toBe(0);
     expect(cell(element, 4).textContent).toBe('Atlantis');
   });

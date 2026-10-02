@@ -32,7 +32,7 @@ export function filterHaystack(col: ColumnDef | undefined, raw: string | number 
 ${spaced}`.toLowerCase();
 }
 
-/** Shown text into *td*: each flag in its own span (larger, spaced — see .cell-flag), other text as is. */
+/** Shown text into *td*: each flag in its own span (larger — see .cell-flag) followed by a thin-space gap, other text as is. */
 function renderFlags(td: HTMLElement, shown: string): void {
   td.textContent = '';
   let last = 0;
@@ -41,7 +41,10 @@ function renderFlags(td: HTMLElement, shown: string): void {
     const span = document.createElement('span');
     span.className = 'cell-flag';
     span.textContent = m[0];
-    td.appendChild(span);
+    const gap = document.createElement('span');
+    gap.className = 'cell-flag-gap';
+    gap.textContent = '\u2009';
+    td.append(span, gap);
     last = m.index + m[0].length;
   }
   if (last < shown.length) td.append(shown.slice(last));
