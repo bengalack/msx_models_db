@@ -979,6 +979,11 @@ export function buildGrid(data: MSXData, opts?: {
   // each sticky column knows its exact `left` value regardless of which
   // preceding columns are hidden.  Called after every renderRows() and when
   // columns are shown/hidden.
+  //
+  // The frozen columns keep a static width: each one is held at the widest it
+  // has been (`frozenWidths`, applied as the header's min-width), so filtering
+  // down to short values ("Victor") never shrinks it and clips its header.
+  const frozenWidths: number[] = [];
   function updateFrozenOffsets(): void {
     let left = GUTTER_WIDTH; // starts just after the 52px row-number gutter
     for (let i = 0; i < frozenCount; i++) {
@@ -986,7 +991,12 @@ export function buildGrid(data: MSXData, opts?: {
       if (!hiddenCols.has(i)) {
         // Measure the actual rendered width of any frozen header for column i
         const th = thead.querySelector<HTMLElement>(`th.col--frozen[data-col-index="${i}"]`);
-        left += th ? th.offsetWidth : 0;
+        const width = th ? th.offsetWidth : 0;
+        if (th && !th.classList.contains('col-group-stub') && width > (frozenWidths[i] ?? 0)) {
+          frozenWidths[i] = width;
+          th.style.minWidth = `${width}px`;
+        }
+        left += width;
       }
     }
   }

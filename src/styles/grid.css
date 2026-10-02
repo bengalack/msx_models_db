@@ -585,6 +585,9 @@ th.col--frozen-last {
    so they stay visible during horizontal scroll. */
 thead .col--frozen {
   z-index: 11;
+  /* The grid pins each frozen column's measured width as the header's min-width
+     (updateFrozenOffsets); border-box makes that the full column width. */
+  box-sizing: border-box;
 }
 
 /* ── Slotmap Overview (drawn cell + hover popup) ─────────────────────────── */

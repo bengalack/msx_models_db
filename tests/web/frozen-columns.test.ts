@@ -6,7 +6,7 @@
  * No layout / pixel measurements are attempted — jsdom does not provide them.
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { buildGrid, frozenColumnCount } from '../../src/grid.js';
 import type { MSXData } from '../../src/types.js';
 
@@ -203,6 +203,29 @@ describe('col--frozen after row hide', () => {
     const cells = cellsAtIndex(element, 0).filter(td => !td.classList.contains('gutter--gap-frozen'));
     expect(cells.length).toBeGreaterThan(0);
     cells.forEach(td => expect(td.classList.contains('col--frozen')).toBe(true));
+  });
+});
+
+// ── Static width: a frozen column never shrinks ──────────────────────────
+// jsdom has no layout, so the rendered width is a stub the test changes, as
+// filtering to shorter values would.
+
+describe('frozen column width', () => {
+  it('keeps the widest width seen when later renders are narrower', () => {
+    let rendered = 120;
+    vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockImplementation(() => rendered);
+    const { element, hideRow } = buildGrid(makeData(4));
+    hideRow(1);                                        // re-render: measured at 120
+    const th = element.querySelector<HTMLElement>('th.col-header[data-col-index="0"]')!;
+    expect(th.style.minWidth).toBe('120px');
+    rendered = 60;                                     // e.g. a filter leaves only short values
+    hideRow(2);
+    expect(th.style.minWidth).toBe('120px');
+    rendered = 150;                                    // wider content still widens it
+    hideRow(3);
+    expect(th.style.minWidth).toBe('150px');
+    expect(element.querySelector<HTMLElement>('th.col-header[data-col-index="2"]')!.style.minWidth).toBe('');
+    vi.restoreAllMocks();
   });
 });
 
