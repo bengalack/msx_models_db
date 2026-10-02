@@ -126,6 +126,12 @@ function buildColHeaderRow(columns: ColumnDef[], frozenCount: number): HTMLTable
       th.setAttribute('aria-label', col.label);
     } else {
       span.textContent = headerText;
+      if (col.labelIcon) {
+        const icon = document.createElement('i');
+        icon.className = `fas ${col.labelIcon}`;
+        icon.setAttribute('aria-hidden', 'true');
+        span.append(' ', icon);
+      }
     }
     // An explicit newline in the short label means "wrap exactly here" — the
     // header then sizes to its widest line instead of the narrow default cap.

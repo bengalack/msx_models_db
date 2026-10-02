@@ -37,6 +37,8 @@ export interface ColumnDef {
   filterable?: boolean;
   /** Font Awesome icon class shown as the header instead of the label ("fa-external-link"). */
   headerIcon?: string;
+  /** Font Awesome icon class shown after the header label, separated by a space ("MODEL <icon>"). */
+  labelIcon?: string;
   /**
    * Image URL shown as each cell's content, linking to ModelRecord.links[key] (new tab,
    * the URL as tooltip). Cells without a link stay empty. The value is only the sort key.

@@ -82,6 +82,7 @@ class Column:
     renderer: str | None = None           # cell drawn by the web page instead of text ("slotmap")
     filterable: bool = True               # False: no filter input for this column
     header_icon: str | None = None        # Font Awesome class shown as the header instead of the label
+    label_icon: str | None = None         # Font Awesome class shown after the header label ("MODEL <icon>")
     link_icon: str | None = None          # image URL shown in each cell as a link to links[key]
     retired: bool = False                 # permanently removed, ID preserved, excluded entirely
     derive: Callable[[dict[str, Any]], Any] | None = None
@@ -234,7 +235,9 @@ GROUPS: list[Group] = [
 COLUMNS: list[Column] = [
     # Identity
     Column(id=1,  key="manufacturer",      label="Manufacturer",        group="identity", type="string", truncate_limit=12),
-    Column(id=2,  key="model",             label="Model",               group="identity", type="string", linkable=True, truncate_limit=20),
+    # The icon tells the cells link to documentation (the msx.org page), like generation-msx's header.
+    Column(id=2,  key="model",             label="Model",               group="identity", type="string", linkable=True, truncate_limit=20,
+           label_icon="fa-external-link"),
     # Link to the model's page on generation-msx.nl (data/generation-msx.json); sorts by model name.
     Column(id=110, key="generation_msx",   label="generation-msx",      group="identity", type="string",
            tooltip="Link to generation-msx", header_icon="fa-external-link",

@@ -399,6 +399,8 @@ def build(
             entry["filterable"] = False
         if col.header_icon:
             entry["headerIcon"] = col.header_icon
+        if col.label_icon:
+            entry["labelIcon"] = col.label_icon
         if col.link_icon:
             entry["linkIcon"] = col.link_icon
         js_columns.append(entry)

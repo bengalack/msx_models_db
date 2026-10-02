@@ -23,7 +23,7 @@ function makeData(): MSXData {
     ],
     columns: [
       { id: 1, key: 'manufacturer', label: 'Manufacturer', groupId: 0, type: 'string' },
-      { id: 2, key: 'model', label: 'Model', groupId: 0, type: 'string' },
+      { id: 2, key: 'model', label: 'Model', groupId: 0, type: 'string', labelIcon: 'fa-external-link' },
       LINK_COL,
       { id: 3, key: 'year', label: 'Year', groupId: 1, type: 'number' },
     ],
@@ -51,6 +51,18 @@ function cell(el: HTMLElement, modelId: number): HTMLTableCellElement {
 }
 
 describe('icon-link column', () => {
+  it('a label icon follows the header label after a space', () => {
+    const data = makeData();
+    const col = data.columns[1];
+    const { element } = buildGrid(data);
+    const th = element.querySelector<HTMLElement>('th.col-header[data-col-index="1"]')!;
+    const text = th.querySelector<HTMLElement>('.col-header__text')!;
+    expect(text.textContent).toBe(`${col.label} `);
+    expect(text.lastElementChild?.matches(`i.fas.${col.labelIcon}`)).toBe(true);
+    expect(text.lastElementChild?.getAttribute('aria-hidden')).toBe('true');
+    expect(th.title).toBe(col.label);
+  });
+
   it('header shows the icon, keeps the label for screen readers and the tooltip', () => {
     const { element } = buildGrid(makeData());
     const th = element.querySelector<HTMLElement>(`th.col-header[data-col-index="${COL}"]`)!;
