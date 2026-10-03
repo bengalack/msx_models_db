@@ -77,6 +77,30 @@
         {
           "id": 391,
           "model": "Yamaha CX5MU"
+        },
+        {
+          "id": 467,
+          "model": "Yamaha CX5MA"
+        },
+        {
+          "id": 468,
+          "model": "Yamaha CX5MC"
+        },
+        {
+          "id": 469,
+          "model": "Yamaha CX5ME"
+        },
+        {
+          "id": 470,
+          "model": "Yamaha CX5MF"
+        },
+        {
+          "id": 471,
+          "model": "Yamaha CX5MG"
+        },
+        {
+          "id": 481,
+          "model": "Yamaha CX5MS"
         }
       ]
     },
@@ -92,6 +116,42 @@
         {
           "id": 390,
           "model": "Yamaha CX5MII/128"
+        },
+        {
+          "id": 472,
+          "model": "Yamaha CX5MIIA"
+        },
+        {
+          "id": 473,
+          "model": "Yamaha CX5MIIB"
+        },
+        {
+          "id": 474,
+          "model": "Yamaha CX5MIIC"
+        },
+        {
+          "id": 475,
+          "model": "Yamaha CX5MIIE"
+        },
+        {
+          "id": 476,
+          "model": "Yamaha CX5MIIF"
+        },
+        {
+          "id": 477,
+          "model": "Yamaha CX5MIIG"
+        },
+        {
+          "id": 478,
+          "model": "Yamaha CX5MIIP"
+        },
+        {
+          "id": 479,
+          "model": "Yamaha CX5MIIS"
+        },
+        {
+          "id": 480,
+          "model": "Yamaha CX5MIIU"
         }
       ]
     },
@@ -389,6 +449,18 @@
         {
           "id": 147,
           "model": "Victor HC-90A"
+        },
+        {
+          "id": 461,
+          "model": "Victor HC-90(B)"
+        },
+        {
+          "id": 462,
+          "model": "Victor HC-90(T)"
+        },
+        {
+          "id": 463,
+          "model": "Victor HC-90(V)"
         }
       ]
     },
@@ -404,6 +476,18 @@
         {
           "id": 149,
           "model": "Victor HC-95A"
+        },
+        {
+          "id": 464,
+          "model": "Victor HC-95(B)"
+        },
+        {
+          "id": 465,
+          "model": "Victor HC-95(T)"
+        },
+        {
+          "id": 466,
+          "model": "Victor HC-95(V)"
         }
       ]
     },
@@ -759,6 +843,21 @@
       ]
     },
     {
+      "name": "NMS 8220",
+      "url": "https://www.msx.org/wiki/Philips_NMS_8220",
+      "base": "Philips NMS 8220",
+      "members": [
+        {
+          "id": 63,
+          "model": "Philips NMS 8220"
+        },
+        {
+          "id": 448,
+          "model": "Philips NMS 8220/16"
+        }
+      ]
+    },
+    {
       "name": "NMS 8245",
       "url": "https://www.msx.org/wiki/Philips_NMS_8245",
       "base": "Philips NMS 8245",
@@ -801,6 +900,25 @@
       ]
     },
     {
+      "name": "NMS 8255",
+      "url": "https://www.msx.org/wiki/Philips_NMS_8255",
+      "base": "Philips NMS 8255",
+      "members": [
+        {
+          "id": 71,
+          "model": "Philips NMS 8255"
+        },
+        {
+          "id": 449,
+          "model": "Philips NMS 8255/16"
+        },
+        {
+          "id": 450,
+          "model": "Philips NMS 8255/19"
+        }
+      ]
+    },
+    {
       "name": "NMS 8280",
       "url": "https://www.msx.org/wiki/Philips_NMS_8280",
       "base": "Philips NMS 8280",
@@ -812,6 +930,22 @@
         {
           "id": 73,
           "model": "Philips NMS 8280"
+        },
+        {
+          "id": 451,
+          "model": "Philips NMS 8280/02"
+        },
+        {
+          "id": 452,
+          "model": "Philips NMS 8280/09"
+        },
+        {
+          "id": 453,
+          "model": "Philips NMS 8280/16"
+        },
+        {
+          "id": 454,
+          "model": "Philips NMS 8280/19"
         }
       ]
     },
@@ -1002,6 +1136,14 @@
         {
           "id": 343,
           "model": "Philips VG 8020/20"
+        },
+        {
+          "id": 455,
+          "model": "Philips VG-8020/29"
+        },
+        {
+          "id": 456,
+          "model": "Philips VG-8020/40"
         }
       ]
     },
@@ -1033,6 +1175,22 @@
         {
           "id": 81,
           "model": "Philips VG-8235"
+        },
+        {
+          "id": 457,
+          "model": "Philips VG-8235/16"
+        },
+        {
+          "id": 458,
+          "model": "Philips VG-8235/22"
+        },
+        {
+          "id": 459,
+          "model": "Philips VG-8235/29"
+        },
+        {
+          "id": 460,
+          "model": "Philips VG-8235/36"
         }
       ]
     },
@@ -1442,6 +1600,14 @@
         {
           "id": 343,
           "model": "Philips VG 8020/20"
+        },
+        {
+          "id": 455,
+          "model": "Philips VG-8020/29"
+        },
+        {
+          "id": 456,
+          "model": "Philips VG-8020/40"
         }
       ]
     },
@@ -1477,6 +1643,22 @@
         {
           "id": 85,
           "model": "Phonola VG-8235"
+        },
+        {
+          "id": 457,
+          "model": "Philips VG-8235/16"
+        },
+        {
+          "id": 458,
+          "model": "Philips VG-8235/22"
+        },
+        {
+          "id": 459,
+          "model": "Philips VG-8235/29"
+        },
+        {
+          "id": 460,
+          "model": "Philips VG-8235/36"
         }
       ]
     },
@@ -1567,6 +1749,14 @@
         {
           "id": 97,
           "model": "Sanyo MPC-25FS"
+        },
+        {
+          "id": 449,
+          "model": "Philips NMS 8255/16"
+        },
+        {
+          "id": 450,
+          "model": "Philips NMS 8255/19"
         }
       ]
     },
@@ -1590,6 +1780,22 @@
         {
           "id": 98,
           "model": "Sanyo MPC-27"
+        },
+        {
+          "id": 451,
+          "model": "Philips NMS 8280/02"
+        },
+        {
+          "id": 452,
+          "model": "Philips NMS 8280/09"
+        },
+        {
+          "id": 453,
+          "model": "Philips NMS 8280/16"
+        },
+        {
+          "id": 454,
+          "model": "Philips NMS 8280/19"
         }
       ]
     },
@@ -2079,8 +2285,48 @@
       "signal": "text: see"
     },
     {
+      "model": "Philips HCS 280",
+      "of": "Philips NMS 8280/02",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips HCS 280",
+      "of": "Philips NMS 8280/09",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips HCS 280",
+      "of": "Philips NMS 8280/16",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips HCS 280",
+      "of": "Philips NMS 8280/19",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8220/16",
+      "with": "Philips NMS 8220",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips NMS 8220/16",
+      "of": "Philips NMS 8220",
+      "signal": "variant table"
+    },
+    {
       "model": "Philips NMS 8245 Home Banking",
       "of": "Philips NMS 8245",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8245 Home Banking",
+      "of": "Philips NMS 8245/16",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8245 Home Banking",
+      "of": "Philips NMS 8245/19",
       "signal": "text: see"
     },
     {
@@ -2094,9 +2340,39 @@
       "signal": "link-share"
     },
     {
+      "model": "Philips NMS 8245/16",
+      "with": "Philips NMS 8245",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips NMS 8245/16",
+      "of": "Philips NMS 8245",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8245/16",
+      "of": "Philips NMS 8245/19",
+      "signal": "variant table"
+    },
+    {
       "model": "Philips NMS 8245/19",
       "of": "Philips NMS 8245",
       "signal": "link-share"
+    },
+    {
+      "model": "Philips NMS 8245/19",
+      "with": "Philips NMS 8245",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips NMS 8245/19",
+      "of": "Philips NMS 8245",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8245/19",
+      "of": "Philips NMS 8245/16",
+      "signal": "variant table"
     },
     {
       "model": "Philips NMS 8250",
@@ -2109,9 +2385,49 @@
       "signal": "link-share"
     },
     {
+      "model": "Philips NMS 8250/16",
+      "with": "Philips NMS 8250",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips NMS 8250/16",
+      "of": "Sanyo MPC-25FD",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8250/16",
+      "of": "Philips NMS 8250",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8250/16",
+      "of": "Philips NMS 8250/19",
+      "signal": "variant table"
+    },
+    {
       "model": "Philips NMS 8250/19",
       "of": "Philips NMS 8250",
       "signal": "link-share"
+    },
+    {
+      "model": "Philips NMS 8250/19",
+      "with": "Philips NMS 8250",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips NMS 8250/19",
+      "of": "Sanyo MPC-25FD",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8250/19",
+      "of": "Philips NMS 8250",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8250/19",
+      "of": "Philips NMS 8250/16",
+      "signal": "variant table"
     },
     {
       "model": "Philips NMS 8255",
@@ -2119,9 +2435,169 @@
       "signal": "text: see"
     },
     {
+      "model": "Philips NMS 8255/16",
+      "with": "Philips NMS 8255",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips NMS 8255/16",
+      "of": "Sanyo MPC-25FD",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8255/16",
+      "of": "Philips NMS 8255",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8255/16",
+      "of": "Philips NMS 8255/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8255/19",
+      "with": "Philips NMS 8255",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips NMS 8255/19",
+      "of": "Sanyo MPC-25FD",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8255/19",
+      "of": "Philips NMS 8255",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8255/19",
+      "of": "Philips NMS 8255/16",
+      "signal": "variant table"
+    },
+    {
       "model": "Philips NMS 8280",
       "of": "Sanyo MPC-27",
       "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8280/02",
+      "with": "Philips NMS 8280",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips NMS 8280/02",
+      "of": "Sanyo MPC-27",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8280/02",
+      "of": "Philips NMS 8280",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/02",
+      "of": "Philips NMS 8280/09",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/02",
+      "of": "Philips NMS 8280/16",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/02",
+      "of": "Philips NMS 8280/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/09",
+      "with": "Philips NMS 8280",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips NMS 8280/09",
+      "of": "Sanyo MPC-27",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8280/09",
+      "of": "Philips NMS 8280",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/09",
+      "of": "Philips NMS 8280/02",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/09",
+      "of": "Philips NMS 8280/16",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/09",
+      "of": "Philips NMS 8280/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/16",
+      "with": "Philips NMS 8280",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips NMS 8280/16",
+      "of": "Sanyo MPC-27",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8280/16",
+      "of": "Philips NMS 8280",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/16",
+      "of": "Philips NMS 8280/02",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/16",
+      "of": "Philips NMS 8280/09",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/16",
+      "of": "Philips NMS 8280/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/19",
+      "with": "Philips NMS 8280",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips NMS 8280/19",
+      "of": "Sanyo MPC-27",
+      "signal": "text: see"
+    },
+    {
+      "model": "Philips NMS 8280/19",
+      "of": "Philips NMS 8280",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/19",
+      "of": "Philips NMS 8280/02",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/19",
+      "of": "Philips NMS 8280/09",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips NMS 8280/19",
+      "of": "Philips NMS 8280/16",
+      "signal": "variant table"
     },
     {
       "model": "Philips VG 8000/00",
@@ -2145,7 +2621,27 @@
     },
     {
       "model": "Philips VG 8020/00",
+      "of": "Philips VG 8020/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8020/00",
+      "of": "Philips VG 8020/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8020/00",
       "of": "Philips VG-8020",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8020/00",
+      "of": "Philips VG-8020/29",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8020/00",
+      "of": "Philips VG-8020/40",
       "signal": "variant table"
     },
     {
@@ -2155,7 +2651,32 @@
     },
     {
       "model": "Philips VG 8020/19",
+      "with": "Philips VG 8020/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG 8020/19",
+      "of": "Philips VG 8020/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8020/19",
+      "of": "Philips VG 8020/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8020/19",
       "of": "Philips VG-8020",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8020/19",
+      "of": "Philips VG-8020/29",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8020/19",
+      "of": "Philips VG-8020/40",
       "signal": "variant table"
     },
     {
@@ -2165,17 +2686,82 @@
     },
     {
       "model": "Philips VG 8020/20",
+      "with": "Philips VG 8020/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG 8020/20",
+      "of": "Philips VG 8020/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8020/20",
+      "of": "Philips VG 8020/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8020/20",
       "of": "Philips VG-8020",
       "signal": "variant table"
     },
     {
+      "model": "Philips VG 8020/20",
+      "of": "Philips VG-8020/29",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8020/20",
+      "of": "Philips VG-8020/40",
+      "signal": "variant table"
+    },
+    {
       "model": "Philips VG 8235/00",
       "of": "Philips VG-8235",
       "signal": "link-share"
     },
     {
       "model": "Philips VG 8235/00",
+      "of": "Philips VG 8235/02",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/00",
+      "of": "Philips VG 8235/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/00",
+      "of": "Philips VG 8235/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/00",
+      "of": "Philips VG 8235/39",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/00",
       "of": "Philips VG-8235",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/00",
+      "of": "Philips VG-8235/16",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/00",
+      "of": "Philips VG-8235/22",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/00",
+      "of": "Philips VG-8235/29",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/00",
+      "of": "Philips VG-8235/36",
       "signal": "variant table"
     },
     {
@@ -2185,7 +2771,52 @@
     },
     {
       "model": "Philips VG 8235/02",
+      "with": "Philips VG 8235/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG 8235/02",
+      "of": "Philips VG 8235/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/02",
+      "of": "Philips VG 8235/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/02",
+      "of": "Philips VG 8235/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/02",
+      "of": "Philips VG 8235/39",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/02",
       "of": "Philips VG-8235",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/02",
+      "of": "Philips VG-8235/16",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/02",
+      "of": "Philips VG-8235/22",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/02",
+      "of": "Philips VG-8235/29",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/02",
+      "of": "Philips VG-8235/36",
       "signal": "variant table"
     },
     {
@@ -2195,7 +2826,52 @@
     },
     {
       "model": "Philips VG 8235/19",
+      "with": "Philips VG 8235/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG 8235/19",
+      "of": "Philips VG 8235/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/19",
+      "of": "Philips VG 8235/02",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/19",
+      "of": "Philips VG 8235/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/19",
+      "of": "Philips VG 8235/39",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/19",
       "of": "Philips VG-8235",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/19",
+      "of": "Philips VG-8235/16",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/19",
+      "of": "Philips VG-8235/22",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/19",
+      "of": "Philips VG-8235/29",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/19",
+      "of": "Philips VG-8235/36",
       "signal": "variant table"
     },
     {
@@ -2205,7 +2881,52 @@
     },
     {
       "model": "Philips VG 8235/20",
+      "with": "Philips VG 8235/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG 8235/20",
+      "of": "Philips VG 8235/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/20",
+      "of": "Philips VG 8235/02",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/20",
+      "of": "Philips VG 8235/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/20",
+      "of": "Philips VG 8235/39",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/20",
       "of": "Philips VG-8235",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/20",
+      "of": "Philips VG-8235/16",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/20",
+      "of": "Philips VG-8235/22",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/20",
+      "of": "Philips VG-8235/29",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/20",
+      "of": "Philips VG-8235/36",
       "signal": "variant table"
     },
     {
@@ -2215,7 +2936,322 @@
     },
     {
       "model": "Philips VG 8235/39",
+      "with": "Philips VG 8235/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG 8235/39",
+      "of": "Philips VG 8235/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/39",
+      "of": "Philips VG 8235/02",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/39",
+      "of": "Philips VG 8235/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/39",
+      "of": "Philips VG 8235/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/39",
       "of": "Philips VG-8235",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/39",
+      "of": "Philips VG-8235/16",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/39",
+      "of": "Philips VG-8235/22",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/39",
+      "of": "Philips VG-8235/29",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG 8235/39",
+      "of": "Philips VG-8235/36",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8020",
+      "with": "Philips VG 8020/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG-8020/29",
+      "with": "Philips VG 8020/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG-8020/29",
+      "of": "Philips VG 8020/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8020/29",
+      "of": "Philips VG 8020/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8020/29",
+      "of": "Philips VG 8020/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8020/29",
+      "of": "Philips VG-8020",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8020/29",
+      "of": "Philips VG-8020/40",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8020/40",
+      "with": "Philips VG 8020/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG-8020/40",
+      "of": "Philips VG 8020/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8020/40",
+      "of": "Philips VG 8020/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8020/40",
+      "of": "Philips VG 8020/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8020/40",
+      "of": "Philips VG-8020",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8020/40",
+      "of": "Philips VG-8020/29",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235",
+      "with": "Philips VG 8235/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG-8235/16",
+      "with": "Philips VG 8235/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG-8235/16",
+      "of": "Philips VG 8235/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/16",
+      "of": "Philips VG 8235/02",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/16",
+      "of": "Philips VG 8235/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/16",
+      "of": "Philips VG 8235/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/16",
+      "of": "Philips VG 8235/39",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/16",
+      "of": "Philips VG-8235",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/16",
+      "of": "Philips VG-8235/22",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/16",
+      "of": "Philips VG-8235/29",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/16",
+      "of": "Philips VG-8235/36",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/22",
+      "with": "Philips VG 8235/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG-8235/22",
+      "of": "Philips VG 8235/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/22",
+      "of": "Philips VG 8235/02",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/22",
+      "of": "Philips VG 8235/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/22",
+      "of": "Philips VG 8235/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/22",
+      "of": "Philips VG 8235/39",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/22",
+      "of": "Philips VG-8235",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/22",
+      "of": "Philips VG-8235/16",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/22",
+      "of": "Philips VG-8235/29",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/22",
+      "of": "Philips VG-8235/36",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/29",
+      "with": "Philips VG 8235/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG-8235/29",
+      "of": "Philips VG 8235/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/29",
+      "of": "Philips VG 8235/02",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/29",
+      "of": "Philips VG 8235/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/29",
+      "of": "Philips VG 8235/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/29",
+      "of": "Philips VG 8235/39",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/29",
+      "of": "Philips VG-8235",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/29",
+      "of": "Philips VG-8235/16",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/29",
+      "of": "Philips VG-8235/22",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/29",
+      "of": "Philips VG-8235/36",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/36",
+      "with": "Philips VG 8235/00",
+      "signal": "same page"
+    },
+    {
+      "model": "Philips VG-8235/36",
+      "of": "Philips VG 8235/00",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/36",
+      "of": "Philips VG 8235/02",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/36",
+      "of": "Philips VG 8235/19",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/36",
+      "of": "Philips VG 8235/20",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/36",
+      "of": "Philips VG 8235/39",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/36",
+      "of": "Philips VG-8235",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/36",
+      "of": "Philips VG-8235/16",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/36",
+      "of": "Philips VG-8235/22",
+      "signal": "variant table"
+    },
+    {
+      "model": "Philips VG-8235/36",
+      "of": "Philips VG-8235/29",
       "signal": "variant table"
     },
     {
@@ -2224,8 +3260,38 @@
       "signal": "text: sold as"
     },
     {
+      "model": "Phonola NMS 8245",
+      "of": "Philips NMS 8245/16",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola NMS 8245",
+      "of": "Philips NMS 8245/19",
+      "signal": "text: sold as"
+    },
+    {
       "model": "Phonola NMS 8280",
       "of": "Philips NMS 8280",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola NMS 8280",
+      "of": "Philips NMS 8280/02",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola NMS 8280",
+      "of": "Philips NMS 8280/09",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola NMS 8280",
+      "of": "Philips NMS 8280/16",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola NMS 8280",
+      "of": "Philips NMS 8280/19",
       "signal": "text: sold as"
     },
     {
@@ -2240,12 +3306,82 @@
     },
     {
       "model": "Phonola VG-8020",
+      "of": "Philips VG 8020/00",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8020",
+      "of": "Philips VG 8020/19",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8020",
+      "of": "Philips VG 8020/20",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8020",
       "of": "Philips VG-8020",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8020",
+      "of": "Philips VG-8020/29",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8020",
+      "of": "Philips VG-8020/40",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8235",
+      "of": "Philips VG 8235/00",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8235",
+      "of": "Philips VG 8235/02",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8235",
+      "of": "Philips VG 8235/19",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8235",
+      "of": "Philips VG 8235/20",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8235",
+      "of": "Philips VG 8235/39",
       "signal": "text: sold as"
     },
     {
       "model": "Phonola VG-8235",
       "of": "Philips VG-8235",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8235",
+      "of": "Philips VG-8235/16",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8235",
+      "of": "Philips VG-8235/22",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8235",
+      "of": "Philips VG-8235/29",
+      "signal": "text: sold as"
+    },
+    {
+      "model": "Phonola VG-8235",
+      "of": "Philips VG-8235/36",
       "signal": "text: sold as"
     },
     {
@@ -3354,13 +4490,223 @@
       "signal": "text: sold as"
     },
     {
+      "model": "Victor HC-90",
+      "of": "Victor HC-90(B)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90",
+      "of": "Victor HC-90(T)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90",
+      "of": "Victor HC-90(V)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90",
+      "of": "Victor HC-90A",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(B)",
+      "with": "Victor HC-90",
+      "signal": "same page"
+    },
+    {
+      "model": "Victor HC-90(B)",
+      "of": "Victor HC-90",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(B)",
+      "of": "Victor HC-90(T)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(B)",
+      "of": "Victor HC-90(V)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(B)",
+      "of": "Victor HC-90A",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(T)",
+      "with": "Victor HC-90",
+      "signal": "same page"
+    },
+    {
+      "model": "Victor HC-90(T)",
+      "of": "Victor HC-90",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(T)",
+      "of": "Victor HC-90(B)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(T)",
+      "of": "Victor HC-90(V)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(T)",
+      "of": "Victor HC-90A",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(V)",
+      "with": "Victor HC-90",
+      "signal": "same page"
+    },
+    {
+      "model": "Victor HC-90(V)",
+      "of": "Victor HC-90",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(V)",
+      "of": "Victor HC-90(B)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(V)",
+      "of": "Victor HC-90(T)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90(V)",
+      "of": "Victor HC-90A",
+      "signal": "variant table"
+    },
+    {
       "model": "Victor HC-90A",
       "of": "Victor HC-90",
       "signal": "link-share"
     },
     {
       "model": "Victor HC-90A",
+      "with": "Victor HC-90",
+      "signal": "same page"
+    },
+    {
+      "model": "Victor HC-90A",
       "of": "Victor HC-90",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90A",
+      "of": "Victor HC-90(B)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90A",
+      "of": "Victor HC-90(T)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-90A",
+      "of": "Victor HC-90(V)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95",
+      "of": "Victor HC-95(B)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95",
+      "of": "Victor HC-95(T)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95",
+      "of": "Victor HC-95(V)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95",
+      "of": "Victor HC-95A",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(B)",
+      "with": "Victor HC-95",
+      "signal": "same page"
+    },
+    {
+      "model": "Victor HC-95(B)",
+      "of": "Victor HC-95",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(B)",
+      "of": "Victor HC-95(T)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(B)",
+      "of": "Victor HC-95(V)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(B)",
+      "of": "Victor HC-95A",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(T)",
+      "with": "Victor HC-95",
+      "signal": "same page"
+    },
+    {
+      "model": "Victor HC-95(T)",
+      "of": "Victor HC-95",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(T)",
+      "of": "Victor HC-95(B)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(T)",
+      "of": "Victor HC-95(V)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(T)",
+      "of": "Victor HC-95A",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(V)",
+      "with": "Victor HC-95",
+      "signal": "same page"
+    },
+    {
+      "model": "Victor HC-95(V)",
+      "of": "Victor HC-95",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(V)",
+      "of": "Victor HC-95(B)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(V)",
+      "of": "Victor HC-95(T)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95(V)",
+      "of": "Victor HC-95A",
       "signal": "variant table"
     },
     {
@@ -3370,7 +4716,27 @@
     },
     {
       "model": "Victor HC-95A",
+      "with": "Victor HC-95",
+      "signal": "same page"
+    },
+    {
+      "model": "Victor HC-95A",
       "of": "Victor HC-95",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95A",
+      "of": "Victor HC-95(B)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95A",
+      "of": "Victor HC-95(T)",
+      "signal": "variant table"
+    },
+    {
+      "model": "Victor HC-95A",
+      "of": "Victor HC-95(V)",
       "signal": "variant table"
     },
     {
@@ -3392,6 +4758,201 @@
       "model": "Wandy DPC-200",
       "of": "Daewoo DPC-200",
       "signal": "text: list"
+    },
+    {
+      "model": "Yamaha CX5MA",
+      "of": "Yamaha CX5M",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MA",
+      "of": "Yamaha CX5MC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MA",
+      "of": "Yamaha CX5ME",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MA",
+      "of": "Yamaha CX5MF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MA",
+      "of": "Yamaha CX5MG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MA",
+      "of": "Yamaha CX5MS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MA",
+      "of": "Yamaha CX5MU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MC",
+      "with": "Yamaha CX5MA",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MC",
+      "of": "Yamaha CX5M",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MC",
+      "of": "Yamaha CX5MA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MC",
+      "of": "Yamaha CX5ME",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MC",
+      "of": "Yamaha CX5MF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MC",
+      "of": "Yamaha CX5MG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MC",
+      "of": "Yamaha CX5MS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MC",
+      "of": "Yamaha CX5MU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5ME",
+      "with": "Yamaha CX5MA",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5ME",
+      "of": "Yamaha CX5M",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5ME",
+      "of": "Yamaha CX5MA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5ME",
+      "of": "Yamaha CX5MC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5ME",
+      "of": "Yamaha CX5MF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5ME",
+      "of": "Yamaha CX5MG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5ME",
+      "of": "Yamaha CX5MS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5ME",
+      "of": "Yamaha CX5MU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MF",
+      "with": "Yamaha CX5MA",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MF",
+      "of": "Yamaha CX5M",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MF",
+      "of": "Yamaha CX5MA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MF",
+      "of": "Yamaha CX5MC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MF",
+      "of": "Yamaha CX5ME",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MF",
+      "of": "Yamaha CX5MG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MF",
+      "of": "Yamaha CX5MS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MF",
+      "of": "Yamaha CX5MU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MG",
+      "with": "Yamaha CX5MA",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MG",
+      "of": "Yamaha CX5M",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MG",
+      "of": "Yamaha CX5MA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MG",
+      "of": "Yamaha CX5MC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MG",
+      "of": "Yamaha CX5ME",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MG",
+      "of": "Yamaha CX5MF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MG",
+      "of": "Yamaha CX5MS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MG",
+      "of": "Yamaha CX5MU",
+      "signal": "variant table"
     },
     {
       "model": "Yamaha CX5MII/128",
@@ -3399,8 +4960,578 @@
       "signal": "same page"
     },
     {
+      "model": "Yamaha CX5MIIA",
+      "with": "Yamaha CX5MII",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MIIA",
+      "of": "Yamaha CX5MII",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIA",
+      "of": "Yamaha CX5MII/128",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIA",
+      "of": "Yamaha CX5MIIB",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIA",
+      "of": "Yamaha CX5MIIC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIA",
+      "of": "Yamaha CX5MIIE",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIA",
+      "of": "Yamaha CX5MIIF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIA",
+      "of": "Yamaha CX5MIIG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIA",
+      "of": "Yamaha CX5MIIP",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIA",
+      "of": "Yamaha CX5MIIS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIA",
+      "of": "Yamaha CX5MIIU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIB",
+      "with": "Yamaha CX5MII",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MIIB",
+      "of": "Yamaha CX5MII",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIB",
+      "of": "Yamaha CX5MII/128",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIB",
+      "of": "Yamaha CX5MIIA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIB",
+      "of": "Yamaha CX5MIIC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIB",
+      "of": "Yamaha CX5MIIE",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIB",
+      "of": "Yamaha CX5MIIF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIB",
+      "of": "Yamaha CX5MIIG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIB",
+      "of": "Yamaha CX5MIIP",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIB",
+      "of": "Yamaha CX5MIIS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIB",
+      "of": "Yamaha CX5MIIU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIC",
+      "with": "Yamaha CX5MII",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MIIC",
+      "of": "Yamaha CX5MII",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIC",
+      "of": "Yamaha CX5MII/128",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIC",
+      "of": "Yamaha CX5MIIA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIC",
+      "of": "Yamaha CX5MIIB",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIC",
+      "of": "Yamaha CX5MIIE",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIC",
+      "of": "Yamaha CX5MIIF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIC",
+      "of": "Yamaha CX5MIIG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIC",
+      "of": "Yamaha CX5MIIP",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIC",
+      "of": "Yamaha CX5MIIS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIC",
+      "of": "Yamaha CX5MIIU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIE",
+      "with": "Yamaha CX5MII",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MIIE",
+      "of": "Yamaha CX5MII",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIE",
+      "of": "Yamaha CX5MII/128",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIE",
+      "of": "Yamaha CX5MIIA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIE",
+      "of": "Yamaha CX5MIIB",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIE",
+      "of": "Yamaha CX5MIIC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIE",
+      "of": "Yamaha CX5MIIF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIE",
+      "of": "Yamaha CX5MIIG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIE",
+      "of": "Yamaha CX5MIIP",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIE",
+      "of": "Yamaha CX5MIIS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIE",
+      "of": "Yamaha CX5MIIU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIF",
+      "with": "Yamaha CX5MII",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MIIF",
+      "of": "Yamaha CX5MII",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIF",
+      "of": "Yamaha CX5MII/128",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIF",
+      "of": "Yamaha CX5MIIA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIF",
+      "of": "Yamaha CX5MIIB",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIF",
+      "of": "Yamaha CX5MIIC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIF",
+      "of": "Yamaha CX5MIIE",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIF",
+      "of": "Yamaha CX5MIIG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIF",
+      "of": "Yamaha CX5MIIP",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIF",
+      "of": "Yamaha CX5MIIS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIF",
+      "of": "Yamaha CX5MIIU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIG",
+      "with": "Yamaha CX5MII",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MIIG",
+      "of": "Yamaha CX5MII",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIG",
+      "of": "Yamaha CX5MII/128",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIG",
+      "of": "Yamaha CX5MIIA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIG",
+      "of": "Yamaha CX5MIIB",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIG",
+      "of": "Yamaha CX5MIIC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIG",
+      "of": "Yamaha CX5MIIE",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIG",
+      "of": "Yamaha CX5MIIF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIG",
+      "of": "Yamaha CX5MIIP",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIG",
+      "of": "Yamaha CX5MIIS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIG",
+      "of": "Yamaha CX5MIIU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIP",
+      "with": "Yamaha CX5MII",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MIIP",
+      "of": "Yamaha CX5MII",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIP",
+      "of": "Yamaha CX5MII/128",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIP",
+      "of": "Yamaha CX5MIIA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIP",
+      "of": "Yamaha CX5MIIB",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIP",
+      "of": "Yamaha CX5MIIC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIP",
+      "of": "Yamaha CX5MIIE",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIP",
+      "of": "Yamaha CX5MIIF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIP",
+      "of": "Yamaha CX5MIIG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIP",
+      "of": "Yamaha CX5MIIS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIP",
+      "of": "Yamaha CX5MIIU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIS",
+      "with": "Yamaha CX5MII",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MIIS",
+      "of": "Yamaha CX5MII",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIS",
+      "of": "Yamaha CX5MII/128",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIS",
+      "of": "Yamaha CX5MIIA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIS",
+      "of": "Yamaha CX5MIIB",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIS",
+      "of": "Yamaha CX5MIIC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIS",
+      "of": "Yamaha CX5MIIE",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIS",
+      "of": "Yamaha CX5MIIF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIS",
+      "of": "Yamaha CX5MIIG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIS",
+      "of": "Yamaha CX5MIIP",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIS",
+      "of": "Yamaha CX5MIIU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIU",
+      "with": "Yamaha CX5MII",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MIIU",
+      "of": "Yamaha CX5MII",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIU",
+      "of": "Yamaha CX5MII/128",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIU",
+      "of": "Yamaha CX5MIIA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIU",
+      "of": "Yamaha CX5MIIB",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIU",
+      "of": "Yamaha CX5MIIC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIU",
+      "of": "Yamaha CX5MIIE",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIU",
+      "of": "Yamaha CX5MIIF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIU",
+      "of": "Yamaha CX5MIIG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIU",
+      "of": "Yamaha CX5MIIP",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MIIU",
+      "of": "Yamaha CX5MIIS",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MS",
+      "with": "Yamaha CX5MA",
+      "signal": "same page"
+    },
+    {
+      "model": "Yamaha CX5MS",
+      "of": "Yamaha CX5M",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MS",
+      "of": "Yamaha CX5MA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MS",
+      "of": "Yamaha CX5MC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MS",
+      "of": "Yamaha CX5ME",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MS",
+      "of": "Yamaha CX5MF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MS",
+      "of": "Yamaha CX5MG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MS",
+      "of": "Yamaha CX5MU",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MU",
+      "with": "Yamaha CX5MA",
+      "signal": "same page"
+    },
+    {
       "model": "Yamaha CX5MU",
       "of": "Yamaha CX5M",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MU",
+      "of": "Yamaha CX5MA",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MU",
+      "of": "Yamaha CX5MC",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MU",
+      "of": "Yamaha CX5ME",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MU",
+      "of": "Yamaha CX5MF",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MU",
+      "of": "Yamaha CX5MG",
+      "signal": "variant table"
+    },
+    {
+      "model": "Yamaha CX5MU",
+      "of": "Yamaha CX5MS",
       "signal": "variant table"
     },
     {
