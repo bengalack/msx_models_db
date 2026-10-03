@@ -305,7 +305,7 @@ COLUMNS: list[Column] = [
     Column(id=27,  key="printer_port",    label="PRN Port",             group="other",    type="string", short_label="PRN\nPort", tooltip="Printer port"),
     # Emulation
     Column(id=28, key="openmsx_id",       label="openMSX Machine ID",   group="emulation", type="string", short_label="openMSX ID",  tooltip="openMSX Machine ID",
-           linkable=True, truncate_limit=20),
+           linkable=True, truncate_limit=20, label_icon="fa-external-link"),   # cells link to the machine XML
     Column(id=29, key="fpga_support",     label="FPGA",                 group="emulation", type="string",
            derive=lambda m: "Yes" if "Altera" in (m.get("engine_raw") or "") else None),
 
