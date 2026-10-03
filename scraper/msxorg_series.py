@@ -259,13 +259,14 @@ def _variant_tables(soup: BeautifulSoup) -> list[list[list[str]]]:
     tables = []
     for table in soup.find_all("table"):
         grid = _flatten_table(table)
-        if grid and grid[0] and grid[0][0].strip().lower() == "product":
+        # First column "Product" (VG-8235/00 …) or "Version" (Victor HC-90(A) …)
+        if grid and grid[0] and grid[0][0].strip().lower() in ("product", "version"):
             tables.append(grid)
     return tables
 
 
 def variant_row(soup: BeautifulSoup, variant: str, variants: list[str]) -> dict[str, str]:
-    """This variant's row from the per-variant table(s) (first column "Product")."""
+    """This variant's row from the per-variant table(s) (first column "Product" or "Version")."""
     vre = _variant_re(variants)
     for grid in _variant_tables(soup):
         header = [h.strip() for h in grid[0]]
@@ -465,11 +466,33 @@ def build_variant_specs(
 # ── Several models on one page ──────────────────────────────────────────────
 
 # Per-product table columns and the specs field each one answers.
-_PRODUCT_COLUMNS = {"Region": "Region", "Keyboard": "Keyboard layout", "VDP": "Video"}
+_PRODUCT_COLUMNS = {"Region": "Region", "Keyboard": "Keyboard layout", "VDP": "Video", "RAM": "RAM"}
+
+
+def own_row_specs(specs: dict[str, str], soup: BeautifulSoup, model: str, variants: list[str]) -> dict[str, str]:
+    """*specs* with the model's own row of the per-version table on top ("HC-90 | 64kB | V9938").
+
+    A page's general value may name all versions at once ("256kB (versions V
+    and T) or 64kB (other versions)"); the model's table row is its own. Only
+    a model with exactly one row: one listed per country (Goldstar FC-200) has
+    no single row of its own.
+    """
+    vre = _variant_re(variants)
+    rows = [row for grid in _variant_tables(soup) for row in grid[1:]
+            if row and model.upper() in _names_in(row[0], vre)]
+    if len(rows) != 1:
+        return specs
+    row = variant_row(soup, model, variants)
+    out = dict(specs)
+    for column, field in _PRODUCT_COLUMNS.items():
+        value = row.get(column, "")
+        if value:
+            out[field] = expand_region_codes(value) if field == "Region" else value
+    return out
 
 
 def product_names(soup: BeautifulSoup) -> list[str]:
-    """Product codes listed in the page's per-variant table(s) (first column "Product")."""
+    """Product codes listed in the page's per-variant table(s) (first column "Product" or "Version")."""
     names: list[str] = []
     for grid in _variant_tables(soup):
         for row in grid[1:]:
@@ -504,24 +527,28 @@ def localised_specs(
     base_specs: dict[str, str],
     product: str,
     variants: list[str],
-) -> dict[str, str]:
-    """Specs of a localised product ("CX5MU") of a model whose specs are *base_specs*.
+) -> tuple[dict[str, str], set[str]]:
+    """Specs of a localised product ("CX5MU") of a model whose specs are *base_specs*, and its own fields.
 
     The product is the base model sold in another country: it takes the base
     values, overridden by values that name the product and by its row in the
-    per-product table (Region, Keyboard, VDP).
+    per-product table (Region, Keyboard, VDP, RAM). Those overridden specs
+    fields are its *own*: what the page states for the product.
     """
     vre = _variant_re(variants)
     out = {**base_specs, "Model": product}
+    own: set[str] = set()
     for field, raw in specs.items():
         if field in ("Brand", "Model") or product.upper() not in _names_in(_normalise(raw), vre):
             continue
         value = resolve_value(raw, product, variants)
         if value and not _SEE_TABLE_RE.search(value):
             out[field] = value
+            own.add(field)
     row = variant_row(soup, product, variants)
     for column, field in _PRODUCT_COLUMNS.items():
         value = row.get(column, "")
         if value:
             out[field] = expand_region_codes(value) if field == "Region" else value
-    return out
+            own.add(field)
+    return out, own

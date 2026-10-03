@@ -12,7 +12,7 @@ from urllib.parse import quote, unquote, urljoin
 import requests
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
-from .aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, LOCALISED_FIELD
+from .aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, LOCALISED_FIELD, OWN_FIELDS_FIELD, VERSION_FIELD
 from .inherit import fill_blanks
 from .market_status import MARKET_RARE, MARKET_UNRELEASED
 from .families import FAMILY_LINKS_FIELD, SERIES_FIELD, VARIANT_NAMES_FIELD
@@ -25,6 +25,7 @@ from .msxorg_series import (
     choose_slotmap_table,
     localised_specs,
     named_specs,
+    own_row_specs,
     product_names,
     page_context,
     resolve_specs,
@@ -892,6 +893,75 @@ def variant_table_names(page: bytes | BeautifulSoup) -> list[str]:
     return names
 
 
+# A version of the page's model opening a list item: "NMS 8280/00 for the Dutch
+# market", "CX5MA: Australian market", "HC-90(B) ...": the model name, then a
+# "/00" or "-16" number, one or two capitals, or one to three capitals in brackets.
+_VERSION_SUFFIX = r"(?:/\d+[A-Z]?|-\d+|[A-Z]{1,2}\b|\s*\([A-Z]{1,3}\))"
+
+
+def is_version(name: str, model: str) -> bool:
+    """*name* is a version of *model*: the model name plus a version suffix ("NMS 8280/16" of "NMS 8280")."""
+    return re.fullmatch(re.escape(model) + _VERSION_SUFFIX, name.strip()) is not None
+
+
+def variant_list_items(page: bytes | BeautifulSoup, models: list[str]) -> dict[str, str]:
+    """``{version: its list item's text}`` for the versions of *models* the page lists item by item.
+
+    A list counts when at least two of its items open with a version of one of
+    the page's own models ("Four models were produced: NMS 8280/00 for ...");
+    a single such item ("VG-8020/00 Service Manual", "CX5MII/128 Upgrade") is a
+    download or a note, not a version list.
+    """
+    soup = page if isinstance(page, BeautifulSoup) else BeautifulSoup(page, "lxml")
+    body = soup.select_one("#bodyContent") or soup
+    patterns = [re.compile(rf"({re.escape(m)}{_VERSION_SUFFIX})(?=[\s,:;.]|$)") for m in models if m]
+    items: dict[str, str] = {}
+    for lst in body.find_all(["ul", "ol"]):
+        if lst.find_parent("table") or lst.find_parent(id="toc") or lst.find_parent(class_="toc"):
+            continue
+        found: dict[str, str] = {}
+        for li in lst.find_all("li", recursive=False):
+            text = re.sub(r"\s+", " ", li.get_text(" ", strip=True))
+            hit = next((m.group(1) for p in patterns if (m := p.match(text))), None)
+            if hit and hit not in found:
+                found[hit] = text
+        if len(found) >= 2:
+            for name, text in found.items():
+                items.setdefault(name, text)
+    return items
+
+
+def variant_list_names(page: bytes | BeautifulSoup, models: list[str]) -> list[str]:
+    """The versions of *models* the page lists item by item (see ``variant_list_items``)."""
+    return list(variant_list_items(page, models))
+
+
+# What a version list item says about its version: "NMS 8280/16 for the Spanish
+# market, keyboard layout is QWERTY with ñ key".
+_ITEM_MARKET_RE = re.compile(
+    r"\bfor the (?P<market>.+?) markets?\b"                       # "for the Dutch and Belgian markets"
+    r"|\bsold (?:mainly |only )?in (?P<sold>[^(;.]+?)(?=\s*[(;.]|$)",   # "Version sold mainly in Belgium, France and The Netherlands"
+    re.IGNORECASE)
+_ITEM_KEYBOARD_RE = re.compile(r"\bkeyboard(?: layout)? is (?P<keyboard>[^,;]+?)(?=[,;.]?$|[,;])", re.IGNORECASE)
+
+
+def list_item_specs(text: str) -> dict[str, str]:
+    """Region and keyboard layout a version list item states ("for the Dutch and Belgian markets" → "Dutch, Belgian").
+
+    The region is left as the market adjectives; the build's region step names
+    them (data/regions.json aliases: Dutch → Netherlands).
+    """
+    out: dict[str, str] = {}
+    market = _ITEM_MARKET_RE.search(text)
+    if market:
+        place = market.group("market") or market.group("sold")
+        out["Region"] = re.sub(r"\s+and\s+", ", ", place.strip())
+    keyboard = _ITEM_KEYBOARD_RE.search(text)
+    if keyboard:
+        out["Keyboard layout"] = keyboard.group("keyboard").strip()
+    return out
+
+
 def _record_from_specs(
     specs: dict[str, str],
     *,
@@ -1047,13 +1117,17 @@ def _localised_records(
     """One record per localised product of the page's models ("CX5MU" of "CX5M").
 
     Products come from the Model field's list and from the per-product table
-    (first column "Product"); a table-only product localises the longest model
-    name it starts with. Each record is its model's, with the values that name
-    the product and its table row (Region, Keyboard, VDP) on top. The merge
-    keeps it only when openMSX has that machine (``LOCALISED_FIELD``).
+    (first column "Product" or "Version") and from a version list ("NMS 8280/16
+    for the Spanish market"); a product found elsewhere localises the longest
+    model name it starts with. Each record is its model's, with the values that
+    name the product, its table row (Region, Keyboard, VDP, RAM) and its list
+    item (market, keyboard) on top. The merge keeps it only when openMSX has
+    that machine (``LOCALISED_FIELD``) — a version of the model
+    (``VERSION_FIELD``) also without one.
     """
     found = dict(products)
-    for name in product_names(soup):
+    items = variant_list_items(soup, model_names)
+    for name in [*product_names(soup), *items]:
         if name in model_names or name in found:
             continue
         prefixed = [m for m in model_names if name.upper().startswith(m.upper())]
@@ -1062,8 +1136,24 @@ def _localised_records(
     records = []
     for product, base in found.items():
         base_specs, table = model_specs(base)
-        record = build(localised_specs(specs, soup, base_specs, product, variants), table, product)
+        product_specs, own_specs = localised_specs(specs, soup, base_specs, product, variants)
+        # A version list item's own market and keyboard, for what the page's
+        # fields and tables leave as the model's (family-wide) values.
+        for field, value in list_item_specs(items.get(product, "")).items():
+            if field not in own_specs:
+                product_specs[field] = value
+                own_specs.add(field)
+        record = build(product_specs, table, product)
         record[LOCALISED_FIELD] = base
+        if is_version(product, base):
+            record[VERSION_FIELD] = True
+            # What the page states for this version, as record fields: those its
+            # own specs fields produce (the build inherits the rest from the
+            # main model's row).
+            without = build({k: v for k, v in product_specs.items() if k not in own_specs or k == "Model"},
+                            table, product)
+            record[OWN_FIELDS_FIELD] = sorted(
+                k for k, v in record.items() if not k.startswith("_") and v is not None and without.get(k) != v)
         records.append(record)
     if records:
         log.info("[msxorg:localised] %s: %d localised product(s) %s", page_title, len(records), list(found))
@@ -1157,10 +1247,12 @@ def parse_model_page(
     # and its own slot map; a series page was already resolved for this member.
     multi = own_page and len(model_names) > 1
 
+    table_names = model_names + [p for p in product_names(soup) if p not in model_names]
+
     def model_specs(model: str) -> tuple[dict[str, str], Tag | None]:
         if not multi:
-            return specs, slot_table
-        spec = named_specs(specs, model, model_names)
+            return own_row_specs(specs, soup, model, table_names), slot_table
+        spec = own_row_specs(named_specs(specs, model, model_names), soup, model, table_names)
         return spec, choose_slotmap_table(soup, model, model_names, spec.get("RAM", ""))
 
     records: list[dict[str, Any]] = []
@@ -1195,9 +1287,10 @@ def parse_model_page(
         for record in records:
             record["modem"] = MODEM_YES
     # Family relations (scraper/families.py): the series page this page defers to,
-    # the models its text names as versions / rebrands, its variant table.
+    # the models its text names as versions / rebrands, its variant table or list.
     links = family_links(soup, page_title)
     variants = variant_table_names(soup)
+    variants += [n for n in variant_list_names(soup, model_names) if n not in variants]
     for record in records:
         if series:
             record[SERIES_FIELD] = series

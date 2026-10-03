@@ -8,7 +8,9 @@ import re
 from pathlib import Path
 from typing import Any
 
-from scraper.aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, LOCALISED_FIELD, AliasLUT, apply_aliases, load_aliases
+from scraper.aliases import (
+    FORMER_MODEL_FIELD, KNOWN_AS_FIELD, LOCALISED_FIELD, VERSION_FIELD, AliasLUT, apply_aliases, load_aliases,
+)
 from scraper.market_status import merged_status
 from scraper.revisions import REVISION_FIELD
 from scraper.symbols import ABSENT as _ABSENT, EMPTY_PAGE as _EMPTY_PAGE
@@ -21,6 +23,47 @@ log = logging.getLogger(__name__)
 # Merged-model field listing the natural keys the model had before
 # data/aliases.json renamed it. Internal: never shipped to the browser.
 FORMER_KEYS_FIELD = "_former_keys"
+
+
+# A version's home-market number: Philips' "/00" is the main model itself.
+_HOME_VERSION_RE = re.compile(r"/0+$")
+
+
+def _keep_version(
+    version: dict[str, Any],
+    msxorg: list[dict[str, Any]],
+    openmsx_by_name: dict[tuple[str, str], dict[str, Any]],
+    own_page_names: set[tuple[str, str]],
+) -> bool:
+    """Whether a version record without an openMSX machine of its exact key becomes a row.
+
+    - Written differently by openMSX ("HC-90(A)" / "HC-90A"): it takes openMSX's
+      name and joins that machine.
+    - Another msx.org page has the name: that page's row wins.
+    - The home-market version ("NMS 8280/00"): the main model is that version,
+      so its region and keyboard go to the main model's record instead.
+    - Otherwise a row of its own.
+    """
+    name = (_squash(version.get("brand")), _squash(version.get("model")))
+    twin = openmsx_by_name.get(name)
+    if twin is not None:
+        version["model"] = twin["model"]
+        return True
+    if name in own_page_names:
+        log.debug("[merge:version] %s dropped (msx.org page of its own)", natural_key(version))
+        return False
+    if _HOME_VERSION_RE.search(version.get("model") or ""):
+        main = next((m for m in msxorg if not m.get(LOCALISED_FIELD)
+                     and m.get("msxorg_title") == version.get("msxorg_title")
+                     and m.get("model") == version.get(LOCALISED_FIELD)), None)
+        if main is not None:
+            for field in ("region", "keyboard_layout"):
+                if version.get(field):
+                    main[field] = version[field]
+        log.info("[merge:version] %s is the main model %s", natural_key(version), version.get(LOCALISED_FIELD))
+        return False
+    log.info("[merge:version] %s kept as a version of %s", natural_key(version), version.get(LOCALISED_FIELD))
+    return True
 
 
 def natural_key(model: dict[str, Any]) -> str:
@@ -192,15 +235,22 @@ def merge_models(
     # A revision record from msx.org ("HB-F500 (v2)") only becomes a row when
     # openMSX has that machine; msx.org alone never creates a revision row.
     # Likewise a localised product ("CX5MU" on the CX5M page), which also yields
-    # to an msx.org page of its own.
+    # to an msx.org page of its own — except a *version* of the page's model
+    # ("NMS 8280/16"), which becomes a row of its own (see _keep_version).
     openmsx_keys = {natural_key(m) for m in openmsx}
     own_page_keys = {natural_key(m) for m in msxorg or [] if not m.get(LOCALISED_FIELD)}
+    openmsx_by_name = {(_squash(m.get("brand")), _squash(m.get("model"))): m for m in openmsx}
+    own_page_names = {(_squash(m.get("brand")), _squash(m.get("model")))
+                      for m in msxorg or [] if not m.get(LOCALISED_FIELD)}
     kept_msxorg = []
     for m in msxorg or []:
         if m.get(REVISION_FIELD) and natural_key(m) not in openmsx_keys:
             log.info("[merge:revision] No openMSX machine for %s — dropped", natural_key(m))
             continue
-        if m.get(LOCALISED_FIELD) and (natural_key(m) not in openmsx_keys or natural_key(m) in own_page_keys):
+        if m.get(LOCALISED_FIELD) and natural_key(m) not in own_page_keys and natural_key(m) not in openmsx_keys                 and m.get(VERSION_FIELD):
+            if not _keep_version(m, msxorg, openmsx_by_name, own_page_names):
+                continue
+        elif m.get(LOCALISED_FIELD) and (natural_key(m) not in openmsx_keys or natural_key(m) in own_page_keys):
             log.debug("[merge:localised] %s dropped (no openMSX machine, or msx.org page of its own)", natural_key(m))
             continue
         kept_msxorg.append(m)

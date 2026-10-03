@@ -89,6 +89,11 @@ export interface ModelRecord {
    * ("slotmap_3_0_1" -> "Painter ROM"): the page shows "<LUT tooltip>: <detail>".
    */
   slot_details?: Record<string, string>;
+  /**
+   * Id of the main model this row is a version of ("NMS 8280/16" -> "NMS 8280",
+   * "CX5MU" -> "CX5M"); absent on main models and stand-alone models.
+   */
+  variant_of?: number;
 }
 
 /** The full dataset consumed by the web page at load time. */

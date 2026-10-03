@@ -975,7 +975,7 @@ class TestLocalisedProducts:
 
 
 def test_localised_products_join_only_openmsx_machines(tmp_path, monkeypatch):
-    """A localised record becomes a row only for an openMSX machine without an msx.org page of its own."""
+    """A localised record that is not a version becomes a row only for an openMSX machine without an msx.org page of its own."""
     from scraper.aliases import LOCALISED_FIELD
     page = "Maker MX5"
     msxorg = [
@@ -1174,3 +1174,108 @@ class TestModem:
 def test_psg_is_yes(audio):
     from scraper.msxorg import _parse_audio
     assert _parse_audio(audio)["psg"] == "Yes"
+
+
+# ── Versions of a model (version lists, Product/Version tables) ───────────
+
+_VERSION_LIST = ("<p>Four models were produced, with the keyboard as difference:</p><ul>"
+                 "<li>MX 80/00 for the Dutch and Belgian markets, keyboard layout is QWERTY</li>"
+                 "<li>MX 80/16 for the Spanish market, keyboard layout is QWERTY with ñ key</li>"
+                 "<li>MX 80/19 Version sold in France (AZERTY)</li></ul>")
+
+
+class TestVersions:
+    @pytest.mark.parametrize("name,model,expected", [
+        ("MX 80/16", "MX 80", True), ("MX5A", "MX5", True), ("HC-90(V)", "HC-90", True), ("MX 80-16", "MX 80", True),
+        ("MX 800", "MX 80", False), ("Other MX 80", "MX 80", False), ("MX 80 Pack", "MX 80", False),
+    ])
+    def test_is_version(self, name, model, expected):
+        from scraper.msxorg import is_version
+        assert is_version(name, model) is expected
+
+    @pytest.mark.parametrize("text,expected", [
+        ("MX 80/00 for the Dutch and Belgian markets, keyboard layout is QWERTY",
+         {"Region": "Dutch, Belgian", "Keyboard layout": "QWERTY"}),
+        ("MX 80/00 Version sold mainly in Belgium, France and The Netherlands",
+         {"Region": "Belgium, France, The Netherlands"}),
+        ("MX 80/16 Version sold in Spain (with ñ key)", {"Region": "Spain"}),
+        ("MX5A: Australian market", {}),
+    ])
+    def test_list_item_specs(self, text, expected):
+        from scraper.msxorg import list_item_specs
+        assert list_item_specs(text) == expected
+
+    def test_list_versions_become_flagged_records_with_their_own_values(self):
+        from scraper.aliases import LOCALISED_FIELD, VERSION_FIELD
+        page = _multi_page("MX 80", "128kB", table=_VERSION_LIST)
+        records = {r["model"]: r for r in parse_model_page(page, "MSX2", "Maker MX 80")}
+        assert set(records) == {"MX 80", "MX 80/00", "MX 80/16", "MX 80/19"}
+        v16 = records["MX 80/16"]
+        assert (v16[LOCALISED_FIELD], v16[VERSION_FIELD]) == ("MX 80", True)
+        assert (v16["region"], v16["keyboard_layout"]) == ("Spanish", "QWERTY with ñ key")
+        assert v16["main_ram_kb"] == records["MX 80"]["main_ram_kb"]
+        assert VERSION_FIELD not in records["MX 80"]
+
+    def test_version_table_rows_give_ram_and_vdp(self):
+        from scraper.aliases import OWN_FIELDS_FIELD, VERSION_FIELD
+        table = ('<table><tr><th>Version</th><th>RAM</th><th>VDP</th></tr>'
+                 '<tr><td>MX 9</td><td>64kB</td><td>V9938</td></tr>'
+                 '<tr><td>MX 9(V)</td><td>256kB</td><td>V9958</td></tr></table>')
+        page = _multi_page("MX 9", "256kB (version V) or 64kB (other versions)", table=table)
+        records = {r["model"]: r for r in parse_model_page(page, "MSX2", "Maker MX 9")}
+        assert records["MX 9(V)"][VERSION_FIELD] is True
+        assert (records["MX 9(V)"]["main_ram_kb"], records["MX 9(V)"]["vdp"]) == (256, "V9958")
+        assert {"main_ram_kb", "vdp"} <= set(records["MX 9(V)"][OWN_FIELDS_FIELD])
+        assert (records["MX 9"]["main_ram_kb"], records["MX 9"]["vdp"]) == (64, "V9938")   # its own table row
+
+    def test_a_model_listed_in_several_rows_has_no_row_of_its_own(self):
+        table = ('<table><tr><th>Product</th><th>Region</th></tr>'
+                 '<tr><td>MX 7</td><td>NL</td></tr><tr><td>MX 7</td><td>FR</td></tr></table>')
+        [record] = [r for r in parse_model_page(_multi_page("MX 7", "64kB", table=table), "MSX1", "Maker MX 7")
+                    if r["model"] == "MX 7"]
+        assert record["region"] == "Europe"
+
+    def test_other_products_of_a_table_are_not_versions(self):
+        from scraper.aliases import VERSION_FIELD
+        table = ('<table><tr><th>Product</th><th>Description</th></tr>'
+                 '<tr><td>NMS 100</td><td>Megapack: MX5 + printer</td></tr></table>')
+        records = {r["model"]: r for r in parse_model_page(_multi_page("MX5", "32kB", table=table), "MSX1", "Maker MX5")}
+        assert VERSION_FIELD not in records.get("NMS 100", {})
+
+
+def test_versions_become_rows_marked_variant_of_their_main_model(tmp_path, monkeypatch):
+    """Versions without an openMSX machine are rows; /00 is the main model; openMSX spellings join."""
+    from scraper.aliases import LOCALISED_FIELD, OWN_FIELDS_FIELD, VERSION_FIELD
+    page = "Maker MX 80"
+    main = {"brand": "Maker", "model": "MX 80", "generation": "MSX2", "msxorg_title": page, "year": 1987,
+            "region": "Europe", "keyboard_layout": "(MX 80/00) QWERTY (MX 80/16) QWERTY with ñ"}
+
+    def version(model, **values):
+        return {"brand": "Maker", "model": model, "generation": "MSX2", "msxorg_title": page, "year": 1987,
+                LOCALISED_FIELD: "MX 80", VERSION_FIELD: True, OWN_FIELDS_FIELD: sorted(values), **values}
+
+    msxorg = [main,
+              version("MX 80/00", region="Netherlands", keyboard_layout="QWERTY"),
+              version("MX 80/16", region="Spain", keyboard_layout="QWERTY with ñ"),
+              version("MX 80(A)", region="Japan"),                                   # openMSX writes "MX 80A"
+              {"brand": "Maker", "model": "MX 80/19", "generation": "MSX2", "msxorg_title": page,
+               LOCALISED_FIELD: "MX 80"}]                                            # not a version: dropped
+    openmsx = [{"brand": "Maker", "model": "MX 80A", "generation": "MSX2", "openmsx_id": "Maker_MX80A", "rtc": "No"},
+               {"brand": "Maker", "model": "MX 80", "generation": "MSX2", "openmsx_id": "Maker_MX80", "year": 1986,
+                "cpu": "Z80", "rtc": "Yes", "z80_turbo": "No", "himem_addr": "0xF380", "character_set": "International"}]
+    data, _ = _build_with_aliases(tmp_path, monkeypatch, {}, openmsx=openmsx, msxorg=msxorg)
+    keys = [c["key"] for c in data["columns"]]
+    rows = {dict(zip(keys, m["values"]))["model"]: (dict(zip(keys, m["values"])), m) for m in data["models"]}
+    assert set(rows) == {"MX 80", "MX 80/16", "MX 80A"}
+    assert (rows["MX 80"][0]["region"], rows["MX 80"][0]["keyboard_layout"]) == ("Netherlands", "QWERTY")
+    main_id = rows["MX 80"][1]["id"]
+    assert rows["MX 80/16"][1]["variant_of"] == main_id
+    assert rows["MX 80A"][1]["variant_of"] == main_id
+    assert rows["MX 80A"][0]["region"] == "Japan"
+    assert "variant_of" not in rows["MX 80"][1]
+    # A version msx.org alone describes is its main model's row, except what its page states
+    v16, mx80 = rows["MX 80/16"][0], rows["MX 80"][0]
+    assert (v16["cpu"], v16["rtc"], v16["z80_turbo"], v16["year"]) == (mx80["cpu"], mx80["rtc"], mx80["z80_turbo"], mx80["year"])
+    assert (v16["region"], v16["keyboard_layout"]) == ("Spain", "QWERTY with ñ")
+    assert v16["himem_addr"] is None and v16["character_set"] is None and v16["openmsx_id"] is None
+    assert rows["MX 80A"][0]["rtc"] == "No"                          # openMSX has it: its own machine's data

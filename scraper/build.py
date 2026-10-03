@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import logging
 import os
 import tempfile
@@ -23,6 +24,7 @@ from .regions import REGIONS_PATH, load_regions
 from .slotmap_details import slot_details
 from .families import FAMILIES_PATH, REBRAND_KEY, SERIES_KEY, compute_families, write_families
 from .generation_msx import GENERATION_MSX_PATH, load_links as load_generation_msx_links
+from .inherit import inherit_from_main
 from .link_shares import apply_link_shares, fill_from_link_shares, load_link_shares
 from .registry import IDRegistry
 from .slotmap import load_sha1_index
@@ -311,6 +313,11 @@ def build(
         shared = fill_from_link_shares(merged, load_link_shares(LINK_SHARES_PATH), merge.natural_key)
         if shared:
             log.info("[link-shares] %d models filled from their link-share donor", shared)
+    # Versions ("NMS 8220/16"): their main model's row, except what the page
+    # states for them (openMSX's CPU, RTC, … of the main model included).
+    inherited = inherit_versions(merged)
+    if inherited:
+        log.info("[versions] %d versions filled from their main model", inherited)
 
     # Step 4: Derive computed columns
     derive_cols = [c for c in COLUMNS if c.derive is not None]
@@ -439,6 +446,8 @@ def build(
         if c.tooltip_for and any(t in active_keys for t in c.tooltip_for)
     ]
 
+    variant_of = main_models(merged)
+
     js_models = []
     for model in merged:
         values = []
@@ -483,6 +492,8 @@ def build(
                         tooltips[col.key] = f"{url} (family)"
         if links:
             record["links"] = links
+        if model["_id"] in variant_of:
+            record["variant_of"] = variant_of[model["_id"]]
         details = slot_details(model, slotmap_rules, slotmap_lut_compact)
         if details:
             record["slot_details"] = details
@@ -534,6 +545,48 @@ def build(
         log.debug(
             "[exclude:dead_rule] Skipping dead-rule check (requires --fetch for accurate results)"
         )
+
+
+def version_mains(merged: list[dict[str, Any]]) -> list[tuple[dict[str, Any], dict[str, Any]]]:
+    """``[(version row, its main model's row)]``: "NMS 8280/16" -> "NMS 8280", "CX5MU" -> "CX5M".
+
+    A version is a localised product of an msx.org page that is the model's name
+    plus a version suffix (``VERSION_FIELD``); its main model is the row of the
+    model it localises, from the same page. Versions that openMSX also has
+    (VG 8235/02) are included.
+    """
+    from .aliases import LOCALISED_FIELD, VERSION_FIELD
+    squash = lambda text: re.sub(r"[^a-z0-9]", "", (text or "").lower())
+    page = lambda m: (m.get("msxorg_title") or "").replace("_", " ")   # "Yamaha_CX5M" = "Yamaha CX5M"
+    mains = {(page(m), squash(m.get("model"))): m
+             for m in merged if m.get("msxorg_title") and not m.get(VERSION_FIELD)}
+    pairs = []
+    for m in merged:
+        if m.get(VERSION_FIELD):
+            main = mains.get((page(m), squash(m.get(LOCALISED_FIELD))))
+            if main is not None and main is not m:
+                pairs.append((m, main))
+    return pairs
+
+
+def main_models(merged: list[dict[str, Any]]) -> dict[int, int]:
+    """``{version's id: its main model's id}`` (``ModelRecord.variant_of``; a later "hide variants" toggle)."""
+    return {version["_id"]: main["_id"] for version, main in version_mains(merged)}
+
+
+def inherit_versions(merged: list[dict[str, Any]]) -> int:
+    """Versions msx.org alone describes take their main model's row, except what their page states for them.
+
+    Versions openMSX also has (NMS 8245/16) keep their own machine's data.
+    """
+    from .aliases import OWN_FIELDS_FIELD
+    count = 0
+    for version, main in version_mains(merged):
+        if version.get("openmsx_id"):
+            continue
+        if inherit_from_main(version, main, set(version.get(OWN_FIELDS_FIELD) or ())):
+            count += 1
+    return count
 
 
 def _write_json(data: Any, path: Path) -> None:

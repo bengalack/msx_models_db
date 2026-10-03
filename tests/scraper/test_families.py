@@ -14,7 +14,7 @@ from scraper.families import (
     page_url,
     write_families,
 )
-from scraper.msxorg import family_links, variant_table_names
+from scraper.msxorg import family_links, variant_list_names, variant_table_names
 
 
 def _link(title: str) -> str:
@@ -84,6 +84,25 @@ def test_variant_table_names_reads_product_and_version_tables():
     assert variant_table_names(page) == ["HC-90", "HC-90(A)"]
 
 
+def test_variant_list_names_reads_a_list_of_versions():
+    page = _page(
+        "<p>Four models were produced, with the keyboard as difference:</p>",
+        "<ul><li>MX 80/00 for the Dutch market, QWERTY</li><li>MX 80/16 for the Spanish market</li>"
+        "<li>MX 80/19 for the French market, AZERTY</li></ul>",
+        "<ul><li>MXA: Australian market</li><li>MXU: United States market</li><li>Other text</li></ul>",
+    )
+    assert variant_list_names(page, ["MX 80"]) == ["MX 80/00", "MX 80/16", "MX 80/19"]
+    assert variant_list_names(page, ["MX"]) == ["MXA", "MXU"]
+
+
+@pytest.mark.parametrize("items", [
+    ["<li>MX 80/00 Service Manual</li>", "<li>Photos</li>"],     # one version-like item: a download, not a list
+    ["<li>MX 800 is the successor</li>", "<li>MX 8000</li>"],    # longer model numbers are other models
+])
+def test_variant_list_names_ignores_lists_that_are_not_versions(items):
+    assert variant_list_names(_page("<ul>" + "".join(items) + "</ul>"), ["MX 80"]) == []
+
+
 # ── Grouping ──────────────────────────────────────────────────────────────
 
 def _row(i: int, maker: str, model: str, year: int | None = None, **extra) -> dict:
@@ -127,6 +146,11 @@ class TestComputeFamilies:
     def test_series_name_drops_a_regional_tag_or_revision(self):
         assert base_name("V-20 (JP)") == "V-20" and base_name("HB-F500 (v2)") == "HB-F500"
         assert base_name("PX-7(HB)") == "PX-7" and base_name("CX5MII/128") == "CX5MII/128"
+
+    def test_variant_list_names_relate_models(self):
+        rows = [_row(1, "Philips", "NMS 80", 1987, **{VARIANT_NAMES_FIELD: ["NMS 80/16"]}),
+                _row(2, "Philips", "NMS 80/16", 1987, title=None)]
+        assert set(compute_families(rows, {}).value_of("series")) == {1, 2}
 
     def test_link_shares_and_variant_tables_relate_models(self):
         rows = [_row(1, "Philips", "VG-8020", 1984, **{VARIANT_NAMES_FIELD: ["VG-8020/00"]}),

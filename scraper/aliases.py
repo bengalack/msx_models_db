@@ -198,5 +198,16 @@ FORMER_MODEL_FIELD = "_former_model"
 
 # Internal field on an msx.org record for a localised product of the page's
 # model ("CX5MU" on the CX5M page): the model it localises. merge_models keeps
-# the record only when openMSX has that machine.
+# the record only when openMSX has that machine — unless it is a version.
 LOCALISED_FIELD = "_localised"
+
+# Set on a localised product that is a *version* of the page's model: the
+# model's name plus a version suffix ("NMS 8280/16", "CX5MA", "HC-90(V)").
+# merge_models keeps a version as a row of its own even without an openMSX
+# machine; the build marks it ``variant_of`` its main model.
+VERSION_FIELD = "_version"
+
+# On a version record: the fields its page states for that version (the values
+# that differ from the main model's, built from the same page). The build takes
+# every other field from the main model's merged row (scraper/inherit.py).
+OWN_FIELDS_FIELD = "_own_fields"
