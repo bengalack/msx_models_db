@@ -44,7 +44,7 @@ if (!window.MSX_DATA) {
 } else {
   const { models, generated, columns, groups } = window.MSX_DATA;
 
-  const pageTitle = `MSX Models DB by Bengalack\u2002·\u2002${models.length}\u00a0models\u2002·\u2002${generated}`;
+  const pageTitle = `MSX Models DB by Bengalack\u2002·\u2002${models.length}\u00a0models\u2002·\u2002${generated}\u2002·\u2002Sources: msx.org and openMSX`;
   document.title = pageTitle;
   title.textContent = pageTitle;
 
@@ -110,11 +110,6 @@ if (!window.MSX_DATA) {
   helpPanel.className = 'help-panel';
   helpPanel.hidden = true;
   helpPanel.innerHTML = `
-<h3>Dataset</h3>
-<p>
-Main sources: <a href=\"https://openmsx.org/wiki\" >openmsx</a> and <a href=\"https://msx.org/wiki\" >msx.org</a>. The dataset is not complete. Maybe one day😊<br/>
-Flag images: <a href=\"https://github.com/twitter/twemoji\" >Twemoji</a> (<a href=\"https://creativecommons.org/licenses/by/4.0/\" >CC BY 4.0</a>).
-</p><br/>
 <h3>Symbols</h3>
 <p>
 — means empty cell (value is none or unknown).<br/>
@@ -161,6 +156,11 @@ Share the current view customization via an URL. Use the button or just copy the
 Select and copy/paste.
 Cells shown as "—" will paste as empty.
 Toggle on 'Include headers on copy' for added context.
+</p><br/>
+<h3>Dataset</h3>
+<p>
+Main sources: <a href=\"https://openmsx.org/wiki\" >openmsx</a> and <a href=\"https://msx.org/wiki\" >msx.org</a>. The dataset is not complete. Maybe one day😊<br/>
+Flag images: <a href=\"https://github.com/twitter/twemoji\" >Twemoji</a> (<a href=\"https://creativecommons.org/licenses/by/4.0/\" >CC BY 4.0</a>).
 </p><br/>
 <h3>Feedback</h3>
 <p>
