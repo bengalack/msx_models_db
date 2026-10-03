@@ -29,7 +29,7 @@ from . import local_source
 from .aliases import AliasLUT, apply_aliases, load_aliases
 
 ModelKey = tuple[str, str]
-"""Canonical, case-folded ``(manufacturer, model)`` identity of a model."""
+"""Canonical, case-folded ``(brand, model)`` identity of a model."""
 
 # "<display name> - 0xF380". openMSX pads with a single " - ".
 _LINE_RE = re.compile(r"^(?P<name>.*?)\s+-\s+(?P<value>0[xX][0-9A-Fa-f]+)$")
@@ -83,11 +83,11 @@ def parse_dump(text: str) -> DumpParseResult:
     return result
 
 
-def canonical_key(manufacturer: str | None, model: str | None, lut: AliasLUT) -> ModelKey:
-    """Alias-canonicalised, case-folded ``(manufacturer, model)`` lookup key."""
-    record = {"manufacturer": manufacturer or "", "model": model or ""}
+def canonical_key(brand: str | None, model: str | None, lut: AliasLUT) -> ModelKey:
+    """Alias-canonicalised, case-folded ``(brand, model)`` lookup key."""
+    record = {"brand": brand or "", "model": model or ""}
     apply_aliases(record, lut)
-    return (record["manufacturer"].strip().lower(), record["model"].strip().lower())
+    return (record["brand"].strip().lower(), record["model"].strip().lower())
 
 
 def load_db_index(
@@ -95,7 +95,7 @@ def load_db_index(
 ) -> dict[ModelKey, tuple[str, str]]:
     """Index the models in a ``data.js`` file by canonical key.
 
-    The value is the manufacturer/model spelling as the database has it, which
+    The value is the brand/model spelling as the database has it, which
     is what new ``local-raw.json`` entries are written with.
 
     With *openmsx_raw* (the openMSX cache), openMSX display names the database
@@ -109,7 +109,7 @@ def load_db_index(
     payload = json.loads(text[start:end])
 
     keys = [column["key"] for column in payload["columns"]]
-    i_manufacturer = keys.index("manufacturer")
+    i_brand = keys.index("brand")
     i_model = keys.index("model")
 
     i_openmsx = keys.index("openmsx_id") if "openmsx_id" in keys else None
@@ -118,17 +118,17 @@ def load_db_index(
     by_openmsx_id: dict[str, tuple[str, str]] = {}
     for model in payload["models"]:
         values = model["values"]
-        manufacturer, name = values[i_manufacturer], values[i_model]
-        if not manufacturer or not name:
+        brand, name = values[i_brand], values[i_model]
+        if not brand or not name:
             continue
-        index[canonical_key(manufacturer, name, lut)] = (manufacturer, name)
+        index[canonical_key(brand, name, lut)] = (brand, name)
         if i_openmsx is not None and values[i_openmsx]:
-            by_openmsx_id[values[i_openmsx]] = (manufacturer, name)
+            by_openmsx_id[values[i_openmsx]] = (brand, name)
 
     if openmsx_raw is not None and openmsx_raw.exists():
         for record in json.loads(openmsx_raw.read_text(encoding="utf-8")):
             target = by_openmsx_id.get(record.get("openmsx_id") or "")
-            key = canonical_key(record.get("manufacturer"), record.get("model"), lut)
+            key = canonical_key(record.get("brand"), record.get("model"), lut)
             if target is not None and key not in index:
                 index[key] = target
     return index
@@ -139,7 +139,7 @@ def candidate_keys(
 ) -> list[ModelKey]:
     """Every database key *display_name* could split into.
 
-    openMSX prints one string ("Sony HB-75P"), so the manufacturer/model
+    openMSX prints one string ("Sony HB-75P"), so the brand/model
     boundary has to be recovered: every space is tried as the split point and
     the resulting pair is canonicalised and looked up.  Callers treat a single
     hit as resolved, none as unknown, and several as ambiguous.
@@ -160,9 +160,9 @@ class UpdatePlan:
     entries: list[dict] = field(default_factory=list)
     """The resulting file content."""
     added: list[tuple[str, str, str]] = field(default_factory=list)
-    """``(manufacturer, model, value)`` for entries appended to the file."""
+    """``(brand, model, value)`` for entries appended to the file."""
     updated: list[tuple[str, str, str | None, str]] = field(default_factory=list)
-    """``(manufacturer, model, old, new)`` for entries whose value moved."""
+    """``(brand, model, old, new)`` for entries whose value moved."""
     unchanged: list[tuple[str, str]] = field(default_factory=list)
     """Entries the dump confirmed without changing."""
     skipped: list[tuple[str, str]] = field(default_factory=list)
@@ -190,7 +190,7 @@ def plan_update(
 
     by_key: dict[ModelKey, list[int]] = {}
     for i, entry in enumerate(plan.entries):
-        key = canonical_key(entry.get("manufacturer"), entry.get("model"), lut)
+        key = canonical_key(entry.get("brand"), entry.get("model"), lut)
         by_key.setdefault(key, []).append(i)
 
     new_entries: list[dict] = []
@@ -206,10 +206,10 @@ def plan_update(
             continue
 
         key = keys[0]
-        manufacturer, model = db_index[key]
+        brand, model = db_index[key]
         # Entries are keyed by the database's name, which an openMSX display name
         # resolved through its machine file ("MPC-1/Wavy1" -> "MPC-1") differs from.
-        positions = by_key.get(canonical_key(manufacturer, model, lut), [])
+        positions = by_key.get(canonical_key(brand, model, lut), [])
         if len(positions) > 1:
             plan.skipped.append(
                 (display_name, f"{len(positions)} entries in the file share this model")
@@ -220,17 +220,17 @@ def plan_update(
             entry = plan.entries[positions[0]]
             old = entry.get("himem_addr")
             if old == value:
-                plan.unchanged.append((manufacturer, model))
+                plan.unchanged.append((brand, model))
             else:
                 entry["himem_addr"] = value
-                plan.updated.append((manufacturer, model, old, value))
+                plan.updated.append((brand, model, old, value))
         else:
             new_entries.append(
-                {"manufacturer": manufacturer, "model": model, "himem_addr": value}
+                {"brand": brand, "model": model, "himem_addr": value}
             )
-            plan.added.append((manufacturer, model, value))
+            plan.added.append((brand, model, value))
 
-    new_entries.sort(key=lambda e: (e["manufacturer"].lower(), e["model"].lower()))
+    new_entries.sort(key=lambda e: (e["brand"].lower(), e["model"].lower()))
     plan.added.sort(key=lambda a: (a[0].lower(), a[1].lower()))
     plan.entries.extend(new_entries)
     return plan
@@ -295,12 +295,12 @@ def format_report(plan: UpdatePlan, dump: DumpParseResult) -> str:
 
     if plan.updated:
         lines.append(f"Updated ({len(plan.updated)}):")
-        for manufacturer, model, old, new in plan.updated:
-            lines.append(f"  {manufacturer} {model}: {old or '(none)'} -> {new}")
+        for brand, model, old, new in plan.updated:
+            lines.append(f"  {brand} {model}: {old or '(none)'} -> {new}")
     if plan.added:
         lines.append(f"Added ({len(plan.added)}):")
-        for manufacturer, model, value in plan.added:
-            lines.append(f"  {manufacturer} {model}: {value}")
+        for brand, model, value in plan.added:
+            lines.append(f"  {brand} {model}: {value}")
     if dump.conflicts:
         lines.append(f"Read more than once, kept the lowest ({len(dump.conflicts)}):")
         for name, values in sorted(dump.conflicts.items()):

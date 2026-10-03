@@ -3,7 +3,7 @@ import { cellIndex, cellKind, installSlotmapPopup, slotKey, thumbnailFor, type S
 
 /**
  * Number of leading data columns pinned during horizontal scroll: the columns of
- * the first group (Identity — Manufacturer, Model, the generation-msx link).
+ * the first group (Identity — Brand, Model, the generation-msx link).
  */
 export function frozenColumnCount(columns: readonly ColumnDef[]): number {
   if (columns.length === 0) return 0;

@@ -46,7 +46,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - All MSX1, MSX2, MSX2+, and MSX turbo R models present in the JSON file appear as rows.
     - Each column defined in the JSON schema is rendered as a grid column.
     - The grid is readable and usable without horizontal scrolling for the Identity group at minimum.
-    - The Identity group columns (Manufacturer, Model) and their group header are frozen/sticky during horizontal scroll.
+    - The Identity group columns (Brand, Model) and their group header are frozen/sticky during horizontal scroll.
 
 - Column groups
   - Description: Columns are organized into named groups: Identity, Release, Memory, Video, Audio, Media, CPU/Chipsets, Other, Emulation. Each group has a header that can be clicked to collapse or expand all columns in that group.
@@ -100,7 +100,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - There is a UI control (e.g. a column picker panel or right-click context menu) to toggle individual column visibility.
     - Hidden columns are excluded from the rendered grid.
     - Column visibility state is reflected in the URL.
-    - The Identity group columns (Manufacturer, Model) are always visible and are not listed in the column picker. The Identity group section does not appear in the picker panel.
+    - The Identity group columns (Brand, Model) are always visible and are not listed in the column picker. The Identity group section does not appear in the picker panel.
 
 - Row show/hide
   - Description: Individual rows can be hidden via the × button in the left gutter. A visual indicator appears in the left gutter whenever one or more rows are hidden between two visible rows.
@@ -211,7 +211,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Every model in the JSON has a unique, permanent integer `id` field.
     - Every column definition has a unique, permanent integer `id` field.
     - The scraper maintains a persistent ID registry shared across all data-gathering runs.
-    - On each run, the scraper first attempts to match incoming data against existing registry entries (by model identity, e.g. manufacturer + model name) before assigning any new ID.
+    - On each run, the scraper first attempts to match incoming data against existing registry entries (by model identity, e.g. brand + model name) before assigning any new ID.
     - A new ID is only created when the scraper cannot match the incoming data to any existing registry entry.
     - Re-running the scraper never reassigns or reuses an existing ID.
     - Removed models/columns are marked as retired in the registry, not deleted.
@@ -246,7 +246,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Priority: Must
   - Acceptance Criteria:
     - `data/local-raw.json` is a JSON array of model objects with the same schema as `msxorg-raw.json`.
-    - Each entry requires at minimum `manufacturer` and `model` keys to match against the merged dataset.
+    - Each entry requires at minimum `brand` and `model` keys to match against the merged dataset.
     - During build, local values overwrite the openMSX+msx.org merged value for any field they supply.
     - Models present only in `local-raw.json` (not in openMSX or msx.org) are included in the output.
     - If `data/local-raw.json` is absent, the build completes normally (local source is optional).
@@ -255,7 +255,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Description: A maintainer-curated JSON file (`data/link-shares.json`) allows models that have no msx.org page of their own to inherit the `links` entry from a donor model. This covers model variants (e.g. a regional or hardware-revision variant) that share the same msx.org wiki page as their base model.
   - Priority: Must
   - Acceptance Criteria:
-    - `data/link-shares.json` is a flat JSON object whose keys and values are natural keys in the form `"manufacturer|model"` (lowercase, trimmed), matching the merge natural-key format.
+    - `data/link-shares.json` is a flat JSON object whose keys and values are natural keys in the form `"brand|model"` (lowercase, trimmed), matching the merge natural-key format.
     - Each entry maps a recipient model (key) to a donor model (value). The recipient will inherit the donor's `links` value in the output.
     - If the recipient already has its own `links` entry, the share entry is ignored (no overwrite).
     - If the donor model is not present in the dataset, or the donor itself has no `links` entry, the share entry is silently skipped and a warning is logged.
@@ -277,7 +277,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Acceptance Criteria:
     - `ColumnDef` accepts an optional integer `truncate_limit` field (absent or `0` = no truncation).
     - The `Model` column has a configurable default `truncate_limit = 16` (adjustable without regression).
-    - The `Manufacturer` column has a configurable default `truncate_limit = 12` (adjustable without regression).
+    - The `Brand` column has a configurable default `truncate_limit = 12` (adjustable without regression).
     - The `openMSX Machine ID` column has a configurable default `truncate_limit = 20` (adjustable without regression).
     - A cell whose value length exceeds `truncate_limit` displays the first `(truncate_limit − 1)` characters followed by `…`.
     - A cell whose value length is at or below `truncate_limit` is displayed unchanged.
@@ -368,8 +368,8 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Description: A maintainer-curated JSON file (`data/exclude.json`) prevents unwanted models from appearing in the output. Models matching an exclusion rule are dropped after parsing, before being added to the merged dataset.
   - Priority: Should
   - Acceptance Criteria:
-    - `data/exclude.json` is a JSON array of rule objects. Each rule uses exactly one mode: `{"manufacturer": "...", "model": "..."}` or `{"filename": "..."}` (not both).
-    - Manufacturer/model matching supports `"*"` as a wildcard (matches any value including empty) and `""` to match an empty field. Matching is case-sensitive.
+    - `data/exclude.json` is a JSON array of rule objects. Each rule uses exactly one mode: `{"brand": "...", "model": "..."}` or `{"filename": "..."}` (not both).
+    - Brand/model matching supports `"*"` as a wildcard (matches any value including empty) and `""` to match an empty field. Matching is case-sensitive.
     - Filename rules apply only to the openMSX scraper (exact match against XML filename); they are silently ignored by the msx.org scraper.
     - A model excluded by any matching rule does not appear in `docs/data.js` after a build.
     - If `data/exclude.json` is absent or empty, the build output is identical to one without the file (no-op).

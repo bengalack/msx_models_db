@@ -170,9 +170,9 @@ def test_build_ships_sparse_slot_details(tmp_path):
 
     texts: dict[str, list[str]] = {}
     slots = parse_slotmap_from_soup(_one_cell_page("Painter ROM"), "Maker MX-1", texts)
-    record = {"manufacturer": "Maker", "model": "MX-1", "generation": "MSX1", "msxorg_title": "Maker MX-1",
+    record = {"brand": "Maker", "model": "MX-1", "generation": "MSX1", "msxorg_title": "Maker MX-1",
               **slots, SLOT_TEXT_FIELD: texts}
-    plain = {"manufacturer": "Maker", "model": "MX-2", "generation": "MSX1", "msxorg_title": "Maker MX-2", **slots}
+    plain = {"brand": "Maker", "model": "MX-2", "generation": "MSX1", "msxorg_title": "Maker MX-2", **slots}
     (tmp_path / "openmsx.json").write_text(json.dumps([]))
     (tmp_path / "msxorg.json").write_text(json.dumps([record, plain]))
     build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json", local_path=tmp_path / "l.json",

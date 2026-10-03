@@ -76,7 +76,7 @@ class TestParseDump:
 def _write_db(path: Path, models: list[tuple[str, str]]) -> Path:
     """Write a minimal docs/data.js stand-in holding *models*."""
     payload = {
-        "columns": [{"id": 1, "key": "manufacturer"}, {"id": 2, "key": "model"}],
+        "columns": [{"id": 1, "key": "brand"}, {"id": 2, "key": "model"}],
         "models": [
             {"id": i + 1, "values": [man, mod]} for i, (man, mod) in enumerate(models)
         ],
@@ -119,7 +119,7 @@ class TestLoadDbIndex:
 
     def test_applies_aliases_so_the_index_is_canonical(self, tmp_path):
         lut = load_aliases(
-            _write_aliases(tmp_path / "a.json", {"manufacturer": {"Sakhr": ["Al Alamiah"]}})
+            _write_aliases(tmp_path / "a.json", {"brand": {"Sakhr": ["Al Alamiah"]}})
         )
         db = load_db_index(_write_db(tmp_path / "data.js", [("Al Alamiah", "AX170")]), lut)
         assert db == {("sakhr", "ax170"): ("Al Alamiah", "AX170")}
@@ -127,11 +127,11 @@ class TestLoadDbIndex:
 
 class TestCandidateKeys:
 
-    def test_resolves_a_single_word_manufacturer(self, tmp_path, plain_lut):
+    def test_resolves_a_single_word_brand(self, tmp_path, plain_lut):
         db = load_db_index(_write_db(tmp_path / "data.js", [("Sony", "HB-75P")]), plain_lut)
         assert candidate_keys("Sony HB-75P", db, plain_lut) == [("sony", "hb-75p")]
 
-    def test_resolves_a_multi_word_manufacturer(self, tmp_path, plain_lut):
+    def test_resolves_a_multi_word_brand(self, tmp_path, plain_lut):
         db = load_db_index(
             _write_db(tmp_path / "data.js", [("Bawareth Ent. for Trade/Daewoo", "Perfect MSX1")]),
             plain_lut,
@@ -140,9 +140,9 @@ class TestCandidateKeys:
             ("bawareth ent. for trade/daewoo", "perfect msx1")
         ]
 
-    def test_resolves_through_a_manufacturer_alias(self, tmp_path):
+    def test_resolves_through_a_brand_alias(self, tmp_path):
         lut = load_aliases(
-            _write_aliases(tmp_path / "a.json", {"manufacturer": {"Sakhr": ["Al Alamiah"]}})
+            _write_aliases(tmp_path / "a.json", {"brand": {"Sakhr": ["Al Alamiah"]}})
         )
         db = load_db_index(_write_db(tmp_path / "data.js", [("Sakhr", "AX170")]), lut)
         assert candidate_keys("Al Alamiah AX170", db, lut) == [("sakhr", "ax170")]
@@ -187,7 +187,7 @@ class TestPlanUpdate:
     def test_refreshes_the_value_of_an_existing_entry(self, tmp_path, plain_lut):
         plan = self._plan(
             tmp_path, plain_lut,
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P")],
             "Sony HB-75P - 0xDE79\n",
         )
@@ -197,20 +197,20 @@ class TestPlanUpdate:
     def test_keeps_the_other_fields_of_an_updated_entry(self, tmp_path, plain_lut):
         plan = self._plan(
             tmp_path, plain_lut,
-            [{"manufacturer": "Sony", "model": "HB-75P", "msxorg_title": "Sony_HB-75P",
+            [{"brand": "Sony", "model": "HB-75P", "msxorg_title": "Sony_HB-75P",
               "himem_addr": "0xF380"}],
             [("Sony", "HB-75P")],
             "Sony HB-75P - 0xDE79\n",
         )
         assert plan.entries[0] == {
-            "manufacturer": "Sony", "model": "HB-75P",
+            "brand": "Sony", "model": "HB-75P",
             "msxorg_title": "Sony_HB-75P", "himem_addr": "0xDE79",
         }
 
     def test_an_entry_without_a_value_gains_one(self, tmp_path, plain_lut):
         plan = self._plan(
             tmp_path, plain_lut,
-            [{"manufacturer": "Yamaha", "model": "CX5M", "msxorg_title": "Yamaha_CX5M"}],
+            [{"brand": "Yamaha", "model": "CX5M", "msxorg_title": "Yamaha_CX5M"}],
             [("Yamaha", "CX5M")],
             "Yamaha CX5M - 0xF380\n",
         )
@@ -220,7 +220,7 @@ class TestPlanUpdate:
     def test_an_unchanged_value_is_not_reported_as_an_update(self, tmp_path, plain_lut):
         plan = self._plan(
             tmp_path, plain_lut,
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P")],
             "Sony HB-75P - 0xF380\n",
         )
@@ -228,7 +228,7 @@ class TestPlanUpdate:
         assert plan.unchanged == [("Sony", "HB-75P")]
 
     def test_an_entry_the_dump_never_mentions_is_untouched(self, tmp_path, plain_lut):
-        curated = {"manufacturer": "ESE", "model": "One chip MSX", "nmos_cmos": "NMOS"}
+        curated = {"brand": "ESE", "model": "One chip MSX", "nmos_cmos": "NMOS"}
         plan = self._plan(
             tmp_path, plain_lut,
             [dict(curated)],
@@ -240,44 +240,44 @@ class TestPlanUpdate:
     def test_a_failed_boot_never_clears_an_existing_value(self, tmp_path, plain_lut):
         plan = self._plan(
             tmp_path, plain_lut,
-            [{"manufacturer": "Sony", "model": "HB-F500", "himem_addr": "0xDF94"}],
+            [{"brand": "Sony", "model": "HB-F500", "himem_addr": "0xDF94"}],
             [("Sony", "HB-F500")],
             "Sony HB-F500\n",
         )
         assert plan.entries == [
-            {"manufacturer": "Sony", "model": "HB-F500", "himem_addr": "0xDF94"}
+            {"brand": "Sony", "model": "HB-F500", "himem_addr": "0xDF94"}
         ]
         assert plan.updated == []
 
     def test_appends_a_machine_that_is_in_the_database_but_not_the_file(self, tmp_path, plain_lut):
         plan = self._plan(
             tmp_path, plain_lut,
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P"), ("Canon", "V-10")],
             "Canon V-10 - 0xF380\n",
         )
         assert plan.entries[-1] == {
-            "manufacturer": "Canon", "model": "V-10", "himem_addr": "0xF380",
+            "brand": "Canon", "model": "V-10", "himem_addr": "0xF380",
         }
         assert plan.added == [("Canon", "V-10", "0xF380")]
 
     def test_a_new_entry_uses_the_database_spelling_not_the_dump_name(self, tmp_path):
         lut = load_aliases(
-            _write_aliases(tmp_path / "a.json", {"manufacturer": {"Sakhr": ["Al Alamiah"]}})
+            _write_aliases(tmp_path / "a.json", {"brand": {"Sakhr": ["Al Alamiah"]}})
         )
         plan = self._plan(tmp_path, lut, [], [("Sakhr", "AX170")], "Al Alamiah AX170 - 0xF380\n")
         assert plan.entries == [
-            {"manufacturer": "Sakhr", "model": "AX170", "himem_addr": "0xF380"}
+            {"brand": "Sakhr", "model": "AX170", "himem_addr": "0xF380"}
         ]
 
     def test_new_entries_are_appended_sorted_after_the_existing_ones(self, tmp_path, plain_lut):
         plan = self._plan(
             tmp_path, plain_lut,
-            [{"manufacturer": "Zenith", "model": "Z-1", "himem_addr": "0xF380"}],
+            [{"brand": "Zenith", "model": "Z-1", "himem_addr": "0xF380"}],
             [("Zenith", "Z-1"), ("Canon", "V-10"), ("Canon", "V-8"), ("Acme", "A-1")],
             "Canon V-8 - 0xF380\nCanon V-10 - 0xF380\nAcme A-1 - 0xF380\n",
         )
-        assert [(e["manufacturer"], e["model"]) for e in plan.entries] == [
+        assert [(e["brand"], e["model"]) for e in plan.entries] == [
             ("Zenith", "Z-1"), ("Acme", "A-1"), ("Canon", "V-10"), ("Canon", "V-8"),
         ]
 
@@ -302,17 +302,17 @@ class TestPlanUpdate:
         # the file is the maintainer's, so report rather than rewrite.
         plan = self._plan(
             tmp_path, plain_lut,
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"},
-             {"manufacturer": "sony", "model": "hb-75p", "nmos_cmos": "CMOS"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"},
+             {"brand": "sony", "model": "hb-75p", "nmos_cmos": "CMOS"}],
             [("Sony", "HB-75P")],
             "Sony HB-75P - 0xDE79\n",
         )
         assert plan.entries[0]["himem_addr"] == "0xF380"
-        assert plan.entries[1] == {"manufacturer": "sony", "model": "hb-75p", "nmos_cmos": "CMOS"}
+        assert plan.entries[1] == {"brand": "sony", "model": "hb-75p", "nmos_cmos": "CMOS"}
         assert [name for name, _ in plan.skipped] == ["Sony HB-75P"]
 
     def test_an_empty_dump_changes_nothing(self, tmp_path, plain_lut):
-        entries = [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}]
+        entries = [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}]
         plan = self._plan(tmp_path, plain_lut, entries, [("Sony", "HB-75P")], "")
         assert plan.entries == entries
         assert not plan.has_changes
@@ -339,7 +339,7 @@ class TestRun:
     def test_writes_the_new_value_to_the_file(self, tmp_path):
         paths = self._setup(
             tmp_path,
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P")],
             "Sony HB-75P - 0xDE79\n",
         )
@@ -350,7 +350,7 @@ class TestRun:
     def test_dry_run_leaves_the_file_byte_identical(self, tmp_path):
         paths = self._setup(
             tmp_path,
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P")],
             "Sony HB-75P - 0xDE79\n",
         )
@@ -362,7 +362,7 @@ class TestRun:
     def test_keeps_crlf_line_endings(self, tmp_path):
         paths = self._setup(
             tmp_path,
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P")],
             "Sony HB-75P - 0xDE79\n",
             newline="\r\n",
@@ -375,7 +375,7 @@ class TestRun:
     def test_keeps_lf_line_endings(self, tmp_path):
         paths = self._setup(
             tmp_path,
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P")],
             "Sony HB-75P - 0xDE79\n",
             newline="\n",
@@ -386,7 +386,7 @@ class TestRun:
     def test_a_dump_with_nothing_new_leaves_the_file_byte_identical(self, tmp_path):
         paths = self._setup(
             tmp_path,
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P")],
             "Sony HB-75P - 0xF380\n",
         )
@@ -397,7 +397,7 @@ class TestRun:
     def test_running_twice_changes_nothing_the_second_time(self, tmp_path):
         paths = self._setup(
             tmp_path,
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P"), ("Canon", "V-10")],
             "Sony HB-75P - 0xDE79\nCanon V-10 - 0xF380\n",
         )
@@ -412,13 +412,13 @@ class TestRun:
         paths["json_path"].unlink()
         run(**paths)
         assert json.loads(paths["json_path"].read_text(encoding="utf-8")) == [
-            {"manufacturer": "Canon", "model": "V-10", "himem_addr": "0xF380"}
+            {"brand": "Canon", "model": "V-10", "himem_addr": "0xF380"}
         ]
 
     def test_report_names_what_changed(self, tmp_path):
         paths = self._setup(
             tmp_path,
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P"), ("Canon", "V-10")],
             "Sony HB-75P - 0xDE79\nCanon V-10 - 0xF380\nC-BIOS MSX2 - 0xF380\n",
         )
@@ -448,7 +448,7 @@ class TestCli:
     def test_subcommand_updates_the_file(self, tmp_path, monkeypatch, capsys):
         local, argv = self._argv(
             tmp_path, "Sony HB-75P - 0xDE79\n",
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P")],
         )
         monkeypatch.setattr(sys, "argv", argv)
@@ -459,7 +459,7 @@ class TestCli:
     def test_dry_run_flag_does_not_write(self, tmp_path, monkeypatch, capsys):
         local, argv = self._argv(
             tmp_path, "Sony HB-75P - 0xDE79\n",
-            [{"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
+            [{"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"}],
             [("Sony", "HB-75P")],
         )
         before = local.read_bytes()
@@ -479,11 +479,11 @@ class TestOpenmsxNameFallback:
     def _setup(tmp_path: Path, entries: list[dict]) -> tuple[Path, Path, Path, Path]:
         db = tmp_path / "data.js"
         db.write_text("window.MSX_DATA = " + json.dumps({
-            "columns": [{"key": "manufacturer"}, {"key": "model"}, {"key": "openmsx_id"}],
+            "columns": [{"key": "brand"}, {"key": "model"}, {"key": "openmsx_id"}],
             "models": [{"id": 1, "values": ["Sanyo", "MPC-1", "Sanyo_MPC-1"]}],
         }) + ";\n", encoding="utf-8")
         raw = tmp_path / "openmsx-raw.json"
-        raw.write_text(json.dumps([{"manufacturer": "Sanyo", "model": "MPC-1/Wavy1", "openmsx_id": "Sanyo_MPC-1"}]),
+        raw.write_text(json.dumps([{"brand": "Sanyo", "model": "MPC-1/Wavy1", "openmsx_id": "Sanyo_MPC-1"}]),
                        encoding="utf-8")
         local = tmp_path / "local.json"
         local.write_text(json.dumps(entries, indent=2) + "\n", encoding="utf-8")
@@ -492,12 +492,12 @@ class TestOpenmsxNameFallback:
         return db, raw, local, dump
 
     def test_resolves_through_the_machine_file_and_updates_the_existing_entry(self, tmp_path):
-        db, raw, local, dump = self._setup(tmp_path, [{"manufacturer": "Sanyo", "model": "MPC-1", "himem_addr": "0xF380"}])
+        db, raw, local, dump = self._setup(tmp_path, [{"brand": "Sanyo", "model": "MPC-1", "himem_addr": "0xF380"}])
         plan = run(dump, local, db, _write_aliases(tmp_path / "aliases.json", {}), openmsx_raw_path=raw)
         assert plan.updated == [("Sanyo", "MPC-1", "0xF380", "0xF37F")]
         assert plan.added == []
         assert json.loads(local.read_text(encoding="utf-8")) == [
-            {"manufacturer": "Sanyo", "model": "MPC-1", "himem_addr": "0xF37F"}]
+            {"brand": "Sanyo", "model": "MPC-1", "himem_addr": "0xF37F"}]
 
     def test_without_the_openmsx_cache_the_name_is_unknown(self, tmp_path):
         db, _raw, local, dump = self._setup(tmp_path, [])

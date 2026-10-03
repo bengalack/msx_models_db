@@ -1,7 +1,8 @@
 {
-  "manufacturer": {
+  "brand": {
     "CIEL": ["CIEL (Ademir Carchano)"],
-    "Sakhr": ["Al Alamiah"]
+    "Sakhr": ["Al Alamiah"],
+    "Bawareth": ["Baraweth", "Bawareth Ent. for Trade/Daewoo"]
   },
   "model": {
     "Expert Turbo": ["Expert 2+ Turbo"],
@@ -38,44 +39,32 @@
   },
   "composite": [
     {
-      "match":     {"manufacturer": "Eurohard/Radofin", "model": "Dragon MSX"},
-      "canonical": {"manufacturer": "Dragon",           "model": "MSX-64"}
+      "match":     {"brand": "Eurohard/Radofin", "model": "Dragon MSX"},
+      "canonical": {"brand": "Dragon",           "model": "MSX-64"}
     },
     {
-      "match":     {"manufacturer": "Canon", "model": "V-20"},
-      "canonical": {"manufacturer": "Canon", "model": "V-20 (JP)"}
+      "match":     {"brand": "Canon", "model": "V-20"},
+      "canonical": {"brand": "Canon", "model": "V-20 (JP)"}
     },
     {
-      "match":     {"manufacturer": "Sakhr",  "model": "AX-350IIF"},
-      "canonical": {"manufacturer": "Yamaha", "model": "AX-350IIF"}
+      "match":     {"brand": "Yamaha", "model": "AX-*"},
+      "canonical": {"brand": "Sakhr"}
     },
     {
-      "match":     {"manufacturer": "Sakhr",  "model": "AX-350II"},
-      "canonical": {"manufacturer": "Yamaha", "model": "AX-350II"}
+      "match":     {"brand": "Bawareth", "model": "Perfect MSX1"},
+      "canonical": {"model": "Perfect MSX1 (DPC-200CD)"}
     },
     {
-      "match":     {"manufacturer": "Sakhr",  "model": "AX-150"},
-      "canonical": {"manufacturer": "Yamaha", "model": "AX-150"}
+      "match":     {"brand": "D4 Enterprise", "model": "1chipMSX"},
+      "canonical": {"model": "One chip MSX"}
     },
     {
-      "match":     {"manufacturer": "Sakhr",  "model": "AX-200"},
-      "canonical": {"manufacturer": "Yamaha", "model": "AX-200"}
+      "match":     {"brand": "ESE",           "model": "One chip MSX"},
+      "canonical": {"brand": "D4 Enterprise"}
     },
     {
-      "match":     {"manufacturer": "Sakhr",  "model": "AX-500"},
-      "canonical": {"manufacturer": "Yamaha", "model": "AX-500"}
-    },
-    {
-      "match":     {"manufacturer": "D4 Enterprise", "model": "1chipMSX"},
-      "canonical": {"manufacturer": "ESE",           "model": "One chip MSX"}
-    },
-    {
-      "match":     {"manufacturer": "MSXmakers", "model": "Omega MSX"},
-      "canonical": {"manufacturer": "None",      "model": "Omega MSX"}
-    },
-    {
-      "match":     {"manufacturer": "Philips or Phonola", "model": "NMS 8245 Home Banking"},
-      "canonical": {"manufacturer": "Philips",            "model": "NMS 8245 Home Banking"}
+      "match":     {"brand": "Philips or Phonola", "model": "NMS 8245 Home Banking"},
+      "canonical": {"brand": "Philips",            "model": "NMS 8245 Home Banking"}
     }
   ]
 }

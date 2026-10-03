@@ -63,7 +63,7 @@ class TestKnownAsNames:
 # ── Merge ───────────────────────────────────────────────────────────────────
 
 def _msxorg(model: str, *names: str, **extra) -> dict:
-    record = {"manufacturer": "Toshiba", "model": model, "msxorg_title": f"Toshiba {model}", **extra}
+    record = {"brand": "Toshiba", "model": model, "msxorg_title": f"Toshiba {model}", **extra}
     if names:
         record[KNOWN_AS_FIELD] = list(names)
     return record
@@ -72,7 +72,7 @@ def _msxorg(model: str, *names: str, **extra) -> dict:
 class TestMergeKnownAs:
     def test_merges_into_the_openmsx_machine_known_by_that_name(self):
         merged = merge_models(
-            [{"manufacturer": "Toshiba", "model": "HX-51I", "openmsx_id": "Toshiba_HX-51I"}],
+            [{"brand": "Toshiba", "model": "HX-51I", "openmsx_id": "Toshiba_HX-51I"}],
             [_msxorg("HX-51", "HX-51I", year=1985)],
         )
         assert len(merged) == 1
@@ -84,7 +84,7 @@ class TestMergeKnownAs:
 
     def test_not_used_when_openmsx_has_the_msxorg_name(self):
         merged = merge_models(
-            [{"manufacturer": "Toshiba", "model": "HX-51"}, {"manufacturer": "Toshiba", "model": "HX-51I"}],
+            [{"brand": "Toshiba", "model": "HX-51"}, {"brand": "Toshiba", "model": "HX-51I"}],
             [_msxorg("HX-51", "HX-51I")],
         )
         assert sorted(m["model"] for m in merged) == ["HX-51", "HX-51I"]
@@ -96,7 +96,7 @@ class TestMergeKnownAs:
     def test_does_not_take_over_an_msxorg_page_of_that_name(self):
         """If msx.org has its own HX-51I page, that page is the HX-51I record."""
         merged = merge_models(
-            [{"manufacturer": "Toshiba", "model": "HX-51I"}],
+            [{"brand": "Toshiba", "model": "HX-51I"}],
             [_msxorg("HX-51", "HX-51I"), _msxorg("HX-51I")],
         )
         assert sorted(m["model"] for m in merged) == ["HX-51", "HX-51I"]
@@ -107,7 +107,7 @@ class TestMergeKnownAs:
         aliases = tmp_path / "aliases.json"
         aliases.write_text(json.dumps({"model": {"HX-10": ["HX-10 (UK)"]}}), encoding="utf-8")
         merged = merge_models(
-            [{"manufacturer": "Toshiba", "model": "HX-10 (UK)"}],
+            [{"brand": "Toshiba", "model": "HX-10 (UK)"}],
             [_msxorg("HX-10P", "HX-10")],
             alias_path=aliases,
         )

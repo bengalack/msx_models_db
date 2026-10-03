@@ -148,16 +148,16 @@ def parse_machine_xml(
     if msx_type not in WANTED_TYPES:
         return None  # silently skip non-MSX machines
 
-    manufacturer = _text(info.find("manufacturer"))
+    brand = _text(info.find("manufacturer"))
     model = _text(info.find("code"))
-    if not manufacturer or not model:
+    if not brand or not model:
         log.warning("Missing manufacturer/code in %s — skipped", filename)
         return None
 
     openmsx_id = filename.removesuffix(".xml")
 
     result: dict[str, Any] = {
-        "manufacturer": manufacturer,
+        "brand": brand,
         "model": model,
         "year": _int(info.find("release_year")),
         "region": _map_region(_text(info.find("region"))),
@@ -626,11 +626,11 @@ def fetch_all(
             )
             if result:
                 if exclude_list and exclude_list.is_excluded(
-                    result.get("manufacturer"), result.get("model")
+                    result.get("brand"), result.get("model")
                 ):
                     log.debug(
-                        "[exclude:skip] Excluded model | manufacturer=%s model=%s source=openmsx",
-                        result.get("manufacturer"), result.get("model"),
+                        "[exclude:skip] Excluded model | brand=%s model=%s source=openmsx",
+                        result.get("brand"), result.get("model"),
                     )
                     excluded += 1
                 else:

@@ -79,8 +79,8 @@ def test_build_ships_names_as_value_and_flags_as_display(tmp_path):
                                                {"name": "Belgium", "flags": ["BE"]}]}))
     (tmp_path / "openmsx.json").write_text(json.dumps([]))
     (tmp_path / "msxorg.json").write_text(json.dumps([
-        {"manufacturer": "Maker", "model": "MX-1", "generation": "MSX1", "region": "Belgium and the Netherlands"},
-        {"manufacturer": "Maker", "model": "MX-2", "generation": "MSX1", "region": "Atlantis"},
+        {"brand": "Maker", "model": "MX-1", "generation": "MSX1", "region": "Belgium and the Netherlands"},
+        {"brand": "Maker", "model": "MX-2", "generation": "MSX1", "region": "Atlantis"},
     ]))
     build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json", local_path=tmp_path / "l.json",
           registry_path=tmp_path / "registry.json", output_path=tmp_path / "data.js", regions_path=regions)
@@ -135,8 +135,8 @@ def test_build_keeps_language_values_and_ships_their_flags(tmp_path):
     assert lang_cols
     (tmp_path / "openmsx.json").write_text(json.dumps([]))
     (tmp_path / "msxorg.json").write_text(json.dumps([
-        {"manufacturer": "Maker", "model": "MX-1", "generation": "MSX1", **{k: "French (AZERTY)" for k in lang_cols}},
-        {"manufacturer": "Maker", "model": "MX-2", "generation": "MSX1", **{k: "Code 8" for k in lang_cols}},
+        {"brand": "Maker", "model": "MX-1", "generation": "MSX1", **{k: "French (AZERTY)" for k in lang_cols}},
+        {"brand": "Maker", "model": "MX-2", "generation": "MSX1", **{k: "Code 8" for k in lang_cols}},
     ]))
     build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json", local_path=tmp_path / "l.json",
           registry_path=tmp_path / "registry.json", output_path=tmp_path / "data.js", regions_path=regions)

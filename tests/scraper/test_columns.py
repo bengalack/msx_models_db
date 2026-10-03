@@ -207,8 +207,8 @@ class TestProductionConfig:
         year_col = next(c for c in COLUMNS if c.key == "year")
         assert year_col.truncate_limit == 0
 
-    def test_manufacturer_has_truncate_limit(self) -> None:
-        mfr = next(c for c in COLUMNS if c.key == "manufacturer")
+    def test_brand_has_truncate_limit(self) -> None:
+        mfr = next(c for c in COLUMNS if c.key == "brand")
         assert mfr.truncate_limit == 12
 
     def test_model_has_truncate_limit(self) -> None:

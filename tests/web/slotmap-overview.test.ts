@@ -74,7 +74,7 @@ function cellsWith(entries: Record<string, string>): SlotCells {
 
 function makeData(models: { id: number; name: string; cells: SlotCells | null; key: string | null }[]): MSXData {
   const columns: ColumnDef[] = [
-    { id: 1, key: 'manufacturer', label: 'Manufacturer', groupId: 0, type: 'string' },
+    { id: 1, key: 'brand', label: 'Brand', groupId: 0, type: 'string' },
     { id: 2, key: 'model', label: 'Model', groupId: 0, type: 'string' },
     { id: 109, key: 'slot_overview', label: 'Overview', groupId: 13, type: 'string', renderer: 'slotmap', filterable: false },
   ];

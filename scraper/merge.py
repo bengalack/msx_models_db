@@ -24,10 +24,10 @@ FORMER_KEYS_FIELD = "_former_keys"
 
 
 def natural_key(model: dict[str, Any]) -> str:
-    """Build a stable natural key: 'manufacturer|model' (lowercased, trimmed)."""
-    mfr = (model.get("manufacturer") or "").lower().strip()
+    """Build a stable natural key: 'brand|model' (lowercased, trimmed)."""
+    brand = (model.get("brand") or "").lower().strip()
     mdl = (model.get("model") or "").lower().strip()
-    return f"{mfr}|{mdl}"
+    return f"{brand}|{mdl}"
 
 
 # ── Normalization ────────────────────────────────────────────────────
@@ -185,7 +185,7 @@ def merge_models(
             former_keys.setdefault(after, set()).add(before)
         # A name the msx.org parser cleaned (editorial note dropped) is a former name too.
         if record.get(FORMER_MODEL_FIELD):
-            former = natural_key({"manufacturer": record.get("manufacturer"), "model": record[FORMER_MODEL_FIELD]})
+            former = natural_key({"brand": record.get("brand"), "model": record[FORMER_MODEL_FIELD]})
             if former != after:
                 former_keys.setdefault(after, set()).add(former)
 
@@ -217,12 +217,12 @@ def merge_models(
         if not names or natural_key(m) in openmsx_by_key:
             continue
         for name in names:
-            probe = {"manufacturer": m.get("manufacturer"), "model": name}
+            probe = {"brand": m.get("brand"), "model": name}
             apply_aliases(probe, alias_lut)
             key = natural_key(probe)
             if key in openmsx_by_key and key not in msxorg_keys:
                 log.info("[merge:known_as] %s is also known as %s — merged", natural_key(m), key)
-                m["manufacturer"] = openmsx_by_key[key].get("manufacturer")
+                m["brand"] = openmsx_by_key[key].get("brand")
                 m["model"] = openmsx_by_key[key].get("model")
                 msxorg_keys.add(key)
                 break
@@ -230,8 +230,8 @@ def merge_models(
     # openMSX display name vs its machine file: openMSX shows "MPC-1/Wavy1" for
     # Sanyo_MPC-1.xml while msx.org's page is "MPC-1", so the two never met.
     # An openMSX machine whose name no msx.org record has joins the one msx.org
-    # model (same manufacturer, no openMSX machine of that name) whose
-    # manufacturer + model spell its file name; the row takes msx.org's name and
+    # model (same brand, no openMSX machine of that name) whose
+    # brand + model spell its file name; the row takes msx.org's name and
     # the openMSX name is kept as a former key, so the registry resolves the id.
     msxorg_by_key = {natural_key(m): m for m in msxorg}
     openmsx_keys = {natural_key(m) for m in openmsx}
@@ -244,8 +244,8 @@ def merge_models(
         candidates = [
             k for k, m in msxorg_by_key.items()
             if k not in openmsx_keys
-            and _squash(m.get("manufacturer")) == _squash(o.get("manufacturer"))
-            and _squash(m.get("manufacturer")) + _squash(m.get("model")) == file_id
+            and _squash(m.get("brand")) == _squash(o.get("brand"))
+            and _squash(m.get("brand")) + _squash(m.get("model")) == file_id
         ]
         if len(candidates) != 1:
             continue

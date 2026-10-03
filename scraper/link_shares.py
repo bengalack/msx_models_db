@@ -3,7 +3,7 @@
 When a model has no ``links`` entry in the output (because it has no msx.org
 page of its own), a link-shares entry can specify another model whose links
 it should adopt.  Keys and values are natural keys in the form
-``"manufacturer|model"`` (lowercase, trimmed) — the same format used by
+``"brand|model"`` (lowercase, trimmed) — the same format used by
 :func:`scraper.merge.natural_key`.
 
 The donor model must itself have a links entry; if neither the donor nor the
@@ -67,7 +67,7 @@ def apply_link_shares(
     records:
         The list of JS model record dicts (each may have a ``"links"`` key).
     natural_keys:
-        The natural key (``"manufacturer|model"``, lowercase) corresponding to
+        The natural key (``"brand|model"``, lowercase) corresponding to
         each record (parallel list).
     shares:
         Mapping from recipient natural key → donor natural key, as returned by

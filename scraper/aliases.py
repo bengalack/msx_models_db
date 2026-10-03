@@ -147,7 +147,9 @@ def apply_aliases(record: dict, lut: AliasLUT) -> None:
     The variant tag closing the model name is canonicalised first
     ("CF-2700 (GE)" -> "CF-2700 (DE)"), then single-column rules, then
     composite rules.  The first matching composite rule wins; subsequent rules
-    are skipped.
+    are skipped.  A composite match value may hold ``*`` wildcards
+    ({"brand": "Yamaha", "model": "AX-*"}).  ``canonical`` may set only some
+    columns ({"brand": "Sakhr"}): the others keep their (aliased) values.
     """
     # Pass 0 — country tag closing the model name
     model = record.get("model")
@@ -169,12 +171,19 @@ def apply_aliases(record: dict, lut: AliasLUT) -> None:
     # Pass 2 — composite (multi-column) aliases
     for match_lower, canonical in lut.composite:
         if all(
-            isinstance(record.get(col), str)
-            and record[col].lower() == val
+            isinstance(record.get(col), str) and _matches(record[col].lower(), val)
             for col, val in match_lower.items()
         ):
             record.update(canonical)
             break  # first match wins
+
+
+def _matches(value_lower: str, pattern_lower: str) -> bool:
+    """A composite match value: exact, or with ``*`` standing for any text ("AX-*")."""
+    if "*" not in pattern_lower:
+        return value_lower == pattern_lower
+    regex = ".*".join(re.escape(part) for part in pattern_lower.split("*"))
+    return re.fullmatch(regex, value_lower) is not None
 
 
 # Internal field on an msx.org record: other names its page says the model is

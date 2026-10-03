@@ -88,7 +88,7 @@ def _slots(value: str) -> dict:
 
 
 def _rec(title: str, model: str, donor: str | None = None, revision: int = 1, **fields) -> dict:
-    record = {"manufacturer": title.split()[0], "model": model, "msxorg_title": title, **fields}
+    record = {"brand": title.split()[0], "model": model, "msxorg_title": title, **fields}
     if donor:
         record[ADAPTED_FROM_FIELD] = {"title": donor, "revision": revision}
     return record
@@ -127,7 +127,7 @@ class TestFillFromDonors:
         adaptation = _rec("Fenner FPC-900", "FPC-900", "Sanyo MPC-25FD", region="Italy", year=1986)
         fill_from_donors([donor, adaptation], load=lambda title: None)
         assert (adaptation["region"], adaptation["year"]) == ("Italy", 1986)
-        assert (adaptation["manufacturer"], adaptation["model"], adaptation["msxorg_title"]) == (
+        assert (adaptation["brand"], adaptation["model"], adaptation["msxorg_title"]) == (
             "Fenner", "FPC-900", "Fenner FPC-900")
 
     def test_slot_map_copied_as_a_unit_when_absent(self):
@@ -199,11 +199,11 @@ def test_build_fills_from_the_donors_merged_row(tmp_path):
     import json
     from scraper.build import build
 
-    msxorg_donor = {"manufacturer": "Sanyo", "model": "MPC-25FD", "generation": "MSX2",
+    msxorg_donor = {"brand": "Sanyo", "model": "MPC-25FD", "generation": "MSX2",
                     "msxorg_title": "Sanyo MPC-25FD", **_slots("MAIN"), "slotmap_3_1_0": "DSK*"}
-    openmsx_donor = {"manufacturer": "Sanyo", "model": "MPC-25FD", "generation": "MSX2",
+    openmsx_donor = {"brand": "Sanyo", "model": "MPC-25FD", "generation": "MSX2",
                      "openmsx_id": "Sanyo_MPC-25FD", **_slots("MAIN"), "slotmap_3_1_0": "DSK"}
-    adaptation = {"manufacturer": "Fenner", "model": "FPC-900", "generation": "MSX2",
+    adaptation = {"brand": "Fenner", "model": "FPC-900", "generation": "MSX2",
                   "msxorg_title": "Fenner FPC-900",
                   ADAPTED_FROM_FIELD: {"title": "Sanyo MPC-25FD", "revision": 1}}
     (tmp_path / "openmsx.json").write_text(json.dumps([openmsx_donor]))

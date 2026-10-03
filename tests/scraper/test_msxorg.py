@@ -169,9 +169,9 @@ class TestParseModelPageSplit:
         assert results[0]["model"] == "AX-350II"
         assert results[1]["model"] == "AX-350IIF"
 
-    def test_split_entries_share_manufacturer(self):
+    def test_split_entries_share_brand(self):
         results = parse_model_page(self._COMBINED_HTML, "MSX2", "Sakhr AX-350II")
-        assert all(r["manufacturer"] == "Sakhr" for r in results)
+        assert all(r["brand"] == "Sakhr" for r in results)
 
     def test_split_entries_share_fields(self):
         results = parse_model_page(self._COMBINED_HTML, "MSX2", "Sakhr AX-350II")
@@ -292,7 +292,7 @@ class TestFetchAllWithMirror:
         source = MirrorPageSource(tmp_path)
         models = fetch_all(source=source, delay=0)
         assert len(models) == 1
-        assert models[0]["manufacturer"] == "Sony"
+        assert models[0]["brand"] == "Sony"
 
     def test_missing_category_file_skipped(self, tmp_path):
         # No category files written at all → zero models, no exception
@@ -636,7 +636,7 @@ class TestListModelPagesFromMirrorScan:
         std = self._by_rank[0]
         _write_page(tmp_path, "Sony_HB-75P", _mirror_page("Sony_HB-75P", [std], body=body))
         models = fetch_all(source=MirrorPageSource(tmp_path), delay=0)
-        assert [(m["manufacturer"], m["model"], m["generation"]) for m in models] == [("Sony", "HB-75P", std)]
+        assert [(m["brand"], m["model"], m["generation"]) for m in models] == [("Sony", "HB-75P", std)]
 
 
 # ---------------------------------------------------------------------------
@@ -694,7 +694,7 @@ class TestParseModelPageSeries:
         assert requested == ["Sony_HB-10"]
         assert len(results) == 1
         r = results[0]
-        assert (r["manufacturer"], r["model"]) == ("Sony", "HB-10P")
+        assert (r["brand"], r["model"]) == ("Sony", "HB-10P")
         assert r["msxorg_title"] == "Sony HB-10P"      # links to the member's own page
         assert r["year"] == 1986
         assert r["region"] == "Netherlands"
@@ -804,7 +804,7 @@ def test_cleaned_name_keeps_its_registry_id(tmp_path):
     }))
     (tmp_path / "openmsx.json").write_text(json.dumps([]))
     (tmp_path / "msxorg.json").write_text(json.dumps([{
-        "manufacturer": "Pioneer", "model": "PX-7(HB)", "generation": "MSX1",
+        "brand": "Pioneer", "model": "PX-7(HB)", "generation": "MSX1",
         "msxorg_title": "Pioneer PX-7(HB)", FORMER_MODEL_FIELD: note_name,
     }]))
     build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
@@ -827,12 +827,12 @@ class TestRegionalPages:
 
     def test_named_after_the_title(self):
         [record] = parse_model_page(self._page("Maker A", "M-1"), "MSX1", "Maker B M-1 (GE)")
-        assert (record["manufacturer"], record["model"]) == ("Maker B", "M-1 (GE)")
+        assert (record["brand"], record["model"]) == ("Maker B", "M-1 (GE)")
         assert record["msxorg_title"] == "Maker B M-1 (GE)"
 
     def test_multi_word_brand(self):
         [record] = parse_model_page(self._page("Maker", "M-1"), "MSX1", "Big Maker M-1 (UK)")
-        assert (record["manufacturer"], record["model"]) == ("Big Maker", "M-1 (UK)")
+        assert (record["brand"], record["model"]) == ("Big Maker", "M-1 (UK)")
 
     @pytest.mark.parametrize("model,title", [
         ("M-1", "Maker M-1"),              # no tag
@@ -843,7 +843,7 @@ class TestRegionalPages:
     ])
     def test_other_pages_keep_the_specs_name(self, model, title):
         [record] = parse_model_page(self._page("Maker", model), "MSX1", title)
-        assert (record["manufacturer"], record["model"]) == ("Maker", model)
+        assert (record["brand"], record["model"]) == ("Maker", model)
 
 
 def _build_with_aliases(tmp_path, monkeypatch, aliases, openmsx, msxorg, registry=None):
@@ -870,21 +870,21 @@ def test_regional_page_joins_the_openmsx_machine(tmp_path, monkeypatch):
     """msx.org "(GE)" page + openMSX "(DE)" machine are one row with the page's data."""
     data, _ = _build_with_aliases(
         tmp_path, monkeypatch, {"variant_tag": {"DE": ["GE"]}},
-        openmsx=[{"manufacturer": "Maker B", "model": "M-1 (DE)", "generation": "MSX1",
+        openmsx=[{"brand": "Maker B", "model": "M-1 (DE)", "generation": "MSX1",
                   "openmsx_id": "Maker_B_M-1_DE"}],
-        msxorg=[{"manufacturer": "Maker B", "model": "M-1 (GE)", "generation": "MSX1",
+        msxorg=[{"brand": "Maker B", "model": "M-1 (GE)", "generation": "MSX1",
                  "msxorg_title": "Maker B M-1 (GE)", "vram_kb": 16}],
     )
     keys = [c["key"] for c in data["columns"]]
     rows = [dict(zip(keys, m["values"])) for m in data["models"]]
-    assert [(r["manufacturer"], r["model"]) for r in rows] == [("Maker B", "M-1 (DE)")]
+    assert [(r["brand"], r["model"]) for r in rows] == [("Maker B", "M-1 (DE)")]
     assert rows[0]["vram_kb"] == 16
 
 
 def test_canonicalised_tag_keeps_its_registry_id(tmp_path, monkeypatch):
     _, reg = _build_with_aliases(
         tmp_path, monkeypatch, {"variant_tag": {"GB": ["UK"]}},
-        openmsx=[{"manufacturer": "Maker", "model": "M-7(UK)", "generation": "MSX1"}],
+        openmsx=[{"brand": "Maker", "model": "M-7(UK)", "generation": "MSX1"}],
         msxorg=[],
         registry={"version": 2, "models": {"maker|m-7(uk)": 42}, "retired_models": [], "next_model_id": 500},
     )
@@ -979,17 +979,17 @@ def test_localised_products_join_only_openmsx_machines(tmp_path, monkeypatch):
     from scraper.aliases import LOCALISED_FIELD
     page = "Maker MX5"
     msxorg = [
-        {"manufacturer": "Maker", "model": "MX5", "generation": "MSX1", "msxorg_title": page, "vram_kb": 16},
-        {"manufacturer": "Maker", "model": "MX5U", "generation": "MSX1", "msxorg_title": page,
+        {"brand": "Maker", "model": "MX5", "generation": "MSX1", "msxorg_title": page, "vram_kb": 16},
+        {"brand": "Maker", "model": "MX5U", "generation": "MSX1", "msxorg_title": page,
          "vram_kb": 16, "keyboard_layout": "QWERTY", LOCALISED_FIELD: "MX5"},
-        {"manufacturer": "Maker", "model": "MX5A", "generation": "MSX1", "msxorg_title": page,
+        {"brand": "Maker", "model": "MX5A", "generation": "MSX1", "msxorg_title": page,
          "vram_kb": 16, LOCALISED_FIELD: "MX5"},
-        {"manufacturer": "Maker", "model": "MX5C", "generation": "MSX1", "msxorg_title": page,
+        {"brand": "Maker", "model": "MX5C", "generation": "MSX1", "msxorg_title": page,
          "vram_kb": 16, LOCALISED_FIELD: "MX5"},
-        {"manufacturer": "Maker", "model": "MX5C", "generation": "MSX1", "msxorg_title": "Maker MX5C",
+        {"brand": "Maker", "model": "MX5C", "generation": "MSX1", "msxorg_title": "Maker MX5C",
          "vram_kb": 32},
     ]
-    openmsx = [{"manufacturer": "Maker", "model": m, "generation": "MSX1"} for m in ("MX5", "MX5U", "MX5C")]
+    openmsx = [{"brand": "Maker", "model": m, "generation": "MSX1"} for m in ("MX5", "MX5U", "MX5C")]
     data, _ = _build_with_aliases(tmp_path, monkeypatch, {}, openmsx=openmsx, msxorg=msxorg)
     keys = [c["key"] for c in data["columns"]]
     rows = {r["model"]: (r, m.get("links", {})) for m in data["models"] for r in [dict(zip(keys, m["values"]))]}

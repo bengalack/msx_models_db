@@ -909,7 +909,7 @@ def _record_from_specs(
     ``slot_table`` when one was chosen, else from ``slot_page``'s first slot map.
     """
     result: dict[str, Any] = {
-        "manufacturer": brand,
+        "brand": brand,
         "model": model,
         "generation": standard,
         "msxorg_title": page_title,
@@ -1277,11 +1277,11 @@ def fetch_all(
             if parsed:
                 for result in parsed:
                     if exclude_list and exclude_list.is_excluded(
-                        result.get("manufacturer"), result.get("model")
+                        result.get("brand"), result.get("model")
                     ):
                         log.debug(
-                            "[exclude:skip] Excluded model | manufacturer=%s model=%s source=msxorg",
-                            result.get("manufacturer"), result.get("model"),
+                            "[exclude:skip] Excluded model | brand=%s model=%s source=msxorg",
+                            result.get("brand"), result.get("model"),
                         )
                         excluded += 1
                     else:

@@ -11,7 +11,7 @@ from pathlib import Path
 log = logging.getLogger(__name__)
 
 _VALID_MODES = frozenset([
-    frozenset(["manufacturer", "model"]),
+    frozenset(["brand", "model"]),
     frozenset(["filename"]),
 ])
 
@@ -26,7 +26,7 @@ def _validate_entry(index: int, entry: object) -> None:
     if keys not in _VALID_MODES:
         raise ValueError(
             f"exclude.json entry {index} has unrecognised keys {sorted(entry.keys())}. "
-            "Each entry must have exactly {\"manufacturer\", \"model\"} or {\"filename\"}."
+            "Each entry must have exactly {\"brand\", \"model\"} or {\"filename\"}."
         )
     for k, v in entry.items():
         if not isinstance(v, str):
@@ -36,7 +36,7 @@ def _validate_entry(index: int, entry: object) -> None:
 
 
 def _field_matches(rule_value: str, actual_value: str | None) -> bool:
-    """Return True if a single field in a manufacturer+model rule matches."""
+    """Return True if a single field in a brand+model rule matches."""
     if rule_value == "*":
         return True
     actual = actual_value or ""
@@ -53,16 +53,16 @@ class ExcludeList:
     def __post_init__(self) -> None:
         self._match_counts = [0] * len(self.rules)
 
-    def is_excluded(self, manufacturer: str | None, model: str | None) -> bool:
-        """Return True if a manufacturer+model pair matches any rule.
+    def is_excluded(self, brand: str | None, model: str | None) -> bool:
+        """Return True if a brand+model pair matches any rule.
 
-        Checks only entries with the {manufacturer, model} mode.
+        Checks only entries with the {brand, model} mode.
         Updates internal match counters for dead-rule detection.
         """
         for i, rule in enumerate(self.rules):
             if "filename" in rule:
                 continue
-            if _field_matches(rule["manufacturer"], manufacturer) and \
+            if _field_matches(rule["brand"], brand) and \
                _field_matches(rule["model"], model):
                 self._match_counts[i] += 1
                 return True
@@ -115,7 +115,7 @@ def load_excludes(path: Path) -> ExcludeList:
 
     # Warn on all-wildcard entries
     for i, entry in enumerate(data):
-        if entry.get("manufacturer") == "*" and entry.get("model") == "*":
+        if entry.get("brand") == "*" and entry.get("model") == "*":
             log.warning(
                 "[exclude:load] All-wildcard rule at index %d will exclude every model "
                 "— verify this is intentional", i

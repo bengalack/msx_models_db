@@ -19,7 +19,7 @@ function makeData(): MSXData {
     generated: '2026-09-21',
     groups: [{ id: 0, key: 'g', label: 'G', order: 0 }],
     columns: [
-      { id: 1, key: 'manufacturer', label: 'Manufacturer', groupId: 0, type: 'string' },
+      { id: 1, key: 'brand', label: 'Brand', groupId: 0, type: 'string' },
       { id: 2, key: 'model', label: 'Model', groupId: 0, type: 'string' },
       {
         id: 3,

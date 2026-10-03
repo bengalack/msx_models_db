@@ -43,7 +43,7 @@ def _parse_engine_field(model: dict, index: int) -> str | None:
     global _ENGINE_CHIPS
     if _ENGINE_CHIPS is None:
         _ENGINE_CHIPS = load_chip_dictionary()
-    context = f"{model.get('manufacturer', '')}|{model.get('model', '')}"
+    context = f"{model.get('brand', '')}|{model.get('model', '')}"
     return parse_engine(model.get("engine_raw"), _ENGINE_CHIPS, context=context)[index]
 
 
@@ -236,7 +236,7 @@ GROUPS: list[Group] = [
 
 COLUMNS: list[Column] = [
     # Identity
-    Column(id=1,  key="manufacturer",      label="Manufacturer",        group="identity", type="string", truncate_limit=12),
+    Column(id=1,  key="brand",             label="Brand",               group="identity", type="string", truncate_limit=12),
     # The icon tells the cells link to documentation (the msx.org page), like generation-msx's header.
     Column(id=2,  key="model",             label="Model",               group="identity", type="string", linkable=True, truncate_limit=20,
            label_icon="fa-external-link"),

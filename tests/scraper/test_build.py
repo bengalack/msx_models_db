@@ -19,12 +19,12 @@ class TestBuildPipeline:
         """Build from fixture data produces a valid data.js."""
         # Create minimal cached raw data
         openmsx = [
-            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+            {"brand": "Sony", "model": "HB-75P", "standard": "MSX2",
              "year": 1985, "region": "Europe", "vdp": "V9938", "vram_kb": 128,
              "main_ram_kb": 64, "openmsx_id": "Sony_HB-75P"},
         ]
         msxorg = [
-            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+            {"brand": "Sony", "model": "HB-75P", "standard": "MSX2",
              "year": 1985, "region": "Europe", "msxorg_title": "Sony HB-75P"},
         ]
 
@@ -55,7 +55,7 @@ class TestBuildPipeline:
 
     def test_build_is_idempotent(self, tmp_path):
         """Running build twice produces identical output."""
-        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        raw = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2"}]
 
         openmsx_path = tmp_path / "openmsx.json"
         msxorg_path = tmp_path / "msxorg.json"
@@ -101,7 +101,7 @@ class TestBuildPipeline:
             "next_model_id": 43,
         }))
 
-        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        raw = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2"}]
         openmsx_path = tmp_path / "openmsx.json"
         msxorg_path = tmp_path / "msxorg.json"
         output_path = tmp_path / "data.js"
@@ -118,7 +118,7 @@ class TestBuildPipeline:
 
     def test_cartridge_slots_key_migrated_to_scraped_cart_slots(self, tmp_path):
         """Cached raw data with old 'cartridge_slots' key is migrated so derive runs."""
-        openmsx = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+        openmsx = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2",
                     "cartridge_slots": 2}]
         openmsx_path = tmp_path / "openmsx.json"
         msxorg_path = tmp_path / "msxorg.json"
@@ -133,7 +133,7 @@ class TestBuildPipeline:
         col_keys = [c["key"] for c in data["columns"]]
         # cartridge_slots value should come from scraped fallback (2), not be None
         idx = col_keys.index("cartridge_slots")
-        mfr_idx = col_keys.index("manufacturer")
+        mfr_idx = col_keys.index("brand")
         mdl_idx = col_keys.index("model")
         sony = next(
             m for m in data["models"]
@@ -148,7 +148,7 @@ class TestBuildSlotmapLUT:
     """Integration tests for slotmap LUT wired into build pipeline."""
 
     def _run_build(self, tmp_path):
-        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        raw = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2"}]
         openmsx_path = tmp_path / "openmsx.json"
         msxorg_path = tmp_path / "msxorg.json"
         output_path = tmp_path / "data.js"
@@ -206,7 +206,7 @@ class TestBuildSlotmapLUT:
 
     def test_missing_lut_file_aborts_build(self, tmp_path):
         import pytest
-        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        raw = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2"}]
         openmsx_path = tmp_path / "openmsx.json"
         msxorg_path = tmp_path / "msxorg.json"
         openmsx_path.write_text(json.dumps(raw))
@@ -231,8 +231,8 @@ class TestBuildExcludeList:
         registry_path = tmp_path / "registry.json"
         output_path = tmp_path / "data.js"
         openmsx_path.write_text(json.dumps([
-            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"},
-            {"manufacturer": "Philips", "model": "NMS 8250", "standard": "MSX2"},
+            {"brand": "Sony", "model": "HB-75P", "standard": "MSX2"},
+            {"brand": "Philips", "model": "NMS 8250", "standard": "MSX2"},
         ]))
         msxorg_path.write_text(json.dumps([]))
         # An empty stand-in keeps these builds off the maintainer's curated
@@ -247,7 +247,7 @@ class TestBuildExcludeList:
         openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         exclude_path = tmp_path / "exclude.json"
         exclude_path.write_text(json.dumps([
-            {"manufacturer": "Sony", "model": "HB-75P"},
+            {"brand": "Sony", "model": "HB-75P"},
         ]))
 
         build(
@@ -268,10 +268,10 @@ class TestBuildExcludeList:
         """An exclude rule wins over data/local-raw.json, the highest-authority source."""
         openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         local_path.write_text(json.dumps([
-            {"manufacturer": "Sony", "model": "HB-75P", "himem_addr": "0xF380"},
+            {"brand": "Sony", "model": "HB-75P", "himem_addr": "0xF380"},
         ]))
         exclude_path = tmp_path / "exclude.json"
-        exclude_path.write_text(json.dumps([{"manufacturer": "Sony", "model": "HB-75P"}]))
+        exclude_path.write_text(json.dumps([{"brand": "Sony", "model": "HB-75P"}]))
 
         build(
             openmsx_path=openmsx_path,
@@ -288,10 +288,10 @@ class TestBuildExcludeList:
         """A local-only entry — one no source provides — is excludable too."""
         openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         local_path.write_text(json.dumps([
-            {"manufacturer": "Acme", "model": "Ghost-1", "himem_addr": "0xF380"},
+            {"brand": "Acme", "model": "Ghost-1", "himem_addr": "0xF380"},
         ]))
         exclude_path = tmp_path / "exclude.json"
-        exclude_path.write_text(json.dumps([{"manufacturer": "Acme", "model": "Ghost-1"}]))
+        exclude_path.write_text(json.dumps([{"brand": "Acme", "model": "Ghost-1"}]))
 
         build(
             openmsx_path=openmsx_path,
@@ -308,10 +308,10 @@ class TestBuildExcludeList:
         """Filtering local data must not drop the entries the rules do not name."""
         openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         local_path.write_text(json.dumps([
-            {"manufacturer": "Philips", "model": "NMS 8250", "himem_addr": "0xDE79"},
+            {"brand": "Philips", "model": "NMS 8250", "himem_addr": "0xDE79"},
         ]))
         exclude_path = tmp_path / "exclude.json"
-        exclude_path.write_text(json.dumps([{"manufacturer": "Sony", "model": "HB-75P"}]))
+        exclude_path.write_text(json.dumps([{"brand": "Sony", "model": "HB-75P"}]))
 
         build(
             openmsx_path=openmsx_path,
@@ -330,7 +330,7 @@ class TestBuildExcludeList:
 
         openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         exclude_path = tmp_path / "exclude.json"
-        exclude_path.write_text(json.dumps([{"manufacturer": "Sony", "model": "HB-75P"}]))
+        exclude_path.write_text(json.dumps([{"brand": "Sony", "model": "HB-75P"}]))
 
         captured: dict = {}
 
@@ -391,7 +391,7 @@ class TestBuildExcludeList:
         """Dead-rule warnings must not appear when build() is called without --fetch.
 
         Filename rules are never evaluated without a fetch (no file listing occurs),
-        and manufacturer+model rules may appear dead because a previous fetch already
+        and brand+model rules may appear dead because a previous fetch already
         removed the models from cache. Reporting them as dead would be a false positive.
         """
         import logging
@@ -400,7 +400,7 @@ class TestBuildExcludeList:
         exclude_path = tmp_path / "exclude.json"
         exclude_path.write_text(json.dumps([
             {"filename": "Boosted*"},
-            {"manufacturer": "Sony", "model": "HB-99Z"},  # model not in cache
+            {"brand": "Sony", "model": "HB-99Z"},  # model not in cache
         ]))
 
         with caplog.at_level(logging.WARNING, logger="scraper.build"):
@@ -426,7 +426,7 @@ class TestBuildExcludeList:
         openmsx_path, msxorg_path, registry_path, output_path, local_path = self._fixture(tmp_path)
         exclude_path = tmp_path / "exclude.json"
         exclude_path.write_text(json.dumps([
-            {"manufacturer": "Sony", "model": "HB-99Z"},  # model not in cache → dead
+            {"brand": "Sony", "model": "HB-99Z"},  # model not in cache → dead
         ]))
 
         with patch.object(build_mod, "fetch_sources"):  # skip actual fetch
@@ -478,7 +478,7 @@ class TestBuildSlotmapExtractor:
         slotmap_data["slotmap_0_0_1"] = "MAIN"
         slotmap_data["slotmap_1_0_0"] = "CS1"
 
-        openmsx = [{"manufacturer": "Sony", "model": "HB-F1XV",
+        openmsx = [{"brand": "Sony", "model": "HB-F1XV",
                     "standard": "MSX2+", **slotmap_data}]
         msxorg = []
 
@@ -524,7 +524,7 @@ class TestBuildMaxWidth:
     """maxWidth is serialised from Column.max_width, and only when set."""
 
     def test_max_width_matches_column_config(self, tmp_path):
-        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        raw = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2"}]
         openmsx_path = tmp_path / "openmsx.json"
         msxorg_path = tmp_path / "msxorg.json"
         output_path = tmp_path / "data.js"
@@ -546,7 +546,7 @@ class TestBuildDefaultOff:
     """defaultOff is serialised from Column.default_off, and only when set."""
 
     def test_default_off_matches_column_config(self, tmp_path):
-        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        raw = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2"}]
         openmsx_path = tmp_path / "openmsx.json"
         msxorg_path = tmp_path / "msxorg.json"
         output_path = tmp_path / "data.js"
@@ -568,7 +568,7 @@ class TestBuildSortLast:
     """sortLast is serialised from Column.sort_last, and only when set."""
 
     def test_sort_last_matches_column_config(self, tmp_path):
-        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        raw = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2"}]
         openmsx_path = tmp_path / "openmsx.json"
         msxorg_path = tmp_path / "msxorg.json"
         output_path = tmp_path / "data.js"
@@ -590,7 +590,7 @@ class TestBuildTruncateLimit:
     """Tests for truncateLimit serialisation in ColumnDef output."""
 
     def _build_and_parse(self, tmp_path) -> dict:
-        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        raw = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2"}]
         openmsx_path = tmp_path / "openmsx.json"
         msxorg_path = tmp_path / "msxorg.json"
         output_path = tmp_path / "data.js"
@@ -609,9 +609,9 @@ class TestBuildTruncateLimit:
         json_end = content.rindex(";")
         return json.loads(content[json_start:json_end])
 
-    def test_manufacturer_column_has_truncate_limit(self, tmp_path):
+    def test_brand_column_has_truncate_limit(self, tmp_path):
         data = self._build_and_parse(tmp_path)
-        col = next(c for c in data["columns"] if c["key"] == "manufacturer")
+        col = next(c for c in data["columns"] if c["key"] == "brand")
         assert col.get("truncateLimit") == 12
 
     def test_model_column_has_truncate_limit(self, tmp_path):
@@ -660,7 +660,7 @@ class TestLoadScraperConfig:
 class TestBuildMirrorWiring:
     """mirror_path reaches msxorg.fetch_all as a MirrorPageSource."""
 
-    _OPENMSX = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+    _OPENMSX = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2"}]
     _MSXORG: list = []
 
     def _write_cache(self, tmp_path: Path) -> tuple[Path, Path]:
@@ -812,7 +812,7 @@ class TestBuildMirrorWiring:
 class TestBuildOpenMSXMirrorWiring:
     """openmsx_mirror_path reaches fetch_sources; config key openmsx_mirror honoured."""
 
-    _OPENMSX = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+    _OPENMSX = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2"}]
     _MSXORG: list = []
 
     def _write_cache(self, tmp_path: Path) -> tuple[Path, Path]:
@@ -962,7 +962,7 @@ def test_aliases_json_loads_without_error():
     from scraper.aliases import AliasLUT, load_aliases
     lut = load_aliases(Path("data/aliases.json"))
     assert isinstance(lut, AliasLUT)
-    assert "manufacturer" in lut.single or "model" in lut.single
+    assert "brand" in lut.single or "model" in lut.single
 
 
 class TestOpenMSXIdLink:
@@ -991,7 +991,7 @@ class TestOpenMSXIdLink:
     def test_openmsx_id_column_is_linkable(self, tmp_path):
         """openmsx_id ColumnDef has linkable=true in data.js."""
         data = self._run_build(tmp_path, [
-            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+            {"brand": "Sony", "model": "HB-75P", "standard": "MSX2",
              "openmsx_id": "Sony_HB-75P"},
         ])
         col = next(c for c in data["columns"] if c["key"] == "openmsx_id")
@@ -1000,7 +1000,7 @@ class TestOpenMSXIdLink:
     def test_openmsx_id_column_has_truncate_limit_20(self, tmp_path):
         """openmsx_id ColumnDef has truncateLimit=20 in data.js."""
         data = self._run_build(tmp_path, [
-            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+            {"brand": "Sony", "model": "HB-75P", "standard": "MSX2",
              "openmsx_id": "Sony_HB-75P"},
         ])
         col = next(c for c in data["columns"] if c["key"] == "openmsx_id")
@@ -1009,11 +1009,11 @@ class TestOpenMSXIdLink:
     def test_openmsx_id_link_emitted_when_id_present(self, tmp_path):
         """Model record has links.openmsx_id set to the correct GitHub URL."""
         data = self._run_build(tmp_path, [
-            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+            {"brand": "Sony", "model": "HB-75P", "standard": "MSX2",
              "openmsx_id": "Sony_HB-75P"},
         ])
         col_keys = [c["key"] for c in data["columns"]]
-        mfr_idx = col_keys.index("manufacturer")
+        mfr_idx = col_keys.index("brand")
         mdl_idx = col_keys.index("model")
         sony = next(
             m for m in data["models"]
@@ -1025,10 +1025,10 @@ class TestOpenMSXIdLink:
     def test_openmsx_id_link_absent_when_id_missing(self, tmp_path):
         """Model record has no links.openmsx_id when openmsx_id is null."""
         data = self._run_build(tmp_path, [
-            {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"},
+            {"brand": "Sony", "model": "HB-75P", "standard": "MSX2"},
         ])
         col_keys = [c["key"] for c in data["columns"]]
-        mfr_idx = col_keys.index("manufacturer")
+        mfr_idx = col_keys.index("brand")
         mdl_idx = col_keys.index("model")
         sony = next(
             m for m in data["models"]
@@ -1041,16 +1041,16 @@ class TestOpenMSXIdLink:
         data = self._run_build(
             tmp_path,
             openmsx_data=[
-                {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+                {"brand": "Sony", "model": "HB-75P", "standard": "MSX2",
                  "openmsx_id": "Sony_HB-75P"},
             ],
             msxorg_data=[
-                {"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2",
+                {"brand": "Sony", "model": "HB-75P", "standard": "MSX2",
                  "msxorg_title": "Sony HB-75P"},
             ],
         )
         col_keys = [c["key"] for c in data["columns"]]
-        mfr_idx = col_keys.index("manufacturer")
+        mfr_idx = col_keys.index("brand")
         mdl_idx = col_keys.index("model")
         sony = next(
             m for m in data["models"]
@@ -1066,7 +1066,7 @@ class TestBuildChipLinks:
 
     def test_chip_links_match_the_dictionary_and_column_config(self, tmp_path):
         from scraper.chip_links import load_chip_links
-        raw = [{"manufacturer": "Sony", "model": "HB-75P", "standard": "MSX2"}]
+        raw = [{"brand": "Sony", "model": "HB-75P", "standard": "MSX2"}]
         (tmp_path / "openmsx.json").write_text(json.dumps(raw))
         (tmp_path / "msxorg.json").write_text(json.dumps([]))
         build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
@@ -1080,7 +1080,7 @@ class TestBuildChipLinks:
 
 
 def test_renderer_and_filterable_flags_reach_data_js(tmp_path):
-    raw = [{"manufacturer": "Sony", "model": "HB-75P", "generation": "MSX1"}]
+    raw = [{"brand": "Sony", "model": "HB-75P", "generation": "MSX1"}]
     (tmp_path / "openmsx.json").write_text(json.dumps(raw))
     (tmp_path / "msxorg.json").write_text(json.dumps([]))
     build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
@@ -1094,7 +1094,7 @@ def test_renderer_and_filterable_flags_reach_data_js(tmp_path):
 
 
 def test_default_collapsed_groups_reach_data_js(tmp_path):
-    raw = [{"manufacturer": "Sony", "model": "HB-75P", "generation": "MSX1"}]
+    raw = [{"brand": "Sony", "model": "HB-75P", "generation": "MSX1"}]
     (tmp_path / "openmsx.json").write_text(json.dumps(raw))
     (tmp_path / "msxorg.json").write_text(json.dumps([]))
     build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",

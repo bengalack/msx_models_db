@@ -22,7 +22,7 @@ function makeData(): MSXData {
       { id: 1, key: 'release', label: 'Release', order: 1 },
     ],
     columns: [
-      { id: 1, key: 'manufacturer', label: 'Manufacturer', groupId: 0, type: 'string' },
+      { id: 1, key: 'brand', label: 'Brand', groupId: 0, type: 'string' },
       { id: 2, key: 'model', label: 'Model', groupId: 0, type: 'string', labelIcon: 'fa-external-link' },
       LINK_COL,
       { id: 3, key: 'year', label: 'Year', groupId: 1, type: 'number' },

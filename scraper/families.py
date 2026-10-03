@@ -19,7 +19,7 @@ Two models are related when any of these links them. **Series**: the groups of
 related models of the *same* brand; named after the series page ("HB-75") when
 one exists, else after the base model's name, linking to the series page or the
 base model's page. **Rebrand**: groups of related models spanning *more than
-one* brand; named after the original — its manufacturer's initial and model
+one* brand; named after the original — its brand's initial and model
 ("D. DPC-200") — linking to its page. Every
 member, base / original included, carries the group's value. The base /
 original is the member no other member is a version of; ties go to the earliest
@@ -113,10 +113,10 @@ def collect_edges(rows: list[dict[str, Any]], link_shares: dict[str, str]) -> li
     for r in rows:
         if r.get("msxorg_title"):
             by_title[r["msxorg_title"]].append(r["_id"])
-        by_key[f"{(r.get('manufacturer') or '').lower()}|{(r.get('model') or '').lower()}"] = r["_id"]
+        by_key[f"{(r.get('brand') or '').lower()}|{(r.get('model') or '').lower()}"] = r["_id"]
         by_name[_squash(r.get("model"))].append(r["_id"])
-        by_name[_squash(f"{r.get('manufacturer')} {r.get('model')}")].append(r["_id"])
-    makers = {r["_id"]: _squash(r.get("manufacturer")) for r in rows}
+        by_name[_squash(f"{r.get('brand')} {r.get('model')}")].append(r["_id"])
+    makers = {r["_id"]: _squash(r.get("brand")) for r in rows}
 
     edges: list[Edge] = []
     # Records of one msx.org page (split models, revisions, localised products)
@@ -168,24 +168,24 @@ def base_name(model: str) -> str:
     return _VARIANT_SUFFIX_RE.sub("", model).strip() or model
 
 
-def rebrand_name(manufacturer: str | None, model: str | None) -> str:
-    """The Rebrand cell: the original's manufacturer shortened to its initial — "D. DPC-200"."""
-    maker = (manufacturer or "").strip()
+def rebrand_name(brand: str | None, model: str | None) -> str:
+    """The Rebrand cell: the original's brand shortened to its initial — "D. DPC-200"."""
+    maker = (brand or "").strip()
     initial = f"{maker[0].upper()}. " if maker else ""
     return f"{initial}{model or ''}".strip()
 
 
-def _series_slug_name(slug: str, manufacturer: str | None) -> str:
+def _series_slug_name(slug: str, brand: str | None) -> str:
     name = slug.replace("_", " ")
-    if manufacturer and name.lower().startswith(manufacturer.lower() + " "):
-        name = name[len(manufacturer) + 1:]
+    if brand and name.lower().startswith(brand.lower() + " "):
+        name = name[len(brand) + 1:]
     return name
 
 
 def compute_families(rows: list[dict[str, Any]], link_shares: dict[str, str]) -> Families:
     rows_by_id = {r["_id"]: r for r in rows}
     edges = collect_edges(rows, link_shares)
-    brand = {i: _squash(r.get("manufacturer")) for i, r in rows_by_id.items()}
+    brand = {i: _squash(r.get("brand")) for i, r in rows_by_id.items()}
 
     same_brand = _UnionFind(rows_by_id)
     everything = _UnionFind(rows_by_id)
@@ -200,7 +200,7 @@ def compute_families(rows: list[dict[str, Any]], link_shares: dict[str, str]) ->
         slugs = [rows_by_id[m].get(SERIES_FIELD) for m in [root, *members] if rows_by_id[m].get(SERIES_FIELD)]
         if slugs:
             slug = slugs[0]
-            name, url = _series_slug_name(slug, rows_by_id[root].get("manufacturer")), page_url(f"Category:{slug}")
+            name, url = _series_slug_name(slug, rows_by_id[root].get("brand")), page_url(f"Category:{slug}")
         else:
             title = rows_by_id[root].get("msxorg_title")
             name, url = base_name(rows_by_id[root].get("model") or ""), page_url(title) if title else None
@@ -211,7 +211,7 @@ def compute_families(rows: list[dict[str, Any]], link_shares: dict[str, str]) ->
         root = _root(members, edges, rows_by_id)
         r = rows_by_id[root]
         title = r.get("msxorg_title")
-        result.rebrands.append(Group(name=rebrand_name(r.get("manufacturer"), r.get("model")),
+        result.rebrands.append(Group(name=rebrand_name(r.get("brand"), r.get("model")),
                                      url=page_url(title) if title else None, root=root, members=members))
     result.series.sort(key=lambda g: g.name.lower())
     result.rebrands.sort(key=lambda g: g.name.lower())
@@ -220,7 +220,7 @@ def compute_families(rows: list[dict[str, Any]], link_shares: dict[str, str]) ->
 
 def write_families(path: Path, families: Families, rows_by_id: dict[int, dict[str, Any]]) -> None:
     """``data/families.json``: the groups and the relations behind them (for review)."""
-    label = lambda i: f"{rows_by_id[i].get('manufacturer') or ''} {rows_by_id[i].get('model') or ''}".strip()
+    label = lambda i: f"{rows_by_id[i].get('brand') or ''} {rows_by_id[i].get('model') or ''}".strip()
 
     def group(g: Group) -> dict[str, Any]:
         return {"name": g.name, "url": g.url, "base": label(g.root),

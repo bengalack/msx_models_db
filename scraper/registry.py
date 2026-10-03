@@ -100,7 +100,7 @@ class IDRegistry:
     ) -> int:
         """Return the stable ID for a model, assigning a new one if needed.
 
-        Natural key format: "manufacturer|model" (lowercased, stripped).
+        Natural key format: "brand|model" (lowercased, stripped).
 
         Lookup order ("match before create"):
 

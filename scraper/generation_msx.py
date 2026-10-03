@@ -55,7 +55,7 @@ class GmsxEntry:
     """One computer in a generation-msx.nl hardware listing."""
     url: str
     name: str
-    manufacturer: str
+    brand: str
 
 
 # ── Map file ──────────────────────────────────────────────────────────────
@@ -94,7 +94,7 @@ def listing_url(product_type: str, page: int) -> str:
 
 
 def parse_listing(html: str) -> tuple[list[GmsxEntry], int]:
-    """Entries of one listing page (table rows: name, manufacturer, type) and its last page number."""
+    """Entries of one listing page (table rows: name, brand, type) and its last page number."""
     soup = BeautifulSoup(html, "lxml")
     entries: list[GmsxEntry] = []
     for tr in soup.find_all("tr"):
@@ -108,9 +108,9 @@ def parse_listing(html: str) -> tuple[list[GmsxEntry], int]:
         if not name:   # the first link of a row may wrap the thumbnail only
             name = next((re.sub(r"\s+", " ", a.get_text(" ", strip=True)) for a in tr.find_all("a", href=href)
                          if a.get_text(strip=True)), "")
-        manufacturer = re.sub(r"\s+", " ", cells[1].get_text(" ", strip=True))
+        brand = re.sub(r"\s+", " ", cells[1].get_text(" ", strip=True))
         if name:
-            entries.append(GmsxEntry(url=url, name=name, manufacturer=manufacturer))
+            entries.append(GmsxEntry(url=url, name=name, brand=brand))
     pages = [int(p) for p in re.findall(r"[?&](?:amp;)?page=(\d+)", html)]
     return entries, max(pages or [1])
 
@@ -151,7 +151,7 @@ _FAMILY_SUFFIX_RE = re.compile(
 
 
 def _exact_key(entry: GmsxEntry, lut: AliasLUT) -> str:
-    record = {"manufacturer": entry.manufacturer, "model": entry.name}
+    record = {"brand": entry.brand, "model": entry.name}
     apply_aliases(record, lut)                    # country tags (UK -> GB), renamed models
     return _norm(record["model"])
 
@@ -162,18 +162,18 @@ def _variant_keys(entry: GmsxEntry, lut: AliasLUT) -> set[str]:
     base = _NICKNAME_RE.sub("", entry.name)
     words = base.split()
     for n in range(1, len(words) + 1):
-        record = {"manufacturer": entry.manufacturer, "model": " ".join(words[:n])}
+        record = {"brand": entry.brand, "model": " ".join(words[:n])}
         apply_aliases(record, lut)
         keys.add(_norm(record["model"]))
     keys.discard(_exact_key(entry, lut))
     return keys
 
 
-def _pick(manufacturer: str, candidates: Iterable[GmsxEntry]) -> GmsxEntry | None:
-    """The one candidate, or the one whose manufacturer shares a word with ours; else None."""
+def _pick(brand: str, candidates: Iterable[GmsxEntry]) -> GmsxEntry | None:
+    """The one candidate, or the one whose brand shares a word with ours; else None."""
     unique = list({e.url: e for e in candidates}.values())
     if len(unique) > 1:
-        same_maker = [e for e in unique if _words(manufacturer) & _words(e.manufacturer)]
+        same_maker = [e for e in unique if _words(brand) & _words(e.brand)]
         if same_maker:
             unique = same_maker
     return unique[0] if len(unique) == 1 else None
@@ -184,7 +184,7 @@ def match_models(
     entries: list[GmsxEntry],
     lut: AliasLUT,
 ) -> dict[int, dict[str, Any]]:
-    """``{id: {"model", "url", "match"}}`` for every (id, manufacturer, model) with a page."""
+    """``{id: {"model", "url", "match"}}`` for every (id, brand, model) with a page."""
     exact: dict[str, list[GmsxEntry]] = {}
     variant: dict[str, list[GmsxEntry]] = {}
     for e in entries:
@@ -192,34 +192,34 @@ def match_models(
         for k in _variant_keys(e, lut):
             variant.setdefault(k, []).append(e)
 
-    def find(manufacturer: str, name: str) -> tuple[GmsxEntry | None, str]:
+    def find(brand: str, name: str) -> tuple[GmsxEntry | None, str]:
         key = _norm(name)
         if key in exact:
-            hit = _pick(manufacturer, exact[key])
+            hit = _pick(brand, exact[key])
             return hit, "exact"
         if key in variant:
-            return _pick(manufacturer, variant[key]), "variant"
+            return _pick(brand, variant[key]), "variant"
         return None, ""
 
     out: dict[int, dict[str, Any]] = {}
-    for model_id, manufacturer, name in models:
-        hit, kind = find(manufacturer, name)
+    for model_id, brand, name in models:
+        hit, kind = find(brand, name)
         if hit is None:
             base = _FAMILY_SUFFIX_RE.sub("", name)
             if base != name:
-                hit, _ = find(manufacturer, base)
+                hit, _ = find(brand, base)
                 kind = "family"
         if hit is not None:
-            out[model_id] = {"model": f"{manufacturer} {name}", "url": hit.url, "match": kind}
+            out[model_id] = {"model": f"{brand} {name}", "url": hit.url, "match": kind}
     return out
 
 
 def models_from_data_js(path: Path) -> list[tuple[int, str, str]]:
-    """(id, manufacturer, model) of every model in a built data.js."""
+    """(id, brand, model) of every model in a built data.js."""
     text = path.read_text(encoding="utf-8")
     data = json.loads(text[text.index("{"):text.rindex("}") + 1])
     keys = [c["key"] for c in data["columns"]]
-    im, imo = keys.index("manufacturer"), keys.index("model")
+    im, imo = keys.index("brand"), keys.index("model")
     return [(m["id"], m["values"][im] or "", m["values"][imo] or "") for m in data["models"]]
 
 

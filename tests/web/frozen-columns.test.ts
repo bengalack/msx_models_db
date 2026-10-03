@@ -2,7 +2,7 @@
  * Tests for frozen (sticky) columns 0-1 in buildGrid().
  *
  * User’s column 0 = gutter (already sticky), so data columns 0–1
- * (manufacturer, model) are frozen.  Column 2+ must NOT be frozen.
+ * (brand, model) are frozen.  Column 2+ must NOT be frozen.
  * No layout / pixel measurements are attempted — jsdom does not provide them.
  */
 
@@ -22,7 +22,7 @@ function makeData(rowCount = 5): MSXData {
       { id: 1,  key: 'memory',   label: 'Memory',   order: 2 },
     ],
     columns: [
-      { id: 1, key: 'manufacturer', label: 'Manufacturer', groupId: 0,  type: 'string' },
+      { id: 1, key: 'brand', label: 'Brand', groupId: 0,  type: 'string' },
       { id: 2, key: 'model',        label: 'Model',        groupId: 0,  type: 'string' },
       { id: 3, key: 'year',         label: 'Year',         groupId: 12, type: 'number' },
       { id: 4, key: 'region',       label: 'Region',       groupId: 12, type: 'string' },

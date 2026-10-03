@@ -187,8 +187,8 @@ from scraper.link_shares import fill_from_link_shares  # noqa: E402
 
 
 def _row(key: str, **fields) -> dict:
-    manufacturer, model = key.split("|")
-    return {"manufacturer": manufacturer.title(), "model": model.upper(), **fields}
+    brand, model = key.split("|")
+    return {"brand": brand.title(), "model": model.upper(), **fields}
 
 
 def _slots(value: str) -> dict:
@@ -200,7 +200,7 @@ class TestFillFromLinkShares:
 
     @staticmethod
     def _key(model: dict) -> str:
-        return f"{model['manufacturer'].lower()}|{model['model'].lower()}"
+        return f"{model['brand'].lower()}|{model['model'].lower()}"
 
     def test_missing_fields_filled_from_the_donor(self):
         donor = _row("philips|vg-8000", vram_kb=16, msxorg_title="Philips VG-8000")
@@ -219,7 +219,7 @@ class TestFillFromLinkShares:
         assert recipient["main_ram_kb"] == 16
         for field in ("msxorg_title", "openmsx_id", "character_set", "keyboard_type"):
             assert field not in recipient, field
-        assert (recipient["manufacturer"], recipient["model"]) == ("Philips", "VG 8000/00")
+        assert (recipient["brand"], recipient["model"]) == ("Philips", "VG 8000/00")
 
     def test_slot_map_only_when_the_recipient_has_none(self):
         donor = _row("philips|vg-8000", mapper="No", **_slots("MAIN"))
@@ -251,9 +251,9 @@ def test_build_fills_link_share_recipients(tmp_path, monkeypatch):
     shares.write_text(json.dumps({"philips|vg 8000/00": "philips|vg-8000"}), encoding="utf-8")
     monkeypatch.setattr(build_module, "LINK_SHARES_PATH", shares)
     (tmp_path / "openmsx.json").write_text(json.dumps([
-        {"manufacturer": "Philips", "model": "VG 8000/00", "generation": "MSX1", "openmsx_id": "Philips_VG_8000"}]))
+        {"brand": "Philips", "model": "VG 8000/00", "generation": "MSX1", "openmsx_id": "Philips_VG_8000"}]))
     (tmp_path / "msxorg.json").write_text(json.dumps([
-        {"manufacturer": "Philips", "model": "VG-8000", "generation": "MSX1", "vram_kb": 16,
+        {"brand": "Philips", "model": "VG-8000", "generation": "MSX1", "vram_kb": 16,
          "msxorg_title": "Philips VG-8000"}]))
     build_module.build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
                        local_path=tmp_path / "local.json", registry_path=tmp_path / "registry.json",

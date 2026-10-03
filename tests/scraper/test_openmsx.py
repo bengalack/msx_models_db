@@ -37,14 +37,14 @@ def _xml(inner_info: str, inner_devices: str = "", extra_root: str = "") -> byte
 
 def _info(
     *,
-    manufacturer: str = "Sony",
+    brand: str = "Sony",
     code: str = "HB-75P",
     msx_type: str = "MSX2",
     year: str = "1985",
     region: str = "eu",
 ) -> str:
     return (
-        f"<manufacturer>{manufacturer}</manufacturer>"
+        f"<manufacturer>{brand}</manufacturer>"
         f"<code>{code}</code>"
         f"<type>{msx_type}</type>"
         f"<release_year>{year}</release_year>"
@@ -61,11 +61,11 @@ class TestParseXMLHappyPath:
     """T-010: MSX1, MSX2, MSX2+, turboR happy paths."""
 
     def test_msx2_identity_fields(self):
-        xml = _xml(_info(manufacturer="Sony", code="HB-75P", msx_type="MSX2",
+        xml = _xml(_info(brand="Sony", code="HB-75P", msx_type="MSX2",
                          year="1985", region="eu"))
         result = parse_machine_xml(xml, "Sony_HB-75P.xml")
         assert result is not None
-        assert result["manufacturer"] == "Sony"
+        assert result["brand"] == "Sony"
         assert result["model"] == "HB-75P"
         assert result["generation"] == "MSX2"
         assert result["year"] == 1985
@@ -104,7 +104,7 @@ class TestParseXMLSkipConditions:
         result = parse_machine_xml(xml, "ColecoVision.xml")
         assert result is None
 
-    def test_missing_manufacturer_returns_none_with_warning(self, caplog):
+    def test_missing_brand_returns_none_with_warning(self, caplog):
         xml = (
             b"<machine><info><code>HB-75P</code><type>MSX2</type></info>"
             b"<devices/></machine>"
@@ -132,7 +132,7 @@ class TestParseXMLSkipConditions:
         xml = b"<machine><info><manufacturer>Sony</manufacturer><code>HB-75P</code><type>MSX2</type></info></machine>"
         result = parse_machine_xml(xml, "Sony_HB-75P.xml")
         assert result is not None
-        assert result["manufacturer"] == "Sony"
+        assert result["brand"] == "Sony"
         assert "main_ram_kb" not in result
         assert "vdp" not in result
 
@@ -514,7 +514,7 @@ class TestFetchAll:
     """T-022 / T-023: fetch_all error handling and model exclude."""
 
     _VALID_XML = _xml(
-        _info(manufacturer="Sony", code="HB-75P", msx_type="MSX2",
+        _info(brand="Sony", code="HB-75P", msx_type="MSX2",
               year="1985", region="eu"),
         '<MemoryMapper id="Main RAM"><size>64</size></MemoryMapper>',
     )
@@ -544,10 +544,10 @@ class TestFetchAll:
         ]
         models = fetch_all(session=session, delay=0)
         assert len(models) == 1
-        assert models[0]["manufacturer"] == "Sony"
+        assert models[0]["brand"] == "Sony"
 
     def test_http_error_skips_file_and_continues(self):
-        valid_xml = _xml(_info(manufacturer="Panasonic", code="FS-A1", msx_type="MSX2+"))
+        valid_xml = _xml(_info(brand="Panasonic", code="FS-A1", msx_type="MSX2+"))
         session = MagicMock()
         session.get.side_effect = [
             self._api_response(["bad.xml", "Panasonic_FS-A1.xml"]),
@@ -556,10 +556,10 @@ class TestFetchAll:
         ]
         models = fetch_all(session=session, delay=0)
         assert len(models) == 1
-        assert models[0]["manufacturer"] == "Panasonic"
+        assert models[0]["brand"] == "Panasonic"
 
     def test_model_exclude_after_parse(self):
-        exclude = ExcludeList(rules=[{"manufacturer": "Sony", "model": "HB-75P"}])
+        exclude = ExcludeList(rules=[{"brand": "Sony", "model": "HB-75P"}])
         session = MagicMock()
         session.get.side_effect = [
             self._api_response(["Sony_HB-75P.xml"]),

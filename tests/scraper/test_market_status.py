@@ -44,16 +44,16 @@ def test_merged_status_follows_the_rank():
     (MARKET_UNRELEASED, MARKET_RARE),
 ])
 def test_merge_keeps_the_merged_status(o_value, m_value):
-    openmsx = [{"manufacturer": "Maker", "model": "M-1", "market_status": o_value}]
-    msxorg = [{"manufacturer": "Maker", "model": "M-1", "market_status": m_value}]
+    openmsx = [{"brand": "Maker", "model": "M-1", "market_status": o_value}]
+    msxorg = [{"brand": "Maker", "model": "M-1", "market_status": m_value}]
     [row] = merge_models(openmsx, msxorg)
     assert row["market_status"] == MARKET_RARE
 
 
 @pytest.mark.parametrize("o_value,m_value", [(None, MARKET_UNRELEASED), (MARKET_UNRELEASED, None)])
 def test_a_silent_source_keeps_the_other_status(o_value, m_value):
-    openmsx = [{"manufacturer": "Maker", "model": "M-1", "market_status": o_value}]
-    msxorg = [{"manufacturer": "Maker", "model": "M-1", "market_status": m_value}]
+    openmsx = [{"brand": "Maker", "model": "M-1", "market_status": o_value}]
+    msxorg = [{"brand": "Maker", "model": "M-1", "market_status": m_value}]
     [row] = merge_models(openmsx, msxorg)
     assert row["market_status"] == MARKET_UNRELEASED
 

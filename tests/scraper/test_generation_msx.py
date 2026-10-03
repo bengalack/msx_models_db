@@ -38,7 +38,7 @@ def _page(rows: list[str], last_page: int = 1) -> str:
 def test_parse_listing_reads_rows_and_last_page():
     html = _page([_row("/hardware/sony/hb-75p/1227", "HB-75P", "Sony Corporation")], last_page=3)
     entries, last = parse_listing(html)
-    assert entries == [GmsxEntry(url=f"{BASE}/hardware/sony/hb-75p/1227", name="HB-75P", manufacturer="Sony Corporation")]
+    assert entries == [GmsxEntry(url=f"{BASE}/hardware/sony/hb-75p/1227", name="HB-75P", brand="Sony Corporation")]
     assert last == 3
 
 
@@ -55,7 +55,7 @@ def test_run_crawls_every_page_and_writes_the_map(tmp_path):
 
     data_js = tmp_path / "data.js"
     data_js.write_text("window.MSX_DATA = " + json.dumps({
-        "columns": [{"key": "manufacturer"}, {"key": "model"}],
+        "columns": [{"key": "brand"}, {"key": "model"}],
         "models": [{"id": 7, "values": ["Sony", "HB-75P"]}, {"id": 8, "values": ["Maker", "Z-1"]}],
     }) + ";", encoding="utf-8")
     out = tmp_path / "generation-msx.json"
@@ -70,7 +70,7 @@ def test_run_crawls_every_page_and_writes_the_map(tmp_path):
 # ── Matching ──────────────────────────────────────────────────────────────
 
 def _e(name: str, maker: str = "Maker", n: int = 1) -> GmsxEntry:
-    return GmsxEntry(url=f"{BASE}/hardware/x/{name.lower()}/{n}", name=name, manufacturer=maker)
+    return GmsxEntry(url=f"{BASE}/hardware/x/{name.lower()}/{n}", name=name, brand=maker)
 
 
 def test_exact_variant_and_family():
@@ -87,7 +87,7 @@ def test_exact_beats_a_longer_name_sharing_the_prefix():
     assert got[1]["url"].endswith("/1") and got[1]["match"] == "exact"
 
 
-def test_same_name_is_resolved_by_manufacturer_or_left_unlinked():
+def test_same_name_is_resolved_by_brand_or_left_unlinked():
     entries = [_e("DPC-200", "Telemática/Talent", 1), _e("DPC-200", "Fenner", 2)]
     got = match_models([(1, "Fenner", "DPC-200"), (2, "Olympia", "DPC-200")], entries, AliasLUT())
     assert got[1]["url"].endswith("/2")
@@ -147,7 +147,7 @@ def test_build_links_models_from_the_map(tmp_path, monkeypatch):
     from scraper.build import build
     from scraper.columns import active_columns
 
-    raw = [{"manufacturer": "Sony", "model": "HB-75P", "generation": "MSX1"}]
+    raw = [{"brand": "Sony", "model": "HB-75P", "generation": "MSX1"}]
     (tmp_path / "openmsx.json").write_text(json.dumps(raw))
     (tmp_path / "msxorg.json").write_text(json.dumps([]))
     (tmp_path / "registry.json").write_text(json.dumps({"version": 2, "models": {"sony|hb-75p": 5},
@@ -173,7 +173,7 @@ def test_build_marks_family_links_in_the_tooltip(tmp_path, monkeypatch):
     from scraper.build import build
     from scraper.columns import active_columns
 
-    raw = [{"manufacturer": "Philips", "model": "VG 8235/00", "generation": "MSX2"}]
+    raw = [{"brand": "Philips", "model": "VG 8235/00", "generation": "MSX2"}]
     (tmp_path / "openmsx.json").write_text(json.dumps(raw))
     (tmp_path / "msxorg.json").write_text(json.dumps([]))
     (tmp_path / "registry.json").write_text(json.dumps({"version": 2, "models": {"philips|vg 8235/00": 5},

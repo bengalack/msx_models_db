@@ -87,7 +87,7 @@ def test_variant_table_names_reads_product_and_version_tables():
 # ── Grouping ──────────────────────────────────────────────────────────────
 
 def _row(i: int, maker: str, model: str, year: int | None = None, **extra) -> dict:
-    return {"_id": i, "manufacturer": maker, "model": model, "year": year,
+    return {"_id": i, "brand": maker, "model": model, "year": year,
             "msxorg_title": extra.pop("title", f"{maker} {model}"), **extra}
 
 
@@ -138,7 +138,7 @@ class TestComputeFamilies:
 
 @pytest.mark.parametrize("maker,model,expected", [
     ("Daewoo", "DPC-200", "D. DPC-200"), ("panasonic", "FS-A1", "P. FS-A1"), ("", "MX-1", "MX-1"), (None, "MX-1", "MX-1")])
-def test_rebrand_name_uses_the_manufacturer_initial(maker, model, expected):
+def test_rebrand_name_uses_the_brand_initial(maker, model, expected):
     from scraper.families import rebrand_name
     assert rebrand_name(maker, model) == expected
 
@@ -159,7 +159,7 @@ def test_build_sets_values_and_links_but_writes_no_file_unless_asked(tmp_path):
     (tmp_path / "openmsx.json").write_text(json.dumps([]))
     (tmp_path / "msxorg.json").write_text(json.dumps([
         _row(0, "Maker", "MX-1", 1985, generation="MSX1", **{FAMILY_LINKS_FIELD: [_directed("Other OX-1")]}) | {"_id": None},
-        {"manufacturer": "Other", "model": "OX-1", "generation": "MSX1", "msxorg_title": "Other OX-1"},
+        {"brand": "Other", "model": "OX-1", "generation": "MSX1", "msxorg_title": "Other OX-1"},
     ]))
     build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json", local_path=tmp_path / "l.json",
           registry_path=tmp_path / "registry.json", output_path=tmp_path / "data.js")

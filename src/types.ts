@@ -166,7 +166,7 @@ export interface IDRegistry {
   version: number;
   /**
    * Map of natural key → stable model ID.
-   * Natural key format: "<manufacturer>|<model>" (lowercase, trimmed).
+   * Natural key format: "<brand>|<model>" (lowercase, trimmed).
    */
   models: Record<string, number>;
   /** Model IDs that have been retired (model removed from the dataset). */

@@ -18,7 +18,7 @@ function makeData(): MSXData {
     generated: '2026-09-16',
     groups: [{ id: 0, key: 'g', label: 'G', order: 0 }],
     columns: [
-      { id: 1, key: 'manufacturer', label: 'Manufacturer', groupId: 0, type: 'string' },
+      { id: 1, key: 'brand', label: 'Brand', groupId: 0, type: 'string' },
       { id: 2, key: 'model', label: 'Model', groupId: 0, type: 'string' },
       { id: 3, key: 'capped', label: 'Capped', groupId: 0, type: 'string', maxWidth: CAPPED_WIDTH },
       { id: 4, key: 'plain', label: 'Plain', groupId: 0, type: 'string' },

@@ -40,7 +40,7 @@ function makeData(overrides?: {
     ],
     columns: [
       {
-        id: 1, key: 'manufacturer', label: 'Manufacturer',
+        id: 1, key: 'brand', label: 'Brand',
         groupId: 0, type: 'string',
         ...(mfrLimit > 0 ? { truncateLimit: mfrLimit } : {}),
       },

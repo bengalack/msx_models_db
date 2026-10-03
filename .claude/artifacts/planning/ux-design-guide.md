@@ -130,7 +130,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
   6. **Data rows** — model data (height: 24px per row)
 - Left gutter: 32px wide strip — row number, hidden-row indicator
 - The grid body scrolls both horizontally and vertically; all 4 header rows and the left gutter remain sticky
-- The Identity group columns (Manufacturer, Model) and their group header are frozen/sticky during horizontal scroll, pinned immediately to the right of the gutter. Their width is static: on very wide screens the extra space goes to the other columns only, and filtering never narrows them (they keep the widest width they have had, so headers stay readable). The Model and openMSX ID headers carry the same external-link icon after their label, since their cells link to the msx.org page / the machine XML. The third Identity column is an icon link to generation-msx.nl (header icon `fa-external-link`, the site's icon in each cell, opens in a new tab, URL as tooltip). Gap indicator rows include frozen cells so the dashed line stays aligned in the frozen panel.
+- The Identity group columns (Brand, Model) and their group header are frozen/sticky during horizontal scroll, pinned immediately to the right of the gutter. Their width is static: on very wide screens the extra space goes to the other columns only, and filtering never narrows them (they keep the widest width they have had, so headers stay readable). The Model and openMSX ID headers carry the same external-link icon after their label, since their cells link to the msx.org page / the machine XML. The third Identity column is an icon link to generation-msx.nl (header icon `fa-external-link`, the site's icon in each cell, opens in a new tab, URL as tooltip). Gap indicator rows include frozen cells so the dashed line stays aligned in the frozen panel.
 - Z-index stacking order (within `.grid-wrap` scroll container, low → high):
   1. **Gap indicator line** (`gutter--gap::before`) — `z-index: 3`
   2. **Selected cells** (`cell--selected`) — `z-index: 5`
@@ -210,7 +210,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 ### Toolbar
 - Left: "MSX Models DB" title (H1)
 - Right: `[⊞ Columns]` button (opens column picker panel), `[≡ Filters]` toggle, `[↻ Reset view]` button, `[+ Include headers on copy]` toggle, `[↑ Share]` button, `[? Help]` button, `[◑]` dark/light mode toggle
-- Column picker panel: a floating panel listing all toggleable columns grouped by group, each with a checkbox; positioned directly below the Columns button (left-aligned). The Identity group (Manufacturer, Model) is excluded — those columns are always visible and are never listed in the picker.
+- Column picker panel: a floating panel listing all toggleable columns grouped by group, each with a checkbox; positioned directly below the Columns button (left-aligned). The Identity group (Brand, Model) is excluded — those columns are always visible and are never listed in the picker.
 - Help panel: a floating panel (300×200px) positioned directly below the Help button (left-aligned); opens on `[? Help]` click. Its links use the accent colour of link cells (no underline until hover), not the browser blue.
 - Both Columns and Help buttons show active state (inverted colors) while their respective panel is open
 - Clicking outside a floating panel (anywhere on the grid, header, or page) dismisses it and restores the button to normal state; Escape also dismisses

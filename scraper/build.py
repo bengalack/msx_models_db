@@ -254,18 +254,18 @@ def build(
         before_local = len(local_data)
         openmsx_data = [
             m for m in openmsx_data
-            if not exclude_list.is_excluded(m.get("manufacturer"), m.get("model"))
+            if not exclude_list.is_excluded(m.get("brand"), m.get("model"))
         ]
         msxorg_data = [
             m for m in msxorg_data
-            if not exclude_list.is_excluded(m.get("manufacturer"), m.get("model"))
+            if not exclude_list.is_excluded(m.get("brand"), m.get("model"))
         ]
         # Local data is the highest-authority source, but an exclude rule still
         # wins: otherwise a curated entry would resurrect an excluded model, or
         # a local-only entry would create a row no rule could remove.
         local_data = [
             m for m in local_data
-            if not exclude_list.is_excluded(m.get("manufacturer"), m.get("model"))
+            if not exclude_list.is_excluded(m.get("brand"), m.get("model"))
         ]
         excluded_openmsx = before_openmsx - len(openmsx_data)
         excluded_msxorg = before_msxorg - len(msxorg_data)
@@ -342,7 +342,7 @@ def build(
             shown[model[col.key]] = parsed.display
             for part in parsed.unknown:
                 log.warning("[regions] No flag for %r (add it to %s) | model=%s|%s",
-                            part, regions_path, model.get("manufacturer"), model.get("model"))
+                            part, regions_path, model.get("brand"), model.get("model"))
 
     # Step 5: Assign model IDs
     # Two passes: models already registered under their own key keep their ids
@@ -522,7 +522,7 @@ def build(
 
     # Dead-rule check — only meaningful after a full fetch.
     # Without --fetch, filename rules are never evaluated (no file listing occurs)
-    # and manufacturer+model rules may appear dead because a previous fetch already
+    # and brand+model rules may appear dead because a previous fetch already
     # removed matching models from the cache.
     if do_fetch:
         for i in exclude_list.dead_rules():

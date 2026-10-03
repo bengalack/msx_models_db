@@ -180,9 +180,9 @@ class TestMergeGate:
     def test_revision_kept_when_openmsx_has_it(self):
         from scraper.merge import merge_models
         merged = merge_models(
-            [{"manufacturer": "Sony", "model": "HB-F500"}, {"manufacturer": "Sony", "model": "HB-F500 (v2)"}],
-            [{"manufacturer": "Sony", "model": "HB-F500", "msxorg_title": "Sony HB-F500"},
-             {"manufacturer": "Sony", "model": "HB-F500 (v2)", "msxorg_title": "Sony HB-F500", REVISION_FIELD: 2}],
+            [{"brand": "Sony", "model": "HB-F500"}, {"brand": "Sony", "model": "HB-F500 (v2)"}],
+            [{"brand": "Sony", "model": "HB-F500", "msxorg_title": "Sony HB-F500"},
+             {"brand": "Sony", "model": "HB-F500 (v2)", "msxorg_title": "Sony HB-F500", REVISION_FIELD: 2}],
         )
         v2 = next(m for m in merged if m["model"] == "HB-F500 (v2)")
         assert v2["msxorg_title"] == "Sony HB-F500"
@@ -191,7 +191,7 @@ class TestMergeGate:
         from scraper.merge import merge_models
         merged = merge_models(
             [],
-            [{"manufacturer": "Sakhr", "model": "AX-330"},
-             {"manufacturer": "Sakhr", "model": "AX-330 (v2)", REVISION_FIELD: 2}],
+            [{"brand": "Sakhr", "model": "AX-330"},
+             {"brand": "Sakhr", "model": "AX-330 (v2)", REVISION_FIELD: 2}],
         )
         assert [m["model"] for m in merged] == ["AX-330"]

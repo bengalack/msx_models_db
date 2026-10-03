@@ -17,7 +17,7 @@ function makeData(): MSXData {
     generated: '2026-09-21',
     groups: [{ id: 0, key: 'g', label: 'G', order: 0 }],
     columns: [
-      { id: 1, key: 'manufacturer', label: 'Manufacturer', groupId: 0, type: 'string' },
+      { id: 1, key: 'brand', label: 'Brand', groupId: 0, type: 'string' },
       { id: 2, key: 'model', label: 'Model', groupId: 0, type: 'string' },
       { id: 3, key: 'engine', label: 'Engine', groupId: 0, type: 'string', sortLast: [SENTINEL] },
       { id: 4, key: 'plain', label: 'Plain', groupId: 0, type: 'string' },
@@ -78,7 +78,7 @@ describe('sortLast', () => {
 
   it('leaves columns without sortLast sorting normally', () => {
     const data = makeData();
-    const idx = data.columns.findIndex(c => c.key === 'manufacturer');
+    const idx = data.columns.findIndex(c => c.key === 'brand');
     const { element } = buildGrid(data, {
       initialState: {
         sortColumnId: data.columns[idx].id,

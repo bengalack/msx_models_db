@@ -2,7 +2,7 @@
  * Tests for the column picker panel (col-picker).
  *
  * Key behaviour under test:
- *   - The Identity group (Manufacturer, Model) is excluded from the picker
+ *   - The Identity group (Brand, Model) is excluded from the picker
  *     panel. main.ts filters it out before calling buildColPicker, so the
  *     panel must not render a section for it.
  *   - All other groups and their columns are listed with checkboxes.
@@ -21,7 +21,7 @@ const allGroups: GroupDef[] = [
 ];
 
 const allColumns: ColumnDef[] = [
-  { id: 1, key: 'manufacturer', label: 'Manufacturer', groupId: 0, type: 'string' },
+  { id: 1, key: 'brand', label: 'Brand', groupId: 0, type: 'string' },
   { id: 2, key: 'model',        label: 'Model',        groupId: 0, type: 'string' },
   { id: 3, key: 'year',         label: 'Year',         groupId: 1, type: 'number' },
   { id: 4, key: 'ram',          label: 'RAM',          groupId: 1, type: 'number' },
@@ -60,9 +60,9 @@ describe('col-picker — Identity group exclusion', () => {
     expect(groupLabels(element)).not.toContain('Identity');
   });
 
-  it('does not list Manufacturer in the picker', () => {
+  it('does not list Brand in the picker', () => {
     const { element } = buildPickerWithoutIdentity();
-    expect(checkboxLabels(element)).not.toContain('Manufacturer');
+    expect(checkboxLabels(element)).not.toContain('Brand');
   });
 
   it('does not list Model in the picker', () => {

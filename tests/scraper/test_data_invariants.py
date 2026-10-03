@@ -42,7 +42,7 @@ def test_main_rom_in_slot_0_pages_0_and_1():
     """Slot 0 (or 0-0 when expanded) always holds the Main ROM in pages 0 and 1."""
     main_labels = _main_rom_labels()
     violations = [
-        (m["manufacturer"], m["model"], m["slotmap_0_0_0"], m["slotmap_0_0_1"])
+        (m["brand"], m["model"], m["slotmap_0_0_0"], m["slotmap_0_0_1"])
         for m in _models()
         if _has_slotmap(m) and not {m["slotmap_0_0_0"], m["slotmap_0_0_1"]} <= main_labels
     ]

@@ -218,7 +218,7 @@ class TestFetchAllWithMirrorSource:
         models = fetch_all(source=src, delay=0)
         assert len(models) == 1
         assert models[0]["model"] == "HB-F9S"
-        assert models[0]["manufacturer"] == "Sony"
+        assert models[0]["brand"] == "Sony"
 
     def test_fetch_all_with_mirror_no_session_needed(self, tmp_path):
         """No requests.Session is created when source is given."""

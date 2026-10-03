@@ -32,7 +32,7 @@ class TestLoadSave:
         path = tmp_path / "reg.json"
         path.write_text(json.dumps({
             "version": 1,
-            "columns": {"manufacturer": 1},
+            "columns": {"brand": 1},
             "next_column_id": 30,
             "models": {"sony|hb-75p": 1},
             "retired_models": [],

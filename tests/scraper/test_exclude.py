@@ -17,53 +17,53 @@ class TestIsExcluded:
         return ExcludeList(rules=list(rules))
 
     def test_exact_match(self):
-        el = self._make({"manufacturer": "Sony", "model": "HB-75P"})
+        el = self._make({"brand": "Sony", "model": "HB-75P"})
         assert el.is_excluded("Sony", "HB-75P")
 
-    def test_exact_no_match_different_manufacturer(self):
-        el = self._make({"manufacturer": "Sony", "model": "HB-75P"})
+    def test_exact_no_match_different_brand(self):
+        el = self._make({"brand": "Sony", "model": "HB-75P"})
         assert not el.is_excluded("Philips", "HB-75P")
 
     def test_exact_no_match_different_model(self):
-        el = self._make({"manufacturer": "Sony", "model": "HB-75P"})
+        el = self._make({"brand": "Sony", "model": "HB-75P"})
         assert not el.is_excluded("Sony", "HB-F1XDJ")
 
     def test_empty_string_matches_empty_field(self):
-        el = self._make({"manufacturer": "", "model": "SomeName"})
+        el = self._make({"brand": "", "model": "SomeName"})
         assert el.is_excluded("", "SomeName")
 
     def test_empty_string_matches_none_field(self):
-        el = self._make({"manufacturer": "", "model": "SomeName"})
+        el = self._make({"brand": "", "model": "SomeName"})
         assert el.is_excluded(None, "SomeName")
 
     def test_empty_string_does_not_match_nonempty(self):
-        el = self._make({"manufacturer": "", "model": "SomeName"})
+        el = self._make({"brand": "", "model": "SomeName"})
         assert not el.is_excluded("Sony", "SomeName")
 
     def test_wildcard_model_matches_any(self):
-        el = self._make({"manufacturer": "Sony", "model": "*"})
+        el = self._make({"brand": "Sony", "model": "*"})
         assert el.is_excluded("Sony", "HB-75P")
         assert el.is_excluded("Sony", "HB-F1XDJ")
         assert el.is_excluded("Sony", "")
         assert el.is_excluded("Sony", None)
 
-    def test_wildcard_model_does_not_match_other_manufacturer(self):
-        el = self._make({"manufacturer": "Sony", "model": "*"})
+    def test_wildcard_model_does_not_match_other_brand(self):
+        el = self._make({"brand": "Sony", "model": "*"})
         assert not el.is_excluded("Philips", "HB-75P")
 
-    def test_wildcard_manufacturer_matches_any(self):
-        el = self._make({"manufacturer": "*", "model": "HB-75P"})
+    def test_wildcard_brand_matches_any(self):
+        el = self._make({"brand": "*", "model": "HB-75P"})
         assert el.is_excluded("Sony", "HB-75P")
         assert el.is_excluded("Philips", "HB-75P")
 
     def test_full_wildcard_matches_everything(self):
-        el = self._make({"manufacturer": "*", "model": "*"})
+        el = self._make({"brand": "*", "model": "*"})
         assert el.is_excluded("Sony", "HB-75P")
         assert el.is_excluded("", "")
         assert el.is_excluded(None, None)
 
     def test_case_sensitive_no_match(self):
-        el = self._make({"manufacturer": "sony", "model": "hb-75p"})
+        el = self._make({"brand": "sony", "model": "hb-75p"})
         assert not el.is_excluded("Sony", "HB-75P")
 
     def test_filename_rule_is_ignored(self):
@@ -92,9 +92,9 @@ class TestIsExcludedByFilename:
         el = self._make({"filename": "Sony_HB-75P.xml"})
         assert not el.is_excluded_by_filename("Philips_NMS8280.xml")
 
-    def test_manufacturer_model_rule_is_ignored(self):
-        """is_excluded_by_filename should skip manufacturer+model rules."""
-        el = self._make({"manufacturer": "Sony", "model": "HB-75P"})
+    def test_brand_model_rule_is_ignored(self):
+        """is_excluded_by_filename should skip brand+model rules."""
+        el = self._make({"brand": "Sony", "model": "HB-75P"})
         assert not el.is_excluded_by_filename("Sony_HB-75P.xml")
 
     def test_empty_rule_list_never_excludes(self):
@@ -151,15 +151,15 @@ class TestDeadRules:
 
     def test_all_rules_dead_on_fresh_list(self):
         el = ExcludeList(rules=[
-            {"manufacturer": "Sony", "model": "HB-75P"},
+            {"brand": "Sony", "model": "HB-75P"},
             {"filename": "Foo.xml"},
         ])
         assert el.dead_rules() == [0, 1]
 
     def test_matched_rule_not_dead(self):
         el = ExcludeList(rules=[
-            {"manufacturer": "Sony", "model": "HB-75P"},
-            {"manufacturer": "Philips", "model": "NMS8280"},
+            {"brand": "Sony", "model": "HB-75P"},
+            {"brand": "Philips", "model": "NMS8280"},
         ])
         el.is_excluded("Sony", "HB-75P")
         dead = el.dead_rules()
@@ -200,7 +200,7 @@ class TestLoadExcludes:
     def test_valid_rules_loaded(self, tmp_path):
         path = tmp_path / "exclude.json"
         path.write_text(json.dumps([
-            {"manufacturer": "Sony", "model": "HB-75P"},
+            {"brand": "Sony", "model": "HB-75P"},
             {"filename": "Boosted_MSX2_JP.xml"},
         ]))
         el = load_excludes(path)
@@ -216,7 +216,7 @@ class TestLoadExcludes:
 
     def test_not_an_array_raises_value_error(self, tmp_path):
         path = tmp_path / "exclude.json"
-        path.write_text(json.dumps({"manufacturer": "Sony", "model": "HB-75P"}))
+        path.write_text(json.dumps({"brand": "Sony", "model": "HB-75P"}))
         with pytest.raises(ValueError, match="must contain a JSON array"):
             load_excludes(path)
 
@@ -234,14 +234,14 @@ class TestLoadExcludes:
 
     def test_non_string_value_raises_value_error(self, tmp_path):
         path = tmp_path / "exclude.json"
-        path.write_text(json.dumps([{"manufacturer": "Sony", "model": 123}]))
+        path.write_text(json.dumps([{"brand": "Sony", "model": 123}]))
         with pytest.raises(ValueError, match="must be a string"):
             load_excludes(path)
 
     def test_all_wildcard_emits_warning(self, tmp_path, caplog):
         import logging
         path = tmp_path / "exclude.json"
-        path.write_text(json.dumps([{"manufacturer": "*", "model": "*"}]))
+        path.write_text(json.dumps([{"brand": "*", "model": "*"}]))
         with caplog.at_level(logging.WARNING):
             el = load_excludes(path)
         assert any("All-wildcard" in r.message for r in caplog.records)
@@ -284,17 +284,17 @@ class TestOpenMSXWiring:
 
     def test_model_excluded_post_parse(self):
         from scraper.openmsx import parse_machine_xml
-        el = ExcludeList(rules=[{"manufacturer": "Sony", "model": "HB-75P"}])
+        el = ExcludeList(rules=[{"brand": "Sony", "model": "HB-75P"}])
         result = parse_machine_xml(self._XML, "Sony_HB-75P.xml")
         assert result is not None
-        assert el.is_excluded(result.get("manufacturer"), result.get("model"))
+        assert el.is_excluded(result.get("brand"), result.get("model"))
 
     def test_non_excluded_model_passes(self):
         from scraper.openmsx import parse_machine_xml
-        el = ExcludeList(rules=[{"manufacturer": "Philips", "model": "NMS8250"}])
+        el = ExcludeList(rules=[{"brand": "Philips", "model": "NMS8250"}])
         result = parse_machine_xml(self._XML, "Sony_HB-75P.xml")
         assert result is not None
-        assert not el.is_excluded(result.get("manufacturer"), result.get("model"))
+        assert not el.is_excluded(result.get("brand"), result.get("model"))
 
 
 # ── msx.org scraper wiring ────────────────────────────────────────────────
@@ -304,7 +304,7 @@ class TestMsxOrgWiring:
     """Tests for ExcludeList wired into msxorg.fetch_all.
 
     Covers both the pre-fetch filename check (fires before fetch_page is called)
-    and the post-parse manufacturer+model check (fires after parse_model_page).
+    and the post-parse brand+model check (fires after parse_model_page).
     """
 
     # Category page listing one model
@@ -417,10 +417,10 @@ class TestMsxOrgWiring:
 
         assert fetch_page_calls == []
 
-    # ── post-parse manufacturer+model check ──────────────────────────────
+    # ── post-parse brand+model check ──────────────────────────────
 
-    def test_manufacturer_model_exclude_removes_parsed_model(self, tmp_path):
-        """Model that parses successfully is removed by a manufacturer+model rule."""
+    def test_brand_model_exclude_removes_parsed_model(self, tmp_path):
+        """Model that parses successfully is removed by a brand+model rule."""
         from scraper.exclude import ExcludeList
         from scraper.mirror import MirrorPageSource
         from scraper.msxorg import fetch_all
@@ -428,7 +428,7 @@ class TestMsxOrgWiring:
         self._write_all_categories(tmp_path, self._CATEGORY_HTML)
         (tmp_path / "Sony HB-75P - MSX Wiki.html").write_bytes(self._GOOD_MODEL_HTML)
 
-        el = ExcludeList(rules=[{"manufacturer": "Sony", "model": "HB-75P"}])
+        el = ExcludeList(rules=[{"brand": "Sony", "model": "HB-75P"}])
         source = MirrorPageSource(tmp_path)
         models = fetch_all(source=source, delay=0, exclude_list=el)
         assert models == []
@@ -442,8 +442,8 @@ class TestMsxOrgWiring:
         self._write_all_categories(tmp_path, self._CATEGORY_HTML)
         (tmp_path / "Sony HB-75P - MSX Wiki.html").write_bytes(self._GOOD_MODEL_HTML)
 
-        el = ExcludeList(rules=[{"manufacturer": "Philips", "model": "NMS 8250"}])
+        el = ExcludeList(rules=[{"brand": "Philips", "model": "NMS 8250"}])
         source = MirrorPageSource(tmp_path)
         models = fetch_all(source=source, delay=0, exclude_list=el)
         assert len(models) == 1
-        assert models[0]["manufacturer"] == "Sony"
+        assert models[0]["brand"] == "Sony"

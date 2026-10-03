@@ -151,7 +151,7 @@ class TestRenumberCsEs:
 # ── merge_models: CS/ES preference ───────────────────────────────────────
 
 def _base_model(*, extra: dict | None = None) -> dict:
-    m = {"manufacturer": "Hitachi", "model": "MB-H70", "generation": "MSX2"}
+    m = {"brand": "Hitachi", "model": "MB-H70", "generation": "MSX2"}
     if extra:
         m.update(extra)
     return m
@@ -303,8 +303,8 @@ class TestMergeSlotMapCsEsPreference:
 
 def test_scraped_cart_slots_prefers_openmsx():
     """scraped_cart_slots conflict: openMSX value wins."""
-    o = [{"manufacturer": "Acme", "model": "X", "scraped_cart_slots": 2}]
-    m = [{"manufacturer": "Acme", "model": "X", "scraped_cart_slots": 1}]
+    o = [{"brand": "Acme", "model": "X", "scraped_cart_slots": 2}]
+    m = [{"brand": "Acme", "model": "X", "scraped_cart_slots": 1}]
     merged = merge_models(o, m)
     assert merged[0]["scraped_cart_slots"] == 2
 
@@ -323,11 +323,11 @@ class TestLoadSubstitutions:
         assert result == {}
 
     def test_loads_single_rule(self, tmp_path):
-        path = self._write(tmp_path, {"manufacturer": [{"match": "none", "replace": None}]})
+        path = self._write(tmp_path, {"brand": [{"match": "none", "replace": None}]})
         result = load_substitutions(path)
-        assert "manufacturer" in result
-        assert len(result["manufacturer"]) == 1
-        rule = result["manufacturer"][0]
+        assert "brand" in result
+        assert len(result["brand"]) == 1
+        rule = result["brand"][0]
         assert isinstance(rule["pattern"], re.Pattern)
         assert rule["replace"] is None
 
@@ -337,34 +337,34 @@ class TestLoadSubstitutions:
         assert result["region"][0]["replace"] == "Korea"
 
     def test_compiles_regex(self, tmp_path):
-        path = self._write(tmp_path, {"manufacturer": [{"match": "^none$", "replace": None}]})
+        path = self._write(tmp_path, {"brand": [{"match": "^none$", "replace": None}]})
         result = load_substitutions(path)
-        pattern = result["manufacturer"][0]["pattern"]
+        pattern = result["brand"][0]["pattern"]
         assert pattern.search("none")
         assert not pattern.search("someone")
 
     def test_multiple_columns(self, tmp_path):
         path = self._write(tmp_path, {
-            "manufacturer": [{"match": "none", "replace": None}],
+            "brand": [{"match": "none", "replace": None}],
             "region": [{"match": "unknown", "replace": None}],
         })
         result = load_substitutions(path)
-        assert set(result.keys()) == {"manufacturer", "region"}
+        assert set(result.keys()) == {"brand", "region"}
 
     def test_multiple_rules_per_column(self, tmp_path):
         path = self._write(tmp_path, {
-            "manufacturer": [
+            "brand": [
                 {"match": "none", "replace": None},
                 {"match": "n/a", "replace": None},
             ]
         })
         result = load_substitutions(path)
-        assert len(result["manufacturer"]) == 2
+        assert len(result["brand"]) == 2
 
     def test_production_rule_matches_case_insensitively(self):
         path = Path("data/substitutions.json")
         result = load_substitutions(path)
-        pattern = result["manufacturer"][0]["pattern"]
+        pattern = result["brand"][0]["pattern"]
         assert pattern.search("none")
         assert pattern.search("None")
         assert pattern.search("NONE")
@@ -372,7 +372,7 @@ class TestLoadSubstitutions:
         assert not pattern.search("nonesense")
 
     def test_invalid_regex_raises(self, tmp_path):
-        path = self._write(tmp_path, {"manufacturer": [{"match": "[invalid", "replace": None}]})
+        path = self._write(tmp_path, {"brand": [{"match": "[invalid", "replace": None}]})
         with pytest.raises(re.error):
             load_substitutions(path)
 
@@ -382,19 +382,19 @@ class TestApplySubstitutions:
         return {column: [{"pattern": re.compile(match), "replace": replace}]}
 
     def test_exact_substring_match_replaces_with_null(self):
-        models = [{"manufacturer": "none", "model": "X"}]
-        apply_substitutions(models, self._subs("manufacturer", "none", None))
-        assert models[0]["manufacturer"] is None
+        models = [{"brand": "none", "model": "X"}]
+        apply_substitutions(models, self._subs("brand", "none", None))
+        assert models[0]["brand"] is None
 
     def test_partial_substring_match_replaces(self):
-        models = [{"manufacturer": "Some none value"}]
-        apply_substitutions(models, self._subs("manufacturer", "none", None))
-        assert models[0]["manufacturer"] is None
+        models = [{"brand": "Some none value"}]
+        apply_substitutions(models, self._subs("brand", "none", None))
+        assert models[0]["brand"] is None
 
     def test_no_match_leaves_value_unchanged(self):
-        models = [{"manufacturer": "Yamaha"}]
-        apply_substitutions(models, self._subs("manufacturer", "^none$", None))
-        assert models[0]["manufacturer"] == "Yamaha"
+        models = [{"brand": "Yamaha"}]
+        apply_substitutions(models, self._subs("brand", "^none$", None))
+        assert models[0]["brand"] == "Yamaha"
 
     def test_string_replacement(self):
         models = [{"region": "south korea"}]
@@ -402,35 +402,35 @@ class TestApplySubstitutions:
         assert models[0]["region"] == "Korea"
 
     def test_none_value_is_skipped(self):
-        models = [{"manufacturer": None}]
-        apply_substitutions(models, self._subs("manufacturer", "none", "X"))
-        assert models[0]["manufacturer"] is None  # unchanged
+        models = [{"brand": None}]
+        apply_substitutions(models, self._subs("brand", "none", "X"))
+        assert models[0]["brand"] is None  # unchanged
 
     def test_missing_field_is_skipped(self):
         models = [{"model": "HB-10"}]
-        apply_substitutions(models, self._subs("manufacturer", "none", None))
-        assert "manufacturer" not in models[0]
+        apply_substitutions(models, self._subs("brand", "none", None))
+        assert "brand" not in models[0]
 
     def test_first_matching_rule_wins(self):
-        subs = {"manufacturer": [
+        subs = {"brand": [
             {"pattern": re.compile("none"), "replace": None},
             {"pattern": re.compile("none"), "replace": "NEVER"},
         ]}
-        models = [{"manufacturer": "none"}]
+        models = [{"brand": "none"}]
         apply_substitutions(models, subs)
-        assert models[0]["manufacturer"] is None
+        assert models[0]["brand"] is None
 
     def test_multiple_models_all_substituted(self):
-        models = [{"manufacturer": "none"}, {"manufacturer": "none"}, {"manufacturer": "Yamaha"}]
-        apply_substitutions(models, self._subs("manufacturer", "^none$", None))
-        assert models[0]["manufacturer"] is None
-        assert models[1]["manufacturer"] is None
-        assert models[2]["manufacturer"] == "Yamaha"
+        models = [{"brand": "none"}, {"brand": "none"}, {"brand": "Yamaha"}]
+        apply_substitutions(models, self._subs("brand", "^none$", None))
+        assert models[0]["brand"] is None
+        assert models[1]["brand"] is None
+        assert models[2]["brand"] == "Yamaha"
 
     def test_empty_subs_is_noop(self):
-        models = [{"manufacturer": "none"}]
+        models = [{"brand": "none"}]
         apply_substitutions(models, {})
-        assert models[0]["manufacturer"] == "none"
+        assert models[0]["brand"] == "none"
 
     def test_integer_value_coerced_to_str(self):
         models = [{"scraped_cart_slots": 2}]
@@ -443,16 +443,16 @@ class TestApplySubstitutions:
 
 class TestNaturalKey:
     def test_normal_case(self):
-        assert natural_key({"manufacturer": "Yamaha", "model": "HB-10"}) == "yamaha|hb-10"
+        assert natural_key({"brand": "Yamaha", "model": "HB-10"}) == "yamaha|hb-10"
 
-    def test_none_manufacturer_does_not_crash(self):
-        assert natural_key({"manufacturer": None, "model": "X"}) == "|x"
+    def test_none_brand_does_not_crash(self):
+        assert natural_key({"brand": None, "model": "X"}) == "|x"
 
     def test_none_model_does_not_crash(self):
-        assert natural_key({"manufacturer": "Acme", "model": None}) == "acme|"
+        assert natural_key({"brand": "Acme", "model": None}) == "acme|"
 
     def test_both_none_does_not_crash(self):
-        assert natural_key({"manufacturer": None, "model": None}) == "|"
+        assert natural_key({"brand": None, "model": None}) == "|"
 
     def test_absent_keys_do_not_crash(self):
         assert natural_key({}) == "|"
@@ -462,8 +462,8 @@ class TestTapeAdapter:
     """msx.org's "Adapter" is more specific than openMSX's cassette port."""
 
     def _merge(self, o_value, m_value):
-        openmsx = [{"manufacturer": "Maker", "model": "M-1", "tape_interface": o_value}]
-        msxorg = [{"manufacturer": "Maker", "model": "M-1", "tape_interface": m_value}]
+        openmsx = [{"brand": "Maker", "model": "M-1", "tape_interface": o_value}]
+        msxorg = [{"brand": "Maker", "model": "M-1", "tape_interface": m_value}]
         [row] = merge_models(openmsx, msxorg)
         return row["tape_interface"]
 
@@ -476,7 +476,7 @@ class TestTapeAdapter:
 
 @pytest.mark.parametrize("raw", ["MSX-MUSIC", "msx music", "FM-PAC", "fmpac", "YM2413"])
 def test_msx_music_aliases_normalise_to_yes(raw):
-    openmsx = [{"manufacturer": "Maker", "model": "M-1", "fm_chip": raw}]
+    openmsx = [{"brand": "Maker", "model": "M-1", "fm_chip": raw}]
     [row] = merge_models(openmsx, [])
     assert row["fm_chip"] == "Yes"
 
@@ -486,11 +486,11 @@ class TestOpenmsxFileNameJoin:
 
     @staticmethod
     def _o(model: str, file_id: str, maker: str = "Sanyo") -> dict:
-        return {"manufacturer": maker, "model": model, "openmsx_id": file_id, "vdp": "V9938"}
+        return {"brand": maker, "model": model, "openmsx_id": file_id, "vdp": "V9938"}
 
     @staticmethod
     def _m(model: str, maker: str = "Sanyo") -> dict:
-        return {"manufacturer": maker, "model": model, "msxorg_title": f"{maker} {model}", "vram_kb": 16}
+        return {"brand": maker, "model": model, "msxorg_title": f"{maker} {model}", "vram_kb": 16}
 
     def test_joins_the_msxorg_model_named_by_the_file(self):
         rows = merge_models([self._o("MPC-1/Wavy1", "Sanyo_MPC-1")], [self._m("MPC-1")])
@@ -515,7 +515,7 @@ class TestOpenmsxFileNameJoin:
                             [self._m("MPC-1")])
         assert sorted(r["model"] for r in rows) == ["MPC-1", "MPC-1/Wavy1"]
 
-    def test_not_across_manufacturers(self):
+    def test_not_across_brands(self):
         rows = merge_models([self._o("MX/1", "Other_MX")], [self._m("MX", "Other")])
         assert sorted(r["model"] for r in rows) == ["MX", "MX/1"]
 
@@ -527,9 +527,9 @@ def test_file_name_join_keeps_the_msxorg_models_id(tmp_path):
         "version": 2, "models": {"sanyo|mpc-1": 290, "sanyo|mpc-1/wavy1": 347},
         "retired_models": [], "next_model_id": 500}))
     (tmp_path / "openmsx.json").write_text(json.dumps([
-        {"manufacturer": "Sanyo", "model": "MPC-1/Wavy1", "generation": "MSX1", "openmsx_id": "Sanyo_MPC-1"}]))
+        {"brand": "Sanyo", "model": "MPC-1/Wavy1", "generation": "MSX1", "openmsx_id": "Sanyo_MPC-1"}]))
     (tmp_path / "msxorg.json").write_text(json.dumps([
-        {"manufacturer": "Sanyo", "model": "MPC-1", "generation": "MSX1", "msxorg_title": "Sanyo MPC-1"}]))
+        {"brand": "Sanyo", "model": "MPC-1", "generation": "MSX1", "msxorg_title": "Sanyo MPC-1"}]))
     build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json",
           local_path=tmp_path / "local.json", registry_path=tmp_path / "registry.json",
           output_path=tmp_path / "data.js")
@@ -540,9 +540,9 @@ def test_file_name_join_keeps_the_msxorg_models_id(tmp_path):
 
 
 def test_local_entries_under_the_openmsx_name_follow_the_file_name_join():
-    openmsx = [{"manufacturer": "Sanyo", "model": "MPC-1/Wavy1", "openmsx_id": "Sanyo_MPC-1"}]
-    msxorg = [{"manufacturer": "Sanyo", "model": "MPC-1", "msxorg_title": "Sanyo MPC-1"}]
-    local = [{"manufacturer": "Sanyo", "model": "MPC-1/Wavy1", "himem_addr": "0xF380"}]
+    openmsx = [{"brand": "Sanyo", "model": "MPC-1/Wavy1", "openmsx_id": "Sanyo_MPC-1"}]
+    msxorg = [{"brand": "Sanyo", "model": "MPC-1", "msxorg_title": "Sanyo MPC-1"}]
+    local = [{"brand": "Sanyo", "model": "MPC-1/Wavy1", "himem_addr": "0xF380"}]
     rows = merge_models(openmsx, msxorg, local=local)
     assert len(rows) == 1
     assert rows[0]["model"] == "MPC-1" and rows[0]["himem_addr"] == "0xF380"

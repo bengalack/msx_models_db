@@ -16,7 +16,7 @@ from scraper import build as build_module
 @pytest.fixture
 def exclude_file(tmp_path, monkeypatch) -> Path:
     path = tmp_path / "exclude.json"
-    path.write_text(json.dumps([{"manufacturer": "Acme", "model": "X-1"}]))
+    path.write_text(json.dumps([{"brand": "Acme", "model": "X-1"}]))
     monkeypatch.setattr(build_module, "EXCLUDE_PATH", path)
     return path
 

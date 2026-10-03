@@ -18,7 +18,7 @@ from typing import Any
 # type read from the donor's BIOS ROM, which a localised model replaced.
 # Internal fields (leading underscore) are never copied either.
 NEVER_INHERITED = frozenset({
-    "manufacturer", "model", "generation", "msxorg_title",
+    "brand", "model", "generation", "msxorg_title",
     "openmsx_id", "character_set", "keyboard_type",
     "mapper",  # derived from the slot map, so it travels with it
 })
