@@ -458,8 +458,11 @@
     "sanyo|phc-28p (es)": 304,
     "sanyo|phc-30n (de)": 309,
     "yamaha|yis-805/256": 446,
-    "yamaha|yis-805/128": 158
+    "yamaha|yis-805/128": 158,
+    "bawareth|perfect msx2 (cpc-300)": 14,
+    "d4 enterprise|one chip msx": 169,
+    "msxmakers|omega msx": 447
   },
   "retired_models": [],
-  "next_model_id": 447
+  "next_model_id": 448
 }

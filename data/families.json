@@ -21,6 +21,36 @@
       ]
     },
     {
+      "name": "AX-200",
+      "url": "https://www.msx.org/wiki/Sakhr_AX-200",
+      "base": "Sakhr AX-200",
+      "members": [
+        {
+          "id": 279,
+          "model": "Sakhr AX-200"
+        },
+        {
+          "id": 280,
+          "model": "Sakhr AX-200F"
+        }
+      ]
+    },
+    {
+      "name": "AX-350II",
+      "url": "https://www.msx.org/wiki/Sakhr_AX-350II",
+      "base": "Sakhr AX-350II",
+      "members": [
+        {
+          "id": 172,
+          "model": "Sakhr AX-350II"
+        },
+        {
+          "id": 173,
+          "model": "Sakhr AX-350IIF"
+        }
+      ]
+    },
+    {
       "name": "BRUC 100",
       "url": "https://www.msx.org/wiki/Frael_Bruc_100",
       "base": "Frael BRUC 100",
@@ -70,14 +100,6 @@
       "url": "https://www.msx.org/wiki/Yamaha_CX7M/128",
       "base": "Yamaha CX7M/128",
       "members": [
-        {
-          "id": 151,
-          "model": "Yamaha AX-350II"
-        },
-        {
-          "id": 152,
-          "model": "Yamaha AX-350IIF"
-        },
         {
           "id": 155,
           "model": "Yamaha CX7M/128"
@@ -1039,10 +1061,6 @@
       "base": "Yamaha YIS-503II",
       "members": [
         {
-          "id": 279,
-          "model": "Yamaha AX-200"
-        },
-        {
           "id": 395,
           "model": "Yamaha YIS-503II"
         },
@@ -1057,10 +1075,6 @@
       "url": "https://www.msx.org/wiki/Yamaha_YIS-805",
       "base": "Yamaha YIS-805/128",
       "members": [
-        {
-          "id": 91,
-          "model": "Yamaha AX-500"
-        },
         {
           "id": 158,
           "model": "Yamaha YIS-805/128"
@@ -1118,7 +1132,7 @@
         },
         {
           "id": 14,
-          "model": "Baraweth Perfect MSX2 (CPC-300)"
+          "model": "Bawareth Perfect MSX2 (CPC-300)"
         },
         {
           "id": 19,
@@ -1657,14 +1671,6 @@
           "model": "Sakhr AX-350"
         },
         {
-          "id": 151,
-          "model": "Yamaha AX-350II"
-        },
-        {
-          "id": 152,
-          "model": "Yamaha AX-350IIF"
-        },
-        {
           "id": 155,
           "model": "Yamaha CX7M/128"
         },
@@ -1675,6 +1681,14 @@
         {
           "id": 157,
           "model": "Yamaha YIS-604/128"
+        },
+        {
+          "id": 172,
+          "model": "Sakhr AX-350II"
+        },
+        {
+          "id": 173,
+          "model": "Sakhr AX-350IIF"
         }
       ]
     },
@@ -1723,7 +1737,7 @@
       "members": [
         {
           "id": 279,
-          "model": "Yamaha AX-200"
+          "model": "Sakhr AX-200"
         },
         {
           "id": 280,
@@ -1736,6 +1750,29 @@
         {
           "id": 396,
           "model": "Yamaha YIS-503IIR"
+        }
+      ]
+    },
+    {
+      "name": "Y. YIS-805/128",
+      "url": "https://www.msx.org/wiki/Yamaha_YIS-805",
+      "base": "Yamaha YIS-805/128",
+      "members": [
+        {
+          "id": 91,
+          "model": "Sakhr AX-500"
+        },
+        {
+          "id": 158,
+          "model": "Yamaha YIS-805/128"
+        },
+        {
+          "id": 159,
+          "model": "Yamaha YIS-805/128R2"
+        },
+        {
+          "id": 446,
+          "model": "Yamaha YIS-805/256"
         }
       ]
     }
@@ -1767,11 +1804,6 @@
       "signal": "text: see"
     },
     {
-      "model": "Baraweth Perfect MSX2 (CPC-300)",
-      "of": "Daewoo CPC-300",
-      "signal": "text: list"
-    },
-    {
       "model": "Bawareth Perfect MSX1 (DPC-200CD)",
       "of": "Daewoo CPC-200",
       "signal": "text: list"
@@ -1779,6 +1811,11 @@
     {
       "model": "Bawareth Perfect MSX1 (DPC-200CD)",
       "of": "Daewoo DPC-200",
+      "signal": "text: list"
+    },
+    {
+      "model": "Bawareth Perfect MSX2 (CPC-300)",
+      "of": "Daewoo CPC-300",
       "signal": "text: list"
     },
     {
@@ -2277,6 +2314,16 @@
       "signal": "text: list"
     },
     {
+      "model": "Sakhr AX-200",
+      "of": "Yamaha YIS-503II",
+      "signal": "text: list"
+    },
+    {
+      "model": "Sakhr AX-200F",
+      "with": "Sakhr AX-200",
+      "signal": "same page"
+    },
+    {
       "model": "Sakhr AX-200F",
       "of": "Yamaha YIS-503II",
       "signal": "text: list"
@@ -2297,8 +2344,43 @@
       "signal": "text: list"
     },
     {
+      "model": "Sakhr AX-350II",
+      "of": "Yamaha CX7M/128",
+      "signal": "text: list"
+    },
+    {
+      "model": "Sakhr AX-350II",
+      "of": "Yamaha YIS-604/128",
+      "signal": "text: list"
+    },
+    {
+      "model": "Sakhr AX-350IIF",
+      "with": "Sakhr AX-350II",
+      "signal": "same page"
+    },
+    {
+      "model": "Sakhr AX-350IIF",
+      "of": "Yamaha CX7M/128",
+      "signal": "text: list"
+    },
+    {
+      "model": "Sakhr AX-350IIF",
+      "of": "Yamaha YIS-604/128",
+      "signal": "text: list"
+    },
+    {
       "model": "Sakhr AX-370",
       "of": "Sanyo PHC-70FD",
+      "signal": "text: see"
+    },
+    {
+      "model": "Sakhr AX-500",
+      "of": "Yamaha YIS-805/128",
+      "signal": "text: see"
+    },
+    {
+      "model": "Sakhr AX-500",
+      "of": "Yamaha YIS-805/256",
       "signal": "text: see"
     },
     {
@@ -3310,51 +3392,6 @@
       "model": "Wandy DPC-200",
       "of": "Daewoo DPC-200",
       "signal": "text: list"
-    },
-    {
-      "model": "Yamaha AX-200",
-      "with": "Sakhr AX-200F",
-      "signal": "same page"
-    },
-    {
-      "model": "Yamaha AX-200",
-      "of": "Yamaha YIS-503II",
-      "signal": "text: list"
-    },
-    {
-      "model": "Yamaha AX-350II",
-      "of": "Yamaha CX7M/128",
-      "signal": "text: list"
-    },
-    {
-      "model": "Yamaha AX-350II",
-      "of": "Yamaha YIS-604/128",
-      "signal": "text: list"
-    },
-    {
-      "model": "Yamaha AX-350IIF",
-      "with": "Yamaha AX-350II",
-      "signal": "same page"
-    },
-    {
-      "model": "Yamaha AX-350IIF",
-      "of": "Yamaha CX7M/128",
-      "signal": "text: list"
-    },
-    {
-      "model": "Yamaha AX-350IIF",
-      "of": "Yamaha YIS-604/128",
-      "signal": "text: list"
-    },
-    {
-      "model": "Yamaha AX-500",
-      "of": "Yamaha YIS-805/128",
-      "signal": "text: see"
-    },
-    {
-      "model": "Yamaha AX-500",
-      "of": "Yamaha YIS-805/256",
-      "signal": "text: see"
     },
     {
       "model": "Yamaha CX5MII/128",
