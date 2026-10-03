@@ -126,7 +126,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
   2. **Toolbar strip** — column picker button, filter toggle button (height: 32px, sticky)
   3. **Column group header row** — group names spanning their columns, collapse/expand chevron (height: 28px, sticky)
   4. **Column header row** — individual column names, sort arrows (height: 28px, sticky)
-  5. **Filter row** — one input per visible column (height: 28px, sticky, toggleable)
+  5. **Filter row** — one input per visible column (height: 28px, sticky, toggleable; shown by default)
   6. **Data rows** — model data (height: 24px per row)
 - Left gutter: 32px wide strip — row number, hidden-row indicator
 - The grid body scrolls both horizontally and vertically; all 4 header rows and the left gutter remain sticky
@@ -311,7 +311,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
   - All manually hidden rows revealed
   - All collapsed column groups expanded
   - All individually hidden columns restored (column picker resets to all checked)
-  - All filter inputs cleared and filter row hidden (Filters button returns to inactive state)
+  - All filter inputs cleared; the filter row stays shown, its default (Filters button active)
   - All cell and row selections deselected
 - No confirmation dialog — action is immediately effective and the URL reflects the empty state
 - Button has no active/toggle state — it is always a momentary action button

@@ -88,6 +88,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Priority: Must
   - Acceptance Criteria:
     - A filter input is accessible per column (e.g. in the column header or a filter row).
+    - The filter row is shown by default on page load; the Filters button hides it (clearing all filters) and shows it again.
     - Entering a value hides rows that do not match.
     - Filter state is reflected in the URL.
     - Clearing the filter restores all rows.
@@ -123,7 +124,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
     - Clicking the button shows all manually hidden rows (rows hidden via the × gutter button).
     - Clicking the button expands all collapsed column groups.
     - Clicking the button shows all individually hidden columns (restores columns hidden via the column picker panel).
-    - Clicking the button clears all active column filters (all filter inputs are emptied) and hides the filter row (the Filters button returns to its inactive state).
+    - Clicking the button clears all active column filters (all filter inputs are emptied) and leaves the filter row shown, its default (the Filters button stays / becomes active).
     - Clicking the button deselects all cell and row selections.
     - The URL updates immediately after the reset (all state is now empty/default).
 

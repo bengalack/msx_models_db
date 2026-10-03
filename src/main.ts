@@ -180,9 +180,9 @@ Let me hear your feedback about the <a href=\"https://github.com/bengalack/msx_m
     helpBtnEl.classList.toggle('toolbar__btn--active', helpOpen);
   }
 
-  // Show filter bar if initial state has active filters
-  let filtersOn = initialState.filters.size > 0;
-  if (filtersOn) toggleFilters();
+  // The filter row is on by default (its visibility is not part of the URL state)
+  let filtersOn = true;
+  toggleFilters();
 
   function handleFiltersToggle(): void {
     toggleFilters();
@@ -194,11 +194,11 @@ Let me hear your feedback about the <a href=\"https://github.com/bengalack/msx_m
     // Close any open panels
     if (pickerOpen) { closePicker(); pickerOpen = false; colsBtnEl.classList.remove('toolbar__btn--active'); }
     if (helpOpen) { helpPanel.hidden = true; helpOpen = false; helpBtnEl.classList.remove('toolbar__btn--active'); }
-    const { filtersWereOn } = resetView();
-    if (filtersWereOn) {
-      filtersOn = false;
-      filtersBtnEl.classList.remove('toolbar__btn--active');
-    }
+    // resetView() clears the filters and hides the row; the default is a visible row.
+    resetView();
+    toggleFilters();
+    filtersOn = true;
+    filtersBtnEl.classList.add('toolbar__btn--active');
   }
 
   // ── Include headers on copy toggle ────────────────────────────────────────
