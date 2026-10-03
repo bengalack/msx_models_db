@@ -671,6 +671,12 @@ An msx.org page with its own specs table can describe more than one model. `spli
 
 ---
 
+## Feature Design: Standard CPU Default
+
+CPU (id 22) and Sub-CPU (id 24) come from openMSX (`openmsx._extract_cpu`) or `data/local-raw.json`; the msx.org parser does not read them (few pages state the CPU, and in prose). A model no source names a CPU for takes the standard's for its generation — `columns._STANDARD_CPUS`: MSX1 / MSX2 / MSX2+ → Z80, turbo R → R800 with Sub-CPU Z80 — as the columns' `derive`, which only fills an empty value. Unusual machines go in `local-raw.json` (Victor HC-90 / HC-95 and their (A) versions: Sub-CPU Z180, the HD64180 alternative CPU; HC-90/95 also RTC Yes, from the msx.org I/O map page). `test_data_invariants.test_every_model_has_a_cpu` checks the built data.
+
+---
+
 ## Feature Design: Model Versions
 
 An msx.org page often describes one model sold in several versions — regional keyboards (Philips NMS 8280/00, /02, /09, /16, /19), country codes (Yamaha CX5MA … CX5MU) or hardware revisions (Victor HC-90(B), (V), (T)). Each version is a row of its own, marked as a variant of its main model.

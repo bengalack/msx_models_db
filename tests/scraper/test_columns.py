@@ -334,3 +334,24 @@ class TestDerivedSlotColumns:
         col = self._col("expansion_slots")
         assert col.group == "media"
         assert col.id == 101
+
+
+def test_cpu_defaults_to_the_standard_for_the_generation_unless_a_source_names_one(tmp_path):
+    import json
+    from scraper.build import build
+    from scraper.columns import _STANDARD_CPUS
+    gens = sorted(_STANDARD_CPUS)
+    (tmp_path / "openmsx.json").write_text(json.dumps([]))
+    (tmp_path / "msxorg.json").write_text(json.dumps(
+        [{"brand": "Maker", "model": f"M-{i}", "generation": g} for i, g in enumerate(gens)]
+        + [{"brand": "Maker", "model": "TWO", "generation": gens[0]}]))
+    (tmp_path / "local.json").write_text(json.dumps([{"brand": "Maker", "model": "TWO", "sub_cpu": "Z180"}]))
+    build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json", local_path=tmp_path / "local.json",
+          registry_path=tmp_path / "registry.json", output_path=tmp_path / "data.js")
+    text = (tmp_path / "data.js").read_text(encoding="utf-8")
+    data = json.loads(text[text.index("{"):text.rindex(";")])
+    keys = [c["key"] for c in data["columns"]]
+    rows = {r["model"]: r for r in (dict(zip(keys, m["values"])) for m in data["models"])}
+    for i, g in enumerate(gens):
+        assert (rows[f"M-{i}"]["cpu"], rows[f"M-{i}"]["sub_cpu"]) == _STANDARD_CPUS[g]
+    assert rows["TWO"]["sub_cpu"] == "Z180"                     # a source's value wins

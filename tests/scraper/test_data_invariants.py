@@ -47,3 +47,10 @@ def test_main_rom_in_slot_0_pages_0_and_1():
         if _has_slotmap(m) and not {m["slotmap_0_0_0"], m["slotmap_0_0_1"]} <= main_labels
     ]
     assert not violations, f"slot 0-0 pages 0-1 must be one of {sorted(main_labels)}: {violations}"
+
+
+@pytest.mark.skipif(not DATA_JS.exists(), reason="docs/data.js not built")
+def test_every_model_has_a_cpu():
+    """Every MSX has a CPU: from openMSX, local data, or the standard for its generation."""
+    missing = [(m["brand"], m["model"], m["generation"]) for m in _models() if not m["cpu"]]
+    assert not missing, f"models without a CPU: {missing}"

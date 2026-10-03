@@ -437,13 +437,29 @@
   },
   {
     "brand": "Victor",
+    "model": "HC-90",
+    "cpu": "Z80",
+    "sub_cpu": "Z180",
+    "rtc": "Yes"
+  },
+  {
+    "brand": "Victor",
+    "model": "HC-95",
+    "cpu": "Z80",
+    "sub_cpu": "Z180",
+    "rtc": "Yes"
+  },
+  {
+    "brand": "Victor",
     "model": "HC-90A",
-    "himem_addr": "0xDF95"
+    "himem_addr": "0xDF95",
+    "sub_cpu": "Z180"
   },
   {
     "brand": "Victor",
     "model": "HC-95A",
-    "himem_addr": "0xDE79"
+    "himem_addr": "0xDE79",
+    "sub_cpu": "Z180"
   },
   {
     "brand": "Yamaha",

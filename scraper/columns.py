@@ -234,6 +234,17 @@ GROUPS: list[Group] = [
 # COLUMNS  (migrated from src/columns.ts — 29 columns, IDs 1-29)
 # ---------------------------------------------------------------------------
 
+# The CPUs every machine of a generation has by the MSX standard: (CPU, Sub-CPU).
+# Fills models no source names a CPU for (msx.org pages rarely do); a value from
+# openMSX or data/local-raw.json always wins (Victor HC-90: Sub-CPU Z180).
+_STANDARD_CPUS: dict[str, tuple[str, str | None]] = {
+    "MSX1": ("Z80", None),
+    "MSX2": ("Z80", None),
+    "MSX2+": ("Z80", None),
+    "turbo R": ("R800", "Z80"),
+}
+
+
 COLUMNS: list[Column] = [
     # Identity
     Column(id=1,  key="brand",             label="Brand",               group="identity", type="string", truncate_limit=12),
@@ -282,9 +293,12 @@ COLUMNS: list[Column] = [
            derive=lambda m: _count_slotmap(m, "ES")),
     Column(id=20, key="tape_interface",   label="Tape Interface",       group="media",    type="string", short_label="Tape I/F",     tooltip="Tape Interface"),
     # CPU/Chipsets
-    Column(id=22, key="cpu",              label="CPU",                  group="cpu",      type="string", chip_links=True),
+    # CPU / Sub-CPU: openMSX's or local data's, else the standard's for the generation (_STANDARD_CPUS).
+    Column(id=22, key="cpu",              label="CPU",                  group="cpu",      type="string", chip_links=True,
+           derive=lambda m: _STANDARD_CPUS.get(m.get("generation") or "", (None, None))[0]),
     Column(id=23, key="cpu_speed_mhz",    label="CPU Speed (MHz)",      group="cpu",      type="number", retired=True),
-    Column(id=24, key="sub_cpu",          label="Sub-CPU",              group="cpu",      type="string", short_label="Sub-\nCPU", chip_links=True),
+    Column(id=24, key="sub_cpu",          label="Sub-CPU",              group="cpu",      type="string", short_label="Sub-\nCPU", chip_links=True,
+           derive=lambda m: _STANDARD_CPUS.get(m.get("generation") or "", (None, None))[1]),
     Column(id=97, key="nmos_cmos",        label="NMOS/CMOS",            group="cpu",      type="string", short_label="NMOS/\nCMOS",
            derive=lambda m: "CMOS" if "T976" in (m.get("engine_raw") or "") else "NMOS"),
     Column(id=98, key="rtc",              label="RTC",                  group="cpu",      type="string"),
