@@ -132,6 +132,8 @@ Click column headers for sorting, click again to sort in opposite direction, and
 When filters are enabled you can filter on a substring, and benefit from these special characters:<br/>
 | means "or".<br/>
 ! means "not".<br/>
+"…" (double quotes) means an exact match: "FS-A1" finds FS-A1 but not FS-A1FM.<br/>
+\\ (backslash) makes the next character plain text, e.g. \\| searches for a |.<br/>
 — means empty (em dash).<br/>
 Example for "Model": "8220|825|!/" to get some NMS 8x models without the language variant.<br/>
 Columns showing flags (Region, Char Set, KB Type) filter on the text or the flag: "Japan" and "🇯🇵" give the same rows.

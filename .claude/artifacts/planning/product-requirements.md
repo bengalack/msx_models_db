@@ -88,6 +88,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Priority: Must
   - Acceptance Criteria:
     - A filter input is accessible per column (e.g. in the column header or a filter row).
+    - Filter syntax: text matches as a case-insensitive substring; `|` separates alternatives (OR); a leading `!` excludes (NOT); a term in double quotes must equal the whole cell (`"FS-A1"` finds FS-A1, not FS-A1FM); a backslash makes the next character literal (`\|`, `\!`, `\"`, `\\`). A flag or rounded-number column also matches what the cell shows.
     - The filter row is shown by default on page load; the Filters button hides it (clearing all filters) and shows it again.
     - Entering a value hides rows that do not match.
     - Filter state is reflected in the URL.

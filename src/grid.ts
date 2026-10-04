@@ -53,6 +53,70 @@ function renderFlags(td: HTMLElement, shown: string): void {
   if (last < shown.length) td.append(shown.slice(last));
 }
 
+/** One alternative of a column filter: `!` negates it, `"…"` makes it an exact match. */
+export interface FilterTerm {
+  text: string;      // lower case, escapes resolved
+  exact: boolean;    // "…": the whole cell text (case-insensitive), not a substring
+  negate: boolean;   // !…: rows matching it are excluded
+}
+
+/**
+ * Parse a column filter: alternatives separated by `|` (OR), each optionally led by
+ * `!` (NOT) and wrapped in double quotes for an exact match; a backslash makes the
+ * next character literal (`\|`, `\!`, `\"`, `\\`). Empty alternatives are dropped.
+ */
+export function parseFilter(input: string): FilterTerm[] {
+  const raw: { chars: string; literal: boolean[] }[] = [{ chars: '', literal: [] }];
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    const cur = raw[raw.length - 1];
+    if (ch === '\\' && i + 1 < input.length) {
+      cur.chars += input[++i];
+      cur.literal.push(true);
+    } else if (ch === '|') {
+      raw.push({ chars: '', literal: [] });
+    } else {
+      cur.chars += ch;
+      cur.literal.push(false);
+    }
+  }
+  const terms: FilterTerm[] = [];
+  for (const { chars, literal } of raw) {
+    let start = 0;
+    let end = chars.length;
+    while (start < end && /\s/.test(chars[start]) && !literal[start]) start++;
+    while (end > start && /\s/.test(chars[end - 1]) && !literal[end - 1]) end--;
+    let negate = false;
+    if (start < end && chars[start] === '!' && !literal[start]) {
+      negate = true;
+      start++;
+      while (start < end && /\s/.test(chars[start]) && !literal[start]) start++;
+    }
+    let exact = false;
+    if (end - start >= 2 && chars[start] === '"' && !literal[start] && chars[end - 1] === '"' && !literal[end - 1]) {
+      exact = true;
+      start++;
+      end--;
+    }
+    const text = chars.slice(start, end).toLowerCase();
+    if (text.length > 0 || exact) terms.push({ text, exact, negate });
+  }
+  return terms;
+}
+
+/**
+ * Whether a cell's filter text (``filterHaystack``: the value, plus what the cell shows
+ * instead, one per line) passes *terms*: any positive term matches (OR) and no negated
+ * term does. An exact term must equal one line of the haystack as a whole.
+ */
+export function matchesFilter(haystack: string, terms: FilterTerm[]): boolean {
+  if (terms.length === 0) return true;
+  const lines = haystack.split('\n').map(l => l.trim().replace(/\s+/g, ' '));
+  const hit = (t: FilterTerm): boolean => t.exact ? lines.some(l => l === t.text) : haystack.includes(t.text);
+  const positive = terms.filter(t => !t.negate);
+  return (positive.length === 0 || positive.some(hit)) && !terms.some(t => t.negate && hit(t));
+}
+
 function cellText(value: string | number | boolean | null | undefined): string {
   if (value === null || value === undefined || value === '') return '\u2014'; // em dash
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
@@ -868,14 +932,8 @@ export function buildGrid(data: MSXData, opts?: {
     const filtered = filters.size === 0 ? sorted : sorted.filter(model =>
       [...filters.entries()].every(([colIdx, term]) => {
         const raw = colIdx < model.values.length ? model.values[colIdx] : null;
-        const value = filterHaystack(data.columns[colIdx], raw);
-        const parts = term.split('|').map(p => p.trim()).filter(p => p.length > 0);
-        if (parts.length === 0) return true;
-        const positive = parts.filter(p => !p.startsWith('!'));
-        const negative = parts.filter(p => p.startsWith('!')).map(p => p.slice(1).toLowerCase()).filter(p => p.length > 0);
-        const passPositive = positive.length === 0 || positive.some(p => value.includes(p.toLowerCase()));
-        const passNegative = negative.every(n => !value.includes(n));
-        return passPositive && passNegative;
+        // "|" = OR, "!" = NOT, "…" = exact, \ = literal next character (parseFilter)
+        return matchesFilter(filterHaystack(data.columns[colIdx], raw), parseFilter(term));
       })
     );
 
@@ -947,17 +1005,8 @@ export function buildGrid(data: MSXData, opts?: {
     const filtered = filters.size === 0 ? sorted : sorted.filter(model =>
       [...filters.entries()].every(([colIdx, term]) => {
         const raw = colIdx < model.values.length ? model.values[colIdx] : null;
-        const value = filterHaystack(data.columns[colIdx], raw);
-        // Split on '|' for OR semantics; leading '!' negates a term
-        const parts = term.split('|').map(p => p.trim()).filter(p => p.length > 0);
-        if (parts.length === 0) return true;
-        const positive = parts.filter(p => !p.startsWith('!'));
-        const negative = parts.filter(p => p.startsWith('!')).map(p => p.slice(1).toLowerCase()).filter(p => p.length > 0);
-        // Positive terms: row matches if value includes ANY of them (OR)
-        const passPositive = positive.length === 0 || positive.some(p => value.includes(p.toLowerCase()));
-        // Negative terms: row matches only if value includes NONE of them (AND)
-        const passNegative = negative.every(n => !value.includes(n));
-        return passPositive && passNegative;
+        // "|" = OR, "!" = NOT, "…" = exact, \ = literal next character (parseFilter)
+        return matchesFilter(filterHaystack(data.columns[colIdx], raw), parseFilter(term));
       })
     );
     // Gap-walk: emit data rows and gap indicator rows

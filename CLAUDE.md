@@ -100,7 +100,7 @@ applied to local data as well, so a curated entry can never resurrect an exclude
 
 ### Web (`src/`)
 - `main.ts` — entry; wires header, toolbar, grid, column picker, URL hash sync.
-- `grid.ts` — the hand-rolled grid (~1400 lines): rendering, sort, filter (`|` = OR, `!` = NOT), selection, row hide/unhide gaps, sticky headers/gutter, frozen Identity columns (all columns of the Identity group, `frozenColumnCount`), tooltips, clipboard.
+- `grid.ts` — the hand-rolled grid (~1400 lines): rendering, sort, filter (`|` = OR, `!` = NOT, `"…"` = exact match, `\` = next character literal; `parseFilter` / `matchesFilter`), selection, row hide/unhide gaps, sticky headers/gutter, frozen Identity columns (all columns of the Identity group, `frozenColumnCount`), tooltips, clipboard.
 - `url/codec.ts` — versioned binary view-state codec → URL-safe base64 in the hash. Format is documented in technical-design.md. Decoder must never throw; unknown IDs are silently dropped.
 - `slotmap-overview.ts` — the Slotmap Overview column: canvas thumbnail per row (cached per model/theme/DPR), hover popup with labelled boxes and slot map tooltips. Colours from `data/slotmap-colors.json`, compiled into the bundle. See *Feature Design: Slotmap Overview*.
 - `col-picker.ts`, `toolbar.ts`, `theme.ts`, `symbols.ts`, `types.ts` (MSXData types — keep in sync with `data/schema.md` and `scraper/build.py` serialisation).
