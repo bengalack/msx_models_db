@@ -1041,7 +1041,7 @@ window.MSX_DATA = {
         null,
         "Yes",
         "Z80",
-        null,
+        3.5795,
         null,
         null,
         "No",
@@ -1126,6 +1126,7 @@ window.MSX_DATA = {
         "model": "https://www.msx.org/wiki/Sony_HB-75P",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-75p/1227",
         "family_series": "https://www.msx.org/wiki/Category:Sony_HB-75",
+        "cpu_clock": "https://archive.org/details/sonyhb5575sm/sonyhp5575sm/page/n2/mode/1up",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-75P.xml"
       },
       "slot_details": {
@@ -1134,7 +1135,8 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
-        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)"
+        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)",
+        "cpu_clock": "3.579545 MHz: Service manual HB-55P/75P/75B (AE/UK), 1-2 Specifications: CPU Z-80A, clock frequency 3.579545 MHz"
       }
     },
     {
@@ -2278,7 +2280,7 @@ window.MSX_DATA = {
         null,
         "Yes",
         "Z80",
-        null,
+        3.5795,
         null,
         null,
         "No",
@@ -2362,12 +2364,14 @@ window.MSX_DATA = {
       "links": {
         "model": "https://www.msx.org/wiki/AVT_CPC-300",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-300-iq2000/110",
-        "family_rebrand": "https://www.msx.org/wiki/Daewoo_CPC-300"
+        "family_rebrand": "https://www.msx.org/wiki/Daewoo_CPC-300",
+        "cpu_clock": "https://archive.org/details/cpc300sch/page/n5/mode/1up"
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "psg": "msx.org: PSG (AY-3-8910)"
+        "psg": "msx.org: PSG (AY-3-8910)",
+        "cpu_clock": "3.579545 MHz: Schematic CPC-300 (domestic), sheet 6: V9938 crystal 21.47727 MHz, its CPUCLK (pin 8) is the Z-80A clock: calculated 21.47727 MHz ÷ 6"
       }
     },
     {
@@ -2762,7 +2766,7 @@ window.MSX_DATA = {
         null,
         "Yes",
         "Z80",
-        null,
+        3.5795,
         null,
         null,
         "No",
@@ -2847,6 +2851,7 @@ window.MSX_DATA = {
         "model": "https://www.msx.org/wiki/Daewoo_CPC-300",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/cpc-300-iq2000/110",
         "family_rebrand": "https://www.msx.org/wiki/Daewoo_CPC-300",
+        "cpu_clock": "https://archive.org/details/cpc300sch/page/n5/mode/1up",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Daewoo_CPC-300.xml"
       },
       "slot_details": {
@@ -2855,7 +2860,8 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "psg": "msx.org: PSG (AY-3-8910)"
+        "psg": "msx.org: PSG (AY-3-8910)",
+        "cpu_clock": "3.579545 MHz: Schematic CPC-300 (domestic), sheet 6: V9938 crystal 21.47727 MHz, its CPUCLK (pin 8) is the Z-80A clock: calculated 21.47727 MHz ÷ 6"
       }
     },
     {
@@ -15062,7 +15068,7 @@ window.MSX_DATA = {
         null,
         "Yes",
         "Z80",
-        null,
+        3.5795,
         null,
         null,
         "No",
@@ -15146,12 +15152,14 @@ window.MSX_DATA = {
       "links": {
         "model": "https://www.msx.org/wiki/Talent_DPC-300",
         "generation_msx": "https://generation-msx.nl/hardware/telematicatalent/dpc-300/1065",
-        "family_rebrand": "https://www.msx.org/wiki/Daewoo_CPC-300"
+        "family_rebrand": "https://www.msx.org/wiki/Daewoo_CPC-300",
+        "cpu_clock": "https://archive.org/details/cpc300sch/page/n5/mode/1up"
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "psg": "msx.org: PSG (AY-3-8910)"
+        "psg": "msx.org: PSG (AY-3-8910)",
+        "cpu_clock": "3.579545 MHz: Schematic CPC-300 (domestic), sheet 6: V9938 crystal 21.47727 MHz, its CPUCLK (pin 8) is the Z-80A clock: calculated 21.47727 MHz ÷ 6"
       }
     },
     {
@@ -15181,7 +15189,7 @@ window.MSX_DATA = {
         null,
         "Yes",
         "Z80",
-        null,
+        3.5795,
         null,
         null,
         "No",
@@ -15265,6 +15273,7 @@ window.MSX_DATA = {
       "links": {
         "model": "https://www.msx.org/wiki/Talent_TPC-310",
         "generation_msx": "https://generation-msx.nl/hardware/telematicatalent/tpc-310/908",
+        "cpu_clock": "https://archive.org/details/tpc310msx2pcserviceguide/page/n5/mode/1up",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Talent_TPC-310.xml"
       },
       "slot_details": {
@@ -15275,7 +15284,8 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
-        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
+        "cpu_clock": "3.5795333 MHz: Schematic TPC-310: crystal Y3 21.4772 MHz drives the V9938 (XTAL1, sheet n1), whose CPUCLK clocks the CPU: calculated 21.4772 MHz ÷ 6"
       }
     },
     {
@@ -17023,7 +17033,7 @@ window.MSX_DATA = {
         null,
         "Yes",
         "Z80",
-        null,
+        3.5795,
         null,
         null,
         "No",
@@ -17106,7 +17116,8 @@ window.MSX_DATA = {
       ],
       "links": {
         "model": "https://www.msx.org/wiki/Wandy_CPC-300",
-        "family_rebrand": "https://www.msx.org/wiki/Daewoo_CPC-300"
+        "family_rebrand": "https://www.msx.org/wiki/Daewoo_CPC-300",
+        "cpu_clock": "https://archive.org/details/cpc300sch/page/n5/mode/1up"
       },
       "slot_details": {
         "slotmap_0_3_1": "Thai BASIC"
@@ -17114,7 +17125,8 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
         "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "psg": "msx.org: PSG (AY-3-8910)"
+        "psg": "msx.org: PSG (AY-3-8910)",
+        "cpu_clock": "3.579545 MHz: Schematic CPC-300 (domestic), sheet 6: V9938 crystal 21.47727 MHz, its CPUCLK (pin 8) is the Z-80A clock: calculated 21.47727 MHz ÷ 6"
       }
     },
     {
@@ -38799,7 +38811,7 @@ window.MSX_DATA = {
         null,
         "Yes",
         "Z80",
-        null,
+        3.5795,
         null,
         null,
         "No",
@@ -38884,6 +38896,7 @@ window.MSX_DATA = {
         "model": "https://www.msx.org/wiki/Sony_HB-55P",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-55p/1374",
         "family_series": "https://www.msx.org/wiki/Category:Sony_HB-55",
+        "cpu_clock": "https://archive.org/details/sonyhb5575sm/sonyhp5575sm/page/n2/mode/1up",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sony_HB-55P.xml"
       },
       "slot_details": {
@@ -38892,7 +38905,8 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
-        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)"
+        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)",
+        "cpu_clock": "3.579545 MHz: Service manual HB-55P/75P/75B (AE/UK), 1-2 Specifications: CPU Z-80A, clock frequency 3.579545 MHz"
       }
     },
     {
@@ -45167,7 +45181,7 @@ window.MSX_DATA = {
         null,
         "Yes",
         "Z80",
-        null,
+        3.5795,
         null,
         null,
         "No",
@@ -45251,7 +45265,8 @@ window.MSX_DATA = {
       "links": {
         "model": "https://www.msx.org/wiki/Sony_HB-75B",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-75b/1196",
-        "family_series": "https://www.msx.org/wiki/Category:Sony_HB-75"
+        "family_series": "https://www.msx.org/wiki/Category:Sony_HB-75",
+        "cpu_clock": "https://archive.org/details/sonyhb5575sm/sonyhp5575sm/page/n2/mode/1up"
       },
       "slot_details": {
         "slotmap_0_0_2": "DataBank"
@@ -45259,7 +45274,8 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
-        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)"
+        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)",
+        "cpu_clock": "3.579545 MHz: Service manual HB-55P/75P/75B (AE/UK), 1-2 Specifications: CPU Z-80A, clock frequency 3.579545 MHz"
       }
     },
     {
