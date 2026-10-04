@@ -82,6 +82,24 @@ class RegionTable:
     def lookup(self, text: str) -> Region | None:
         return self._by_key.get(_key(text))
 
+    def language_region(self, language: str) -> Region | None:
+        """The region of a language ("German" → Germany), or a region named directly ("UK"); None if neither."""
+        base = _NOTE_RE.sub("", language).strip()
+        return self._languages.get(base.lower()) or self.lookup(base)
+
+    def language_tag(self, languages: str) -> str | None:
+        """Country tag of a version named by language(s): "German" → "DE", "Danish/Norwegian" → "DK/NO".
+
+        None when a part has no single-country region ("Arabic" → Middle East).
+        """
+        codes = []
+        for part in languages.split("/"):
+            region = self.language_region(part)
+            if region is None or len(region.flags) != 1:
+                return None
+            codes.append(region.flags[0])
+        return "/".join(codes)
+
     def language_display(self, value: str) -> str | None:
         """Flags of a language value ("French (AZERTY)" → 🇫🇷, "UK" → 🇬🇧), or None.
 

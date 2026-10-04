@@ -26,6 +26,7 @@ from .msxorg_series import (
     localised_specs,
     named_specs,
     own_row_specs,
+    slotmap_sections,
     product_names,
     page_context,
     resolve_specs,
@@ -962,6 +963,128 @@ def list_item_specs(text: str) -> dict[str, str]:
     return out
 
 
+# ── Language versions ("available in 7 versions": International, German, …) ──
+#
+# A list following a lead that says the model came in N versions, whose items
+# are all languages (data/regions.json "languages", or a region name): one
+# version per language, named "<model> (<country tags>)" ("German" → "SVI-738
+# (DE)", "Danish/Norwegian" → "(DK/NO)"), or "<model> (<language>)" for a
+# language of no single country ("(Arabic)"). "International" is the model itself.
+
+_LANG_LEAD_RE = re.compile(r"(?<![A-Za-z])(\d+|two|three|four|five|six|seven|eight|nine|ten)\s+(?:different\s+)?versions(?![A-Za-z])", re.I)
+MAIN_LANGUAGES = {"international", "english"}
+_regions_table = None
+
+
+def _regions():
+    global _regions_table
+    if _regions_table is None:
+        from .regions import load_regions
+        _regions_table = load_regions()
+    return _regions_table
+
+
+def language_versions(page: bytes | BeautifulSoup) -> list[str]:
+    """The languages a page lists as its model's versions ("It was available in 7 versions …:")."""
+    soup = page if isinstance(page, BeautifulSoup) else BeautifulSoup(page, "lxml")
+    body = soup.select_one("#bodyContent") or soup
+    regions = _regions()
+    for lst in body.find_all(["ul", "ol"]):
+        if lst.find_parent("table"):
+            continue
+        lead = lst.find_previous_sibling()
+        if lead is None or lead.name != "p" or not _LANG_LEAD_RE.search(lead.get_text(" ", strip=True)):
+            continue
+        items = [re.sub(r"\s+", " ", li.get_text(" ", strip=True)) for li in lst.find_all("li", recursive=False)]
+        if len(items) >= 2 and all(i.lower() in MAIN_LANGUAGES or
+                                   all(regions.language_region(part) for part in i.split("/")) for i in items):
+            return items
+    return []
+
+
+def language_value(value: str, language: str) -> str | None:
+    """The part of a specs value that is *language*'s: "(Arabic) QWERTY/Arabic", "(Non-Arabic) QWERTY …",
+    "1985 (Polish version : 1986 …)"; None when the value does not single the language out."""
+    value = re.sub(r"\s+", " ", value)
+    lang = language.lower()
+    m = re.search(rf"(?<![A-Za-z]){re.escape(language)} version ?: ?([^-)]+?) ?(?:[-)]|$)", value, re.I)
+    if m:
+        return m.group(1).strip()
+    # "(Non-Arabic) QWERTY + numeric keypad (Arabic) QWERTY/Arabic": each "(qualifier) value" runs to
+    # the next qualifier, with or without a " - " between them.
+    found = None
+    for m in re.finditer(r"\( ?(non-)?([^()]+?) ?\) ?(.+?)(?= ?-? ?\( ?(?:non-)?[^()]+\)|$)", value, re.I):
+        names = [n.strip().lower() for n in re.split(r"/|,| and ", m.group(2))]
+        if not all(_regions().language_region(n) or n in MAIN_LANGUAGES for n in names):
+            continue                                   # "(versions V and T)", "(UK)"-style notes are not languages
+        if (lang not in names) if m.group(1) else (lang in names):
+            found = m.group(3).strip(" -")
+    return found
+
+
+def main_language_region(region: str, languages: list[str]) -> str:
+    """The main ("International") model's region: the page's region without the regions its language
+    versions are sold in ("Europe, Middle East" with an Arabic version → "Europe"). Unchanged when
+    nothing would be left."""
+    regions = _regions()
+    taken = {r.name for lang in languages if lang.lower() not in MAIN_LANGUAGES
+             for part in lang.split("/") if (r := regions.language_region(part))}
+    parts = regions.parse(region).names if region else []
+    kept = [p for p in parts if p not in taken]
+    return ", ".join(kept) if kept and len(kept) < len(parts) else region
+
+
+def language_slot_table(soup: BeautifulSoup, language: str, default: Tag | None) -> Tag | None:
+    """The slot map headed for *language* ("Slot Map for the Arabic model"), not one that excludes it
+    ("… for all models except the Arabic model"); else *default*."""
+    lang = re.escape(language.lower())
+    for heading, table in slotmap_sections(soup):
+        h = heading.lower()
+        if re.search(rf"(?<![a-z]){lang}(?![a-z])", h) and not re.search(rf"except (?:the )?{lang}", h):
+            return table
+    return default
+
+
+def _language_version_records(
+    specs: dict[str, str],
+    soup: BeautifulSoup,
+    model: str,
+    base_specs: dict[str, str],
+    main_table: Tag | None,
+    build: Callable[..., dict[str, Any]],
+    languages: list[str],
+    page_title: str,
+) -> list[dict[str, Any]]:
+    """One version record per language the page lists (see ``language_versions``)."""
+    regions = _regions()
+    records = []
+    for language in languages:
+        if language.lower() in MAIN_LANGUAGES:
+            continue
+        name = f"{model} ({regions.language_tag(language) or language})"
+        spec, own = {**base_specs, "Model": name}, set()
+        for field, raw in specs.items():
+            value = language_value(raw, language) if field not in ("Brand", "Model") else None
+            if value:
+                spec[field] = value
+                own.add(field)
+        places = [r.name for part in language.split("/") if (r := regions.language_region(part))]
+        if places:
+            spec["Region"] = ", ".join(dict.fromkeys(places))
+            own.add("Region")
+        table = language_slot_table(soup, language, main_table)
+        record = build(spec, table, name)
+        record[LOCALISED_FIELD] = model
+        record[VERSION_FIELD] = True
+        without = build({k: v for k, v in spec.items() if k not in own or k == "Model"}, main_table, name)
+        record[OWN_FIELDS_FIELD] = sorted(
+            k for k, v in record.items() if not k.startswith("_") and v is not None and without.get(k) != v)
+        records.append(record)
+    if records:
+        log.info("[msxorg:languages] %s: %d language versions %s", page_title, len(records), languages)
+    return records
+
+
 def _record_from_specs(
     specs: dict[str, str],
     *,
@@ -1255,9 +1378,17 @@ def parse_model_page(
         spec = own_row_specs(named_specs(specs, model, model_names), soup, model, table_names)
         return spec, choose_slotmap_table(soup, model, model_names, spec.get("RAM", ""))
 
+    # Language versions ("available in 7 versions": International, German, …); International is the model.
+    languages = language_versions(soup) if own_page and len(model_names) == 1 and not regional else []
+
     records: list[dict[str, Any]] = []
     for model in model_names:
         spec, table = model_specs(model)
+        main_language = next((lang for lang in languages if lang.lower() in MAIN_LANGUAGES), None)
+        if main_language and model == model_names[0]:
+            spec = {**spec, **{f: v for f, raw in specs.items() if f not in ("Brand", "Model")
+                               and (v := language_value(raw, main_language))}}
+            spec["Region"] = main_language_region(spec.get("Region", ""), languages)
         records.append(build(spec, table, model) if model != model_names[0] else build(spec, table))
     result = records[0]
     if renamed:
@@ -1278,6 +1409,10 @@ def parse_model_page(
         records += _revision_records(ctx, specs, slot_table, result, build)
     if own_page:
         records += _localised_records(soup, specs, model_names, products, model_specs, build, page_title)
+        if languages:
+            base_specs, main_table = model_specs(model_names[0])
+            records += _language_version_records(specs, soup, model_names[0], base_specs, main_table, build,
+                                                 languages, page_title)
     names = model_names + (result.get(KNOWN_AS_FIELD) or [])
     status = market_status(soup, specs, names, brand)
     if status:

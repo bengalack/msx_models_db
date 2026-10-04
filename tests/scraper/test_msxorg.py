@@ -1279,3 +1279,81 @@ def test_versions_become_rows_marked_variant_of_their_main_model(tmp_path, monke
     assert (v16["region"], v16["keyboard_layout"]) == ("Spain", "QWERTY with ñ")
     assert v16["himem_addr"] is None and v16["character_set"] is None and v16["openmsx_id"] is None
     assert rows["MX 80A"][0]["rtc"] == "No"                          # openMSX has it: its own machine's data
+
+
+# ── Language versions ("available in N versions": International, German, …) ──
+
+def _page_html(body: str) -> bytes:
+    return f"<html><body><div id='bodyContent'>{body}</div></body></html>".encode()
+
+
+_LANG_PAGE_LIST = ("<p>It was available in 4 versions to support different keyboards:</p>"
+                   "<ul><li>International</li><li>Arabic</li><li>German</li><li>Danish/Norwegian</li></ul>")
+
+
+class TestLanguageVersions:
+    def test_list_after_a_versions_lead_of_languages(self):
+        from scraper.msxorg import language_versions
+        page = _page_html(_LANG_PAGE_LIST)
+        assert language_versions(page) == ["International", "Arabic", "German", "Danish/Norwegian"]
+
+    @pytest.mark.parametrize("html", [
+        "<p>It was available in 2 versions:</p><ul><li>16kB RAM</li><li>64kB RAM</li></ul>",   # not languages
+        "<p>Features:</p><ul><li>German</li><li>Polish</li></ul>",                            # no versions lead
+    ])
+    def test_other_lists_are_not_language_versions(self, html):
+        from scraper.msxorg import language_versions
+        assert language_versions(_page_html(html)) == []
+
+    @pytest.mark.parametrize("value,language,expected", [
+        ("(Non-Arabic) QWERTY with variations - (Arabic) QWERTY/Arabic", "Arabic", "QWERTY/Arabic"),
+        ("(Non-Arabic) QWERTY with variations - (Arabic) QWERTY/Arabic", "German", "QWERTY with variations"),
+        ("(Non-Arabic) QWERTY + keypad (Arabic) QWERTY/Arabic + keypad", "Arabic", "QWERTY/Arabic + keypad"),
+        ("(Non-Arabic) QWERTY + keypad (Arabic) QWERTY/Arabic + keypad", "Spanish", "QWERTY + keypad"),
+        ("1985 (Polish version : 1986 - Arabic version : 1987)", "Polish", "1986"),
+        ("1985 (Polish version : 1986 - Arabic version : 1987)", "German", None),
+        ("256kB (versions V and T) or 64kB (other versions)", "German", None),       # not a language qualifier
+    ])
+    def test_language_value(self, value, language, expected):
+        from scraper.msxorg import language_value
+        assert language_value(value, language) == expected
+
+    def test_slot_map_headed_for_the_language_not_one_excluding_it(self):
+        from bs4 import BeautifulSoup
+        from scraper.msxorg import language_slot_table
+        from scraper.msxorg_series import slotmap_sections
+        table = ("<table{}><tr><td></td><th>Slot 0</th><th>Slot 1</th><th>Slot 2</th><th>Slot 3</th></tr>"
+                 "<tr><th>Page C000h~FFFFh</th><td rowspan='4'>Main-ROM</td><td rowspan='4'>Cartridge Slot 1</td>"
+                 "<td rowspan='4'>RAM</td><td rowspan='4'>Disk ROM</td></tr><tr><th>Page 8000h~BFFFh</th></tr>"
+                 "<tr><th>Page 4000h~7FFFh</th></tr><tr><th>Page 0000h~3FFFh</th></tr></table>")
+        html = ("<h2><span class='mw-headline' id='Slot_Map_for_all_models_except_the_Arabic_model'>"
+                "Slot Map for all models except the Arabic model</span></h2>"
+                + table.format(" id='all'")
+                + "<h2><span class='mw-headline' id='Slot_Map_for_the_Arabic_model'>Slot Map for the Arabic model</span></h2>"
+                + table.format(" id='arabic'"))
+        soup = BeautifulSoup(_page_html(html), "lxml")
+        assert len(slotmap_sections(soup)) == 2
+        default = soup.find("table", id="all")
+        assert language_slot_table(soup, "Arabic", default).get("id") == "arabic"
+        assert language_slot_table(soup, "German", default) is default
+
+    @pytest.mark.parametrize("region,languages,expected", [
+        ("Europe, Middle East", ["International", "Arabic", "German"], "Europe"),   # Arabic version: Middle East
+        ("Middle East", ["International", "Arabic"], "Middle East"),               # nothing left: unchanged
+        ("Europe", ["International", "German"], "Europe"),                         # Germany is not listed
+    ])
+    def test_main_model_region_drops_what_its_versions_cover(self, region, languages, expected):
+        from scraper.msxorg import main_language_region
+        assert main_language_region(region, languages) == expected
+
+    def test_versions_are_named_by_country_tags_or_the_language(self):
+        from scraper.msxorg import parse_model_page
+        from scraper.aliases import LOCALISED_FIELD, VERSION_FIELD
+        page = _multi_page("MX 7", "64kB", table=_LANG_PAGE_LIST,
+                           extra="<tr><th>Year</th><td>1985 (Arabic version : 1987)</td></tr>")
+        records = {r["model"]: r for r in parse_model_page(page, "MSX1", "Maker MX 7")}
+        assert set(records) == {"MX 7", "MX 7 (Arabic)", "MX 7 (DE)", "MX 7 (DK/NO)"}
+        arabic = records["MX 7 (Arabic)"]
+        assert (arabic[LOCALISED_FIELD], arabic[VERSION_FIELD], arabic["year"]) == ("MX 7", True, 1987)
+        assert records["MX 7 (DK/NO)"]["region"] == "Denmark, Norway"
+        assert VERSION_FIELD not in records["MX 7"]
