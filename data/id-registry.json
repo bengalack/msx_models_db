@@ -495,8 +495,17 @@
     "yamaha|cx5miip": 478,
     "yamaha|cx5miis": 479,
     "yamaha|cx5miiu": 480,
-    "yamaha|cx5ms": 481
+    "yamaha|cx5ms": 481,
+    "spectravideo|svi-728 (arabic)": 482,
+    "spectravideo|svi-728 (dk/no)": 483,
+    "spectravideo|svi-728 (se/fi)": 370,
+    "spectravideo|svi-738 (arabic)": 484,
+    "spectravideo|svi-738 (de)": 372,
+    "spectravideo|svi-738 (dk/no)": 485,
+    "spectravideo|svi-738 (es)": 486,
+    "spectravideo|svi-738 (pl)": 373,
+    "spectravideo|svi-738 (se/fi)": 374
   },
   "retired_models": [],
-  "next_model_id": 482
+  "next_model_id": 487
 }

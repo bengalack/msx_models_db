@@ -1020,7 +1020,7 @@
     {
       "name": "SVI-728",
       "url": "https://www.msx.org/wiki/Spectravideo_SVI-728",
-      "base": "Spectravideo SVI-728",
+      "base": "Spectravideo SVI-728 (ES)",
       "members": [
         {
           "id": 317,
@@ -1032,7 +1032,15 @@
         },
         {
           "id": 370,
-          "model": "Spectravideo SVI-728 (SE)"
+          "model": "Spectravideo SVI-728 (SE/FI)"
+        },
+        {
+          "id": 482,
+          "model": "Spectravideo SVI-728 (Arabic)"
+        },
+        {
+          "id": 483,
+          "model": "Spectravideo SVI-728 (DK/NO)"
         }
       ]
     },
@@ -1046,20 +1054,28 @@
           "model": "Spectravideo SVI-738"
         },
         {
-          "id": 371,
-          "model": "Spectravideo SVI-738 X'PRESS"
-        },
-        {
           "id": 372,
-          "model": "Spectravideo SVI-738 X'PRESS (DE)"
+          "model": "Spectravideo SVI-738 (DE)"
         },
         {
           "id": 373,
-          "model": "Spectravideo SVI-738 X'PRESS (PL)"
+          "model": "Spectravideo SVI-738 (PL)"
         },
         {
           "id": 374,
-          "model": "Spectravideo SVI-738 X'PRESS (SE)"
+          "model": "Spectravideo SVI-738 (SE/FI)"
+        },
+        {
+          "id": 484,
+          "model": "Spectravideo SVI-738 (Arabic)"
+        },
+        {
+          "id": 485,
+          "model": "Spectravideo SVI-738 (DK/NO)"
+        },
+        {
+          "id": 486,
+          "model": "Spectravideo SVI-738 (ES)"
         }
       ]
     },
@@ -4045,34 +4061,54 @@
       "signal": "adaptation"
     },
     {
+      "model": "Spectravideo SVI-728 (Arabic)",
+      "with": "Spectravideo SVI-728",
+      "signal": "same page"
+    },
+    {
+      "model": "Spectravideo SVI-728 (DK/NO)",
+      "with": "Spectravideo SVI-728",
+      "signal": "same page"
+    },
+    {
       "model": "Spectravideo SVI-728 (ES)",
-      "of": "Spectravideo SVI-728",
-      "signal": "link-share"
+      "with": "Spectravideo SVI-728",
+      "signal": "same page"
     },
     {
-      "model": "Spectravideo SVI-728 (SE)",
-      "of": "Spectravideo SVI-728",
-      "signal": "link-share"
+      "model": "Spectravideo SVI-728 (SE/FI)",
+      "with": "Spectravideo SVI-728",
+      "signal": "same page"
     },
     {
-      "model": "Spectravideo SVI-738 X'PRESS",
-      "of": "Spectravideo SVI-738",
-      "signal": "link-share"
+      "model": "Spectravideo SVI-738 (Arabic)",
+      "with": "Spectravideo SVI-738",
+      "signal": "same page"
     },
     {
-      "model": "Spectravideo SVI-738 X'PRESS (DE)",
-      "of": "Spectravideo SVI-738",
-      "signal": "link-share"
+      "model": "Spectravideo SVI-738 (DE)",
+      "with": "Spectravideo SVI-738",
+      "signal": "same page"
     },
     {
-      "model": "Spectravideo SVI-738 X'PRESS (PL)",
-      "of": "Spectravideo SVI-738",
-      "signal": "link-share"
+      "model": "Spectravideo SVI-738 (DK/NO)",
+      "with": "Spectravideo SVI-738",
+      "signal": "same page"
     },
     {
-      "model": "Spectravideo SVI-738 X'PRESS (SE)",
-      "of": "Spectravideo SVI-738",
-      "signal": "link-share"
+      "model": "Spectravideo SVI-738 (ES)",
+      "with": "Spectravideo SVI-738",
+      "signal": "same page"
+    },
+    {
+      "model": "Spectravideo SVI-738 (PL)",
+      "with": "Spectravideo SVI-738",
+      "signal": "same page"
+    },
+    {
+      "model": "Spectravideo SVI-738 (SE/FI)",
+      "with": "Spectravideo SVI-738",
+      "signal": "same page"
     },
     {
       "model": "Talent DPC-200",
