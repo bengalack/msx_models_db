@@ -303,9 +303,16 @@ window.MSX_DATA = {
     {
       "id": 15,
       "key": "psg",
-      "label": "PSG",
+      "label": "PSG Chip",
       "groupId": 3,
-      "type": "string"
+      "type": "string",
+      "shortLabel": "PSG\nChip",
+      "tooltip": "PSG/SSG chip assumption",
+      "maxWidth": 190,
+      "sortLast": [
+        "None"
+      ],
+      "chipLinks": true
     },
     {
       "id": 16,
@@ -1027,7 +1034,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A or YM2149F",
         null,
         null,
         2,
@@ -1126,7 +1133,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)"
       }
     },
     {
@@ -1149,7 +1157,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         2,
@@ -1251,7 +1259,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -1274,7 +1283,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -1375,7 +1384,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -1398,7 +1408,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149F",
         null,
         null,
         2,
@@ -1493,7 +1503,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate arrays Toshiba TCX-1008, TCX-2001 and TCX-2002",
-        "engine_semi_custom": "Gate arrays Toshiba TCX-1008, TCX-2001 and TCX-2002"
+        "engine_semi_custom": "Gate arrays Toshiba TCX-1008, TCX-2001 and TCX-2002",
+        "psg": "msx.org: PSG (YM2149F)"
       }
     },
     {
@@ -1516,7 +1527,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         "Yes",
         "1",
         2,
@@ -1614,7 +1625,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -1637,7 +1649,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9769",
         "Yes",
         "1",
         2,
@@ -1738,6 +1750,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Toshiba T9769 model A or B and gate array Mitsubishi M50014",
         "engine_semi_custom": "Toshiba T9769 model A or B and gate array Mitsubishi M50014",
+        "psg": "msx.org: PSG. Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)",
         "cpu_clock": "3.579545 MHz: Circuit diagram FS-A1WX: crystal X4 21.47727 MHz, 3.58 MHz clock",
         "z80_turbo": "5.3693175 MHz: Circuit diagram FS-A1WX notes: CLKX 5.37 MHz in turbo mode, 3.58 MHz otherwise; crystal X4 21.47727 MHz / 4"
       }
@@ -1762,7 +1775,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9769",
         "Yes",
         "1",
         2,
@@ -1863,6 +1876,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Toshiba T9769 model B or C and gate array Mitsubishi M50014",
         "engine_semi_custom": "Toshiba T9769 model B or C and gate array Mitsubishi M50014",
+        "psg": "msx.org: PSG. Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)",
         "z80_turbo": "5.37 MHz: msx.org: the Z80A can be switched from 3.58 MHz to 5.37 MHz via I/O ports"
       }
     },
@@ -1886,7 +1900,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9769",
         "Yes",
         "1",
         2,
@@ -1986,7 +2000,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T9769 C and ASCII S1990 bus controller",
-        "engine_semi_custom": "Toshiba T9769 C and ASCII S1990 bus controller"
+        "engine_semi_custom": "Toshiba T9769 C and ASCII S1990 bus controller",
+        "psg": "msx.org: PSG (AY-3-8910 compatible). Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -2009,7 +2024,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9769",
         "Yes",
         "1",
         2,
@@ -2112,6 +2127,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Toshiba T9769 C and ASCII S1990 bus controller",
         "engine_semi_custom": "Toshiba T9769 C and ASCII S1990 bus controller",
+        "psg": "msx.org: PSG (AY-3-8910 compatible). Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)",
         "cpu_clock": "7.159 MHz: Technical guide FS-A1GT (JP), Z80-mode self-test: oscillators 28.636 MHz (R800, IC37) and 21.4772 MHz (VDP, IC12); calculated: R800 clock = 28.636 MHz ÷ 4",
         "sub_cpu_clock": "3.57953 MHz: Technical guide FS-A1GT (JP), Z80-mode self-test: oscillators 28.636 MHz (R800, IC37) and 21.4772 MHz (VDP, IC12); calculated: Z80 clock = 21.4772 MHz ÷ 6"
       }
@@ -2136,7 +2152,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9769",
         "Yes",
         null,
         2,
@@ -2231,7 +2247,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T9769 C and ASCII S1990 bus controller",
-        "engine_semi_custom": "Toshiba T9769 C and ASCII S1990 bus controller"
+        "engine_semi_custom": "Toshiba T9769 C and ASCII S1990 bus controller",
+        "psg": "msx.org: PSG. Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -2254,7 +2271,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -2349,7 +2366,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -2372,7 +2390,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -2471,7 +2489,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -2494,7 +2513,7 @@ window.MSX_DATA = {
         "V9938",
         64,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -2589,7 +2608,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -2612,7 +2632,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -2711,7 +2731,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527 also two chips from Toshiba  TC17G005AP-0007",
-        "engine_semi_custom": "Yamaha S3527 also two chips from Toshiba  TC17G005AP-0007"
+        "engine_semi_custom": "Yamaha S3527 also two chips from Toshiba  TC17G005AP-0007",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -2734,7 +2755,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -2833,7 +2854,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -2856,7 +2878,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -2954,7 +2976,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -2977,7 +3000,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -3071,7 +3094,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -3094,7 +3118,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         "1",
         1,
@@ -3193,7 +3217,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -3216,7 +3241,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         "1",
         1,
@@ -3318,7 +3343,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -3341,7 +3367,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -3439,7 +3465,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -3462,7 +3489,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -3559,7 +3586,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -3582,7 +3610,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "2",
         3,
@@ -3676,7 +3704,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -3699,7 +3728,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         1,
@@ -3794,7 +3823,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha  S3527",
-        "engine_semi_custom": "Yamaha  S3527"
+        "engine_semi_custom": "Yamaha  S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -3817,7 +3847,7 @@ window.MSX_DATA = {
         "V9938",
         64,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -3912,7 +3942,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -3935,7 +3966,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "2",
         1,
@@ -4033,7 +4064,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -4056,7 +4088,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -4156,7 +4188,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -4179,7 +4212,7 @@ window.MSX_DATA = {
         "V9958",
         192,
         null,
-        "Yes",
+        "YM2149F",
         null,
         null,
         2,
@@ -4272,7 +4305,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149F)"
       }
     },
     {
@@ -4295,7 +4329,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149? in S3527",
         null,
         null,
         2,
@@ -4389,7 +4423,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (probably YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -4412,7 +4447,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -4512,7 +4547,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -4535,7 +4571,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -4635,7 +4671,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -4658,7 +4695,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         1,
@@ -4757,7 +4794,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -4780,7 +4818,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         1,
@@ -4878,7 +4916,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -4901,7 +4940,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "2",
         1,
@@ -5000,7 +5039,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-SYSTEMII S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -5023,7 +5063,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         2,
@@ -5120,7 +5160,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -5143,7 +5184,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "FPGA",
         "Yes",
         null,
         1,
@@ -5236,7 +5277,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Altera Cyclone EP1C12Q240C8N FPGA chip",
-        "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip"
+        "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip",
+        "psg": "msx.org: Emulated PSG , MSX-MUSIC and SCC by FPGA"
       }
     },
     {
@@ -5259,7 +5301,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -5367,7 +5409,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -5390,7 +5433,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -5494,7 +5537,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -5517,7 +5561,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -5626,7 +5670,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -5649,7 +5694,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985?",
         null,
         "2",
         2,
@@ -5749,7 +5794,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Probably Yamaha S1985",
-        "engine_semi_custom": "Probably Yamaha S1985"
+        "engine_semi_custom": "Probably Yamaha S1985",
+        "psg": "msx.org: PSG. Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -5772,7 +5818,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -5872,7 +5918,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG. Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -5895,7 +5942,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "2",
         2,
@@ -5995,7 +6042,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG. Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -6018,7 +6066,7 @@ window.MSX_DATA = {
         "V9938",
         256,
         null,
-        "Yes",
+        "YM2149 in S1985",
         "Yes",
         null,
         2,
@@ -6112,7 +6160,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -6135,7 +6184,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9769",
         null,
         "1",
         2,
@@ -6233,7 +6282,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T9769",
-        "engine_semi_custom": "Toshiba T9769"
+        "engine_semi_custom": "Toshiba T9769",
+        "psg": "msx.org: PSG (AY-3-8910 compatible, integrated in MSX-Engine T9769). Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -6256,7 +6306,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9769",
         null,
         "1",
         2,
@@ -6359,6 +6409,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Toshiba T9769 model A or B and gate array Mitsubishi M50014",
         "engine_semi_custom": "Toshiba T9769 model A or B and gate array Mitsubishi M50014",
+        "psg": "msx.org: PSG (AY-3-8910 compatible, integrated in MSX-Engine T9769x). Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)",
         "z80_turbo": "5.37 MHz: msx.org: the Z80A can be switched from 3.58 MHz to 5.37 MHz via I/O ports"
       }
     },
@@ -6382,7 +6433,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         2,
@@ -6484,7 +6535,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -6507,7 +6559,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -6602,7 +6654,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -6625,7 +6678,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -6726,6 +6779,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual NMS8220/00/16, adjustments: VDP clock set to 3.554685 MHz (crystal 21.328125 MHz)"
       }
     },
@@ -6749,7 +6803,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -6851,6 +6905,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual NMS8245/00/16, adjustments: VDP clock set to 3,554,685 ± 200 Hz (crystal 21.328125 MHz)"
       }
     },
@@ -6874,7 +6929,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         1,
@@ -6971,6 +7026,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8245/536 (family)"
       }
     },
@@ -6994,7 +7050,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -7097,6 +7153,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual NMS8245/00/16, adjustments: VDP clock set to 3,554,685 ± 200 Hz (crystal 21.328125 MHz)",
         "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8245/536 (family)"
       }
@@ -7121,7 +7178,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -7224,6 +7281,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual NMS8245/00/16, adjustments: VDP clock set to 3,554,685 ± 200 Hz (crystal 21.328125 MHz)",
         "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8245/536 (family)"
       }
@@ -7248,7 +7306,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -7347,6 +7405,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha  S3527",
         "engine_semi_custom": "Yamaha  S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)"
       }
     },
@@ -7370,7 +7429,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -7470,6 +7529,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha  S3527",
         "engine_semi_custom": "Yamaha  S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)",
         "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8250/537 (family)"
       }
@@ -7494,7 +7554,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -7594,6 +7654,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha  S3527",
         "engine_semi_custom": "Yamaha  S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)",
         "generation_msx": "https://generation-msx.nl/hardware/philips/nms-8250/537 (family)"
       }
@@ -7618,7 +7679,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "2",
         2,
@@ -7717,6 +7778,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)"
       }
     },
@@ -7740,7 +7802,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         1,
@@ -7837,7 +7899,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha  S3527",
-        "engine_semi_custom": "Yamaha  S3527"
+        "engine_semi_custom": "Yamaha  S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -7860,7 +7923,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -7958,6 +8021,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554688 MHz: Service manual NMS8280/00/16, adjustments: clock set to 3,554,688 ± 20 Hz (\"3.55 MHz crystal\")"
       }
     },
@@ -7981,7 +8045,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -8081,6 +8145,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual VG8230/00, adjustments: VDP clock set to 3.554685 MHz (crystal 21.32812 MHz)"
       }
     },
@@ -8104,7 +8169,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -8207,6 +8272,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz",
         "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583 (family)"
       }
@@ -8231,7 +8297,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -8334,6 +8400,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz",
         "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583 (family)"
       }
@@ -8358,7 +8425,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -8461,6 +8528,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz",
         "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583 (family)"
       }
@@ -8485,7 +8553,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -8588,6 +8656,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.5546875 MHz: Service manual VG8235/20/22/29/36/39, parts list: crystal 21.328125 MHz (÷ 6)",
         "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583 (family)"
       }
@@ -8612,7 +8681,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -8715,6 +8784,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.5546875 MHz: Service manual VG8235/20/22/29/36/39, parts list: crystal 21.328125 MHz (÷ 6)",
         "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8235/583 (family)"
       }
@@ -8739,7 +8809,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -8837,6 +8907,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz"
       }
     },
@@ -8860,7 +8931,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -8954,7 +9025,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -8977,7 +9049,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -9072,7 +9144,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -9095,7 +9168,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -9190,7 +9263,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -9213,7 +9287,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -9308,7 +9382,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -9331,7 +9406,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "2",
         1,
@@ -9431,6 +9506,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG. Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual UC-V102: CPU clock 3.58 MHz (3.579545 MHz)"
       }
     },
@@ -9454,7 +9530,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         1,
@@ -9547,7 +9623,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha  S3527",
-        "engine_semi_custom": "Yamaha  S3527"
+        "engine_semi_custom": "Yamaha  S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -9570,7 +9647,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -9673,7 +9750,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -9696,7 +9774,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9769",
         null,
         "1",
         2,
@@ -9805,7 +9883,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T9769 B",
-        "engine_semi_custom": "Toshiba T9769 B"
+        "engine_semi_custom": "Toshiba T9769 B",
+        "psg": "msx.org: PSG (AY-3-8910 compatible, integrated in MSX-Engine T9769B). Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -9828,7 +9907,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "2",
         2,
@@ -9940,6 +10019,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual AX-500: clock frequency 3.579545 MHz"
       }
     },
@@ -9963,7 +10043,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         2,
@@ -10059,7 +10139,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985 + Sanyo CF77099AFT",
-        "engine_semi_custom": "Yamaha S1985 + Sanyo CF77099AFT"
+        "engine_semi_custom": "Yamaha S1985 + Sanyo CF77099AFT",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -10082,7 +10163,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         1,
@@ -10178,7 +10259,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -10201,7 +10283,7 @@ window.MSX_DATA = {
         "V9938",
         64,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         1,
@@ -10297,7 +10379,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -10320,7 +10403,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         1,
@@ -10420,7 +10503,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -10443,7 +10527,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "2",
         1,
@@ -10539,7 +10623,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -10562,7 +10647,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         1,
@@ -10659,7 +10744,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -10682,7 +10768,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         1,
@@ -10777,7 +10863,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -10800,7 +10887,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149?",
         null,
         "1",
         2,
@@ -10894,7 +10981,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "?",
-        "engine_semi_custom": "?"
+        "engine_semi_custom": "?",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine?)"
       }
     },
     {
@@ -10917,7 +11005,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -11012,7 +11100,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG. Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -11035,7 +11124,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985 or S3527",
         null,
         null,
         2,
@@ -11131,7 +11220,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985 or Yamaha S3527",
-        "engine_semi_custom": "Yamaha S1985 or Yamaha S3527"
+        "engine_semi_custom": "Yamaha S1985 or Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985 or S3527). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -11154,7 +11244,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985 or S3527",
         null,
         null,
         2,
@@ -11249,7 +11339,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985 or Yamaha S3527",
-        "engine_semi_custom": "Yamaha S1985 or Yamaha S3527"
+        "engine_semi_custom": "Yamaha S1985 or Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985 or S3527). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -11272,7 +11363,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9769",
         null,
         null,
         2,
@@ -11367,7 +11458,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T9769x (A or B)",
-        "engine_semi_custom": "Toshiba T9769x (A or B)"
+        "engine_semi_custom": "Toshiba T9769x (A or B)",
+        "psg": "msx.org: PSG. Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -11390,7 +11482,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "2",
         2,
@@ -11484,7 +11576,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -11507,7 +11600,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9763",
         null,
         "2",
         2,
@@ -11601,7 +11694,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T9763",
-        "engine_semi_custom": "Toshiba T9763"
+        "engine_semi_custom": "Toshiba T9763",
+        "psg": "msx.org: PSG (AY-3-8910 compatible, integrated in MSX-Engine T9763)"
       }
     },
     {
@@ -11624,7 +11718,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9769",
         "Yes",
         "1",
         2,
@@ -11725,7 +11819,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T9769x (A or B)",
-        "engine_semi_custom": "Toshiba T9769x (A or B)"
+        "engine_semi_custom": "Toshiba T9769x (A or B)",
+        "psg": "msx.org: PSG. Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -11748,7 +11843,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         "1",
-        "Yes",
+        "AY-3-8910 comp. in T9769",
         "Yes",
         "2",
         2,
@@ -11847,7 +11942,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T9769x (A or B)",
-        "engine_semi_custom": "Toshiba T9769x (A or B)"
+        "engine_semi_custom": "Toshiba T9769x (A or B)",
+        "psg": "msx.org: PSG. Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -11870,7 +11966,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -11972,6 +12068,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Schematic PHC-77 Rev.02: crystal 21.47727 MHz, 3.58 MHz clock"
       }
     },
@@ -11995,7 +12092,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         2,
@@ -12097,7 +12194,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG. Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -12120,7 +12218,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         2,
@@ -12222,7 +12320,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG. Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -12245,7 +12344,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -12345,6 +12444,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG. Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual HB-F1XD: CPU clock 3.58 MHz, adjusted to 3,579,530–3,579,550 Hz"
       }
     },
@@ -12368,7 +12468,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -12466,7 +12566,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG. Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -12489,7 +12590,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         "Yes",
         "1",
         2,
@@ -12587,7 +12688,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -12610,7 +12712,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -12705,7 +12807,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -12728,7 +12831,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -12827,7 +12930,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -12850,7 +12954,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -12950,6 +13054,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f500/752 (family)"
       }
     },
@@ -12973,7 +13078,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         3,
@@ -13074,6 +13179,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.578281 MHz: Service manual HB-F500P/F, alignment: CPU clock (IC26 pin 6) set to 3.578281 MHz ± 5 Hz"
       }
     },
@@ -13097,7 +13203,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -13198,6 +13304,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual HB-F700P/S/F/D: clock adjusted to 3,579,540–3,579,549 Hz (crystal X301 21.477 MHz)"
       }
     },
@@ -13221,7 +13328,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -13322,6 +13429,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual HB-F700P/S/F/D: clock adjusted to 3,579,540–3,579,549 Hz (crystal X301 21.477 MHz)"
       }
     },
@@ -13345,7 +13453,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -13446,6 +13554,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual HB-F700P/S/F/D: clock adjusted to 3,579,540–3,579,549 Hz (crystal X301 21.477 MHz)"
       }
     },
@@ -13469,7 +13578,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -13570,6 +13679,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual HB-F700P/S/F/D: clock adjusted to 3,579,540–3,579,549 Hz (crystal X301 21.477 MHz)"
       }
     },
@@ -13593,7 +13703,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -13687,7 +13797,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -13710,7 +13821,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "2",
         2,
@@ -13809,7 +13920,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985 ). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -13832,7 +13944,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         2,
@@ -13935,6 +14047,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985 ). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.58 MHz: Service manual HB-F9P/S: CPU clock 3.58 MHz"
       }
     },
@@ -13958,7 +14071,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         2,
@@ -14056,6 +14169,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985 ). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.58 MHz: Service manual HB-F9P/S: CPU clock 3.58 MHz",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/hb-f9p/756 (family)"
       }
@@ -14080,7 +14194,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         2,
@@ -14183,6 +14297,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985 ). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.58 MHz: Service manual HB-F9P/S: CPU clock 3.58 MHz"
       }
     },
@@ -14206,7 +14321,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -14306,6 +14421,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual HB-G900AP: CPU clock frequency 3.579545 MHz (genlock off)"
       }
     },
@@ -14329,7 +14445,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         "1",
         2,
@@ -14428,7 +14544,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -14451,7 +14568,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         "1",
         2,
@@ -14548,6 +14665,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.579545 MHz: Service manual HB-G900P/F: clock frequency 3.579545 MHz"
       }
     },
@@ -14571,7 +14689,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         "1",
         2,
@@ -14672,6 +14790,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.579545 MHz: Service manual HB-G900P/F: clock frequency 3.579545 MHz"
       }
     },
@@ -14695,7 +14814,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         3,
@@ -14794,7 +14913,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -14817,7 +14937,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         2,
@@ -14911,7 +15031,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -14934,7 +15055,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -15029,7 +15150,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -15052,7 +15174,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         1,
@@ -15152,7 +15274,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -15175,7 +15298,7 @@ window.MSX_DATA = {
         "V9938",
         64,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         1,
@@ -15273,7 +15396,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -15296,7 +15420,7 @@ window.MSX_DATA = {
         "V9938",
         64,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         1,
@@ -15395,7 +15519,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -15418,7 +15543,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "FPGA",
         "Yes",
         null,
         1,
@@ -15515,7 +15640,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Altera Cyclone EP1C12Q240C8N FPGA chip",
-        "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip"
+        "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip",
+        "psg": "msx.org: Emulated PSG , MSX-MUSIC and SCC by FPGA"
       }
     },
     {
@@ -15538,7 +15664,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "FPGA",
         "Yes",
         null,
         2,
@@ -15635,7 +15761,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Altera Cyclone EP1C12Q240C8N FPGA chip",
-        "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip"
+        "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip",
+        "psg": "msx.org: Emulated PSG , MSX-MUSIC and SCC by FPGA"
       }
     },
     {
@@ -15658,7 +15785,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         2,
@@ -15760,7 +15887,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -15783,7 +15911,7 @@ window.MSX_DATA = {
         "V9938",
         64,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -15883,7 +16011,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1012",
-        "engine_semi_custom": "Gate array Toshiba TCX-1012"
+        "engine_semi_custom": "Gate array Toshiba TCX-1012",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -15906,7 +16035,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -16006,7 +16135,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1012",
-        "engine_semi_custom": "Gate array Toshiba TCX-1012"
+        "engine_semi_custom": "Gate array Toshiba TCX-1012",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -16029,7 +16159,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149F",
         null,
         "1",
         2,
@@ -16128,7 +16258,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate arrays (Toshiba TCX-1008, TCX-2001 and TCX-2002)",
-        "engine_semi_custom": "Gate arrays (Toshiba TCX-1008, TCX-2001 and TCX-2002)"
+        "engine_semi_custom": "Gate arrays (Toshiba TCX-1008, TCX-2001 and TCX-2002)",
+        "psg": "msx.org: PSG (YM2149F)"
       }
     },
     {
@@ -16151,7 +16282,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "T7766A",
         null,
         "1",
         1,
@@ -16250,7 +16381,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "???",
-        "engine_semi_custom": "???"
+        "engine_semi_custom": "???",
+        "psg": "msx.org: PSG (T7766A)"
       }
     },
     {
@@ -16273,7 +16405,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -16368,7 +16500,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -16391,7 +16524,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         "1",
         1,
@@ -16488,6 +16621,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (Yamaha YM2149)",
         "sub_cpu_clock": "6.144 MHz: msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
       }
     },
@@ -16511,7 +16645,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         "1",
         1,
@@ -16612,6 +16746,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (Yamaha YM2149)",
         "sub_cpu_clock": "6.144 MHz: msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
       }
     },
@@ -16635,7 +16770,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         "2",
         1,
@@ -16732,6 +16867,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (Yamaha YM2149)",
         "sub_cpu_clock": "6.144 MHz: msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
       }
     },
@@ -16755,7 +16891,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         "2",
         1,
@@ -16856,6 +16992,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (Yamaha YM2149)",
         "sub_cpu_clock": "6.144 MHz: msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
       }
     },
@@ -16879,7 +17016,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -16976,7 +17113,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -16999,7 +17137,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -17094,7 +17232,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -17117,7 +17256,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -17214,7 +17353,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -17237,7 +17377,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -17334,7 +17474,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -17357,7 +17498,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -17454,7 +17595,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -17477,7 +17619,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -17580,6 +17722,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-805/1034 (family)"
       }
     },
@@ -17603,7 +17746,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "2",
         2,
@@ -17707,7 +17850,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -17730,7 +17874,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "FPGA",
         "Yes",
         null,
         2,
@@ -17824,7 +17968,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Altera Cyclone EP1C12Q240C8N FPGA chip",
-        "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip"
+        "engine_semi_custom": "Altera Cyclone EP1C12Q240C8N FPGA chip",
+        "psg": "msx.org: Emulated PSG , MSX-MUSIC and SCC by FPGA"
       }
     },
     {
@@ -17847,7 +17992,7 @@ window.MSX_DATA = {
         "V9938",
         512,
         null,
-        null,
+        "None",
         null,
         null,
         null,
@@ -17855,7 +18000,7 @@ window.MSX_DATA = {
         null,
         "Z80",
         null,
-        null,
+        "Z80",
         null,
         null,
         "NMOS",
@@ -17940,7 +18085,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: The sound is not provided by the classical PSG, but by an OPN chip."
       }
     },
     {
@@ -17963,7 +18109,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -18070,7 +18216,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -18093,7 +18240,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "1",
         2,
@@ -18200,7 +18347,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -18223,7 +18371,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985 or S3527",
         null,
         null,
         2,
@@ -18319,6 +18467,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985 or Yamaha S3527",
         "engine_semi_custom": "Yamaha S1985 or Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985 or S3527). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-23-wavy23/1581 (family)"
       }
     },
@@ -18342,7 +18491,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "AY-3-8910",
         "Yes",
         null,
         3,
@@ -18436,7 +18585,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "openMSX: AY8910"
       }
     },
     {
@@ -18459,7 +18609,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in T7937A",
         null,
         null,
         2,
@@ -18557,7 +18707,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba  T7937A",
-        "engine_semi_custom": "Toshiba  T7937A"
+        "engine_semi_custom": "Toshiba  T7937A",
+        "psg": "msx.org: PSG -sound chip General Instrument AY-3-8910 compatible (Integrated in MSX-Engine T7937A). Toshiba T7937A (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -18580,7 +18731,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in T7937A",
         null,
         null,
         1,
@@ -18682,7 +18833,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba  T7937A",
-        "engine_semi_custom": "Toshiba  T7937A"
+        "engine_semi_custom": "Toshiba  T7937A",
+        "psg": "msx.org: PSG -sound chip General Instrument AY-3-8910 compatible (Integrated in MSX-Engine T7937A). Toshiba T7937A (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -18705,7 +18857,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -18801,7 +18953,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -18824,7 +18977,7 @@ window.MSX_DATA = {
         "TMS9929",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -18918,7 +19071,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -18941,7 +19095,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -19040,7 +19194,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -19063,7 +19218,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -19158,7 +19313,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -19181,7 +19337,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         1,
@@ -19276,7 +19432,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -19299,7 +19456,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -19394,7 +19551,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Hitachi HG61H06 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HG61H06 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HG61H06 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -19417,7 +19575,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in HD62003",
         null,
         null,
         1,
@@ -19511,7 +19669,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Hitachi HD62003",
-        "engine_semi_custom": "Hitachi HD62003"
+        "engine_semi_custom": "Hitachi HD62003",
+        "psg": "msx.org: PSG (AY-3-8910 in MSX Engine). Hitachi HD62003: PSG AY-3-8910 compatible"
       }
     },
     {
@@ -19534,7 +19693,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -19629,7 +19788,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Hitachi HG61H06 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HG61H06 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HG61H06 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -19652,7 +19812,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -19748,7 +19908,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -19771,7 +19932,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -19867,7 +20028,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -19890,7 +20052,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -19985,7 +20147,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -20008,7 +20171,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -20103,7 +20266,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -20126,7 +20290,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -20219,7 +20383,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -20242,7 +20407,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -20336,7 +20501,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -20359,7 +20525,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -20453,7 +20619,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -20476,7 +20643,7 @@ window.MSX_DATA = {
         "TMS9928",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -20569,7 +20736,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -20592,7 +20760,7 @@ window.MSX_DATA = {
         "TMS99X8A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -20690,7 +20858,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -20713,7 +20882,7 @@ window.MSX_DATA = {
         "TMS99X8A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -20811,7 +20980,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -20834,7 +21004,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -20931,7 +21101,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -20954,7 +21125,7 @@ window.MSX_DATA = {
         "TMS9129A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -21050,7 +21221,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -21073,7 +21245,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -21169,7 +21341,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -21192,7 +21365,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         null,
@@ -21288,7 +21461,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -21311,7 +21485,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -21405,7 +21579,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "? none (separate IC's)",
-        "engine_semi_custom": "? none (separate IC's)"
+        "engine_semi_custom": "? none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -21428,7 +21603,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -21523,7 +21698,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -21546,7 +21722,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -21641,7 +21817,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -21664,7 +21841,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -21759,7 +21936,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -21782,7 +21960,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -21877,7 +22055,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7775",
-        "engine_semi_custom": "Toshiba T7775"
+        "engine_semi_custom": "Toshiba T7775",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -21900,7 +22079,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -21996,7 +22175,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -22019,7 +22199,7 @@ window.MSX_DATA = {
         "TMS9128",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         null,
@@ -22112,7 +22292,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -22135,7 +22316,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -22231,7 +22412,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -22254,7 +22436,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -22348,7 +22530,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array General HD61J209F )",
-        "engine_semi_custom": "None (separate ICs whose a gate array General HD61J209F )"
+        "engine_semi_custom": "None (separate ICs whose a gate array General HD61J209F )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -22371,7 +22554,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -22464,7 +22647,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array General HD61J209F )",
-        "engine_semi_custom": "None (separate ICs whose a gate array General HD61J209F )"
+        "engine_semi_custom": "None (separate ICs whose a gate array General HD61J209F )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -22487,7 +22671,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -22586,6 +22770,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.58 MHz: Service manual FC-200: CPU clock 3.58 MHz"
       }
     },
@@ -22609,7 +22794,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -22708,7 +22893,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -22731,7 +22917,7 @@ window.MSX_DATA = {
         "TMS99X8A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -22828,7 +23014,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -22851,7 +23038,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -22950,7 +23137,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "?",
-        "engine_semi_custom": "?"
+        "engine_semi_custom": "?",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -22973,7 +23161,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -23070,7 +23258,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "?",
-        "engine_semi_custom": "?"
+        "engine_semi_custom": "?",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -23093,7 +23282,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in T7937A",
         null,
         "1",
         2,
@@ -23191,7 +23380,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7937A",
-        "engine_semi_custom": "Toshiba T7937A"
+        "engine_semi_custom": "Toshiba T7937A",
+        "psg": "msx.org: Toshiba T7766A, General Instrument AY-3-8910 compatible (Integrated in MSX-Engine T7937A). Toshiba T7937A (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -23214,7 +23404,7 @@ window.MSX_DATA = {
         "TMS9128",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -23309,7 +23499,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -23332,7 +23523,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in T7937A",
         null,
         null,
         2,
@@ -23427,7 +23618,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7937A",
-        "engine_semi_custom": "Toshiba T7937A"
+        "engine_semi_custom": "Toshiba T7937A",
+        "psg": "msx.org: Toshiba T7766A, General Instrument AY-3-8910 compatible (Integrated in MSX-Engine T7937A). Toshiba T7937A (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -23450,7 +23642,7 @@ window.MSX_DATA = {
         "TMS9128",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -23545,7 +23737,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -23568,7 +23761,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -23665,7 +23858,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -23688,7 +23882,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -23784,7 +23978,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -23807,7 +24002,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -23902,7 +24097,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -23925,7 +24121,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -24022,7 +24218,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -24045,7 +24242,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -24140,7 +24337,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -24163,7 +24361,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -24257,7 +24455,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -24280,7 +24479,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -24376,7 +24575,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -24399,7 +24599,7 @@ window.MSX_DATA = {
         "T6950A",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -24493,7 +24693,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -24516,7 +24717,7 @@ window.MSX_DATA = {
         "T6950A",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -24610,7 +24811,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -24633,7 +24835,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910?",
         null,
         null,
         2,
@@ -24729,7 +24931,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (?AY-3-8910)"
       }
     },
     {
@@ -24752,7 +24955,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -24846,7 +25049,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose probably a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -24869,7 +25073,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -24962,7 +25166,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -24985,7 +25190,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -25080,7 +25285,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Hitachi HD27L019)",
-        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)"
+        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -25103,7 +25309,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -25199,7 +25405,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Hitachi HD27L019)",
-        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)"
+        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -25222,7 +25429,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         1,
@@ -25317,7 +25524,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "probably Yamaha S1985",
-        "engine_semi_custom": "probably Yamaha S1985"
+        "engine_semi_custom": "probably Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -25340,7 +25548,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -25435,7 +25643,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -25458,7 +25667,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -25553,7 +25762,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -25576,7 +25786,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -25673,7 +25883,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -25696,7 +25907,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -25790,7 +26001,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -25813,7 +26025,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -25909,7 +26121,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -25932,7 +26145,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -26027,7 +26240,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -26050,7 +26264,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -26145,7 +26359,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -26168,7 +26383,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -26262,7 +26477,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -26285,7 +26501,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -26380,7 +26596,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -26403,7 +26620,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -26498,7 +26715,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -26521,7 +26739,7 @@ window.MSX_DATA = {
         "TMS99X8A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -26617,7 +26835,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -26640,7 +26859,7 @@ window.MSX_DATA = {
         "TMS99X8A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -26735,7 +26954,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -26758,7 +26978,7 @@ window.MSX_DATA = {
         "TMS99X8A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A?",
         null,
         "1",
         2,
@@ -26856,7 +27076,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (?AY-3-8910A)"
       }
     },
     {
@@ -26879,7 +27100,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A?",
         null,
         null,
         2,
@@ -26974,7 +27195,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "?",
-        "engine_semi_custom": "?"
+        "engine_semi_custom": "?",
+        "psg": "msx.org: PSG (AY-3-8910A in the MSX-Engine?)"
       }
     },
     {
@@ -26997,7 +27219,7 @@ window.MSX_DATA = {
         "TMS9128",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -27096,7 +27318,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -27119,7 +27342,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -27214,7 +27437,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -27237,7 +27461,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in T7937A",
         null,
         null,
         1,
@@ -27332,7 +27556,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba  T7937A",
-        "engine_semi_custom": "Toshiba  T7937A"
+        "engine_semi_custom": "Toshiba  T7937A",
+        "psg": "msx.org: PSG -sound chip General Instrument AY-3-8910 compatible (Integrated in MSX-Engine T7937A). Toshiba T7937A (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -27355,7 +27580,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -27449,7 +27674,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -27472,7 +27698,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -27568,7 +27794,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -27591,7 +27818,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -27685,7 +27912,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -27708,7 +27936,7 @@ window.MSX_DATA = {
         "TMS9929",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -27806,7 +28034,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "probably Yamaha S3527",
-        "engine_semi_custom": "probably Yamaha S3527"
+        "engine_semi_custom": "probably Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -27829,7 +28058,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         null,
@@ -27923,7 +28152,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -27946,7 +28176,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         null,
@@ -28041,7 +28271,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -28064,7 +28295,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -28162,6 +28393,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.579545 MHz: Service manual VG8000/VG8010: \"CLOCK 3.58MHz\"; VDP crystal X870 10.738635 MHz (÷ 3)"
       }
     },
@@ -28185,7 +28417,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -28283,6 +28515,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.579545 MHz: Service manual VG8000/VG8010: \"CLOCK 3.58MHz\"; VDP crystal X870 10.738635 MHz (÷ 3)"
       }
     },
@@ -28306,7 +28539,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -28402,7 +28635,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
-        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions"
+        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "psg": "msx.org: PSG (YM2149 in /00 version, custom chip integrated in MSX-Engine S3527 for /19, /20, /29 and /40 versions)"
       }
     },
     {
@@ -28425,7 +28659,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -28520,7 +28754,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -28543,7 +28778,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -28638,7 +28873,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -28661,7 +28897,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -28756,7 +28992,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -28779,7 +29016,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -28880,6 +29117,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.58 MHz: Service manual PX-7: Z80A (3.58 MHz clock)"
       }
     },
@@ -28903,7 +29141,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -29004,6 +29242,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM-2149)",
         "cpu_clock": "3.58 MHz: Service manual PX-7 HE/HB: Z80A (3.58 MHz clock)",
         "generation_msx": "https://generation-msx.nl/hardware/pioneer/px-7-palcom/612 (family)"
       }
@@ -29028,7 +29267,7 @@ window.MSX_DATA = {
         "TMS9128",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -29128,6 +29367,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (integrated in the MSX-Engine). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual PX-V60 (JP): 3.579545 MHz clock"
       }
     },
@@ -29151,7 +29391,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -29248,7 +29488,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -29271,7 +29512,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -29366,7 +29607,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -29389,7 +29631,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -29488,7 +29730,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -29511,7 +29754,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -29610,7 +29853,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha YM5214",
-        "engine_semi_custom": "Yamaha YM5214"
+        "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -29633,7 +29877,7 @@ window.MSX_DATA = {
         "YM2220",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -29732,7 +29976,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -29755,7 +30000,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in T7937 or T7937A",
         null,
         null,
         2,
@@ -29855,7 +30100,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7937 or T7937A",
-        "engine_semi_custom": "Toshiba T7937 or T7937A"
+        "engine_semi_custom": "Toshiba T7937 or T7937A",
+        "psg": "msx.org: PSG -sound chip General Instrument AY-3-8910 compatible (Integrated in MSX-Engine T7937 or T7937A). Toshiba T7937 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -29878,7 +30124,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in T7937A",
         null,
         null,
         2,
@@ -29974,7 +30220,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7937A",
-        "engine_semi_custom": "Toshiba T7937A"
+        "engine_semi_custom": "Toshiba T7937A",
+        "psg": "msx.org: PSG -sound chip General Instrument AY-3-8910 compatible (Integrated in MSX-Engine T7937A). Toshiba T7937A (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -29997,7 +30244,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in T7937 or T7937A",
         null,
         null,
         2,
@@ -30096,7 +30343,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7937 or T7937A",
-        "engine_semi_custom": "Toshiba T7937 or T7937A"
+        "engine_semi_custom": "Toshiba T7937 or T7937A",
+        "psg": "msx.org: PSG -sound chip General Instrument AY-3-8910 compatible (Integrated in MSX-Engine T7937 or T7937A). Toshiba T7937 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -30119,7 +30367,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -30220,7 +30468,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (integrated into MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -30243,7 +30492,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -30342,7 +30591,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (integrated into MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -30365,7 +30615,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in T7937A",
         null,
         null,
         1,
@@ -30469,7 +30719,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7937A",
-        "engine_semi_custom": "Toshiba T7937A"
+        "engine_semi_custom": "Toshiba T7937A",
+        "psg": "msx.org: PSG -sound chip General Instrument AY-3-8910 compatible (Integrated in MSX-Engine T7937A). Toshiba T7937A (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -30492,7 +30743,7 @@ window.MSX_DATA = {
         "TMS9929A",
         64,
         null,
-        "Yes",
+        "OY-2-8910AC",
         null,
         null,
         1,
@@ -30594,7 +30845,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array NEC AW100)",
-        "engine_semi_custom": "None (separate ICs whose a gate array NEC AW100)"
+        "engine_semi_custom": "None (separate ICs whose a gate array NEC AW100)",
+        "psg": "msx.org: PSG clone OY-2-8910AC"
       }
     },
     {
@@ -30617,7 +30869,7 @@ window.MSX_DATA = {
         "V9958",
         64,
         null,
-        "Yes",
+        "KC89C72",
         null,
         null,
         2,
@@ -30711,7 +30963,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)",
-        "engine_semi_custom": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)"
+        "engine_semi_custom": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)",
+        "psg": "msx.org: PSG (File KC89C72)"
       }
     },
     {
@@ -30734,7 +30987,7 @@ window.MSX_DATA = {
         "V9958",
         64,
         null,
-        "Yes",
+        "KC89C72",
         null,
         null,
         2,
@@ -30828,7 +31081,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)",
-        "engine_semi_custom": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)"
+        "engine_semi_custom": "None (separate ICs whose a chip AT 990 that is probably a ROM mapper)",
+        "psg": "msx.org: PSG (File KC89C72)"
       }
     },
     {
@@ -30851,7 +31105,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -30950,7 +31204,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -30973,7 +31228,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -31068,7 +31323,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -31091,7 +31347,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -31185,7 +31441,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -31208,7 +31465,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -31303,7 +31560,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -31326,7 +31584,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -31421,7 +31679,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Fujitsu MB64H131 )",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -31444,7 +31703,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -31539,7 +31798,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7775",
-        "engine_semi_custom": "Toshiba T7775"
+        "engine_semi_custom": "Toshiba T7775",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -31562,7 +31822,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -31658,7 +31918,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -31681,7 +31942,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -31777,7 +32038,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
-        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
+        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -31800,7 +32062,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -31899,7 +32161,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose 2 gate arrays: Fujitsu MB64H120 for memory, uPD65002C022 for light pen interface)",
-        "engine_semi_custom": "None (separate ICs whose 2 gate arrays: Fujitsu MB64H120 for memory, uPD65002C022 for light pen interface)"
+        "engine_semi_custom": "None (separate ICs whose 2 gate arrays: Fujitsu MB64H120 for memory, uPD65002C022 for light pen interface)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -31922,7 +32185,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -32017,7 +32280,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -32040,7 +32304,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 or T7766A",
         null,
         null,
         2,
@@ -32137,7 +32401,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7775",
-        "engine_semi_custom": "Toshiba T7775"
+        "engine_semi_custom": "Toshiba T7775",
+        "psg": "msx.org: PSG (AY-3-8910 or T7766A)"
       }
     },
     {
@@ -32160,7 +32425,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         3,
@@ -32256,7 +32521,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -32279,7 +32545,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -32374,7 +32640,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -32397,7 +32664,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -32493,7 +32760,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -32516,7 +32784,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -32612,7 +32880,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array VLC9001, which is a Fujitsu MB64H120 clone)",
-        "engine_semi_custom": "None (separate ICs whose a gate array VLC9001, which is a Fujitsu MB64H120 clone)"
+        "engine_semi_custom": "None (separate ICs whose a gate array VLC9001, which is a Fujitsu MB64H120 clone)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -32635,7 +32904,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910? or T7766A?",
         null,
         null,
         2,
@@ -32731,7 +33000,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "probably Toshiba T7775",
-        "engine_semi_custom": "probably Toshiba T7775"
+        "engine_semi_custom": "probably Toshiba T7775",
+        "psg": "msx.org: PSG (probably AY-3-8910 or T7766A)"
       }
     },
     {
@@ -32754,7 +33024,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -32849,7 +33119,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -32872,7 +33143,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -32968,7 +33239,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
-        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
+        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -32991,7 +33263,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -33087,6 +33359,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
         "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)",
+        "psg": "msx.org: PSG (YM2149)",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-28p/1383 (family)"
       }
     },
@@ -33110,7 +33383,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -33206,6 +33479,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149)",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-28p/1383 (family)"
       }
     },
@@ -33229,7 +33503,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -33325,7 +33599,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
-        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
+        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -33348,7 +33623,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -33442,7 +33717,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose one gate array Fujitsu MB64H120)",
-        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)"
+        "engine_semi_custom": "None (separate ICs whose one gate array Fujitsu MB64H120)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -33465,7 +33741,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -33561,7 +33837,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "probably Yamaha S3527",
-        "engine_semi_custom": "probably Yamaha S3527"
+        "engine_semi_custom": "probably Yamaha S3527",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -33584,7 +33861,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -33680,6 +33957,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "probably Yamaha S3527",
         "engine_semi_custom": "probably Yamaha S3527",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-30n/698 (family)"
       }
     },
@@ -33703,7 +33981,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -33799,6 +34077,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "probably Yamaha S3527",
         "engine_semi_custom": "probably Yamaha S3527",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-30n/698 (family)"
       }
     },
@@ -33822,7 +34101,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -33917,7 +34196,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -33940,7 +34220,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -34034,7 +34314,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -34057,7 +34338,7 @@ window.MSX_DATA = {
         "TMS9128",
         16,
         null,
-        "Yes",
+        "YM2149 or AY-3-8910",
         null,
         null,
         2,
@@ -34151,7 +34432,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149 or AY-3-8910)"
       }
     },
     {
@@ -34174,7 +34456,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -34267,7 +34549,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -34290,7 +34573,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -34392,7 +34675,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -34415,7 +34699,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "YM2149F",
         null,
         "1",
         2,
@@ -34510,7 +34794,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149F)"
       }
     },
     {
@@ -34533,7 +34818,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "YM2149F",
         null,
         "1",
         2,
@@ -34628,7 +34913,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149F)"
       }
     },
     {
@@ -34651,7 +34937,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -34749,6 +35035,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.579 MHz: Service & technical manual SVI-728: CPU clock 3.579 MHz (VDP crystal 10.738635 MHz)"
       }
     },
@@ -34772,7 +35059,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         "1",
         1,
@@ -34871,119 +35158,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "2 ULA and standard logic",
-        "engine_semi_custom": "2 ULA and standard logic"
-      }
-    },
-    {
-      "id": 319,
-      "values": [
-        "Spectravideo",
-        "SVI-811",
-        "SVI-811",
-        null,
-        null,
-        1986,
-        null,
-        null,
-        "MSX1",
-        64,
-        null,
-        "No",
-        null,
-        null,
-        "V9938",
-        128,
-        null,
-        "Yes",
-        null,
-        null,
-        1,
-        null,
-        "No",
-        "Z80",
-        null,
-        null,
-        null,
-        null,
-        "NMOS",
-        null,
-        null,
-        null,
-        "FIN/SWE QWERTY (Not usable)",
-        null,
-        null,
-        null,
-        "No",
-        null,
-        null,
-        "3000F000F0000000",
-        "MAIN",
-        "MAIN",
-        "⏺",
-        "⏺",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "RAM",
-        "RAM",
-        "RAM",
-        "RAM",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "CS1",
-        "CS1",
-        "CS1",
-        "CS1",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·",
-        "·"
-      ],
-      "links": {
-        "model": "https://www.msx.org/wiki/Spectravideo_SVI-811"
+        "engine_semi_custom": "2 ULA and standard logic",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -35006,7 +35182,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -35102,7 +35278,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine_semi_custom": "Daewoo DW64MX1",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -35125,7 +35302,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         1,
@@ -35219,7 +35396,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -35242,7 +35420,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -35337,7 +35515,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Daewoo DW64MX1",
-        "engine_semi_custom": "Daewoo DW64MX1"
+        "engine_semi_custom": "Daewoo DW64MX1",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -35360,7 +35539,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -35458,6 +35637,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149)",
         "cpu_clock": "3.579545 MHz: Service manual V-20: 14.31818 MHz oscillator counted down to one fourth (3.579545 MHz) for the CPU; the VDP has its own crystal"
       }
     },
@@ -35481,7 +35661,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -35579,6 +35759,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149)",
         "cpu_clock": "3.579545 MHz: Service manual V-20: 14.31818 MHz oscillator counted down to one fourth (3.579545 MHz) for the CPU; the VDP has its own crystal"
       }
     },
@@ -35602,7 +35783,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -35698,7 +35879,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -35721,7 +35903,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -35816,7 +35998,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
-        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )"
+        "engine_semi_custom": "None (separate ICs whose a gate array Daewoo DW64MX1 )",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -35839,7 +36022,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -35936,6 +36119,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "generation_msx": "https://generation-msx.nl/hardware/frael/bruc-100/1090 (family)"
       }
     },
@@ -35959,7 +36143,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -36054,7 +36238,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -36077,7 +36262,7 @@ window.MSX_DATA = {
         "TMS9928A",
         null,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -36168,6 +36353,9 @@ window.MSX_DATA = {
       "links": {
         "generation_msx": "https://generation-msx.nl/hardware/fujitsu-general-paxon/paxon-pct-55/198",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/General_Paxon_PCT-55.xml"
+      },
+      "tooltips": {
+        "psg": "openMSX: AY8910"
       }
     },
     {
@@ -36190,7 +36378,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -36286,7 +36474,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -36309,7 +36498,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -36407,6 +36596,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)",
         "cpu_clock": "3.559384 MHz: Service manual (GB), CPU peripheral circuit: 10.6781522 MHz oscillator (VDP clock) divided by 3"
       }
     },
@@ -36430,7 +36620,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -36529,6 +36719,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.579545 MHz: Service manual VG8000/VG8010: \"CLOCK 3.58MHz\"; VDP crystal X870 10.738635 MHz (÷ 3)",
         "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8000/575 (family)"
       }
@@ -36553,7 +36744,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -36652,6 +36843,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.579545 MHz: Service manual VG8000/VG8010: \"CLOCK 3.58MHz\"; VDP crystal X870 10.738635 MHz (÷ 3)",
         "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8010/576 (family)"
       }
@@ -36676,7 +36868,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -36775,6 +36967,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.579545 MHz: Service manual VG8000/VG8010: \"CLOCK 3.58MHz\"; VDP crystal X870 10.738635 MHz (÷ 3)",
         "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8010/576 (family)"
       }
@@ -36799,7 +36992,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -36898,6 +37091,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
         "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "psg": "msx.org: PSG (YM2149 in /00 version, custom chip integrated in MSX-Engine S3527 for /19, /20, /29 and /40 versions)",
         "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8020/577 (family)"
       }
     },
@@ -36921,7 +37115,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -37020,6 +37214,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
         "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "psg": "msx.org: PSG (YM2149 in /00 version, custom chip integrated in MSX-Engine S3527 for /19, /20, /29 and /40 versions). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8020/577 (family)"
       }
     },
@@ -37043,7 +37238,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -37142,6 +37337,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
         "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "psg": "msx.org: PSG (YM2149 in /00 version, custom chip integrated in MSX-Engine S3527 for /19, /20, /29 and /40 versions). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "generation_msx": "https://generation-msx.nl/hardware/philips/vg-8020/577 (family)"
       }
     },
@@ -37165,7 +37361,7 @@ window.MSX_DATA = {
         "TMS9929A",
         null,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -37256,6 +37452,9 @@ window.MSX_DATA = {
       "links": {
         "generation_msx": "https://generation-msx.nl/hardware/unknown/phc-28p/1383",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-28P.xml"
+      },
+      "tooltips": {
+        "psg": "openMSX: YM2149"
       }
     },
     {
@@ -37278,7 +37477,7 @@ window.MSX_DATA = {
         "TMS9118",
         null,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -37368,6 +37567,9 @@ window.MSX_DATA = {
       ],
       "links": {
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sanyo_PHC-SPC.xml"
+      },
+      "tooltips": {
+        "psg": "openMSX: YM2149"
       }
     },
     {
@@ -37390,7 +37592,7 @@ window.MSX_DATA = {
         "TMS9128",
         null,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -37481,6 +37683,9 @@ window.MSX_DATA = {
       "links": {
         "generation_msx": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-1011/724",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sharp_HB-8000_1.1.xml"
+      },
+      "tooltips": {
+        "psg": "openMSX: AY8910 (no type given: openMSX's default)"
       }
     },
     {
@@ -37503,7 +37708,7 @@ window.MSX_DATA = {
         "TMS9128",
         null,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -37594,6 +37799,9 @@ window.MSX_DATA = {
       "links": {
         "generation_msx": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-12/725",
         "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sharp_HB-8000_1.2.xml"
+      },
+      "tooltips": {
+        "psg": "openMSX: AY8910 (no type given: openMSX's default)"
       }
     },
     {
@@ -37616,7 +37824,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -37712,7 +37920,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149F integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -37735,7 +37944,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "YM2149F",
         null,
         null,
         2,
@@ -37831,7 +38040,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149F)"
       }
     },
     {
@@ -37854,7 +38064,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "YM2149F",
         null,
         null,
         2,
@@ -37952,6 +38162,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149F)",
         "cpu_clock": "3.562500 MHz: Service manual HB-101P/201P, alignment: CPU clock (IC6 pin 6) set to 3.562500 MHz ± 10 Hz"
       }
     },
@@ -37975,7 +38186,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -38073,6 +38284,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149F integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual HB-10P/10B: 3.579545 MHz"
       }
     },
@@ -38096,7 +38308,7 @@ window.MSX_DATA = {
         "TMS9118",
         16,
         null,
-        "Yes",
+        "YM2149F",
         null,
         null,
         2,
@@ -38192,7 +38404,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149F)"
       }
     },
     {
@@ -38215,7 +38428,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "YM2149F",
         null,
         null,
         2,
@@ -38313,6 +38526,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149F)",
         "cpu_clock": "3.562500 MHz: Service manual HB-101P/201P, alignment: CPU clock (IC6 pin 6) set to 3.562500 MHz ± 10 Hz"
       }
     },
@@ -38336,7 +38550,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -38432,7 +38646,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -38455,7 +38670,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -38553,6 +38768,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual HB-501P/F: 3.579545 MHz (crystal 3.579545 MHz)"
       }
     },
@@ -38576,7 +38792,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A or YM2149F",
         null,
         null,
         3,
@@ -38675,7 +38891,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)"
       }
     },
     {
@@ -38698,7 +38915,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A or YM2149F",
         null,
         null,
         1,
@@ -38797,7 +39014,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)"
       }
     },
     {
@@ -38820,7 +39038,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A or YM2149F",
         null,
         null,
         2,
@@ -38919,7 +39137,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)"
       }
     },
     {
@@ -38942,7 +39161,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -39040,6 +39259,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "generation_msx": "https://generation-msx.nl/hardware/spectravideo-svi/svi-728/838 (family)"
       }
     },
@@ -39063,7 +39283,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -39161,6 +39381,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "generation_msx": "https://generation-msx.nl/hardware/spectravideo-svi/svi-728/838 (family)"
       }
     },
@@ -39184,7 +39405,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         "1",
         1,
@@ -39283,7 +39504,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "2 ULA and standard logic",
-        "engine_semi_custom": "2 ULA and standard logic"
+        "engine_semi_custom": "2 ULA and standard logic",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -39306,7 +39528,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         "1",
         1,
@@ -39405,7 +39627,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "2 ULA and standard logic",
-        "engine_semi_custom": "2 ULA and standard logic"
+        "engine_semi_custom": "2 ULA and standard logic",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -39428,7 +39651,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         "1",
         1,
@@ -39527,7 +39750,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "2 ULA and standard logic",
-        "engine_semi_custom": "2 ULA and standard logic"
+        "engine_semi_custom": "2 ULA and standard logic",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -39550,7 +39774,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -39646,7 +39870,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
-        "engine_semi_custom": "gate array Toshiba TCX-1007"
+        "engine_semi_custom": "gate array Toshiba TCX-1007",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -39669,7 +39894,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -39765,7 +39990,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none - separate IC's",
-        "engine_semi_custom": "none - separate IC's"
+        "engine_semi_custom": "none - separate IC's",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -39788,7 +40014,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -39884,7 +40110,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010 or TCX-1012",
-        "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012"
+        "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -39907,7 +40134,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -40003,7 +40230,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010",
-        "engine_semi_custom": "Gate array Toshiba TCX-1010"
+        "engine_semi_custom": "Gate array Toshiba TCX-1010",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -40026,7 +40254,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -40122,7 +40350,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010",
-        "engine_semi_custom": "Gate array Toshiba TCX-1010"
+        "engine_semi_custom": "Gate array Toshiba TCX-1010",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -40145,7 +40374,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -40241,7 +40470,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "TCX-1012",
-        "engine_semi_custom": "TCX-1012"
+        "engine_semi_custom": "TCX-1012",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -40264,7 +40494,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "YM2149F",
         null,
         null,
         2,
@@ -40359,7 +40589,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1012/TCX-1008",
-        "engine_semi_custom": "Gate array Toshiba TCX-1012/TCX-1008"
+        "engine_semi_custom": "Gate array Toshiba TCX-1012/TCX-1008",
+        "psg": "msx.org: PSG (YM2149F)"
       }
     },
     {
@@ -40382,7 +40613,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in T7937",
         null,
         null,
         2,
@@ -40477,7 +40708,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7937",
-        "engine_semi_custom": "Toshiba T7937"
+        "engine_semi_custom": "Toshiba T7937",
+        "psg": "msx.org: PSG -sound chip General Instrument AY-3-8910 compatible (Integrated in MSX-Engine T7937). Toshiba T7937 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -40500,7 +40732,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -40596,7 +40828,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "None (separate ICs whose a gate array Hitachi HD27L019)",
-        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)"
+        "engine_semi_custom": "None (separate ICs whose a gate array Hitachi HD27L019)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -40619,7 +40852,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in X3527",
         null,
         null,
         2,
@@ -40714,7 +40947,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha X3527 (a previous version of the Yamaha S3527 )",
-        "engine_semi_custom": "Yamaha X3527 (a previous version of the Yamaha S3527 )"
+        "engine_semi_custom": "Yamaha X3527 (a previous version of the Yamaha S3527 )",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine X3527)"
       }
     },
     {
@@ -40737,7 +40971,7 @@ window.MSX_DATA = {
         "TMS99X8A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -40832,7 +41066,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha YM5214",
-        "engine_semi_custom": "Yamaha YM5214"
+        "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -40855,7 +41090,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -40953,6 +41188,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)",
         "cpu_clock": "3.579545 MHz: Service manual CX5M/YIS-503F: 3.579545 MHz system clock"
       }
     },
@@ -40976,7 +41212,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -41074,6 +41310,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual CX5MII: CPU clock 3.579545 MHz from a 21.47727 MHz crystal"
       }
     },
@@ -41097,7 +41334,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -41193,7 +41430,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -41216,7 +41454,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -41314,6 +41552,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)",
         "cpu_clock": "3.579545 MHz: Service manual CX5MU: 3.579545 MHz system clock"
       }
     },
@@ -41337,7 +41576,7 @@ window.MSX_DATA = {
         "YM2220",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         1,
@@ -41433,7 +41672,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -41456,7 +41696,7 @@ window.MSX_DATA = {
         "TMS99X8A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -41553,7 +41793,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha YM5214",
-        "engine_semi_custom": "Yamaha YM5214"
+        "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -41576,7 +41817,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -41675,6 +41916,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)",
         "cpu_clock": "3.579545 MHz: Service manual CX5M/YIS-503F: 3.579545 MHz system clock"
       }
     },
@@ -41698,7 +41940,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -41795,7 +42037,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -41818,7 +42061,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "2",
         3,
@@ -41915,7 +42158,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -41938,7 +42182,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149F",
         null,
         null,
         1,
@@ -42033,7 +42277,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149F)"
       }
     },
     {
@@ -42056,7 +42301,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -42152,7 +42397,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -42175,7 +42421,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "YM2149F",
         null,
         null,
         2,
@@ -42269,7 +42515,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1007",
-        "engine_semi_custom": "Gate array Toshiba TCX-1007"
+        "engine_semi_custom": "Gate array Toshiba TCX-1007",
+        "psg": "msx.org: PSG (YM2149F)"
       }
     },
     {
@@ -42292,7 +42539,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "YM2149F",
         null,
         null,
         2,
@@ -42386,7 +42633,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "? Gate array Toshiba TCX-1012/TCX-1008",
-        "engine_semi_custom": "? Gate array Toshiba TCX-1012/TCX-1008"
+        "engine_semi_custom": "? Gate array Toshiba TCX-1012/TCX-1008",
+        "psg": "msx.org: PSG (YM2149F)"
       }
     },
     {
@@ -42409,7 +42657,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910 comp. in T7937",
         null,
         null,
         2,
@@ -42503,7 +42751,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7937",
-        "engine_semi_custom": "Toshiba T7937"
+        "engine_semi_custom": "Toshiba T7937",
+        "psg": "msx.org: PSG -sound chip General Instrument AY-3-8910 compatible (Integrated in MSX-Engine T7937). Toshiba T7937 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"
       }
     },
     {
@@ -42526,7 +42775,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -42620,7 +42869,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -42643,7 +42893,7 @@ window.MSX_DATA = {
         "TMS9929",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -42738,7 +42988,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -42761,7 +43012,7 @@ window.MSX_DATA = {
         "YM2220",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         1,
@@ -42856,7 +43107,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -42879,7 +43131,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -42973,7 +43225,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha YM5214",
-        "engine_semi_custom": "Yamaha YM5214"
+        "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -42996,7 +43249,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -43090,7 +43343,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha YM5214",
-        "engine_semi_custom": "Yamaha YM5214"
+        "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -43113,7 +43367,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -43207,7 +43461,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha YM5214",
-        "engine_semi_custom": "Yamaha YM5214"
+        "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -43230,7 +43485,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -43327,7 +43582,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -43350,7 +43606,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -43444,7 +43700,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha YM5214",
-        "engine_semi_custom": "Yamaha YM5214"
+        "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM 2149)"
       }
     },
     {
@@ -43467,7 +43724,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -43561,7 +43818,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha YM5214",
-        "engine_semi_custom": "Yamaha YM5214"
+        "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -43584,7 +43842,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -43679,7 +43937,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha YM5214",
-        "engine_semi_custom": "Yamaha YM5214"
+        "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)"
       }
     },
     {
@@ -43702,7 +43961,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -43796,7 +44055,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -43819,7 +44079,7 @@ window.MSX_DATA = {
         "TMS9129A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -43914,7 +44174,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -43937,7 +44198,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         null,
         1,
@@ -44032,7 +44293,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "probably Yamaha S1985",
-        "engine_semi_custom": "probably Yamaha S1985"
+        "engine_semi_custom": "probably Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -44055,7 +44317,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         2,
@@ -44151,7 +44413,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Toshiba T7775",
-        "engine_semi_custom": "Toshiba T7775"
+        "engine_semi_custom": "Toshiba T7775",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -44174,7 +44437,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -44271,6 +44534,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149F integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual HB-10P/10B: 3.579545 MHz"
       }
     },
@@ -44294,7 +44558,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -44389,7 +44653,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149F integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -44412,7 +44677,7 @@ window.MSX_DATA = {
         "T6950A",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -44506,7 +44771,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S3527",
-        "engine_semi_custom": "Yamaha S3527"
+        "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -44529,7 +44795,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -44626,6 +44892,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual HB-501P/F: 3.579545 MHz (crystal 3.579545 MHz)"
       }
     },
@@ -44649,7 +44916,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A or YM2149F",
         null,
         null,
         1,
@@ -44747,7 +45014,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)"
       }
     },
     {
@@ -44770,7 +45038,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A or YM2149F",
         null,
         null,
         2,
@@ -44868,7 +45136,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)"
       }
     },
     {
@@ -44891,7 +45160,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A or YM2149F",
         null,
         null,
         2,
@@ -44989,7 +45258,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)"
       }
     },
     {
@@ -45012,7 +45282,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A or YM2149F",
         null,
         null,
         2,
@@ -45110,7 +45380,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none (separate IC's)",
-        "engine_semi_custom": "none (separate IC's)"
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A or YM2149F)"
       }
     },
     {
@@ -45133,7 +45404,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         3,
@@ -45230,6 +45501,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.578281 MHz: Service manual HB-F500P/F, alignment: CPU clock (IC26 pin 6) set to 3.578281 MHz ± 5 Hz"
       }
     },
@@ -45253,7 +45525,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "2",
         2,
@@ -45347,7 +45619,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Yamaha S1985",
-        "engine_semi_custom": "Yamaha S1985"
+        "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -45370,7 +45643,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -45464,7 +45737,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
-        "engine_semi_custom": "gate array Toshiba TCX-1007"
+        "engine_semi_custom": "gate array Toshiba TCX-1007",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -45487,7 +45761,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -45582,7 +45856,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
-        "engine_semi_custom": "gate array Toshiba TCX-1007"
+        "engine_semi_custom": "gate array Toshiba TCX-1007",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -45605,7 +45880,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -45700,7 +45975,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
-        "engine_semi_custom": "gate array Toshiba TCX-1007"
+        "engine_semi_custom": "gate array Toshiba TCX-1007",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -45723,7 +45999,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -45818,7 +46094,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
-        "engine_semi_custom": "gate array Toshiba TCX-1007"
+        "engine_semi_custom": "gate array Toshiba TCX-1007",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -45841,7 +46118,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -45936,7 +46213,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
-        "engine_semi_custom": "gate array Toshiba TCX-1007"
+        "engine_semi_custom": "gate array Toshiba TCX-1007",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -45959,7 +46237,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -46053,7 +46331,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
-        "engine_semi_custom": "gate array Toshiba TCX-1007"
+        "engine_semi_custom": "gate array Toshiba TCX-1007",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -46076,7 +46355,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -46171,7 +46450,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none - separate IC's",
-        "engine_semi_custom": "none - separate IC's"
+        "engine_semi_custom": "none - separate IC's",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -46194,7 +46474,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -46289,7 +46569,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none - separate IC's",
-        "engine_semi_custom": "none - separate IC's"
+        "engine_semi_custom": "none - separate IC's",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -46312,7 +46593,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         1,
@@ -46406,7 +46687,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "gate array Toshiba TCX-1007",
-        "engine_semi_custom": "gate array Toshiba TCX-1007"
+        "engine_semi_custom": "gate array Toshiba TCX-1007",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -46429,7 +46711,7 @@ window.MSX_DATA = {
         "TMS9128",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -46524,7 +46806,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010 or TCX-1012",
-        "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012"
+        "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -46547,7 +46830,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -46642,7 +46925,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010 or TCX-1012",
-        "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012"
+        "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -46665,7 +46949,7 @@ window.MSX_DATA = {
         "T6950",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -46760,7 +47044,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010 or TCX-1012",
-        "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012"
+        "engine_semi_custom": "Gate array Toshiba TCX-1010 or TCX-1012",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -46783,7 +47068,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -46877,7 +47162,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "TCX-1012",
-        "engine_semi_custom": "TCX-1012"
+        "engine_semi_custom": "TCX-1012",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -46900,7 +47186,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -46994,7 +47280,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "Gate array Toshiba TCX-1010",
-        "engine_semi_custom": "Gate array Toshiba TCX-1010"
+        "engine_semi_custom": "Gate array Toshiba TCX-1010",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -47017,7 +47304,7 @@ window.MSX_DATA = {
         "TMS9928A",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -47112,7 +47399,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "TCX-1012",
-        "engine_semi_custom": "TCX-1012"
+        "engine_semi_custom": "TCX-1012",
+        "psg": "msx.org: PSG (AY-3-8910A)"
       }
     },
     {
@@ -47135,7 +47423,7 @@ window.MSX_DATA = {
         "TMS9929",
         16,
         null,
-        "Yes",
+        "AY-3-8910A",
         null,
         null,
         2,
@@ -47231,6 +47519,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910A)",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/cf-2700/401 (family)"
       }
     },
@@ -47254,7 +47543,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S1985",
         null,
         "2",
         2,
@@ -47360,6 +47649,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S1985",
         "engine_semi_custom": "Yamaha S1985",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S1985). Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "generation_msx": "https://generation-msx.nl/hardware/unknown/yis-805/1034 (family)"
       }
     },
@@ -47383,7 +47673,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         2,
@@ -47489,7 +47779,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "none",
-        "engine_semi_custom": "none"
+        "engine_semi_custom": "none",
+        "psg": "msx.org: PSG ( Yamaha YM2149 )"
       }
     },
     {
@@ -47512,7 +47803,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -47612,6 +47903,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual NMS8220/00/16, adjustments: VDP clock set to 3.554685 MHz (crystal 21.328125 MHz)"
       }
     },
@@ -47635,7 +47927,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "2",
         2,
@@ -47733,6 +48025,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)"
       }
     },
@@ -47756,7 +48049,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "2",
         2,
@@ -47854,6 +48147,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)"
       }
     },
@@ -47877,7 +48171,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -47975,6 +48269,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554688 MHz: Service manual NMS8280/00/16, adjustments: clock set to 3,554,688 ± 20 Hz (\"3.55 MHz crystal\")"
       }
     },
@@ -47998,7 +48293,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -48096,6 +48391,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554688 MHz: Service manual NMS8280/00/16, adjustments: clock set to 3,554,688 ± 20 Hz (\"3.55 MHz crystal\")"
       }
     },
@@ -48119,7 +48415,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -48217,6 +48513,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554688 MHz: Service manual NMS8280/00/16, adjustments: clock set to 3,554,688 ± 20 Hz (\"3.55 MHz crystal\")"
       }
     },
@@ -48240,7 +48537,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -48338,6 +48635,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554688 MHz: Service manual NMS8280/00/16, adjustments: clock set to 3,554,688 ± 20 Hz (\"3.55 MHz crystal\")"
       }
     },
@@ -48361,7 +48659,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -48457,7 +48755,8 @@ window.MSX_DATA = {
       "variant_of": 264,
       "tooltips": {
         "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
-        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions"
+        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "psg": "msx.org: PSG (YM2149 in /00 version, custom chip integrated in MSX-Engine S3527 for /19, /20, /29 and /40 versions). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -48480,7 +48779,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         2,
@@ -48576,7 +48875,8 @@ window.MSX_DATA = {
       "variant_of": 264,
       "tooltips": {
         "engine": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
-        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions"
+        "engine_semi_custom": "none (separate IC's) for /00 version, Yamaha S3527 for /19, /20, /29 and /40 versions",
+        "psg": "msx.org: PSG (YM2149 in /00 version, custom chip integrated in MSX-Engine S3527 for /19, /20, /29 and /40 versions). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"
       }
     },
     {
@@ -48599,7 +48899,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -48697,6 +48997,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz"
       }
     },
@@ -48720,7 +49021,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -48818,6 +49119,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz"
       }
     },
@@ -48841,7 +49143,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -48939,6 +49241,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz"
       }
     },
@@ -48962,7 +49265,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         "1",
         2,
@@ -49060,6 +49363,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (custom chip integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.554685 MHz: Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz"
       }
     },
@@ -49083,7 +49387,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         "1",
         1,
@@ -49180,6 +49484,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (Yamaha YM2149)",
         "sub_cpu_clock": "6.144 MHz: msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
       }
     },
@@ -49203,7 +49508,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         "1",
         1,
@@ -49300,6 +49605,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (Yamaha YM2149)",
         "sub_cpu_clock": "6.144 MHz: msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
       }
     },
@@ -49323,7 +49629,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         "1",
         1,
@@ -49420,6 +49726,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (Yamaha YM2149)",
         "sub_cpu_clock": "6.144 MHz: msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
       }
     },
@@ -49443,7 +49750,7 @@ window.MSX_DATA = {
         "V9938",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         "2",
         1,
@@ -49540,6 +49847,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (Yamaha YM2149)",
         "sub_cpu_clock": "6.144 MHz: msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
       }
     },
@@ -49563,7 +49871,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         "2",
         1,
@@ -49660,6 +49968,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (Yamaha YM2149)",
         "sub_cpu_clock": "6.144 MHz: msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
       }
     },
@@ -49683,7 +49992,7 @@ window.MSX_DATA = {
         "V9958",
         128,
         null,
-        "Yes",
+        "YM2149",
         null,
         "2",
         1,
@@ -49780,6 +50089,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (Yamaha YM2149)",
         "sub_cpu_clock": "6.144 MHz: msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
       }
     },
@@ -49803,7 +50113,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -49900,6 +50210,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)",
         "cpu_clock": "3.579545 MHz: Service manual CX5M/YIS-503F: 3.579545 MHz system clock"
       }
     },
@@ -49923,7 +50234,7 @@ window.MSX_DATA = {
         "TMS9918A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -50020,6 +50331,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)",
         "cpu_clock": "3.579545 MHz: Service manual CX5M/YIS-503F: 3.579545 MHz system clock"
       }
     },
@@ -50043,7 +50355,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -50140,6 +50452,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)",
         "cpu_clock": "3.579545 MHz: Service manual CX5M/YIS-503F: 3.579545 MHz system clock"
       }
     },
@@ -50163,7 +50476,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -50260,6 +50573,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)",
         "cpu_clock": "3.579545 MHz: Service manual CX5M/YIS-503F: 3.579545 MHz system clock"
       }
     },
@@ -50283,7 +50597,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -50380,6 +50694,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)",
         "cpu_clock": "3.579545 MHz: Service manual CX5M/YIS-503F: 3.579545 MHz system clock"
       }
     },
@@ -50403,7 +50718,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -50500,6 +50815,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual CX5MII: CPU clock 3.579545 MHz from a 21.47727 MHz crystal"
       }
     },
@@ -50523,7 +50839,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -50620,6 +50936,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual CX5MII: CPU clock 3.579545 MHz from a 21.47727 MHz crystal"
       }
     },
@@ -50643,7 +50960,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -50740,6 +51057,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual CX5MII: CPU clock 3.579545 MHz from a 21.47727 MHz crystal"
       }
     },
@@ -50763,7 +51081,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -50860,6 +51178,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual CX5MII: CPU clock 3.579545 MHz from a 21.47727 MHz crystal"
       }
     },
@@ -50883,7 +51202,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -50980,6 +51299,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual CX5MII: CPU clock 3.579545 MHz from a 21.47727 MHz crystal"
       }
     },
@@ -51003,7 +51323,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -51100,6 +51420,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual CX5MII: CPU clock 3.579545 MHz from a 21.47727 MHz crystal"
       }
     },
@@ -51123,7 +51444,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -51220,6 +51541,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual CX5MII: CPU clock 3.579545 MHz from a 21.47727 MHz crystal"
       }
     },
@@ -51243,7 +51565,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -51340,6 +51662,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual CX5MII: CPU clock 3.579545 MHz from a 21.47727 MHz crystal"
       }
     },
@@ -51363,7 +51686,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "YM2149 in S3527",
         null,
         null,
         3,
@@ -51460,6 +51783,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha S3527",
         "engine_semi_custom": "Yamaha S3527",
+        "psg": "msx.org: PSG (YM2149 integrated in MSX-Engine S3527). Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910",
         "cpu_clock": "3.579545 MHz: Service manual CX5MII: CPU clock 3.579545 MHz from a 21.47727 MHz crystal"
       }
     },
@@ -51483,7 +51807,7 @@ window.MSX_DATA = {
         "TMS9929A",
         16,
         null,
-        "Yes",
+        "YM2149",
         null,
         null,
         1,
@@ -51580,6 +51904,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "Yamaha YM5214",
         "engine_semi_custom": "Yamaha YM5214",
+        "psg": "msx.org: PSG (YM2149)",
         "cpu_clock": "3.579545 MHz: Service manual CX5M/YIS-503F: 3.579545 MHz system clock"
       }
     },
@@ -51603,7 +51928,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -51703,6 +52028,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.579 MHz: Service & technical manual SVI-728: CPU clock 3.579 MHz (VDP crystal 10.738635 MHz)"
       }
     },
@@ -51726,7 +52052,7 @@ window.MSX_DATA = {
         "TMS9129",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         null,
         1,
@@ -51823,6 +52149,7 @@ window.MSX_DATA = {
       "tooltips": {
         "engine": "none (separate IC's)",
         "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (AY-3-8910)",
         "cpu_clock": "3.579 MHz: Service & technical manual SVI-728: CPU clock 3.579 MHz (VDP crystal 10.738635 MHz)"
       }
     },
@@ -51846,7 +52173,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         "1",
         1,
@@ -51944,7 +52271,8 @@ window.MSX_DATA = {
       },
       "tooltips": {
         "engine": "2 ULA and standard logic",
-        "engine_semi_custom": "2 ULA and standard logic"
+        "engine_semi_custom": "2 ULA and standard logic",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -51967,7 +52295,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         "1",
         1,
@@ -52062,7 +52390,8 @@ window.MSX_DATA = {
       "variant_of": 318,
       "tooltips": {
         "engine": "2 ULA and standard logic",
-        "engine_semi_custom": "2 ULA and standard logic"
+        "engine_semi_custom": "2 ULA and standard logic",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     },
     {
@@ -52085,7 +52414,7 @@ window.MSX_DATA = {
         "V9938",
         16,
         null,
-        "Yes",
+        "AY-3-8910",
         null,
         "1",
         1,
@@ -52180,7 +52509,8 @@ window.MSX_DATA = {
       "variant_of": 318,
       "tooltips": {
         "engine": "2 ULA and standard logic",
-        "engine_semi_custom": "2 ULA and standard logic"
+        "engine_semi_custom": "2 ULA and standard logic",
+        "psg": "msx.org: PSG (AY-3-8910)"
       }
     }
   ],
@@ -52268,6 +52598,14 @@ window.MSX_DATA = {
     "T6950A": "https://www.msx.org/wiki/T6950",
     "V9938": "https://www.msx.org/wiki/Category:Yamaha_V9938",
     "V9958": "https://www.msx.org/wiki/Category:Yamaha_V9958",
-    "YM2220": "https://www.msx.org/wiki/Yamaha_YM2220"
+    "YM2220": "https://www.msx.org/wiki/Yamaha_YM2220",
+    "AY-3-8910": "https://www.msx.org/wiki/General_Instrument_AY-3-8910",
+    "AY-3-8910A": "https://www.msx.org/wiki/Microchip_AY-3-8910A",
+    "YM2149": "https://www.msx.org/wiki/Yamaha_YM2149",
+    "YM2149F": "https://www.msx.org/wiki/Yamaha_YM2149",
+    "T7766": "https://www.msx.org/wiki/Toshiba_T7766",
+    "T7766A": "https://www.msx.org/wiki/Toshiba_T7766",
+    "KC89C72": "https://www.msx.org/wiki/File_KC89C72",
+    "OY-2-8910AC": "https://www.msx.org/wiki/OY-2-8910AC"
   }
 };
