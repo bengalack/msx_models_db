@@ -39,7 +39,7 @@ Scripts are in `.claude/skills/find-cpu-clocks/scripts/`; downloads are cached i
 python scripts/find_sources.py            # from the repo root; needs docs/data.js and the msx.org mirror
 ```
 
-Writes `sources.json`: links on the models' msx.org pages that say service manual / schematic / circuit diagram / technical manual, Hans Otten's computer manuals (https://hansotten.file-hunter.com/manuals-and-guides/), and archive.org search results. Add any new source by hand (a PDF URL or an archive.org item). Prefer the archive.org copy of a document: it usually has OCR text and page links.
+Writes `sources.json`: links on the models' msx.org pages — and on the **series pages** they defer to (`Category:Sony_HB-75` holds the HB-55P/75P/75B manual; the member pages do not repeat it) — that say service manual / schematic / circuit diagram / technical manual, Hans Otten's computer manuals (https://hansotten.file-hunter.com/manuals-and-guides/), and archive.org search results. Add any new source by hand (a PDF URL or an archive.org item). Prefer the archive.org copy of a document: it usually has OCR text and page links.
 
 ### 2. Read each document
 
@@ -48,7 +48,14 @@ python scripts/manual_text.py https://archive.org/details/<item>[/<doc>]
 python scripts/manual_text.py https://example.org/manual.pdf
 ```
 
-Prints the pages with clock-like numbers (21.x / 10.7x / 14.31x crystals, 3.55–3.58 MHz, 445/447 kHz) with a link to each page. Text comes from archive.org's OCR, else the PDF text layer, else Windows OCR of the scans in every orientation (some PDFs store scans flipped). Use `--find <digits>` to locate the page of a value you already know (e.g. `--find 21328125`).
+Prints the pages with clock-like numbers (21.x / 10.7x / 14.31x crystals, 3.55–3.58 MHz, 445/447 kHz) with a link to each page. Text comes from archive.org's OCR, else the PDF text layer, else Windows OCR of the scans in every orientation (some PDFs store scans flipped). Use `--find <digits>` to locate the page of a value you already know (e.g. `--find 21328125`). A file inside an archive.org ZIP is read by URL: `https://archive.org/download/<item>/<zip>/<file>.pdf`.
+
+**A document only counts as read when it produced text.** The script makes sure of it, and the research trail must too:
+- A download that comes out empty or a few bytes (an error page — msxblog.es answers plain http with a 239-byte "403 Forbidden") is retried, over https with a browser user agent; a file that stays tiny is deleted and reported, never kept as the document.
+- OCR that fails (an error from Windows OCR — it needs absolute image paths) stops the run; it is never taken for an empty page.
+- Fewer than ~100 characters per page in the end prints `NOT READ` and exits with status 2. Retry it or read the pages by hand — do **not** list it as "read, no clock found".
+- A schematic in faint or small print may stay `NOT READ` even after the script's tiled OCR. Read it by eye: fetch archive.org's large page images (`https://archive.org/download/<item>/<doc>/page/n<N>_w3000.jpg`, `_w5000` for more), put the pages on one contact sheet to find the VDP / clock sheet, then crop, rotate or mirror the area and zoom in. Daewoo CPC-300 and Talent TPC-310 were read this way.
+- Any document read before a fix to the pipeline (e.g. OCR'd in one orientation only — the Sony HB-55P/75P/75B scans are stored flipped, so that first pass gave mirrored garbage and missed "Clock frequency 3.579545 MHz") is read again.
 
 Things to look for, best first:
 1. An explicit **CPU clock** statement or adjustment ("CPU CLOCK FREQUENCY ADJUSTMENT … 3.578281 MHz", "Adjust … 3.562500 MHz on pin 6 of IC6 (CPU)").

@@ -38,8 +38,13 @@ def msxorg_links(repo: Path) -> list[dict]:
     data = json.loads(text[text.index("{"):text.rindex(";")])
     titles = sorted({(m.get("links") or {}).get("model", "").split("/wiki/")[-1].replace("_", " ")
                      for m in data["models"] if "/wiki/" in (m.get("links") or {}).get("model", "")})
+    # Series pages (Category_<series>) too: member pages defer to them, and their External links
+    # hold manuals the member pages do not repeat (Category:Sony_HB-75 → the HB-55P/75P/75B manual).
+    # Generation listings (Category_MSX2 Computers, …) hold no manuals and are skipped.
+    series = sorted(p.name[len("Category_"):-len(" - MSX Wiki.html")] for p in mirror.glob("Category_* - MSX Wiki.html")
+                    if not re.search(r"Computers|Components|PSG|_page\d", p.name))
     out: dict[str, dict] = {}
-    for title in titles:
+    for title in titles + [f"Category_{s}" for s in series]:
         page = mirror / f"{title} - MSX Wiki.html"
         if not page.exists():
             continue

@@ -21,6 +21,7 @@ import json
 import os
 import re
 import subprocess
+import time
 from pathlib import Path
 from urllib.parse import quote, unquote, urlparse
 
@@ -35,12 +36,33 @@ WORDS = re.compile(r"\b(the|and|to|of|for|on|with|is|frequency|connect|adjust|pr
                    r"het|op|een|voltage|mhz|khz)\b", re.I)
 
 
-def curl(url: str, dest: Path | None = None) -> bytes:
-    args = ["curl", "-sL", "--max-time", "600", "-A", "Mozilla/5.0", url]
-    if dest is None:
-        return subprocess.run(args, capture_output=True).stdout
-    if not dest.exists() or dest.stat().st_size == 0:
-        subprocess.run(args + ["-o", str(dest)])
+MIN_BYTES = 1024          # a download smaller than this (an error page, an empty file) is a failure
+MIN_CHARS_PER_PAGE = 100  # less text than this per page = the document was not read
+
+
+def curl(url: str, dest: Path | None = None, tries: int = 4) -> bytes:
+    """Fetch *url* (into *dest*). An empty or tiny result is retried; a file that stays
+    tiny is deleted, so a later run fetches it again instead of trusting it."""
+    for attempt in range(tries):
+        # Retries look more like a browser: some sites answer plain http / a bare user agent with
+        # a small "403 Forbidden" page (msxblog.es), which is no document.
+        target = url.replace("http://", "https://", 1) if attempt else url
+        agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36" if attempt else "Mozilla/5.0"
+        args = ["curl", "-sL", "--max-time", "600", "-A", agent, target]
+        if dest is None:
+            data = subprocess.run(args, capture_output=True).stdout
+            if len(data) >= 64 or attempt == tries - 1:     # metadata JSON can be small, never empty
+                return data
+        else:
+            if dest.exists() and dest.stat().st_size >= MIN_BYTES:
+                return b""
+            subprocess.run(args + ["-o", str(dest)])
+            if dest.exists() and dest.stat().st_size >= MIN_BYTES:
+                return b""
+        time.sleep(2 * (attempt + 1))
+    if dest is not None and dest.exists():
+        print(f"WARNING: {url} -> {dest.stat().st_size} bytes after {tries} tries: not downloaded")
+        dest.unlink()
     return b""
 
 
@@ -63,7 +85,7 @@ def archive_pages(item: str, doc: str | None, cache: Path) -> tuple[list[str], s
         curl(f"https://archive.org/download/{item}/{quote(xml_name)}", path)
         root = etree.parse(str(path), etree.XMLParser(recover=True, huge_tree=True)).getroot()
         pages = [" ".join(w.text or "" for w in obj.iter("WORD")) for obj in root.iter("OBJECT")]
-        if sum(len(p) for p in pages) > 200 * max(1, len(pages)) // 10:     # some real text
+        if sum(len(p) for p in pages) >= MIN_CHARS_PER_PAGE * max(1, len(pages)):   # real text, else OCR the PDF
             return pages, base, pdf
     return [], base, pdf
 
@@ -101,20 +123,58 @@ def ocr_page(page, n: int, workdir: Path, rotate: bool = True) -> str:
                     "r90": img.rotate(90, expand=True), "r270": img.rotate(270, expand=True)}
         if not rotate:                              # --no-rotate: scans stored upright (faster)
             variants = {"": img}
-        paths = []
-        for tag, v in variants.items():
-            p = workdir / f"p{n:03d}_{k:02d}{tag}.png"
-            v.save(p)
-            paths.append(os.path.normpath(str(p)))
-        r = subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-                            os.path.normpath(str(HERE / "ocr.ps1")), *paths], capture_output=True)
-        best = ""
-        for part in r.stdout.decode("utf-8", errors="replace").split("=== ")[1:]:
-            _, _, body = part.partition("\n")
-            if not body.startswith("ERROR") and len(WORDS.findall(body)) > len(WORDS.findall(best)):
-                best = body
+        found = _ocr({f"p{n:03d}_{k:02d}{tag}": v for tag, v in variants.items()}, workdir, n)
+        best = max(found.values(), key=_score, default="")
+        # A big schematic in small print reads as almost nothing whole: OCR it in overlapping tiles.
+        if _score(best)[1] < 40 and max(img.size) > 2500:
+            tiles = {f"p{n:03d}_{k:02d}{tag}_t{i}": tile
+                     for tag, v in variants.items() for i, tile in enumerate(_tiles(v))}
+            found = _ocr(tiles, workdir, n)
+            for tag in variants:
+                tiled = "\n".join(text for name, text in found.items() if name.startswith(f"p{n:03d}_{k:02d}{tag}_t"))
+                if _score(tiled) > _score(best):
+                    best = tiled
         texts.append(best)
     return "\n".join(texts)
+
+
+def _score(text: str) -> tuple[int, int]:
+    """How readable an OCR result is: English words first, then letter/digit tokens (schematics)."""
+    return len(WORDS.findall(text)), len(re.findall(r"[A-Za-z0-9]{2,}", text))
+
+
+def _tiles(img, grid: int = 3, overlap: float = 0.12) -> list:
+    w, h = img.size
+    tw, th = w / grid, h / grid
+    out = []
+    for row in range(grid):
+        for col in range(grid):
+            box = (max(0, int(col * tw - overlap * tw)), max(0, int(row * th - overlap * th)),
+                   min(w, int((col + 1) * tw + overlap * tw)), min(h, int((row + 1) * th + overlap * th)))
+            out.append(img.crop(box))
+    return out
+
+
+def _ocr(images: dict, workdir: Path, n: int) -> dict[str, str]:
+    """{name: text} for {name: image}; raises when OCR itself failed on every image."""
+    paths = {}
+    for name, im in images.items():
+        p = workdir / f"{name}.png"
+        im.save(p)
+        paths[os.path.abspath(str(p))] = name                # Windows OCR needs absolute paths
+    r = subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+                        os.path.normpath(str(HERE / "ocr.ps1")), *paths], capture_output=True)
+    parts = r.stdout.decode("utf-8", errors="replace").split("=== ")[1:]
+    failed = [part for part in parts if part.partition("\n")[2].startswith("ERROR")]
+    if not parts or len(failed) == len(parts):           # OCR itself failed: say so, never "no text"
+        raise RuntimeError(f"OCR failed on page n{n}: {(failed or ['no output'])[0].strip()[:200]}")
+    out = {}
+    for part in parts:
+        head, _, body = part.partition("\n")
+        name = paths.get(head.strip())
+        if name is not None and not body.startswith("ERROR"):
+            out[name] = body
+    return out
 
 
 def main() -> None:
@@ -128,6 +188,8 @@ def main() -> None:
     args.cache.mkdir(parents=True, exist_ok=True)
 
     m = re.match(r"https?://archive\.org/(?:details|stream|download)/([^/?#]+)(?:/([^?#]+?))?(?:/page/.*)?$", args.source)
+    if args.source.lower().endswith(".pdf"):    # a PDF file, also one inside an archive.org ZIP: read directly
+        m = None
     pages: list[str] = []
     if m:
         item, doc = m.group(1), args.doc or (unquote(m.group(2)) if m.group(2) else None)
@@ -149,8 +211,14 @@ def main() -> None:
         link = lambda n: f"{args.source}#page={n + 1}"
 
     out = args.cache / (re.sub(r"[^A-Za-z0-9]", "_", args.source)[-80:] + ".pages.json")
+    chars = sum(len(p) for p in pages)
+    if chars < MIN_CHARS_PER_PAGE * max(1, len(pages)):
+        # Almost no text: the document was NOT read (failed download or OCR). Nothing is cached,
+        # so the next run retries. Never record such a document as "read, no clock found".
+        print(f"NOT READ: {len(pages)} pages, {chars} chars of text - retry, or check the PDF / OCR by hand")
+        raise SystemExit(2)
     out.write_text(json.dumps(pages, ensure_ascii=False), encoding="utf-8")
-    print(f"{len(pages)} pages, {sum(len(p) for p in pages)} chars of text -> {out}")
+    print(f"{len(pages)} pages, {chars} chars of text -> {out}")
     for n, text in enumerate(pages):
         if args.find:
             if args.find in re.sub(r"\D", "", text):
