@@ -391,3 +391,30 @@ def test_clock_columns_ship_link_and_tooltip_with_every_digit(tmp_path, key, fie
     assert mx1["tooltips"][col.key] == "3.554685 MHz: Service manual: crystal 21.328125 MHz"
     assert rows["MX-2"]["values"][keys.index(col.key)] is None              # no documented clock: empty
     assert col.key not in rows["MX-2"].get("links", {}) and col.key not in rows["MX-2"].get("tooltips", {})
+
+
+def test_z80_turbo_cell_shows_the_documented_clock_over_openmsx_yes(tmp_path):
+    import json
+    from scraper.build import build
+    (tmp_path / "openmsx.json").write_text(json.dumps([
+        {"brand": "Maker", "model": "T-1", "generation": "MSX2+", "z80_turbo": "Yes"},
+        {"brand": "Maker", "model": "T-2", "generation": "MSX2+", "z80_turbo": "Yes"},
+        {"brand": "Maker", "model": "T-3", "generation": "MSX2+", "z80_turbo": "No"}]))
+    (tmp_path / "msxorg.json").write_text(json.dumps([]))
+    (tmp_path / "local.json").write_text(json.dumps([
+        {"brand": "Maker", "model": "T-1", "z80_turbo_clock_mhz": "5.3693175",
+         "z80_turbo_clock_source": "https://example.org/schematic/page/n0", "z80_turbo_clock_note": "CLKX 5.37 MHz"}]))
+    build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json", local_path=tmp_path / "local.json",
+          registry_path=tmp_path / "registry.json", output_path=tmp_path / "data.js")
+    text = (tmp_path / "data.js").read_text(encoding="utf-8")
+    data = json.loads(text[text.index("{"):text.rindex(";")])
+    keys = [c["key"] for c in data["columns"]]
+    i = keys.index("z80_turbo")
+    rows = {dict(zip(keys, m["values"]))["model"]: m for m in data["models"]}
+    t1 = rows["T-1"]
+    assert t1["values"][i] == "5.37"
+    assert t1["links"]["z80_turbo"] == "https://example.org/schematic/page/n0"
+    assert t1["tooltips"]["z80_turbo"] == "5.3693175 MHz: CLKX 5.37 MHz"
+    assert rows["T-2"]["values"][i] == "Yes"                     # no documented clock: openMSX's value
+    assert rows["T-3"]["values"][i] == "No"
+    assert "z80_turbo" not in rows["T-2"].get("links", {}) and "z80_turbo" not in rows["T-2"].get("tooltips", {})

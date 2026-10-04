@@ -20,7 +20,7 @@ The MSX standard clock is 3.579545 MHz (NTSC colour subcarrier; 21.47727 MHz ÷ 
 | Sony HB-101P / HB-201P | 3.5625 MHz | (= 10.6875 MHz ÷ 3) |
 | Sony HB-F500P/F | 3.578281 MHz | adjusted CPU clock |
 
-The values live in `data/local-raw.json` (fields below); the CPU Clock column (`scraper/columns.py`, id 114) — and the Sub-CPU Clock column (id 115, fields `sub_cpu_clock_mhz` / `_source` / `_note`: the Z80 of a turbo R, the Z180 of a Victor HC-90/95) — keeps them rounded to 4 decimals (sorting), shows 2, links to the source page and shows every digit plus the note as tooltip. Design: technical-design.md, *Feature Design: CPU Clock*.
+The values live in `data/local-raw.json` (fields below); the CPU Clock column (`scraper/columns.py`, id 114) — and the Sub-CPU Clock column (id 115, fields `sub_cpu_clock_mhz` / `_source` / `_note`: the Z80 of a turbo R, the Z180 of a Victor HC-90/95) — keeps them rounded to 4 decimals (sorting), shows 2, links to the source page and shows every digit plus the note as tooltip. A Z80 turbo clock goes in `z80_turbo_clock_mhz` / `_source` / `_note` and shows in the Z80 Turbo column (id 100) instead of "Yes". Design: technical-design.md, *Feature Design: CPU Clock*.
 
 ## Setup (once)
 

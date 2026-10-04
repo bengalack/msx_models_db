@@ -323,9 +323,14 @@ def build(
     derive_cols = [c for c in COLUMNS if c.derive is not None]
     for model in merged:
         for col in derive_cols:
-            # Only derive if no explicit value already present (local overrides take priority).
+            # Only derive if no explicit value already present (local overrides take priority),
+            # unless the column's derived value overrides the source's (Column.derive_overrides).
             if model.get(col.key) is None:
                 model[col.key] = col.derive(model)
+            elif col.derive_overrides:
+                derived = col.derive(model)
+                if derived is not None:
+                    model[col.key] = derived
 
     # Step 4b: Region flags — the value becomes the region names, the cell shows their flags
     regions = load_regions(regions_path)

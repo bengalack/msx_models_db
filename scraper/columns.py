@@ -91,6 +91,7 @@ class Column:
     display_decimals: int | None = None   # number cells show this many decimals (the value keeps its own)
     retired: bool = False                 # permanently removed, ID preserved, excluded entirely
     derive: Callable[[dict[str, Any]], Any] | None = None
+    derive_overrides: bool = False        # a non-None derived value replaces the source's (Z80 Turbo: Yes -> its clock)
 
 
 # Slot map labels of main RAM (the LUT's RAM, MemoryMapper and PanasonicRAM devices).
@@ -258,6 +259,12 @@ def cpu_clock(model: dict[str, Any]) -> float | None:
     return clock_cell(model, "cpu_clock")
 
 
+def z80_turbo(model: dict[str, Any]) -> str | None:
+    """'5.37' (MHz, like the clock columns) where local data documents the turbo clock (``z80_turbo_clock_mhz``), else None (openMSX's Yes / No stays)."""
+    clock = clock_cell(model, "z80_turbo_clock")
+    return f"{clock:.2f}" if clock is not None else None
+
+
 # The CPUs every machine of a generation has by the MSX standard: (CPU, Sub-CPU).
 # Fills models no source names a CPU for (msx.org pages rarely do); a value from
 # openMSX or data/local-raw.json always wins (Victor HC-90: Sub-CPU Z180).
@@ -336,6 +343,13 @@ COLUMNS: list[Column] = [
            linkable=True, derive=lambda m: clock_cell(m, "sub_cpu_clock"), display_decimals=2,
            cell_link=lambda m: m.get("sub_cpu_clock_source"),
            cell_tooltip=lambda m: clock_tooltip(m, "sub_cpu_clock")),
+    # Z80 turbo mode: Yes / No from openMSX; where data/local-raw.json documents the turbo clock
+    # (z80_turbo_clock_mhz / _source / _note) the cell shows it instead, linked like the clock columns.
+    Column(id=100, key="z80_turbo",        label="Z80 Turbo",            group="cpu",      type="string", short_label="Z80 Turbo",
+           tooltip="Z80 turbo mode: its clock in MHz where documented (link: the source), else Yes / No (from openMSX XML)",
+           linkable=True, derive=lambda m: z80_turbo(m), derive_overrides=True,
+           cell_link=lambda m: m.get("z80_turbo_clock_source"),
+           cell_tooltip=lambda m: clock_tooltip(m, "z80_turbo_clock")),
     Column(id=97, key="nmos_cmos",        label="NMOS/CMOS",            group="cpu",      type="string", short_label="NMOS/\nCMOS",
            derive=lambda m: "CMOS" if "T976" in (m.get("engine_raw") or "") else "NMOS"),
     Column(id=98, key="rtc",              label="RTC",                  group="cpu",      type="string"),
@@ -345,7 +359,6 @@ COLUMNS: list[Column] = [
     Column(id=99,  key="engine",           label="Engine (full-custom ASIC)", group="cpu", type="string",
            short_label="Engine\n(full-custom ASIC)", max_width=150, sort_last=("None",), chip_links=True,
            derive=lambda m: _parse_engine_field(m, 1)),
-    Column(id=100, key="z80_turbo",        label="Z80 Turbo",            group="cpu",      type="string", short_label="Z80 Turbo", tooltip="Z80 turbo mode supported (from openMSX XML)"),
     # Other
     Column(id=25,  key="keyboard_layout",  label="Keyboard Layout",      group="other",    type="string", short_label="KB Layout",  tooltip="Keyboard Layout", default_off=True),
     Column(id=103, key="character_set",   label="Character Set",        group="other",    type="string", short_label="Char\nSet",   tooltip="Character set encoded in the main BIOS ROM (byte 0x002B, lower nibble)",

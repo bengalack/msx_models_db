@@ -126,7 +126,10 @@
   {
     "brand": "Panasonic",
     "model": "FS-A1FX",
-    "himem_addr": "0xDF83"
+    "himem_addr": "0xDF83",
+    "z80_turbo_clock_mhz": "5.37",
+    "z80_turbo_clock_source": "https://www.msx.org/wiki/Panasonic_FS-A1FX",
+    "z80_turbo_clock_note": "msx.org: the Z80A can be switched from 3.58 MHz to 5.37 MHz via I/O ports"
   },
   {
     "brand": "Panasonic",
@@ -147,7 +150,10 @@
   {
     "brand": "Panasonic",
     "model": "FS-A1WSX",
-    "himem_addr": "0xDF83"
+    "himem_addr": "0xDF83",
+    "z80_turbo_clock_mhz": "5.37",
+    "z80_turbo_clock_source": "https://www.msx.org/wiki/Panasonic_FS-A1WSX",
+    "z80_turbo_clock_note": "msx.org: the Z80A can be switched from 3.58 MHz to 5.37 MHz via I/O ports"
   },
   {
     "brand": "Panasonic",
@@ -155,7 +161,10 @@
     "himem_addr": "0xDF83",
     "cpu_clock_mhz": "3.579545",
     "cpu_clock_source": "https://archive.org/details/panasonicsa1wxsm/FS-A1WX_SCH_04a/page/n5/mode/1up",
-    "cpu_clock_note": "Circuit diagram FS-A1WX: crystal X4 21.47727 MHz, 3.58 MHz clock"
+    "cpu_clock_note": "Circuit diagram FS-A1WX: crystal X4 21.47727 MHz, 3.58 MHz clock",
+    "z80_turbo_clock_mhz": "5.3693175",
+    "z80_turbo_clock_source": "https://archive.org/details/panasonicsa1wxsm/FS-A1WX_SCH_04a/page/n0/mode/1up",
+    "z80_turbo_clock_note": "Circuit diagram FS-A1WX notes: CLKX 5.37 MHz in turbo mode, 3.58 MHz otherwise; crystal X4 21.47727 MHz / 4"
   },
   {
     "brand": "Panasonic",
