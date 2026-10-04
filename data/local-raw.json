@@ -847,11 +847,6 @@
   },
   {
     "brand": "Pioneer",
-    "model": "PX-7(UK)",
-    "himem_addr": "0xF380"
-  },
-  {
-    "brand": "Pioneer",
     "model": "PX-V60",
     "himem_addr": "0xF380",
     "cpu_clock_mhz": "3.579545",
@@ -1299,7 +1294,8 @@
     "model": "PX-7(HB)",
     "cpu_clock_mhz": "3.58",
     "cpu_clock_source": "https://archive.org/details/Pioneer_PX-7_Service_Manual_1985_E/page/n1/mode/1up",
-    "cpu_clock_note": "Service manual PX-7 HE/HB: Z80A (3.58 MHz clock)"
+    "cpu_clock_note": "Service manual PX-7 HE/HB: Z80A (3.58 MHz clock)",
+    "himem_addr": "0xF380"
   },
   {
     "brand": "Canon",
