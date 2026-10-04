@@ -63,3 +63,22 @@ def test_openmsx_description_sets_market_status():
     xml = (b"<machine><info><manufacturer>Maker</manufacturer><code>M-1</code><type>MSX</type>"
            b"<description>Rare MSX that was never mass produced.</description></info><devices/></machine>")
     assert parse_machine_xml(xml, "Maker_M-1.xml")["market_status"] == MARKET_RARE
+
+
+def test_recalled_ranks_first():
+    """A recalled model was released, and the few units left are rare: Recalled wins."""
+    from scraper.market_status import MARKET_RECALLED
+    assert MERGE_PRECEDENCE[0] == MARKET_RECALLED
+    assert merged_status(MARKET_RARE, MARKET_RECALLED) == MARKET_RECALLED
+
+
+def test_recalled_is_not_inherited():
+    """Link-share / adaptation recipients do not take over a donor's recall (Sharp HB-8000 v1.0 → v1.1)."""
+    from scraper.inherit import fill_blanks
+    from scraper.market_status import MARKET_RECALLED
+    record = {"brand": "Maker", "model": "MX-1 v1.1"}
+    fill_blanks(record, {"brand": "Maker", "model": "MX-1 v1.0", "market_status": MARKET_RECALLED, "year": 1985})
+    assert "market_status" not in record and record["year"] == 1985
+    fill_blanks(record, {"brand": "Maker", "model": "MX-1", "market_status": MARKET_RARE})
+    assert record["market_status"] == MARKET_RARE               # other statuses still travel
+

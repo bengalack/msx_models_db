@@ -353,6 +353,25 @@
       ]
     },
     {
+      "name": "HB-8000 v1.0",
+      "url": "https://www.msx.org/wiki/Sharp_HB-8000",
+      "base": "Sharp HB-8000 v1.0",
+      "members": [
+        {
+          "id": 312,
+          "model": "Sharp HB-8000 v1.0"
+        },
+        {
+          "id": 356,
+          "model": "Sharp HB-8000 v1.1"
+        },
+        {
+          "id": 357,
+          "model": "Sharp HB-8000 v1.2"
+        }
+      ]
+    },
+    {
       "name": "HB-F500",
       "url": "https://www.msx.org/wiki/Category:Sony_HB-F500",
       "base": "Sony HB-F500",
@@ -3719,6 +3738,16 @@
       "model": "Sanyo PHC-30N (FR)",
       "of": "Sanyo PHC-30N",
       "signal": "text: list"
+    },
+    {
+      "model": "Sharp HB-8000 v1.1",
+      "of": "Sharp HB-8000 v1.0",
+      "signal": "link-share"
+    },
+    {
+      "model": "Sharp HB-8000 v1.2",
+      "of": "Sharp HB-8000 v1.0",
+      "signal": "link-share"
     },
     {
       "model": "Sony HB-101P",

@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 from .aliases import FORMER_MODEL_FIELD, KNOWN_AS_FIELD, LOCALISED_FIELD, OWN_FIELDS_FIELD, VERSION_FIELD
 from .inherit import fill_blanks
-from .market_status import MARKET_RARE, MARKET_UNRELEASED
+from .market_status import MARKET_RARE, MARKET_RECALLED, MARKET_UNRELEASED
 from .families import FAMILY_LINKS_FIELD, SERIES_FIELD, VARIANT_NAMES_FIELD
 from .slotmap_details import SLOT_TEXT_FIELD
 from .exclude import ExcludeList
@@ -472,6 +472,14 @@ _UNRELEASED_PHRASE = (
 # Sentence breaks, but not after "a.k.a." ("The PHC-25SK a.k.a. Wavy25SK is ...").
 _SENTENCE_SPLIT_RE = re.compile(r"(?<![aA]\.k\.a\.)(?<=[.!?])\s+")
 _RARE_TAIL = r"(?:(?:a|an|actually)\s+)?(?:(?:very|extremely)\s+)?rare\b(?!\s+(?:for|on|nowadays))"
+# The units were recalled: "most of Hotbits 1.0 undergone a recall to replace their original
+# 1.0 ROMs", "… were recalled". Passive only — "Gradiente issued a free recall …, asking owners
+# of Expert XP-800" (on the GPC-1 page) is about another model's units.
+_RECALLED_RE = re.compile(
+    r"\b(?:undergone|underwent|went\s+through)\s+(?:a\s+)?(?:free\s+)?recall\b"
+    r"|\b(?:was|were|been|being)\s+recalled\b",
+    re.IGNORECASE,
+)
 _FEW_KNOWN_RE = re.compile(
     r"\b(?:very|only\s+a)\s+few\s+units\s+(?:are|were)\s+known\s+to\s+exist"
     r"|\bonly\s+one\s+(?:system|unit|machine)\s+is\s+known\s+to\s+exist",
@@ -518,7 +526,7 @@ def _status_patterns(names: list[str], brand: str) -> tuple[re.Pattern[str], re.
 
 
 def market_status(page: bytes | BeautifulSoup, specs: dict[str, str], names: list[str], brand: str) -> str | None:
-    """"Unreleased", "Rare" or None for the page's model.
+    """"Unreleased", "Recalled", "Rare" or None for the page's model.
 
     Unreleased: a Year / Region / Launch price value says so ("unreleased",
     "1986 (never released)"), or a sentence whose subject is the model does
@@ -529,21 +537,26 @@ def market_status(page: bytes | BeautifulSoup, specs: dict[str, str], names: lis
     of …", "This rare machine …"), or says very few units are known to exist.
     Sentences about something else — "a few rare cartridges", "a lightpen …
     was never released", "one of the rare MSX1 computers having …" — do not
-    count. Unreleased wins over Rare.
+    count. Recalled: a sentence saying the units were recalled (``_RECALLED_RE``).
+    Unreleased wins over Recalled, Recalled over Rare.
     """
     if any(_UNRELEASED_VALUE_RE.search(specs.get(f, "")) for f in _STATUS_FIELDS):
         return MARKET_UNRELEASED
     soup = page if isinstance(page, BeautifulSoup) else BeautifulSoup(page, "lxml")
     body = soup.select_one("#bodyContent") or soup
     unreleased, rare = _status_patterns(names, brand)
-    found_rare = False
+    found_rare = found_recalled = False
     for node in body.find_all(["p", "li"]):
         text = re.sub(r"\s+", " ", node.get_text(" ", strip=True))
         for sentence in _SENTENCE_SPLIT_RE.split(text):
             if unreleased.search(sentence):
                 return MARKET_UNRELEASED
+            if _RECALLED_RE.search(sentence):
+                found_recalled = True
             if rare.search(sentence) or _FEW_KNOWN_RE.search(sentence):
                 found_rare = True
+    if found_recalled:
+        return MARKET_RECALLED
     return MARKET_RARE if found_rare else None
 
 # ── Modem ───────────────────────────────────────────────────────────────

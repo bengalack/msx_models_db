@@ -31,7 +31,7 @@
   - Slot 0–3 groups start collapsed (group flag defaultCollapsed; Reset view restores it)
   - Slotmap Overview column: canvas thumbnail of the slot map per model, hover popup with labelled boxes and tooltips, sortable by a 64-bit occupancy key
   - Modem column (Yes for a built-in modem) from msx.org and openMSX, left of PRN Port
-  - Market status column (Unreleased / Rare) from msx.org, right of Region
+  - Market status column (Unreleased / Recalled / Rare) from msx.org, right of Region
   - Tape I/F: Yes/No/Adapter/unknown; built-in data recorders count as Yes, Casio MT/IF (CMT adapter) is Adapter
   - PRN Port column (id 27, was Conn/Ports): Yes/No from openMSX <PrinterPort> or msx.org Connections "printer"
   - VDP chip links: data/chip-links.json holds every chip link (Engine + VDP), used by any column flagged chip_links

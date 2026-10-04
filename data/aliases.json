@@ -53,6 +53,10 @@
       "canonical": {"brand": "Canon", "model": "V-20 (JP)"}
     },
     {
+      "match":     {"brand": "Sharp", "model": "HB-8000"},
+      "canonical": {"brand": "Sharp", "model": "HB-8000 v1.0"}
+    },
+    {
       "match":     {"brand": "Yamaha", "model": "AX-*"},
       "canonical": {"brand": "Sakhr"}
     },

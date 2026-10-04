@@ -1,7 +1,9 @@
 """Market status values and the openMSX description rule.
 
 The Market status column says whether a model was never released
-("Unreleased") or is known to be rare ("Rare"). msx.org pages are read by
+("Unreleased"), was recalled after its release ("Recalled" — most units sent
+back and changed, so the few left are rare; msx.org only), or is known to be
+rare ("Rare"). msx.org pages are read by
 ``market_status`` in scraper/msxorg.py; openMSX machine XMLs by
 ``status_from_description`` here, from ``<info><description>``, whose subject
 is always the machine itself ("Rare MSX that was never mass produced …",
@@ -15,11 +17,13 @@ import re
 
 MARKET_UNRELEASED = "Unreleased"
 MARKET_RARE = "Rare"
+MARKET_RECALLED = "Recalled"
 
 # When openMSX and msx.org give different statuses, the earlier value wins:
-# Rare beats Unreleased. A source that says nothing never clears the other's.
-# (Within one msx.org page, Unreleased beats Rare — see msxorg.market_status.)
-MERGE_PRECEDENCE = (MARKET_RARE, MARKET_UNRELEASED)
+# Recalled (it was released, and implies rare) beats Rare beats Unreleased. A
+# source that says nothing never clears the other's.
+# (Within one msx.org page, Unreleased beats Recalled beats Rare — see msxorg.market_status.)
+MERGE_PRECEDENCE = (MARKET_RECALLED, MARKET_RARE, MARKET_UNRELEASED)
 
 _DESCRIPTION_UNRELEASED_RE = re.compile(
     r"^\s*(?:an?\s+)?(?:\w+\s+)?prototype\b|\b(?:unreleased|non-released|never\s+(?:been\s+)?released|not\s+released)\b",
@@ -44,7 +48,7 @@ def status_from_description(description: str | None) -> str | None:
 
 
 def merged_status(a: str | None, b: str | None) -> str | None:
-    """The status of a model whose sources say *a* and *b* (Rare beats Unreleased)."""
+    """The status of a model whose sources say *a* and *b* (Recalled, then Rare, beat Unreleased)."""
     for status in MERGE_PRECEDENCE:
         if status in (a, b):
             return status

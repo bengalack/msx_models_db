@@ -1029,7 +1029,7 @@ class TestBuiltInDataRecorder:
 # Market status — "Unreleased" / "Rare" about the page's own model
 # ---------------------------------------------------------------------------
 
-from scraper.msxorg import MARKET_RARE, MARKET_UNRELEASED, market_status
+from scraper.msxorg import MARKET_RARE, MARKET_RECALLED, MARKET_UNRELEASED, market_status
 
 
 def _status(sentences: list[str], specs: dict[str, str] | None = None,
@@ -1091,6 +1091,28 @@ class TestMarketStatus:
     ])
     def test_not_about_the_model(self, sentence):
         assert _status([sentence]) is None
+
+    @pytest.mark.parametrize("sentence", [
+        "Due to this issue, most of Hotbits 1.0 undergone a recall to replace their original 1.0 ROMs.",
+        "Most units underwent a free recall to replace the Main-ROM.",
+        "The first batch was recalled because of a faulty power supply.",
+        "Many of them have been recalled.",
+    ])
+    def test_recalled(self, sentence):
+        assert _status([sentence]) == MARKET_RECALLED
+
+    @pytest.mark.parametrize("sentence", [
+        # another model's units: the company issued the recall (Expert GPC-1 page, about the XP-800)
+        "Gradiente issued a free recall called \"Conversion from 1.0 to 1.1\", asking owners of Expert XP-800.",
+        "As far as I recall, it was sold in red.",
+    ])
+    def test_not_recalled(self, sentence):
+        assert _status([sentence]) is None
+
+    def test_recalled_wins_over_rare_and_unreleased_over_recalled(self):
+        recall = "Most units underwent a recall to replace their ROMs."
+        assert _status(["This model is very rare.", recall]) == MARKET_RECALLED
+        assert _status([recall], {"Year": "unreleased"}) == MARKET_UNRELEASED
 
     def test_unreleased_wins_over_rare(self):
         assert _status(["The MX-1 is a very rare computer, it's actually an unreleased prototype.",

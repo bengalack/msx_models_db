@@ -57,10 +57,13 @@ def fill_blanks(record: dict[str, Any], donor: dict[str, Any]) -> bool:
     The slot map (all ``slotmap_*`` cells) and its Memory Mapper are copied as
     a unit, and only when *record* has no slot map of its own.
     """
+    from .market_status import MARKET_RECALLED
     changed = False
     for key, value in donor.items():
         if key in NEVER_INHERITED or key.startswith(("_", "slotmap_")) or value is None:
             continue
+        if key == "market_status" and value == MARKET_RECALLED:
+            continue        # the donor's own units were recalled, not the recipient's (HB-8000 v1.0 → v1.1)
         if record.get(key) is None:
             record[key] = value
             changed = True
