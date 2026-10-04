@@ -673,32 +673,43 @@ export function buildGrid(data: MSXData, opts?: {
     return `${modelId}:${colIdx}`;
   }
 
+  // Cell / gutter elements by model ID through rowCache (the rows in tbody), not
+  // tbody.querySelector: one query per cell scans the whole table, and selecting
+  // every cell (~40k) took seconds. A row holds the gutter, then one td per column
+  // in column order; the data-col-index check guards that layout.
+  function cellElement(modelId: number, colIdx: number): HTMLTableCellElement | null {
+    const tr = rowCache.get(modelId);
+    if (!tr) return null;
+    const td = tr.cells[colIdx + 1];
+    if (td?.dataset.colIndex === String(colIdx)) return td;
+    return tr.querySelector<HTMLTableCellElement>(`td[data-col-index="${colIdx}"]`);
+  }
+
+  function gutterElement(modelId: number): HTMLTableCellElement | null {
+    const td = rowCache.get(modelId)?.cells[0];
+    return td?.classList.contains('gutter') ? td : null;
+  }
+
   function applySelectionToDOM(): void {
-    // Diff cells — only touch elements that changed
+    // Diff cells — only touch elements that changed — and derive the active
+    // col/row sets in the same pass (one parse per key: a full selection has ~40k)
+    const newColIdxs = new Set<number>();
+    const newModelIds = new Set<number>();
     for (const key of selectedCells) {
-      if (renderedSelectionCells.has(key)) continue;
       const colon = key.indexOf(':');
-      tbody.querySelector<HTMLTableCellElement>(
-        `tr[data-model-id="${key.slice(0, colon)}"] td[data-col-index="${key.slice(colon + 1)}"]`
-      )?.classList.add('cell--selected');
+      const modelId = Number(key.slice(0, colon));
+      const colIdx = Number(key.slice(colon + 1));
+      newModelIds.add(modelId);
+      newColIdxs.add(colIdx);
+      if (renderedSelectionCells.has(key)) continue;
+      cellElement(modelId, colIdx)?.classList.add('cell--selected');
       renderedSelectionCells.add(key);
     }
     for (const key of renderedSelectionCells) {
       if (selectedCells.has(key)) continue;
       const colon = key.indexOf(':');
-      tbody.querySelector<HTMLTableCellElement>(
-        `tr[data-model-id="${key.slice(0, colon)}"] td[data-col-index="${key.slice(colon + 1)}"]`
-      )?.classList.remove('cell--selected');
+      cellElement(Number(key.slice(0, colon)), Number(key.slice(colon + 1)))?.classList.remove('cell--selected');
       renderedSelectionCells.delete(key);
-    }
-
-    // Derive active col/row sets from current selection
-    const newColIdxs = new Set<number>();
-    const newModelIds = new Set<number>();
-    for (const key of selectedCells) {
-      const colon = key.indexOf(':');
-      newModelIds.add(Number(key.slice(0, colon)));
-      newColIdxs.add(Number(key.slice(colon + 1)));
     }
 
     // Diff col headers
@@ -720,14 +731,12 @@ export function buildGrid(data: MSXData, opts?: {
     // Diff row gutters (cell-active highlight)
     for (const id of newModelIds) {
       if (!renderedActiveModelIds.has(id)) {
-        tbody.querySelector<HTMLTableCellElement>(`td.gutter[data-model-id="${id}"]`)
-          ?.classList.add('gutter--cell-active');
+        gutterElement(id)?.classList.add('gutter--cell-active');
       }
     }
     for (const id of renderedActiveModelIds) {
       if (!newModelIds.has(id)) {
-        tbody.querySelector<HTMLTableCellElement>(`td.gutter[data-model-id="${id}"]`)
-          ?.classList.remove('gutter--cell-active');
+        gutterElement(id)?.classList.remove('gutter--cell-active');
       }
     }
     renderedActiveModelIds.clear();
@@ -780,15 +789,13 @@ export function buildGrid(data: MSXData, opts?: {
   function applyRowSelectionToDOM(): void {
     for (const id of selectedRows) {
       if (!renderedSelectedRows.has(id)) {
-        tbody.querySelector<HTMLTableCellElement>(`td.gutter[data-model-id="${id}"]`)
-          ?.classList.add('gutter--row-selected');
+        gutterElement(id)?.classList.add('gutter--row-selected');
         renderedSelectedRows.add(id);
       }
     }
     for (const id of renderedSelectedRows) {
       if (!selectedRows.has(id)) {
-        tbody.querySelector<HTMLTableCellElement>(`td.gutter[data-model-id="${id}"]`)
-          ?.classList.remove('gutter--row-selected');
+        gutterElement(id)?.classList.remove('gutter--row-selected');
         renderedSelectedRows.delete(id);
       }
     }

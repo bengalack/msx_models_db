@@ -61,7 +61,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 
   --color-accent:        #39ff14;   /* primary accent — phosphor green */
   --color-accent-dim:    rgba(57, 255, 20, 0.18); /* selection fill */
-  --color-accent-glow:   0 0 6px rgba(57, 255, 20, 0.5); /* box-shadow glow */
+  --color-accent-glow:   inset 0 0 6px rgba(57, 255, 20, 0.5); /* box-shadow glow, inside the cell */
 
   --color-gutter-bg:     #0d1a0d;   /* row number strip */
   --color-gutter-text:   #3a7a3a;
@@ -134,14 +134,13 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - The Identity group columns (Brand, Model) and their group header are frozen/sticky during horizontal scroll, pinned immediately to the right of the gutter. Their width is static: on very wide screens the extra space goes to the other columns only, and filtering never narrows them (they keep the widest width they have had, so headers stay readable). The Model and openMSX ID headers carry the same external-link icon after their label, since their cells link to the msx.org page / the machine XML. The third Identity column is an icon link to generation-msx.nl (header icon `fa-external-link`, the site's icon in each cell, opens in a new tab, URL as tooltip). Gap indicator rows include frozen cells so the dashed line stays aligned in the frozen panel.
 - Z-index stacking order (within `.grid-wrap` scroll container, low → high):
   1. **Gap indicator line** (`gutter--gap::before`) — `z-index: 3`
-  2. **Selected cells** (`cell--selected`) — `z-index: 5`
-  3. **Frozen data cells** (`.col--frozen`) — `z-index: 6`
-  4. **Frozen + selected** (`.col--frozen.cell--selected`) — `z-index: 7`
-  5. **tbody gutter** — `z-index: 8` (sticky left column in data rows)
-  6. **Gap gutter / unhide button** — `z-index: 9`
-  7. **Header cells** (group, column, filter) — `z-index: 10`
-  8. **Frozen header cells** (`thead .col--frozen`, `.group-header--frozen`) — `z-index: 11`
-  9. **Header gutter corner** (`thead .gutter`) — `z-index: 12`
+  2. **Frozen data cells** (`.col--frozen`) — `z-index: 6`
+  3. **tbody gutter** — `z-index: 8` (sticky left column in data rows)
+  4. **Gap gutter / unhide button** — `z-index: 9`
+  5. **Header cells** (group, column, filter) — `z-index: 10`
+  6. **Frozen header cells** (`thead .col--frozen`, `.group-header--frozen`) — `z-index: 11`
+  7. **Header gutter corner** (`thead .gutter`) — `z-index: 12`
+  - Selected cells (`cell--selected`) take no position or z-index: their outline and glow are drawn inside the cell, so selecting thousands of cells does not re-lay out the table or create a stacking context per cell.
 
 ## Components
 
@@ -194,7 +193,7 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - Default: `var(--color-surface)` background, `var(--color-text)` text
 - Alternating rows: `var(--color-surface-alt)`
 - Hover (no selection): `var(--color-hover)` background
-- Selected: `var(--color-accent-dim)` fill + `1px solid var(--color-selection-border)` outline; in dark mode add `var(--color-accent-glow)`
+- Selected: `var(--color-accent-dim)` fill + `1px solid var(--color-selection-border)` outline; in dark mode add `var(--color-accent-glow)` (an inset glow; outline and glow stay inside the cell)
 - Empty/null value: displayed as `—` (em dash) in `var(--color-text-muted)`
 - Overflow: cell text is clipped with ellipsis; full value shown in browser native tooltip (`title` attribute)
 - **Link cells**: Two columns render as hyperlinks (`<a class="cell-link">`): `Model` (→ msx.org wiki) and `openMSX Machine ID` (→ openMSX GitHub machine XML). Links open in a new tab. Clicking a link cell does not trigger cell selection — the browser follows the href.

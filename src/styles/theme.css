@@ -16,7 +16,7 @@
 
   --color-accent:        #39ff14;
   --color-accent-dim:    rgba(57, 255, 20, 0.18);
-  --color-accent-glow:   0 0 6px rgba(57, 255, 20, 0.5);
+  --color-accent-glow:   inset 0 0 6px rgba(57, 255, 20, 0.5);  /* inside the cell: see .cell--selected */
 
   --color-gutter-bg:     #0d1a0d;
   --color-gutter-text:   #3a7a3a;

@@ -536,9 +536,10 @@ thead .gutter {
 
 /* ── Cell selection ────────────────────────────────────────────────────── */
 
+/* No position / z-index: every property here paints inside the cell (inset outline,
+   inset glow), so selecting thousands of cells neither re-lays out the table nor
+   makes each one a stacking context to layerize. */
 .cell--selected {
-  position: relative;
-  z-index: 5;           /* above gap indicator (3/4), below sticky gutter (6) and headers (10/11) */
   background: var(--color-accent-dim);
   outline: 1px solid var(--color-selection-border);
   outline-offset: -1px;
@@ -553,11 +554,8 @@ thead .gutter {
    z-index stack (tbody):
      auto  — regular data cells
      3     — gap-indicator dashed-line ::before
-     5     — .cell--selected (non-frozen)
      6     — .col--frozen  (frozen body cells — above selected non-frozen cells
               so scrolling content slides under the frozen panel)
-     7     — .col--frozen.cell--selected (frozen + selected — outline visible
-              above sibling frozen cells)
      8     — .gutter (row-number column — always topmost body sticky)
      9     — .gutter--gap-gutter, .gutter__unhide-btn (gap gutter straddles rows)
      10/11 — thead headers / thead frozen
@@ -565,7 +563,7 @@ thead .gutter {
 
 .col--frozen {
   position: sticky;
-  z-index: 6;           /* above selected non-frozen (5); below gutter (8) */
+  z-index: 6;           /* above the scrolling cells; below gutter (8) */
   /* Keep the frozen columns at their content width. When the viewport is wider
      than the table's natural width (min-width: 100%), the browser hands the
      extra space to columns without a specified width, so a nominal 1px width
@@ -589,13 +587,6 @@ thead .gutter {
    (col-header already uses box-shadow; this overrides with the stronger value) */
 th.col--frozen-last {
   box-shadow: inset -2px 0 0 0 var(--color-border-strong);
-}
-
-/* A selected frozen cell must remain position:sticky and sit above its
-   sibling frozen cells so the selection outline is fully visible. */
-.col--frozen.cell--selected {
-  position: sticky;
-  z-index: 7;           /* above sibling frozen (6); below gutter (8) */
 }
 
 /* Frozen cells inside thead must beat their non-frozen siblings (z-index 10)
