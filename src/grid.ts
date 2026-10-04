@@ -25,11 +25,14 @@ const FLAG_RE = /\p{Regional_Indicator}{2}/gu;
  */
 export function filterHaystack(col: ColumnDef | undefined, raw: string | number | boolean | null | undefined): string {
   const text = cellText(raw);
+  // A rounded number ("3.58" shown for 3.5795): the filter finds what the cell shows, too.
+  if (typeof raw === 'number' && col?.displayDecimals !== undefined) {
+    return `${text}\n${raw.toFixed(col.displayDecimals)}`;
+  }
   const shown = col?.displayValues?.[text];
   if (!shown) return text.toLowerCase();
   const spaced = shown.replace(FLAG_RE, flag => ` ${flag} `);
-  return `${text}
-${spaced}`.toLowerCase();
+  return `${text}\n${spaced}`.toLowerCase();
 }
 
 /** Shown text into *td*: each flag in its own span (larger — see .cell-flag) followed by a thin-space gap, other text as is. */
@@ -350,7 +353,10 @@ function buildDataRow(
     const rawValue = i < model.values.length ? model.values[i] : null;
     const col = columns[i];
     const td = document.createElement('td');
-    const text = cellText(rawValue);
+    // A number column may show fewer decimals than it sorts by (displayDecimals: the clock columns).
+    const text = typeof rawValue === 'number' && col.displayDecimals !== undefined
+      ? rawValue.toFixed(col.displayDecimals)
+      : cellText(rawValue);
 
     // Apply truncation when the column has a positive truncateLimit
     const limit = col.truncateLimit ?? 0;
@@ -454,8 +460,9 @@ function buildDataRow(
         a.href = url;
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
-        // When truncated, combine full value + URL in the tooltip; otherwise URL only
-        a.title = td.dataset.fullValue ? `${td.dataset.fullValue} \u2014 ${url}` : url;
+        // When truncated, combine full value + URL in the tooltip; otherwise URL only.
+        // A cell with a hover text of its own (data-tooltip) keeps that instead.
+        if (!td.dataset.tooltip) a.title = td.dataset.fullValue ? `${td.dataset.fullValue} \u2014 ${url}` : url;
         a.textContent = displayText;
         td.appendChild(a);
       }

@@ -17,6 +17,7 @@
   - "Share this view" copy-URL button with visual feedback
 
 - In product (shipped)
+  - CPU Clock column: documented CPU clocks with links to the service manual page (find-cpu-clocks skill)
   - Model versions: rows for the versions an msx.org page names (NMS 8280/16, CX5MA, HC-90(V)); `variant_of` marks the main model
   - Region flags: flags in the Region, Char Set and KB Type cells (text in the tooltip), filter on text or flag; data/regions.json
   - Slot map tooltip details: "Firmware: Painter ROM" / "Disk ROM: WD2793" in slot map cells and the Overview popup (LUT `"detail": "text"` / `"element"`)

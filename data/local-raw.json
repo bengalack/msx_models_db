@@ -3,7 +3,10 @@
     "brand": "Yamaha",
     "model": "CX5M",
     "msxorg_title": "Yamaha_CX5M",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/yamahacx5myis503sm/page/n3/mode/1up",
+    "cpu_clock_note": "Service manual CX5M/YIS-503F: 3.579545 MHz system clock"
   },
   {
     "brand": "Aucnet",
@@ -128,7 +131,13 @@
   {
     "brand": "Panasonic",
     "model": "FS-A1GT",
-    "himem_addr": "0xE7B5"
+    "himem_addr": "0xE7B5",
+    "cpu_clock_mhz": "7.159",
+    "cpu_clock_source": "https://archive.org/details/panasonicturborgtsm/panasonicturborgtcolorsm/page/n29/mode/1up",
+    "cpu_clock_note": "Technical guide FS-A1GT (JP), Z80-mode self-test: oscillators 28.636 MHz (R800, IC37) and 21.4772 MHz (VDP, IC12); calculated: R800 clock = 28.636 MHz ÷ 4",
+    "sub_cpu_clock_mhz": "3.57953",
+    "sub_cpu_clock_source": "https://archive.org/details/panasonicturborgtsm/panasonicturborgtcolorsm/page/n29/mode/1up",
+    "sub_cpu_clock_note": "Technical guide FS-A1GT (JP), Z80-mode self-test: oscillators 28.636 MHz (R800, IC37) and 21.4772 MHz (VDP, IC12); calculated: Z80 clock = 21.4772 MHz ÷ 6"
   },
   {
     "brand": "Panasonic",
@@ -143,7 +152,10 @@
   {
     "brand": "Panasonic",
     "model": "FS-A1WX",
-    "himem_addr": "0xDF83"
+    "himem_addr": "0xDF83",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/panasonicsa1wxsm/FS-A1WX_SCH_04a/page/n5/mode/1up",
+    "cpu_clock_note": "Circuit diagram FS-A1WX: crystal X4 21.47727 MHz, 3.58 MHz clock"
   },
   {
     "brand": "Panasonic",
@@ -153,17 +165,26 @@
   {
     "brand": "Philips",
     "model": "NMS 8220",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.554685",
+    "cpu_clock_source": "https://archive.org/details/philipsnms8220sm/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual NMS8220/00/16, adjustments: VDP clock set to 3.554685 MHz (crystal 21.328125 MHz)"
   },
   {
     "brand": "Philips",
     "model": "NMS 8245",
-    "himem_addr": "0xDF95"
+    "himem_addr": "0xDF95",
+    "cpu_clock_mhz": "3.554685",
+    "cpu_clock_source": "https://archive.org/details/philipsnms8245sm/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual NMS8245/00/16, adjustments: VDP clock set to 3,554,685 ± 200 Hz (crystal 21.328125 MHz)"
   },
   {
     "brand": "Philips",
     "model": "NMS 8245/16",
-    "himem_addr": "0xDE79"
+    "himem_addr": "0xDE79",
+    "cpu_clock_mhz": "3.554685",
+    "cpu_clock_source": "https://archive.org/details/philipsnms8245sm/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual NMS8245/00/16, adjustments: VDP clock set to 3,554,685 ± 200 Hz (crystal 21.328125 MHz)"
   },
   {
     "brand": "Philips",
@@ -173,57 +194,90 @@
   {
     "brand": "Philips",
     "model": "NMS 8250",
-    "himem_addr": "0xDF95"
+    "himem_addr": "0xDF95",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/PhilipsNMS825xSM/philipsnms825055sm/page/n35/mode/1up",
+    "cpu_clock_note": "Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)"
   },
   {
     "brand": "Philips",
     "model": "NMS 8250/16",
-    "himem_addr": "0xDF95"
+    "himem_addr": "0xDF95",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/PhilipsNMS825xSM/philipsnms825055sm/page/n35/mode/1up",
+    "cpu_clock_note": "Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)"
   },
   {
     "brand": "Philips",
     "model": "NMS 8250/19",
-    "himem_addr": "0xDF95"
+    "himem_addr": "0xDF95",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/PhilipsNMS825xSM/philipsnms825055sm/page/n35/mode/1up",
+    "cpu_clock_note": "Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)"
   },
   {
     "brand": "Philips",
     "model": "NMS 8255",
-    "himem_addr": "0xDE79"
+    "himem_addr": "0xDE79",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/PhilipsNMS825xSM/philipsnms825055sm/page/n35/mode/1up",
+    "cpu_clock_note": "Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)"
   },
   {
     "brand": "Philips",
     "model": "VG 8230",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.554685",
+    "cpu_clock_source": "https://archive.org/details/philipsvg8230sm/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual VG8230/00, adjustments: VDP clock set to 3.554685 MHz (crystal 21.32812 MHz)"
   },
   {
     "brand": "Philips",
     "model": "VG 8235/00",
-    "himem_addr": "0xDF95"
+    "himem_addr": "0xDF95",
+    "cpu_clock_mhz": "3.554685",
+    "cpu_clock_source": "https://archive.org/details/vg8235sm/vg8235sm00/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz"
   },
   {
     "brand": "Philips",
     "model": "VG 8235/02",
-    "himem_addr": "0xDF95"
+    "himem_addr": "0xDF95",
+    "cpu_clock_mhz": "3.554685",
+    "cpu_clock_source": "https://archive.org/details/vg8235sm/vg8235sm00/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz"
   },
   {
     "brand": "Philips",
     "model": "VG 8235/19",
-    "himem_addr": "0xDF95"
+    "himem_addr": "0xDF95",
+    "cpu_clock_mhz": "3.554685",
+    "cpu_clock_source": "https://archive.org/details/vg8235sm/vg8235sm00/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz"
   },
   {
     "brand": "Philips",
     "model": "VG 8235/20",
-    "himem_addr": "0xDF95"
+    "himem_addr": "0xDF95",
+    "cpu_clock_mhz": "3.5546875",
+    "cpu_clock_source": "https://archive.org/details/vg8235sm/vg8235sm20/page/n13/mode/1up",
+    "cpu_clock_note": "Service manual VG8235/20/22/29/36/39, parts list: crystal 21.328125 MHz (÷ 6)"
   },
   {
     "brand": "Philips",
     "model": "VG 8235/39",
-    "himem_addr": "0xDF95"
+    "himem_addr": "0xDF95",
+    "cpu_clock_mhz": "3.5546875",
+    "cpu_clock_source": "https://archive.org/details/vg8235sm/vg8235sm20/page/n13/mode/1up",
+    "cpu_clock_note": "Service manual VG8235/20/22/29/36/39, parts list: crystal 21.328125 MHz (÷ 6)"
   },
   {
     "brand": "Pioneer",
     "model": "UC-V102",
-    "himem_addr": "0xDE79"
+    "himem_addr": "0xDE79",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/manual_UCV102_SM_PIONEER_EN/UCV102_SM_PIONEER_EN/page/n11/mode/1up",
+    "cpu_clock_note": "Service manual UC-V102: CPU clock 3.58 MHz (3.579545 MHz)"
   },
   {
     "brand": "Sakhr",
@@ -243,7 +297,10 @@
   {
     "brand": "Sakhr",
     "model": "AX-500",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/ax500servicemanual/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual AX-500: clock frequency 3.579545 MHz"
   },
   {
     "brand": "Sanyo",
@@ -293,7 +350,10 @@
   {
     "brand": "Sanyo",
     "model": "PHC-77",
-    "himem_addr": "0xDE79"
+    "himem_addr": "0xDE79",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "http://elec-junker-p2.blog.jp/PHC-77_SANYO_SCHE_02.pdf#page=1",
+    "cpu_clock_note": "Schematic PHC-77 Rev.02: crystal 21.47727 MHz, 3.58 MHz clock"
   },
   {
     "brand": "Sony",
@@ -308,7 +368,10 @@
   {
     "brand": "Sony",
     "model": "HB-F1XD",
-    "himem_addr": "0xDF94"
+    "himem_addr": "0xDF94",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/sonyhbf1xdsm/page/n0/mode/1up",
+    "cpu_clock_note": "Service manual HB-F1XD: CPU clock 3.58 MHz, adjusted to 3,579,530–3,579,550 Hz"
   },
   {
     "brand": "Sony",
@@ -338,27 +401,42 @@
   {
     "brand": "Sony",
     "model": "HB-F500P",
-    "himem_addr": "0xDF94"
+    "himem_addr": "0xDF94",
+    "cpu_clock_mhz": "3.578281",
+    "cpu_clock_source": "https://archive.org/details/SonyHBF500ServiceManual/Sony%20HB-F500%20Service%20Manual%20-%20Part%202/page/n56/mode/1up",
+    "cpu_clock_note": "Service manual HB-F500P/F, alignment: CPU clock (IC26 pin 6) set to 3.578281 MHz ± 5 Hz"
   },
   {
     "brand": "Sony",
     "model": "HB-F700D",
-    "himem_addr": "0xDF94"
+    "himem_addr": "0xDF94",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/sonyhbf700psm/page/n24/mode/1up",
+    "cpu_clock_note": "Service manual HB-F700P/S/F/D: clock adjusted to 3,579,540–3,579,549 Hz (crystal X301 21.477 MHz)"
   },
   {
     "brand": "Sony",
     "model": "HB-F700F",
-    "himem_addr": "0xDF94"
+    "himem_addr": "0xDF94",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/sonyhbf700psm/page/n24/mode/1up",
+    "cpu_clock_note": "Service manual HB-F700P/S/F/D: clock adjusted to 3,579,540–3,579,549 Hz (crystal X301 21.477 MHz)"
   },
   {
     "brand": "Sony",
     "model": "HB-F700P",
-    "himem_addr": "0xDF94"
+    "himem_addr": "0xDF94",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/sonyhbf700psm/page/n24/mode/1up",
+    "cpu_clock_note": "Service manual HB-F700P/S/F/D: clock adjusted to 3,579,540–3,579,549 Hz (crystal X301 21.477 MHz)"
   },
   {
     "brand": "Sony",
     "model": "HB-F700S",
-    "himem_addr": "0xDF94"
+    "himem_addr": "0xDF94",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/sonyhbf700psm/page/n24/mode/1up",
+    "cpu_clock_note": "Service manual HB-F700P/S/F/D: clock adjusted to 3,579,540–3,579,549 Hz (crystal X301 21.477 MHz)"
   },
   {
     "brand": "Sony",
@@ -368,7 +446,10 @@
   {
     "brand": "Sony",
     "model": "HB-F9P",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.58",
+    "cpu_clock_source": "https://archive.org/details/sonyhbf9psm/page/n0/mode/1up",
+    "cpu_clock_note": "Service manual HB-F9P/S: CPU clock 3.58 MHz"
   },
   {
     "brand": "Sony",
@@ -378,12 +459,18 @@
   {
     "brand": "Sony",
     "model": "HB-F9S",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.58",
+    "cpu_clock_source": "https://archive.org/details/sonyhbf9psm/page/n0/mode/1up",
+    "cpu_clock_note": "Service manual HB-F9P/S: CPU clock 3.58 MHz"
   },
   {
     "brand": "Sony",
     "model": "HB-G900AP",
-    "himem_addr": "0xDF94"
+    "himem_addr": "0xDF94",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/SonyHBG900APServiceManual/Sony%20HB-G900AP%20Service%20Manual%20-%20Part%201/page/n0/mode/1up",
+    "cpu_clock_note": "Service manual HB-G900AP: CPU clock frequency 3.579545 MHz (genlock off)"
   },
   {
     "brand": "Sony",
@@ -393,7 +480,10 @@
   {
     "brand": "Sony",
     "model": "HB-G900P",
-    "himem_addr": "0xDF94"
+    "himem_addr": "0xDF94",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/SonyHBG900PFServiceManual/Sony%20HB-G900PF%20Service%20Manual%20-%20Part%201/page/n38/mode/1up",
+    "cpu_clock_note": "Service manual HB-G900P/F: clock frequency 3.579545 MHz"
   },
   {
     "brand": "Sony",
@@ -440,26 +530,38 @@
     "model": "HC-90",
     "cpu": "Z80",
     "sub_cpu": "Z180",
-    "rtc": "Yes"
+    "rtc": "Yes",
+    "sub_cpu_clock_mhz": "6.144",
+    "sub_cpu_clock_source": "https://www.msx.org/wiki/Victor_HC-90",
+    "sub_cpu_clock_note": "msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
   },
   {
     "brand": "Victor",
     "model": "HC-95",
     "cpu": "Z80",
     "sub_cpu": "Z180",
-    "rtc": "Yes"
+    "rtc": "Yes",
+    "sub_cpu_clock_mhz": "6.144",
+    "sub_cpu_clock_source": "https://www.msx.org/wiki/Victor_HC-95",
+    "sub_cpu_clock_note": "msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
   },
   {
     "brand": "Victor",
     "model": "HC-90A",
     "himem_addr": "0xDF95",
-    "sub_cpu": "Z180"
+    "sub_cpu": "Z180",
+    "sub_cpu_clock_mhz": "6.144",
+    "sub_cpu_clock_source": "https://www.msx.org/wiki/Victor_HC-90",
+    "sub_cpu_clock_note": "msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
   },
   {
     "brand": "Victor",
     "model": "HC-95A",
     "himem_addr": "0xDE79",
-    "sub_cpu": "Z180"
+    "sub_cpu": "Z180",
+    "sub_cpu_clock_mhz": "6.144",
+    "sub_cpu_clock_source": "https://www.msx.org/wiki/Victor_HC-95",
+    "sub_cpu_clock_note": "msx.org: \"a Z180 (HD64180) at 6.144 MHz\" as alternative CPU (no service document found)"
   },
   {
     "brand": "Yamaha",
@@ -569,7 +671,10 @@
   {
     "brand": "Goldstar",
     "model": "FC-200",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.58",
+    "cpu_clock_source": "https://archive.org/details/goldstarfc200sm/page/n9/mode/1up",
+    "cpu_clock_note": "Service manual FC-200: CPU clock 3.58 MHz"
   },
   {
     "brand": "Goldstar",
@@ -699,12 +804,18 @@
   {
     "brand": "Philips",
     "model": "VG 8000/00",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/philipsvg8010sm/page/n2/mode/1up",
+    "cpu_clock_note": "Service manual VG8000/VG8010: \"CLOCK 3.58MHz\"; VDP crystal X870 10.738635 MHz (÷ 3)"
   },
   {
     "brand": "Philips",
     "model": "VG 8010/00",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/philipsvg8010sm/page/n2/mode/1up",
+    "cpu_clock_note": "Service manual VG8000/VG8010: \"CLOCK 3.58MHz\"; VDP crystal X870 10.738635 MHz (÷ 3)"
   },
   {
     "brand": "Philips",
@@ -729,7 +840,10 @@
   {
     "brand": "Pioneer",
     "model": "PX-7",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.58",
+    "cpu_clock_source": "https://archive.org/details/pioneertx7sm/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual PX-7: Z80A (3.58 MHz clock)"
   },
   {
     "brand": "Pioneer",
@@ -739,7 +853,10 @@
   {
     "brand": "Pioneer",
     "model": "PX-V60",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/PXV6085168D/PX-V60_85168D/page/n23/mode/1up",
+    "cpu_clock_note": "Service manual PX-V60 (JP): 3.579545 MHz clock"
   },
   {
     "brand": "Sakhr",
@@ -849,12 +966,18 @@
   {
     "brand": "Sony",
     "model": "HB-101P",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.562500",
+    "cpu_clock_source": "https://archive.org/details/sonyhb101sm/page/n59/mode/1up",
+    "cpu_clock_note": "Service manual HB-101P/201P, alignment: CPU clock (IC6 pin 6) set to 3.562500 MHz ± 10 Hz"
   },
   {
     "brand": "Sony",
     "model": "HB-10P",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/sonyhb10p10bsm/page/n17/mode/1up",
+    "cpu_clock_note": "Service manual HB-10P/10B: 3.579545 MHz"
   },
   {
     "brand": "Sony",
@@ -869,7 +992,10 @@
   {
     "brand": "Sony",
     "model": "HB-201P",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.562500",
+    "cpu_clock_source": "https://archive.org/details/sonyhb101sm/page/n59/mode/1up",
+    "cpu_clock_note": "Service manual HB-101P/201P, alignment: CPU clock (IC6 pin 6) set to 3.562500 MHz ± 10 Hz"
   },
   {
     "brand": "Sony",
@@ -879,7 +1005,10 @@
   {
     "brand": "Sony",
     "model": "HB-501P",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/SonyHB501ServiceManual/Sony_HB-501_service_manual/page/n13/mode/1up",
+    "cpu_clock_note": "Service manual HB-501P/F: 3.579545 MHz (crystal 3.579545 MHz)"
   },
   {
     "brand": "Sony",
@@ -914,7 +1043,10 @@
   {
     "brand": "Spectravideo",
     "model": "SVI-728",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579",
+    "cpu_clock_source": "https://archive.org/details/MSXSVI728ServiceAndTechnicalManualVol.1/MSX%20SVI-728%20Service%20and%20Technical%20Manual%20%5BVol.1%5D/page/n45/mode/1up",
+    "cpu_clock_note": "Service & technical manual SVI-728: CPU clock 3.579 MHz (VDP crystal 10.738635 MHz)"
   },
   {
     "brand": "Spectravideo",
@@ -994,7 +1126,10 @@
   {
     "brand": "Yamaha",
     "model": "CX5MII",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/YamahaCX5MIIServiceManual/Yamaha%20CX5M-II_Service-Manual/page/n6/mode/1up",
+    "cpu_clock_note": "Service manual CX5MII: CPU clock 3.579545 MHz from a 21.47727 MHz crystal"
   },
   {
     "brand": "Yamaha",
@@ -1004,7 +1139,10 @@
   {
     "brand": "Yamaha",
     "model": "CX5MU",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/yamahacx5musm/page/n3/mode/1up",
+    "cpu_clock_note": "Service manual CX5MU: 3.579545 MHz system clock"
   },
   {
     "brand": "Yamaha",
@@ -1019,7 +1157,10 @@
   {
     "brand": "Yamaha",
     "model": "YIS-503F",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/yamahacx5myis503sm/page/n3/mode/1up",
+    "cpu_clock_note": "Service manual CX5M/YIS-503F: 3.579545 MHz system clock"
   },
   {
     "brand": "Yamaha",
@@ -1040,5 +1181,138 @@
     "brand": "Yeno",
     "model": "DPC-64",
     "himem_addr": "0xF380"
+  },
+  {
+    "brand": "Philips",
+    "model": "VG-8235",
+    "cpu_clock_mhz": "3.554685",
+    "cpu_clock_source": "https://archive.org/details/vg8235sm/vg8235sm00/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual VG8235/00/02/19, adjustments: VDP clock set to 3.554685 MHz"
+  },
+  {
+    "brand": "Philips",
+    "model": "VG-8235/22",
+    "cpu_clock_mhz": "3.5546875",
+    "cpu_clock_source": "https://archive.org/details/vg8235sm/vg8235sm20/page/n13/mode/1up",
+    "cpu_clock_note": "Service manual VG8235/20/22/29/36/39, parts list: crystal 21.328125 MHz (÷ 6)"
+  },
+  {
+    "brand": "Philips",
+    "model": "VG-8235/29",
+    "cpu_clock_mhz": "3.5546875",
+    "cpu_clock_source": "https://archive.org/details/vg8235sm/vg8235sm20/page/n13/mode/1up",
+    "cpu_clock_note": "Service manual VG8235/20/22/29/36/39, parts list: crystal 21.328125 MHz (÷ 6)"
+  },
+  {
+    "brand": "Philips",
+    "model": "VG-8235/36",
+    "cpu_clock_mhz": "3.5546875",
+    "cpu_clock_source": "https://archive.org/details/vg8235sm/vg8235sm20/page/n13/mode/1up",
+    "cpu_clock_note": "Service manual VG8235/20/22/29/36/39, parts list: crystal 21.328125 MHz (÷ 6)"
+  },
+  {
+    "brand": "Philips",
+    "model": "NMS 8220/16",
+    "cpu_clock_mhz": "3.554685",
+    "cpu_clock_source": "https://archive.org/details/philipsnms8220sm/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual NMS8220/00/16, adjustments: VDP clock set to 3.554685 MHz (crystal 21.328125 MHz)"
+  },
+  {
+    "brand": "Philips",
+    "model": "NMS 8280",
+    "cpu_clock_mhz": "3.554688",
+    "cpu_clock_source": "https://archive.org/details/philipsnms8280sm/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual NMS8280/00/16, adjustments: clock set to 3,554,688 ± 20 Hz (\"3.55 MHz crystal\")"
+  },
+  {
+    "brand": "Philips",
+    "model": "NMS 8280/16",
+    "cpu_clock_mhz": "3.554688",
+    "cpu_clock_source": "https://archive.org/details/philipsnms8280sm/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual NMS8280/00/16, adjustments: clock set to 3,554,688 ± 20 Hz (\"3.55 MHz crystal\")"
+  },
+  {
+    "brand": "Panasonic",
+    "model": "CF-2700 (GB)",
+    "cpu_clock_mhz": "3.559384",
+    "cpu_clock_source": "https://archive.org/details/panasoniccf2700sm/page/n6/mode/1up",
+    "cpu_clock_note": "Service manual (GB), CPU peripheral circuit: 10.6781522 MHz oscillator (VDP clock) divided by 3"
+  },
+  {
+    "brand": "Sony",
+    "model": "HB-F500F",
+    "cpu_clock_mhz": "3.578281",
+    "cpu_clock_source": "https://archive.org/details/SonyHBF500ServiceManual/Sony%20HB-F500%20Service%20Manual%20-%20Part%202/page/n56/mode/1up",
+    "cpu_clock_note": "Service manual HB-F500P/F, alignment: CPU clock (IC26 pin 6) set to 3.578281 MHz ± 5 Hz"
+  },
+  {
+    "brand": "Philips",
+    "model": "VG-8000",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/philipsvg8010sm/page/n2/mode/1up",
+    "cpu_clock_note": "Service manual VG8000/VG8010: \"CLOCK 3.58MHz\"; VDP crystal X870 10.738635 MHz (÷ 3)"
+  },
+  {
+    "brand": "Philips",
+    "model": "VG-8010",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/philipsvg8010sm/page/n2/mode/1up",
+    "cpu_clock_note": "Service manual VG8000/VG8010: \"CLOCK 3.58MHz\"; VDP crystal X870 10.738635 MHz (÷ 3)"
+  },
+  {
+    "brand": "Philips",
+    "model": "NMS 8255/16",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/PhilipsNMS825xSM/philipsnms825055sm/page/n35/mode/1up",
+    "cpu_clock_note": "Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)"
+  },
+  {
+    "brand": "Philips",
+    "model": "NMS 8255/19",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/PhilipsNMS825xSM/philipsnms825055sm/page/n35/mode/1up",
+    "cpu_clock_note": "Service manual NMS8250/8255 /00/16/19, parts list: master clock crystal X104 21.47727 MHz (÷ 6)"
+  },
+  {
+    "brand": "Sony",
+    "model": "HB-10B",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/sonyhb10p10bsm/page/n17/mode/1up",
+    "cpu_clock_note": "Service manual HB-10P/10B: 3.579545 MHz"
+  },
+  {
+    "brand": "Sony",
+    "model": "HB-501F",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/SonyHB501ServiceManual/Sony_HB-501_service_manual/page/n13/mode/1up",
+    "cpu_clock_note": "Service manual HB-501P/F: 3.579545 MHz (crystal 3.579545 MHz)"
+  },
+  {
+    "brand": "Sony",
+    "model": "HB-G900F",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/SonyHBG900PFServiceManual/Sony%20HB-G900PF%20Service%20Manual%20-%20Part%201/page/n38/mode/1up",
+    "cpu_clock_note": "Service manual HB-G900P/F: clock frequency 3.579545 MHz"
+  },
+  {
+    "brand": "Pioneer",
+    "model": "PX-7(HB)",
+    "cpu_clock_mhz": "3.58",
+    "cpu_clock_source": "https://archive.org/details/Pioneer_PX-7_Service_Manual_1985_E/page/n1/mode/1up",
+    "cpu_clock_note": "Service manual PX-7 HE/HB: Z80A (3.58 MHz clock)"
+  },
+  {
+    "brand": "Canon",
+    "model": "V-20 (EU)",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/canonv20sm/page/n20/mode/1up",
+    "cpu_clock_note": "Service manual V-20: 14.31818 MHz oscillator counted down to one fourth (3.579545 MHz) for the CPU; the VDP has its own crystal"
+  },
+  {
+    "brand": "Canon",
+    "model": "V-20 (FR)",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/canonv20sm/page/n20/mode/1up",
+    "cpu_clock_note": "Service manual V-20: 14.31818 MHz oscillator counted down to one fourth (3.579545 MHz) for the CPU; the VDP has its own crystal"
   }
 ]

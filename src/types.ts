@@ -49,6 +49,8 @@ export interface ColumnDef {
    * the URL as tooltip). Cells without a link stay empty. The value is only the sort key.
    */
   linkIcon?: string;
+  /** A number column's cell shows this many decimals; the value (sort key, filter, copy) keeps its own. */
+  displayDecimals?: number;
 }
 
 /** A collapsible group of columns. */

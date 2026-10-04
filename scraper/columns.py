@@ -86,6 +86,9 @@ class Column:
     flags: str | None = None              # cell shows flags (scraper/regions.py): "region" = region names
                                           # (value rewritten to the names), "language" = a language (value kept)
     link_icon: str | None = None          # image URL shown in each cell as a link to links[key]
+    cell_link: Callable[[dict[str, Any]], str | None] | None = None      # the cell's link (needs linkable)
+    cell_tooltip: Callable[[dict[str, Any]], str | None] | None = None   # the cell's hover text
+    display_decimals: int | None = None   # number cells show this many decimals (the value keeps its own)
     retired: bool = False                 # permanently removed, ID preserved, excluded entirely
     derive: Callable[[dict[str, Any]], Any] | None = None
 
@@ -234,6 +237,27 @@ GROUPS: list[Group] = [
 # COLUMNS  (migrated from src/columns.ts — 29 columns, IDs 1-29)
 # ---------------------------------------------------------------------------
 
+def clock_cell(model: dict[str, Any], field: str) -> float | None:
+    """A clock cell (CPU / Sub-CPU Clock): ``<field>_mhz`` (local data, every known digit) rounded to 4 decimals."""
+    raw = model.get(f"{field}_mhz")
+    try:
+        return round(float(raw), 4) if raw not in (None, "") else None
+    except (TypeError, ValueError):
+        return None
+
+
+def clock_tooltip(model: dict[str, Any], field: str) -> str | None:
+    """'3.554685 MHz: <how it was found>' — every known digit, then ``<field>_note``."""
+    raw, note = model.get(f"{field}_mhz"), model.get(f"{field}_note")
+    if raw in (None, ""):
+        return None
+    return f"{raw} MHz: {note}" if note else f"{raw} MHz"
+
+
+def cpu_clock(model: dict[str, Any]) -> float | None:
+    return clock_cell(model, "cpu_clock")
+
+
 # The CPUs every machine of a generation has by the MSX standard: (CPU, Sub-CPU).
 # Fills models no source names a CPU for (msx.org pages rarely do); a value from
 # openMSX or data/local-raw.json always wins (Victor HC-90: Sub-CPU Z180).
@@ -297,8 +321,21 @@ COLUMNS: list[Column] = [
     Column(id=22, key="cpu",              label="CPU",                  group="cpu",      type="string", chip_links=True,
            derive=lambda m: _STANDARD_CPUS.get(m.get("generation") or "", (None, None))[0]),
     Column(id=23, key="cpu_speed_mhz",    label="CPU Speed (MHz)",      group="cpu",      type="number", retired=True),
+    # CPU clock (data/local-raw.json, documented models only): the cell rounds to 4 decimals, links
+    # to the page that documents it, and its tooltip gives every known digit and how it was found.
+    Column(id=114, key="cpu_clock",       label="CPU Clock (MHz)",      group="cpu",      type="number",
+           short_label="CPU\nClock", tooltip="CPU clock in MHz, from service manuals (link: the page)",
+           linkable=True, derive=lambda m: cpu_clock(m), display_decimals=2,
+           cell_link=lambda m: m.get("cpu_clock_source"),
+           cell_tooltip=lambda m: clock_tooltip(m, "cpu_clock")),
     Column(id=24, key="sub_cpu",          label="Sub-CPU",              group="cpu",      type="string", short_label="Sub-\nCPU", chip_links=True,
            derive=lambda m: _STANDARD_CPUS.get(m.get("generation") or "", (None, None))[1]),
+    # Sub-CPU clock, like the CPU clock: sub_cpu_clock_mhz / _source / _note in data/local-raw.json.
+    Column(id=115, key="sub_cpu_clock",   label="Sub-CPU Clock (MHz)",  group="cpu",      type="number",
+           short_label="Sub-CPU\nClock", tooltip="Sub-CPU clock in MHz, from documentation (link: the source)",
+           linkable=True, derive=lambda m: clock_cell(m, "sub_cpu_clock"), display_decimals=2,
+           cell_link=lambda m: m.get("sub_cpu_clock_source"),
+           cell_tooltip=lambda m: clock_tooltip(m, "sub_cpu_clock")),
     Column(id=97, key="nmos_cmos",        label="NMOS/CMOS",            group="cpu",      type="string", short_label="NMOS/\nCMOS",
            derive=lambda m: "CMOS" if "T976" in (m.get("engine_raw") or "") else "NMOS"),
     Column(id=98, key="rtc",              label="RTC",                  group="cpu",      type="string"),

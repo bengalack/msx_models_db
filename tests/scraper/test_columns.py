@@ -355,3 +355,39 @@ def test_cpu_defaults_to_the_standard_for_the_generation_unless_a_source_names_o
     for i, g in enumerate(gens):
         assert (rows[f"M-{i}"]["cpu"], rows[f"M-{i}"]["sub_cpu"]) == _STANDARD_CPUS[g]
     assert rows["TWO"]["sub_cpu"] == "Z180"                     # a source's value wins
+
+
+@pytest.mark.parametrize("raw,expected", [("3.554685", 3.5547), ("3.5625", 3.5625), ("3.58", 3.58), (None, None), ("", None), ("n/a", None)])
+def test_cpu_clock_cell_rounds_to_four_decimals(raw, expected):
+    from scraper.columns import cpu_clock
+    assert cpu_clock({"cpu_clock_mhz": raw}) == expected
+
+
+@pytest.mark.parametrize("key,field,after", [("cpu_clock", "cpu_clock", "cpu"), ("sub_cpu_clock", "sub_cpu_clock", "sub_cpu")])
+def test_clock_columns_ship_link_and_tooltip_with_every_digit(tmp_path, key, field, after):
+    import json
+    from scraper.build import build
+    from scraper.columns import COLUMNS
+    col = next(c for c in COLUMNS if c.key == key)
+    (tmp_path / "openmsx.json").write_text(json.dumps([]))
+    (tmp_path / "msxorg.json").write_text(json.dumps([
+        {"brand": "Maker", "model": "MX-1", "generation": "MSX2"},
+        {"brand": "Maker", "model": "MX-2", "generation": "MSX2"}]))
+    (tmp_path / "local.json").write_text(json.dumps([
+        {"brand": "Maker", "model": "MX-1", f"{field}_mhz": "3.554685",
+         f"{field}_source": "https://example.org/manual/page/n1", f"{field}_note": "Service manual: crystal 21.328125 MHz"}]))
+    build(openmsx_path=tmp_path / "openmsx.json", msxorg_path=tmp_path / "msxorg.json", local_path=tmp_path / "local.json",
+          registry_path=tmp_path / "registry.json", output_path=tmp_path / "data.js")
+    text = (tmp_path / "data.js").read_text(encoding="utf-8")
+    data = json.loads(text[text.index("{"):text.rindex(";")])
+    keys = [c["key"] for c in data["columns"]]
+    assert keys.index(col.key) == keys.index(after) + 1                     # right after its CPU column
+    entry = data["columns"][keys.index(col.key)]
+    assert entry["displayDecimals"] == col.display_decimals                 # the cell shows fewer decimals
+    rows = {dict(zip(keys, m["values"]))["model"]: m for m in data["models"]}
+    mx1 = rows["MX-1"]
+    assert mx1["values"][keys.index(col.key)] == 3.5547
+    assert mx1["links"][col.key] == "https://example.org/manual/page/n1"
+    assert mx1["tooltips"][col.key] == "3.554685 MHz: Service manual: crystal 21.328125 MHz"
+    assert rows["MX-2"]["values"][keys.index(col.key)] is None              # no documented clock: empty
+    assert col.key not in rows["MX-2"].get("links", {}) and col.key not in rows["MX-2"].get("tooltips", {})

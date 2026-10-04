@@ -434,6 +434,8 @@ def build(
             entry["headerIcon"] = col.header_icon
         if col.label_icon:
             entry["labelIcon"] = col.label_icon
+        if col.display_decimals is not None:
+            entry["displayDecimals"] = col.display_decimals
         if col.flags:
             entry["displayValues"] = dict(sorted(display_values.get(col.key, {}).items()))
         if col.link_icon:
@@ -469,6 +471,13 @@ def build(
                 for target in src_col.tooltip_for:
                     tooltips[target] = str(text)
 
+        # Per-column cell hover text (Column.cell_tooltip: the CPU clock's source note)
+        for col in active_cols:
+            if col.cell_tooltip is not None:
+                text = col.cell_tooltip(model)
+                if text:
+                    tooltips[col.key] = text
+
         # Add links for linkable columns
         links: dict[str, str] = {}
         for col in active_cols:
@@ -482,6 +491,8 @@ def build(
                     links[col.key] = f"https://github.com/openMSX/openMSX/blob/master/share/machines/{oid}.xml"
             elif col.linkable and (model["_id"], col.key) in family_urls:
                 links[col.key] = family_urls[(model["_id"], col.key)]
+            elif col.linkable and col.cell_link is not None and col.cell_link(model):
+                links[col.key] = col.cell_link(model)
             elif col.link_icon and col.key == "generation_msx":
                 entry = generation_msx_links.get(model["_id"], {})
                 url = entry.get("url")

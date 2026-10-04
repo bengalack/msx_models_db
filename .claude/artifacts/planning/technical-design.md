@@ -671,6 +671,18 @@ An msx.org page with its own specs table can describe more than one model. `spli
 
 ---
 
+## Feature Design: CPU Clock
+
+Column id 114 **CPU Clock (MHz)** (`cpu_clock`, header "CPU / Clock", right after CPU): the CPU clock a service manual or schematic documents — 3.579545 MHz is the standard, several European machines run slower (Philips VG-8230 / VG-8235 / NMS 8220 / 8245 / 8280: 3.554685 MHz from a 21.328125 MHz crystal; Panasonic CF-2700 European: 3.559384 MHz; Sony HB-101P / 201P: 3.5625 MHz; Sony HB-F500P/F: 3.578281 MHz). Models without a document stay empty — no default.
+
+- **Data** (`data/local-raw.json`, curated): `cpu_clock_mhz` (string, every digit the source gives: "3.562500", "3.58"), `cpu_clock_source` (link to the page: archive.org `…/page/nN/mode/1up` or `<pdf>#page=N`), `cpu_clock_note` (document, place in it, what it says).
+- **Column** (`scraper/columns.py`): `derive = cpu_clock` → `float(cpu_clock_mhz)` rounded to 4 decimals (number: sorts numerically), shown with 2 (`display_decimals` → `ColumnDef.displayDecimals`: the grid formats the cell with `toFixed`, and the filter matches the shown text as well as the value, so "3.58" finds 3.5795); two generic column options, `cell_link(model)` (shipped as `links[key]`, needs `linkable`) and `cell_tooltip(model)` (shipped as `tooltips[key]`) → "3.554685 MHz: <note>". The grid gives a linked cell with a tooltip of its own no URL `title`, so only the note shows on hover.
+- **Sub-CPU Clock** (id 115, `sub_cpu_clock`, header "Sub-CPU / Clock", right after Sub-CPU): the same design with `sub_cpu_clock_mhz` / `_source` / `_note` (`columns.clock_cell` / `clock_tooltip` serve both columns). Turbo R: CPU = R800, Sub-CPU = Z80 — Panasonic FS-A1GT 7.159 / 3.57953 MHz, calculated from the oscillators its technical guide names (28.636 MHz ÷ 4, 21.4772 MHz ÷ 6). Victor HC-90 / HC-95 (+ their versions): Sub-CPU Z180 6.144 MHz, linked to msx.org (no service document found) — a weaker source the note names.
+- **Inheritance**: versions msx.org alone describes, adaptations and link-share recipients take the value (and its source and note) from their main model / donor like every other field (NMS 8280/19 ← NMS 8280).
+- **Research**: the `find-cpu-clocks` skill (`.claude/skills/find-cpu-clocks/`) — candidate documents (msx.org links, Hans Otten's list, archive.org search), per-page text (archive.org OCR, PDF text layer, Windows OCR of scans in every orientation), interpretation rules (VDP crystal vs CPU clock, Philips 12NC crystal codes, manual scope) and how to record. Findings of 2026-10-03: `.claude/artifacts/planning/2026-10-03-cpu-clock-research.md` — 60 documented rows (21 non-standard, 39 standard), 84 with inheritance.
+
+---
+
 ## Feature Design: Standard CPU Default
 
 CPU (id 22) and Sub-CPU (id 24) come from openMSX (`openmsx._extract_cpu`) or `data/local-raw.json`; the msx.org parser does not read them (few pages state the CPU, and in prose). A model no source names a CPU for takes the standard's for its generation — `columns._STANDARD_CPUS`: MSX1 / MSX2 / MSX2+ → Z80, turbo R → R800 with Sub-CPU Z80 — as the columns' `derive`, which only fills an empty value. Unusual machines go in `local-raw.json` (Victor HC-90 / HC-95 and their (A) versions: Sub-CPU Z180, the HD64180 alternative CPU; HC-90/95 also RTC Yes, from the msx.org I/O map page). `test_data_invariants.test_every_model_has_a_cpu` checks the built data.

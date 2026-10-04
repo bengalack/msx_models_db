@@ -136,7 +136,7 @@ applied to local data as well, so a curated entry can never resurrect an exclude
 - **Brand ≠ openMSX `<manufacturer>`.** The Brand column is the brand a machine was sold under (msx.org "Brand"); openMSX often names the maker (Yamaha for Sakhr's AX range, Al Alamiah for Sakhr). Aliases rename the openMSX name to msx.org's brand, never the reverse; composite match values take `*` (`"AX-*"`). See *Brand vs maker* in technical-design.md.
 - **Slot map `empty_page` means a confirmed slot.** Use it only when another page in the same primary slot is used or openMSX declares the slot; otherwise `absent`. msx.org can't tell an absent slot from an unused one. See *Slot map cell semantics* in technical-design.md.
 - `data/scraper-config.json` is committed on purpose (the web build needs it); it also holds the maintainer's local mirror paths.
-- `data/local-raw.json` is committed (exception to the `data/*-raw.json` ignore rule); the other `*-raw.json` files are local fetch caches.
+- `data/local-raw.json` is committed (exception to the `data/*-raw.json` ignore rule); the other `*-raw.json` files are local fetch caches. Besides overrides it holds researched values: `himem_addr` (`update-himem`) and the CPU / Sub-CPU clocks (`cpu_clock_mhz` / `_source` / `_note`, `sub_cpu_clock_*`, documented models only — see the `find-cpu-clocks` skill and *Feature Design: CPU Clock*).
 - Test fakes for `PageSource` / `XMLSource` must match the protocol signatures (e.g. `fetch_category(standard, url, page=1)`).
 - Avoid hardcoded counts of columns/LUT rules in tests where a derived value (e.g. `len(active_columns())`) works.
 - No CI — all checks are run locally.
