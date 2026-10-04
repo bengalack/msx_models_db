@@ -3,21 +3,24 @@
 
 .toolbar {
   display: flex;
+  flex-wrap: wrap;         /* buttons move to a second row when they do not fit (phones) */
   align-items: center;
-  height: 32px;
-  padding: 0 12px;
-  gap: 8px;
+  min-height: 32px;
+  flex-shrink: 0;
+  padding: 4px 12px;
+  gap: 4px 8px;
   background: var(--color-header-bg);
   border-bottom: 1px solid var(--color-border);
-  /* sticky keeps toolbar visible while scrolling; also creates a containing block for the picker */
-  position: sticky;
-  top: 36px;
+  /* the containing block for the column picker, help panel and share toast */
+  position: relative;
   z-index: 20;
 }
 
 .toolbar__btn {
   display: flex;
   align-items: center;
+  white-space: nowrap;     /* a label never wraps out of its 24px button */
+  flex-shrink: 0;
   height: 24px;
   padding: 0 8px;
   gap: 4px;
@@ -59,7 +62,7 @@
   left: 0;
   z-index: 200;
   min-width: 220px;
-  max-height: calc(100vh - 88px);  /* viewport minus header+toolbar+gap+scrollbar */
+  max-height: calc(100vh - var(--chrome-bottom, 68px) - 20px);  /* below the toolbar (main.ts sets --chrome-bottom), minus gap + scrollbar */
   overflow-y: auto;
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
@@ -108,7 +111,7 @@
   z-index: 200;
   width: 400px;
   /* height: 200px; */
-  max-height: calc(100vh - 88px);  /* viewport minus header+toolbar+gap+scrollbar */
+  max-height: calc(100vh - var(--chrome-bottom, 68px) - 20px);  /* below the toolbar (main.ts sets --chrome-bottom), minus gap + scrollbar */
   overflow-y: auto;
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);

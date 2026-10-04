@@ -122,8 +122,9 @@ All colors are defined as CSS custom properties on `[data-theme="dark"]` and `[d
 - Spacing scale: 2px, 4px, 8px, 12px, 16px, 24px, 32px
 - Density: Compact
 - Grid structure (top to bottom):
-  1. **Page header bar** — title, dark/light toggle, data timestamp (height: 36px, sticky)
-  2. **Toolbar strip** — column picker button, filter toggle button (height: 32px, sticky)
+  1. **Page header bar** — title, dark/light toggle, data timestamp (at least 36px; grows when the title wraps on a narrow screen)
+  2. **Toolbar strip** — column picker button, filter toggle button (at least 32px; buttons move to a second row when they do not fit, labels never wrap)
+  The page is a flex column: header and toolbar take the height their content needs, the grid fills the rest (`.grid-wrap { flex: 1 }`); drop-down panels size from the toolbar's bottom (`--chrome-bottom`, set by main.ts). Text keeps the stylesheet's sizes on phones (`text-size-adjust: 100%`: no automatic enlarging in landscape).
   3. **Column group header row** — group names spanning their columns, collapse/expand chevron (height: 28px, sticky)
   4. **Column header row** — individual column names, sort arrows (height: 28px, sticky)
   5. **Filter row** — one input per visible column (height: 28px, sticky, toggleable; shown by default)

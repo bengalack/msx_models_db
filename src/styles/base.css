@@ -14,6 +14,14 @@ body {
   height: 100%;
 }
 
+/* Mobile browsers enlarge text in wide blocks on their own (iOS Safari's text size
+   adjustment in landscape, Android Chrome's font boosting) — the heading grew with the
+   viewport. Keep the sizes this stylesheet sets. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 /* Flag emojis everywhere (Region column, filters): Windows has none, so a bundled
    flag-only font (Twemoji Country Flags, CC BY 4.0 — credited in the Help panel)
    draws them. unicode-range limits it to the regional indicator symbols. */
@@ -31,4 +39,8 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   overflow: hidden;  /* all scrolling is inside .grid-wrap; prevents panels from escaping viewport */
+  /* Header and toolbar take the height their content needs (a wrapped title or a
+     second row of buttons on a phone); the grid fills what is left. */
+  display: flex;
+  flex-direction: column;
 }

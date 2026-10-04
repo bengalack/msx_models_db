@@ -3,8 +3,9 @@
 
 .grid-wrap {
   overflow: auto;
-  /* 36px page header + 32px toolbar = 68px fixed chrome above grid */
-  height: calc(100vh - 68px);
+  /* the space below the header and toolbar, whatever their height (body is a flex column) */
+  flex: 1;
+  min-height: 0;
 }
 
 .grid {

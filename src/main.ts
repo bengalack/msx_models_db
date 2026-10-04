@@ -238,6 +238,15 @@ Let me hear your feedback about the <a href=\"https://github.com/bengalack/msx_m
   document.body.appendChild(toolbarEl);
   document.body.appendChild(gridEl);
 
+  // The header and toolbar grow on narrow screens (wrapped title, second row of
+  // buttons): drop-down panels size themselves from where the toolbar ends.
+  const syncChromeBottom = (): void => {
+    document.documentElement.style.setProperty('--chrome-bottom', `${Math.round(toolbarEl.getBoundingClientRect().bottom)}px`);
+  };
+  syncChromeBottom();
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(syncChromeBottom).observe(toolbarEl);
+  window.addEventListener('resize', syncChromeBottom);
+
   // ── Status bar ────────────────────────────────────────────────────────────
   const statusBar = document.createElement('div');
   statusBar.className = 'status-bar';
