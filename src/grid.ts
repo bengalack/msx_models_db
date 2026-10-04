@@ -354,7 +354,7 @@ function renderChipLinks(td: HTMLTableCellElement, text: string, links: Record<s
     a.href = links[match[0]];
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
-    a.title = links[match[0]];
+    if (!td.dataset.tooltip) a.title = links[match[0]];   // a cell tooltip (PSG Chip: its source) wins
     a.textContent = match[0];
     nodes.push(a);
     last = match.index + match[0].length;

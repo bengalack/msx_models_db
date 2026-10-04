@@ -255,6 +255,11 @@ def clock_tooltip(model: dict[str, Any], field: str) -> str | None:
     return f"{raw} MHz: {note}" if note else f"{raw} MHz"
 
 
+def psg_chip(model: dict[str, Any]) -> tuple[str | None, str | None]:
+    from .psg import psg_chip as _psg_chip
+    return _psg_chip(model)
+
+
 def cpu_clock(model: dict[str, Any]) -> float | None:
     return clock_cell(model, "cpu_clock")
 
@@ -314,7 +319,12 @@ COLUMNS: list[Column] = [
     Column(id=96, key="wait_cycles",       label="Wait Cycles",         group="video",    type="string",
            derive=lambda m: "1" if "T976" in (m.get("engine_raw") or "") else None),
     # Audio
-    Column(id=15, key="psg",              label="PSG",                  group="audio",    type="string"),
+    # PSG Chip (scraper/psg.py): msx.org's Audio text when it names more than "PSG", else
+    # openMSX's PSG type; an engine with a known PSG (data/psg-chips.json) gives "YM2149 in S3527".
+    Column(id=15, key="psg",              label="PSG Chip",             group="audio",    type="string",
+           short_label="PSG\nChip", tooltip="PSG/SSG chip assumption", chip_links=True,
+           max_width=190, sort_last=("None",),   # room for the common "AY-3-8910 comp. in T9769"
+           derive=lambda m: psg_chip(m)[0], cell_tooltip=lambda m: psg_chip(m)[1]),
     Column(id=16, key="fm_chip",          label="MSX-MUSIC",            group="audio",    type="string"),
     # Media
     Column(id=18, key="floppy_drives",    label="Floppy Drive(s)",      group="media",    type="string", short_label="Floppy Drv",   tooltip="Floppy Drive(s)"),

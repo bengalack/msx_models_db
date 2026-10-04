@@ -1,5 +1,5 @@
 {
-  "_comment": "Page each id links to (chips, and the MSX generations), in every column flagged chip_links in scraper/columns.py (Generation, CPU, Sub-CPU, Engine, VDP). List every spelling that occurs in the data (TMS9918A and TMS9918 both point at the TMS9918 page). Add ids here — no code change needed.",
+  "_comment": "Page each id links to (chips, and the MSX generations), in every column flagged chip_links in scraper/columns.py (Generation, CPU, Sub-CPU, Engine, VDP, PSG Chip). List every spelling that occurs in the data (TMS9918A and TMS9918 both point at the TMS9918 page). Add ids here — no code change needed.",
   "links": {
     "MSX1": "https://www.msx.org/wiki/MSX1",
     "MSX2": "https://www.msx.org/wiki/MSX2",
@@ -34,6 +34,14 @@
     "T6950A": "https://www.msx.org/wiki/T6950",
     "V9938": "https://www.msx.org/wiki/Category:Yamaha_V9938",
     "V9958": "https://www.msx.org/wiki/Category:Yamaha_V9958",
-    "YM2220": "https://www.msx.org/wiki/Yamaha_YM2220"
+    "YM2220": "https://www.msx.org/wiki/Yamaha_YM2220",
+    "AY-3-8910": "https://www.msx.org/wiki/General_Instrument_AY-3-8910",
+    "AY-3-8910A": "https://www.msx.org/wiki/Microchip_AY-3-8910A",
+    "YM2149": "https://www.msx.org/wiki/Yamaha_YM2149",
+    "YM2149F": "https://www.msx.org/wiki/Yamaha_YM2149",
+    "T7766": "https://www.msx.org/wiki/Toshiba_T7766",
+    "T7766A": "https://www.msx.org/wiki/Toshiba_T7766",
+    "KC89C72": "https://www.msx.org/wiki/File_KC89C72",
+    "OY-2-8910AC": "https://www.msx.org/wiki/OY-2-8910AC"
   }
 }

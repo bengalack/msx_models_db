@@ -947,8 +947,9 @@ class TestSeveralModelsOnOnePage:
         extra = "<tr><th>Audio</th><td>PSG (AY-3-8910), (M-1 version) SFG, MIDI</td></tr>"
         records = parse_model_page(_multi_page("M-1 / M-1F", "64kB", extra), "MSX1", "Maker M-1")
         by_model = {r["model"]: r for r in records}
-        assert by_model["M-1F"]["psg"] == by_model["M-1"]["psg"]
-        assert by_model["M-1F"]["psg"] is not None
+        from scraper.psg import psg_chip
+        assert psg_chip(by_model["M-1F"])[0] == psg_chip(by_model["M-1"])[0]
+        assert psg_chip(by_model["M-1F"])[0] is not None
 
 
 class TestLocalisedProducts:
@@ -1171,9 +1172,13 @@ class TestModem:
 
 
 @pytest.mark.parametrize("audio", ["PSG (AY-3-8910)", "PSG (YM2149 integrated in MSX-Engine S3527)", "AY-3-8910"])
-def test_psg_is_yes(audio):
+def test_audio_text_is_kept_for_the_psg_chip(audio):
     from scraper.msxorg import _parse_audio
-    assert _parse_audio(audio)["psg"] == "Yes"
+    page = ('<html><body><table class="wikitable"><tr><th>Brand</th><td>Maker</td></tr>'
+            f'<tr><th>Model</th><td>MX-1</td></tr><tr><th>Audio</th><td>{audio}</td></tr></table></body></html>').encode()
+    [record] = parse_model_page(page, "MSX1", "Maker MX-1")
+    assert record["audio_raw"] == audio            # scraper/psg.py names the chip from it
+    assert "psg" not in record and "psg" not in _parse_audio(audio)
 
 
 # ── Versions of a model (version lists, Product/Version tables) ───────────
@@ -1357,3 +1362,50 @@ class TestLanguageVersions:
         assert (arabic[LOCALISED_FIELD], arabic[VERSION_FIELD], arabic["year"]) == ("MX 7", True, 1987)
         assert records["MX 7 (DK/NO)"]["region"] == "Denmark, Norway"
         assert VERSION_FIELD not in records["MX 7"]
+
+
+# ── Second Z80 (Sub-CPU) and "no PSG" sentences ───────────────────────────
+
+def _page(extras: str = "", description: str = "", audio: str = "PSG (AY-3-8910)") -> bytes:
+    return ('<html><body><div id="bodyContent">'
+            f'<p>{description}</p>'
+            '<table class="wikitable"><tr><th>Brand</th><td>Maker</td></tr>'
+            '<tr><th>Model</th><td>MX-1</td></tr>'
+            f'<tr><th>Audio</th><td>{audio}</td></tr>'
+            f'<tr><th>Extras</th><td>{extras}</td></tr></table></div></body></html>').encode()
+
+
+@pytest.mark.parametrize("extras", ["Second Z80", "2nd Z80A for sound", "two Z80A (Z8400A)", "Dual Z80"])
+def test_second_z80_in_the_specs_table_is_the_sub_cpu(extras):
+    [record] = parse_model_page(_page(extras=extras), "MSX2", "Maker MX-1")
+    assert record["sub_cpu"] == "Z80"
+
+
+@pytest.mark.parametrize("description,extras", [
+    ("The second Z80A is used by the printer.", "built-in printer"),             # prose only: not the table
+    ("It contains a Mega Drive (a second Z80A, 68000, 48kB RAM).", ""),
+    ("", "R800 as main CPU while Z80 is an alternative CPU"),
+])
+def test_other_z80s_are_not_a_sub_cpu(description, extras):
+    [record] = parse_model_page(_page(extras=extras, description=description), "MSX2", "Maker MX-1")
+    assert "sub_cpu" not in record
+
+
+@pytest.mark.parametrize("sentence", [
+    "The sound is not provided by the classical PSG, but by an OPN chip.",
+    "This machine has no PSG.",
+    "It was built without a PSG.",
+])
+def test_no_psg_sentence(sentence):
+    [record] = parse_model_page(_page(description=f"Intro text. {sentence} More text.", audio="Yamaha YM2203C"),
+                                "MSX2", "Maker MX-1")
+    assert record["psg_absent"] == sentence
+
+
+@pytest.mark.parametrize("description", [
+    "However, the fact that the PSG is not stereo but mono could imply another version.",
+    "Music World - PSG utility.",
+])
+def test_psg_remarks_are_not_a_missing_psg(description):
+    [record] = parse_model_page(_page(description=description), "MSX2", "Maker MX-1")
+    assert "psg_absent" not in record

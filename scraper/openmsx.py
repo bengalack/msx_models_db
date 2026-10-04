@@ -323,7 +323,9 @@ def _extract_audio(devices: etree._Element, out: dict[str, Any]) -> None:
     """Extract PSG and FM chip info."""
     psg = devices.find(".//PSG")
     if psg is not None:
-        out["psg"] = "Yes"   # present; which chip (AY-3-8910, YM2149, engine-integrated) is not yet specified
+        # The chip type openMSX emulates (AY8910 / YM2149); none given = openMSX's default, AY8910.
+        # The PSG Chip column names the chip from it when msx.org does not (scraper/psg.py).
+        out["psg_type"] = (_text(psg.find("type")) or "").strip() or "default"
         out["audio_channels"] = 3
 
     # FM chips — various element names in openMSX configs.

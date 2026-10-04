@@ -139,7 +139,7 @@ _PREFER_MSXORG: set[str] = {"keyboard_layout", "region"}
 _MSXORG_SPECIFIC: dict[str, set[str]] = {"tape_interface": {"Adapter"}}
 
 # Fields where openMSX is more reliable (hardware-level).
-_PREFER_OPENMSX: set[str] = {"scraped_cart_slots", "vdp", "vram_kb", "main_ram_kb", "psg"}
+_PREFER_OPENMSX: set[str] = {"scraped_cart_slots", "vdp", "vram_kb", "main_ram_kb"}
 
 # Matches CS/ES slot abbreviations with optional number and ! suffix.
 # The number is optional to tolerate bare "CS"/"ES" that can appear in stale

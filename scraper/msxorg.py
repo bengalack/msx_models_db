@@ -301,11 +301,10 @@ def _parse_vdp(raw: str) -> str | None:
 
 
 def _parse_audio(raw: str) -> dict[str, Any]:
-    """Parse audio string into PSG and FM chip info."""
+    """Parse audio string into FM chip info; the PSG chip is read from the whole text (scraper/psg.py)."""
     result: dict[str, Any] = {}
     raw_lower = raw.lower()
     if "psg" in raw_lower or "ay-3-8910" in raw_lower or "ym2149" in raw_lower:
-        result["psg"] = "Yes"   # present; which chip is not yet specified
         result["audio_channels"] = 3
     # FM chips.
     fm_chips: list[str] = []
@@ -565,6 +564,34 @@ def modem_from_specs(specs: dict[str, str]) -> bool:
     """A specs Extras item (not negated) names a modem: "Modem", "built-in modem …", "non-standard modem"."""
     return any(_MODEM_WORD_RE.search(item) and not _NEGATION_RE.search(item)
                for item in specs.get("Extras", "").split(","))
+
+
+# A second Z80 in the specs table ("Extras: Second Z80", "two Z80A"): the Sub-CPU. Only the
+# table counts — prose names Z80s of other parts (a printer's, a built-in Mega Drive's).
+_SECOND_Z80_RE = re.compile(r"\b(?:second|2nd|two|dual)\s+Z80", re.IGNORECASE)
+
+
+def second_z80_from_specs(specs: dict[str, str]) -> bool:
+    return any(_SECOND_Z80_RE.search(value) for value in specs.values())
+
+
+# A description sentence saying the machine has no PSG ("The sound is not provided by the
+# classical PSG, but by an OPN chip."): with an Audio text that names none, PSG Chip "None".
+_NO_PSG_RE = re.compile(
+    r"\bnot\s+(?:provided|produced|generated)\s+by\b[^.]*\bPSG\b|\bno\s+PSG\b"
+    r"|\bwithout\s+(?:a\s+|the\s+)?PSG\b|\binstead\s+of\s+(?:a\s+|the\s+)?PSG\b", re.IGNORECASE)
+
+
+def psg_absent(page: bytes | BeautifulSoup) -> str | None:
+    """The description sentence saying the model has no PSG, if any."""
+    soup = page if isinstance(page, BeautifulSoup) else BeautifulSoup(page, "lxml")
+    body = soup.select_one("#bodyContent") or soup
+    for node in body.find_all("p"):
+        text = re.sub(r"\s+", " ", node.get_text(" ", strip=True)).replace(" ,", ",").replace(" .", ".")
+        for sentence in _SENTENCE_SPLIT_RE.split(text):
+            if _NO_PSG_RE.search(sentence):
+                return sentence.strip()
+    return None
 
 
 def modem_in_description(page: bytes | BeautifulSoup, names: list[str], brand: str) -> bool:
@@ -1142,6 +1169,7 @@ def _record_from_specs(
     # Audio
     audio_raw = specs.get("Audio", "")
     if audio_raw:
+        result["audio_raw"] = audio_raw     # the PSG Chip column reads it (scraper/psg.py)
         result.update(_parse_audio(audio_raw))
 
     # Media (floppy, cartridge slots) — also check Extras, which often has
@@ -1172,6 +1200,10 @@ def _record_from_specs(
     # Built-in modem named in Extras ("Modem", "built-in modem …", "non-standard modem").
     if modem_from_specs(specs):
         result["modem"] = MODEM_YES
+
+    # A second Z80 in the specs table (Haesung Super Free Kick: "Extras: Second Z80", driving sound).
+    if second_z80_from_specs(specs):
+        result["sub_cpu"] = "Z80"
 
     # Connections section for tape, printer, cartridge slots.
     conn = _parse_connections(sections)
@@ -1421,6 +1453,10 @@ def parse_model_page(
     if modem_in_description(soup, names, brand):
         for record in records:
             record["modem"] = MODEM_YES
+    no_psg = psg_absent(soup)
+    if no_psg:
+        for record in records:
+            record["psg_absent"] = no_psg     # the PSG Chip column reads it (scraper/psg.py)
     # Family relations (scraper/families.py): the series page this page defers to,
     # the models its text names as versions / rebrands, its variant table or list.
     links = family_links(soup, page_title)

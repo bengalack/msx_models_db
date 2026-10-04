@@ -1,0 +1,23 @@
+{
+  "_comment": "PSG Chip column (scraper/psg.py). 'engines': the PSG an MSX-Engine / MSX-SYSTEM integrates, from its msx.org page — 'psg' is the name the cell shows (\"YM2149 in S3527\"), null when the engine has no sound chip; 'note' goes in the cell tooltip. An engine not listed here (X3527, T9763: no page) keeps the chip the model page names. 'chips': every spelling of a PSG chip in msx.org Audio texts (regex, case-insensitive) → the name the cell shows. Add entries here — no code change needed.",
+  "engines": {
+    "HD62003": {"psg": "AY-3-8910 comp.", "note": "Hitachi HD62003: PSG AY-3-8910 compatible"},
+    "S3527":   {"psg": "YM2149", "note": "Yamaha S3527 (MSX-SYSTEM): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"},
+    "S1985":   {"psg": "YM2149", "note": "Yamaha S1985 (MSX-SYSTEMII): a Yamaha YM2149 PSG, compatible with a General Instrument AY-3-8910"},
+    "T7937":   {"psg": "AY-3-8910 comp.", "note": "Toshiba T7937 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"},
+    "T7937A":  {"psg": "AY-3-8910 comp.", "note": "Toshiba T7937A (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"},
+    "T9769":   {"psg": "AY-3-8910 comp.", "note": "Toshiba T9769 (MSX-ENGINE): PSG Toshiba T7766A (AY-3-8910 compatible)"},
+    "T7775":   {"psg": null, "note": "Toshiba T7775 (MSX-ENGINE): does not include the sound chip"}
+  },
+  "chips": {
+    "AY-?3-?8910A": "AY-3-8910A",
+    "AY-?3-?8910": "AY-3-8910",
+    "AY-?3-?8912": "AY-3-8912",
+    "YM[- ]?2149F": "YM2149F",
+    "YM[- ]?2149": "YM2149",
+    "T7766A": "T7766A",
+    "T7766": "T7766",
+    "KC89C72": "KC89C72",
+    "OY-2-8910AC": "OY-2-8910AC"
+  }
+}

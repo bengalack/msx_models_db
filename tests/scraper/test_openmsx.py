@@ -256,8 +256,14 @@ class TestParseXMLAudio:
     def test_psg_present(self):
         xml = _xml(_info(), '<PSG id="PSG"/>')
         result = parse_machine_xml(xml, "test.xml")
-        assert result["psg"] == "Yes"
+        assert result["psg_type"] == "default"          # no <type>: openMSX's default (AY8910)
+        assert "psg" not in result
         assert result["audio_channels"] == 3
+
+    @pytest.mark.parametrize("chip", ["AY8910", "YM2149"])
+    def test_psg_type(self, chip):
+        xml = _xml(_info(), f'<PSG id="PSG"><type>{chip}</type></PSG>')
+        assert parse_machine_xml(xml, "test.xml")["psg_type"] == chip
 
     def test_fm_chip_single(self):
         xml = _xml(_info(), '<MSX-MUSIC id="MSX-MUSIC"/>')
@@ -275,7 +281,7 @@ class TestParseXMLAudio:
         xml = _xml(_info())
         result = parse_machine_xml(xml, "test.xml")
         assert result is not None
-        assert "psg" not in result
+        assert "psg_type" not in result
         assert "fm_chip" not in result
 
 

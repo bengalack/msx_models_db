@@ -95,6 +95,16 @@ describe('chip links', () => {
     expect(td.title).toBe('source text 1');
   });
 
+  it('gives a chip link no URL title when the cell has a tooltip, so the tooltip shows over the link too', () => {
+    const { element } = buildGrid(makeData(['YM2149 in S1985', null]));
+    const withTooltip = engineCell(element, 1).querySelector<HTMLAnchorElement>('a.cell-link')!;
+    expect(withTooltip.hasAttribute('title')).toBe(false);
+    const data = makeData(['S1985']);
+    data.models[0].tooltips = undefined;
+    const plain = engineCell(buildGrid(data).element, 1).querySelector<HTMLAnchorElement>('a.cell-link')!;
+    expect(plain.title).toBe(LINKS.S1985);                      // no tooltip: the URL, as before
+  });
+
   it('clicking the chip does not select the cell; clicking elsewhere in the cell does', () => {
     const { element } = buildGrid(makeData(['T9769 and S1990']));
     document.body.appendChild(element);

@@ -684,9 +684,27 @@ Column id 114 **CPU Clock (MHz)** (`cpu_clock`, header "CPU / Clock", right afte
 
 ---
 
+## Feature Design: PSG Chip
+
+Column id 15 (`psg`, label **PSG Chip**, header tooltip "PSG/SSG chip assumption"; formerly "PSG" = Yes on every model): the PSG chip the sources name. `scraper/psg.py` (`psg_chip(model) → (value, tooltip)`, the column's `derive` and `cell_tooltip`); vocabulary in `data/psg-chips.json`.
+
+- **Inputs**: msx.org's Audio text, kept whole as `audio_raw` (`msxorg._record_from_specs`; per-variant resolution has already run, so the AX-330 record holds only its first version's chip); openMSX's `<PSG><type>` as `psg_type` (`AY8910` / `YM2149`; `default` when there is none — openMSX's default is AY8910); the Engine columns' source `engine_raw`. Neither parser sets `psg` any more, so the derive always runs (a `local-raw.json` `psg` still overrides).
+- **msx.org first, when it says more than "PSG"**: the PSG part of the text (top-level items naming PSG / a chip / an engine) is read for chips (`chips` regexes in psg-chips.json → canonical name: YM-2149 / YM 2149 → YM2149, File KC89C72 → KC89C72) and an engine ("MSX-Engine / MSX-SYSTEM(II) <id> [or <id>]"; T9769x / T9769B → T9769).
+  - Plain chip: `AY-3-8910`, `YM2149F`. Alternatives: `YM2149 or AY-3-8910`. "compatible" after a chip without a known engine → `AY-3-8910 comp. in T9763`.
+  - Engine: `engines` in psg-chips.json gives the PSG an engine integrates, from its msx.org page — `YM2149 in S3527`, `AY-3-8910 comp. in T7937A` / `in T9769` (T7766A), `AY-3-8910 comp. in HD62003` — and that name wins over the page's ("custom chip integrated in S3527", "AY-3-8910 in MSX Engine"). An engine not in the table (X3527, T9763: no page) keeps the page's chip; one with `psg: null` (T7775: no sound chip) is ignored. "MSX-Engine" without an id → the model's Engine column (full-custom, then semi-custom; skipped when it reads "None or …"). No engine mentioned → the Engine column's engine too, unless the page names a chip that contradicts that engine's PSG (Sanyo PHC-30N / PHC-33: "PSG (AY-3-8910)" with Engine S3527 → `AY-3-8910`, as msx.org says).
+  - Versions: "YM2149 in /00 version, … S3527 for /19, /20, /29 and /40 versions" → each row takes the part naming its suffix (the main model the "/00" part): VG-8020 `YM2149`, VG-8020/29 `YM2149 in S3527`. "1st version: A, 2nd version: B" → `A or B`.
+  - Uncertainty: "?" after the name in question — "?AY-3-8910" → `AY-3-8910?`; "probably" → every chip (`AY-3-8910? or T7766A?`, `YM2149? in S3527`); "in MSX-Engine?" (engine unknown) → `YM2149?`; an Engine column with "?" → `YM2149 in S3527?`.
+- **openMSX** when msx.org names no chip: `YM2149`, else `AY-3-8910`, with the model's engine as above (`YM2149 in S1985`). msx.org "PSG" with an Engine field is already answered by msx.org (the engine's PSG).
+- **FPGA**: an Audio text naming FPGA ("Emulated PSG , MSX-MUSIC and SCC by FPGA") or Engine FPGA (the 1chipMSX, no Audio text) → `FPGA`, not linked (no chip page).
+- **None**: the page says there is no PSG and its Audio text names none — `msxorg.psg_absent` finds the description sentence ("not provided by … PSG", "no PSG", "without a PSG", "instead of the PSG"; remarks like "the PSG is not stereo" do not count) and stores it as `psg_absent`, which becomes the tooltip. Haesung Super Free Kick: Audio "Yamaha YM2203C a.k.a. OPN", "The sound is not provided by the classical PSG, but by an OPN chip." → `None` (sorted last, like the Engine columns' None).
+- **Blank** when neither source names one: adapters ("from the MSX1 host").
+- **Cell**: chip ids link through `data/chip-links.json` (`chip_links`: AY-3-8910, AY-3-8910A, YM2149(F), T7766(A), KC89C72, OY-2-8910AC and the engines; "YM2149 in S3527" has two links). Tooltip: the source ("msx.org: PSG (AY-3-8910 in MSX Engine)" / "openMSX: YM2149") and the engine's note. A chip link in a cell with a tooltip has no URL `title`, so the tooltip shows over the link as well (`renderChipLinks`).
+
+---
+
 ## Feature Design: Standard CPU Default
 
-CPU (id 22) and Sub-CPU (id 24) come from openMSX (`openmsx._extract_cpu`) or `data/local-raw.json`; the msx.org parser does not read them (few pages state the CPU, and in prose). A model no source names a CPU for takes the standard's for its generation — `columns._STANDARD_CPUS`: MSX1 / MSX2 / MSX2+ → Z80, turbo R → R800 with Sub-CPU Z80 — as the columns' `derive`, which only fills an empty value. Unusual machines go in `local-raw.json` (Victor HC-90 / HC-95 and their (A) versions: Sub-CPU Z180, the HD64180 alternative CPU; HC-90/95 also RTC Yes, from the msx.org I/O map page). `test_data_invariants.test_every_model_has_a_cpu` checks the built data.
+CPU (id 22) and Sub-CPU (id 24) come from openMSX (`openmsx._extract_cpu`) or `data/local-raw.json`; the msx.org parser does not read them (few pages state the CPU, and in prose). A model no source names a CPU for takes the standard's for its generation — `columns._STANDARD_CPUS`: MSX1 / MSX2 / MSX2+ → Z80, turbo R → R800 with Sub-CPU Z80 — as the columns' `derive`, which only fills an empty value. msx.org's specs table naming a second Z80 (`msxorg.second_z80_from_specs`: "second / 2nd / two / dual Z80" in any field — Haesung Super Free Kick: "Extras: Second Z80", the Z80 that drives its sound) sets Sub-CPU Z80; prose does not count, as it names Z80s of other parts (the Sanyo PHC-77's printer, the Sakhr AX-660's built-in Mega Drive). Unusual machines go in `local-raw.json` (Victor HC-90 / HC-95 and their (A) versions: Sub-CPU Z180, the HD64180 alternative CPU; HC-90/95 also RTC Yes, from the msx.org I/O map page). `test_data_invariants.test_every_model_has_a_cpu` checks the built data.
 
 ---
 
