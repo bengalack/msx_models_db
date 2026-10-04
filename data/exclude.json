@@ -1,5 +1,6 @@
 [
     {"brand": "*", "model": "MA-20 BR"},
+    {"brand": "Spectravideo", "model": "SVI-811"},
     {"filename": "8bits4ever*.html"},
     {"filename": "AGE Labs*.html"},
     {"filename": "Niga MSX2 VersionUP Kit*.html"},
