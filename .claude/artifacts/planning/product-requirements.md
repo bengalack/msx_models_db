@@ -37,7 +37,7 @@ This iteration covers the web page (grid UI) and the offline scraper process. Th
   - Description: The page displays a title in the header showing authorship and data freshness.
   - Priority: Must
   - Acceptance Criteria:
-    - The page title (both the header text and `document.title`) is "MSX Models DB by Bengalack · N models · YYYY-MM-DD · Sources: msx.org and openMSX", where N is the total number of models in the data file (regardless of any active filters) and YYYY-MM-DD is the `generated` date from the data file.
+    - The browser tab title (`document.title`) is always just "MSX Models DB by Bengalack". The header text is "MSX Models DB by Bengalack · N models · YYYY-MM-DD · Sources: msx.org and openMSX · *"for the scene, by the scene"*" (the motto quoted and in italics), where N is the total number of models in the data file (regardless of any active filters) and YYYY-MM-DD is the `generated` date from the data file.
 
 - Grid display
   - Description: The page renders all in-scope MSX models as rows in a spreadsheet-like grid. Each column maps to a model attribute. The grid is the primary and only view.

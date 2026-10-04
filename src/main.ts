@@ -45,8 +45,13 @@ if (!window.MSX_DATA) {
   const { models, generated, columns, groups } = window.MSX_DATA;
 
   const pageTitle = `MSX Models DB by Bengalack\u2002·\u2002${models.length}\u00a0models\u2002·\u2002${generated}\u2002·\u2002Sources: msx.org and openMSX`;
-  document.title = pageTitle;
+  document.title = 'MSX Models DB by Bengalack';   // the browser tab stays short
   title.textContent = pageTitle;
+  // The motto, quoted and in italics — heading only (a tab title cannot show italics)
+  const motto = document.createElement('em');
+  motto.className = 'app-header__motto';
+  motto.textContent = '"for the scene, by the scene"';
+  title.append(' · ', motto);
 
   // ── URL state: decode hash on load ────────────────────────────────────────
   const knownColumnIds = new Set(columns.map(c => c.id));
