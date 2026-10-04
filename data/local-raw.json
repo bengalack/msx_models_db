@@ -26,7 +26,10 @@
   {
     "brand": "Daewoo",
     "model": "CPC-300",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/cpc300sch/page/n5/mode/1up",
+    "cpu_clock_note": "Schematic CPC-300 (domestic), sheet 6: V9938 crystal 21.47727 MHz, its CPUCLK (pin 8) is the Z-80A clock: calculated 21.47727 MHz ÷ 6"
   },
   {
     "brand": "Daewoo",
@@ -502,7 +505,10 @@
   {
     "brand": "Talent",
     "model": "TPC-310",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.5795333",
+    "cpu_clock_source": "https://archive.org/details/tpc310msx2pcserviceguide/page/n5/mode/1up",
+    "cpu_clock_note": "Schematic TPC-310: crystal Y3 21.4772 MHz drives the V9938 (XTAL1, sheet n1), whose CPUCLK clocks the CPU: calculated 21.4772 MHz ÷ 6"
   },
   {
     "brand": "Toshiba",
@@ -1017,7 +1023,10 @@
   {
     "brand": "Sony",
     "model": "HB-55P",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/sonyhb5575sm/sonyhp5575sm/page/n2/mode/1up",
+    "cpu_clock_note": "Service manual HB-55P/75P/75B (AE/UK), 1-2 Specifications: CPU Z-80A, clock frequency 3.579545 MHz"
   },
   {
     "brand": "Sony",
@@ -1042,7 +1051,17 @@
   {
     "brand": "Sony",
     "model": "HB-75P",
-    "himem_addr": "0xF380"
+    "himem_addr": "0xF380",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/sonyhb5575sm/sonyhp5575sm/page/n2/mode/1up",
+    "cpu_clock_note": "Service manual HB-55P/75P/75B (AE/UK), 1-2 Specifications: CPU Z-80A, clock frequency 3.579545 MHz"
+  },
+  {
+    "brand": "Sony",
+    "model": "HB-75B",
+    "cpu_clock_mhz": "3.579545",
+    "cpu_clock_source": "https://archive.org/details/sonyhb5575sm/sonyhp5575sm/page/n2/mode/1up",
+    "cpu_clock_note": "Service manual HB-55P/75P/75B (AE/UK), 1-2 Specifications: CPU Z-80A, clock frequency 3.579545 MHz"
   },
   {
     "brand": "Spectravideo",

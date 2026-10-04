@@ -37,8 +37,33 @@ Not found: Panasonic FS-A1ST (technical guide JP: MSX-Engine "Z80A equivalent", 
 
 ## Read, no clock found
 
-Sony HB-55P/75P/75B, Victor HC-90/95 schematic, Panasonic FS-A1ST technical guide (JP), Talent TPC-310 circuit diagram, Pioneer PX-JY7 (JP), Yamaha YIS-503IIIR circuit diagram, Panasonic FS-A1WSX (only the FS-A1WX schematic was found).
+Victor HC-90/95 schematic, Panasonic FS-A1ST technical guide (JP), Talent TPC-310 circuit diagram, Pioneer PX-JY7 (JP), Yamaha YIS-503IIIR circuit diagram, Panasonic FS-A1WSX (only the FS-A1WX schematic was found).
 
 ## Candidates for a next round
 
 Models likely to share a documented clock but outside a manual's stated scope (inherited in the build where they are versions): NMS 8245/19, NMS 8280/02 / 09 / 19, VG-8235/16, VG 8010/19, Phonola rebrands, CF-2700 (DE), HB-G900D, PX-V7, HB-F700B. About 360 rows have no service manual found.
+
+## Re-check 2026-10-04: documents that were never really read
+
+The Sony HB-55P/75P/75B service manual was listed above as "read, no clock found", yet its specifications page says "Clock frequency 3.579545 MHz" ([n2](https://archive.org/details/sonyhb5575sm/sonyhp5575sm/page/n2/mode/1up)). Causes, all fixed in the skill's `manual_text.py`:
+
+1. The scans are stored flipped; the first OCR pass read them as stored only and got mirrored garbage ("CIOCX gedneuch"). Orientation handling came later and the document was not read again.
+2. OCR errors were silently taken as empty pages (Windows OCR needs absolute image paths).
+3. A document with almost no text still counted as read, and a short archive.org text (CPC-300 schematic: 215 characters over 9 pages) passed as "real text", so its PDF was never OCR'd.
+4. Tiny downloads were kept (msxblog.es answers plain http with a 239-byte "403 Forbidden" page).
+5. `find_sources.py` read only the models' own pages, not the series pages they defer to (`Category:Sony_HB-75` holds the HB-55P/75P/75B manual).
+
+Every image-only document was read again (14 documents whose archive.org text was empty or tiny, plus the two service manuals in the CX-5M technical documents ZIP):
+
+| Document | Result |
+|---|---|
+| Sony HB-55P/75P/75B service manual | **new**: 3.579545 MHz ([n2](https://archive.org/details/sonyhb5575sm/sonyhp5575sm/page/n2/mode/1up)) → HB-55P, HB-75P, HB-75B |
+| Daewoo CPC-300 schematic (domestic) | OCR cannot read the faint scan; read by eye: V9938 crystal 21.47727 MHz, CPUCLK → Z-80A ([n5](https://archive.org/details/cpc300sch/page/n5/mode/1up)) → **new** 3.579545 MHz (calculated; AVT CPC-300 inherits) |
+| Talent TPC-310 schematic | read by eye: Y3 21.4772 MHz → V9938 XTAL1 ([n5](https://archive.org/details/tpc310msx2pcserviceguide/page/n5/mode/1up), [n1](https://archive.org/details/tpc310msx2pcserviceguide/page/n1/mode/1up)) → **new** 3.5795333 MHz (calculated) |
+| Yamaha CX5M (GB) / CX-5MU, CX5M and CX5M-II manuals in the CX-5M ZIP | readable now; confirm the CX5MU / CX5MII values already recorded |
+| Canon V-20, Philips VG8235 (4 documents), Sony HB-501 diagrams | readable now; confirm the values already recorded |
+| Philips VG8230 hi-res circuit | not readable (1 huge page); VG 8230 already recorded from its service manual |
+| Yamaha YIS-503IIIR circuit diagram | readable now; no clock value printed |
+| Pioneer PX-JY7 (JP) | not read (Japanese) |
+| Sony HB-F700D manual (msxblog.es, series page link) | same file as the HB-F700P/F/S/D manual already read (10,089,229 bytes) |
+
