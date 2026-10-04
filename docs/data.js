@@ -23644,7 +23644,7 @@ window.MSX_DATA = {
         null,
         1985,
         "Brazil",
-        null,
+        "Recalled",
         "MSX1",
         64,
         null,
@@ -34334,13 +34334,13 @@ window.MSX_DATA = {
       "id": 312,
       "values": [
         "Sharp",
-        "HB-8000",
-        "HB-8000",
-        null,
+        "HB-8000 v1.0",
+        "HB-8000 v1.0",
+        "HB-8000 v1.0",
         null,
         1985,
         "Brazil",
-        null,
+        "Recalled",
         "MSX1",
         64,
         null,
@@ -34440,7 +34440,8 @@ window.MSX_DATA = {
       ],
       "links": {
         "model": "https://www.msx.org/wiki/Sharp_HB-8000",
-        "generation_msx": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-1011/724"
+        "generation_msx": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-1011/724",
+        "family_series": "https://www.msx.org/wiki/Sharp_HB-8000"
       },
       "tooltips": {
         "engine": "none (separate IC's)",
@@ -37590,7 +37591,7 @@ window.MSX_DATA = {
         "Sharp",
         "HB-8000 v1.1",
         "HB-8000 v1.1",
-        null,
+        "HB-8000 v1.0",
         null,
         1985,
         "Brazil",
@@ -37602,9 +37603,9 @@ window.MSX_DATA = {
         null,
         "0xF380",
         "TMS9128",
+        16,
         null,
-        null,
-        "AY-3-8910",
+        "YM2149 or AY-3-8910",
         null,
         null,
         2,
@@ -37617,8 +37618,8 @@ window.MSX_DATA = {
         "No",
         "NMOS",
         "No",
-        null,
-        null,
+        "None",
+        "None",
         "br_hotbit_1_1",
         "International",
         "International",
@@ -37694,10 +37695,14 @@ window.MSX_DATA = {
       ],
       "links": {
         "generation_msx": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-1011/724",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sharp_HB-8000_1.1.xml"
+        "family_series": "https://www.msx.org/wiki/Sharp_HB-8000",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sharp_HB-8000_1.1.xml",
+        "model": "https://www.msx.org/wiki/Sharp_HB-8000"
       },
       "tooltips": {
-        "psg": "openMSX: AY8910 (no type given: openMSX's default)"
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149 or AY-3-8910)"
       }
     },
     {
@@ -37706,7 +37711,7 @@ window.MSX_DATA = {
         "Sharp",
         "HB-8000 v1.2",
         "HB-8000 v1.2",
-        null,
+        "HB-8000 v1.0",
         null,
         1987,
         "Brazil",
@@ -37718,9 +37723,9 @@ window.MSX_DATA = {
         null,
         "0xF380",
         "TMS9128",
+        16,
         null,
-        null,
-        "AY-3-8910",
+        "YM2149 or AY-3-8910",
         null,
         null,
         2,
@@ -37733,8 +37738,8 @@ window.MSX_DATA = {
         "No",
         "NMOS",
         "No",
-        null,
-        null,
+        "None",
+        "None",
         "br_hotbit_1_2",
         "International",
         "International",
@@ -37810,10 +37815,14 @@ window.MSX_DATA = {
       ],
       "links": {
         "generation_msx": "https://generation-msx.nl/hardware/sharp-epcom/hb-8000-hotbit-12/725",
-        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sharp_HB-8000_1.2.xml"
+        "family_series": "https://www.msx.org/wiki/Sharp_HB-8000",
+        "openmsx_id": "https://github.com/openMSX/openMSX/blob/master/share/machines/Sharp_HB-8000_1.2.xml",
+        "model": "https://www.msx.org/wiki/Sharp_HB-8000"
       },
       "tooltips": {
-        "psg": "openMSX: AY8910 (no type given: openMSX's default)"
+        "engine": "none (separate IC's)",
+        "engine_semi_custom": "none (separate IC's)",
+        "psg": "msx.org: PSG (YM2149 or AY-3-8910)"
       }
     },
     {
